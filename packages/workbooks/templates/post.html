@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8" />
+    <title>cre@tive dev</title>
+    <meta name="description" content="CSC 437" />
+    <meta name="author" content="Ken Kubiak" />
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com"
+    />
+    <%= htmlWebpackPlugin.tags.headTags %>
+  </head>
+  <body>
+    <div id="lets-be-cre-at-ive"></div>
+    <%= htmlWebpackPlugin.tags.bodyTags %>
+    <script>
+      const App = Cre_ative.Main;
+      const payload = Kram_module.default;
+      const node = document.getElementById(
+        "lets-be-cre-at-ive"
+      );
+      App(payload).render(node);
+    </script>
+  </body>
+</html>

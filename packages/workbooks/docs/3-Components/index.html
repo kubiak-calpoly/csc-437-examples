@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Interactive and Data-driven Components</title>
+<script type="importmap">
+{ "imports": {"@cre.ative/kram-11ty/runtime":"/modules/@cre.ative/kram-11ty/runtime.mjs","@cre.ative/kram-11ty/styles":"/modules/@cre.ative/kram-11ty/styles.css"} }
+</script>
+<link rel="stylesheet" href="/modules/@cre.ative/kram-11ty/styles.css">
+<script type="module">
+import {init, register} from "@cre.ative/kram-11ty/runtime";
+init({});
+
+</script>
+</head>
+<body>
+<kram-main>
+<h1 slot="title">Interactive and Data-driven Components</h1>
+<kram-toc slot="nav"><ol>
+<li data-idref="scene-1">Module 3. Interactive and Data-driven Components</li>
+</ol></kram-toc>
+<kram-flow><kram-scene 
+        scene="1" 
+        language="null" 
+        norender><h1 slot="title">Module 3. Interactive and Data-driven Components</h1>
+
+<p>In this module:</p>
+
+<ul><li><p>Modern Javascript</p>
+</li>
+
+<li><p>The DOM and how to Manipulate it</p>
+</li>
+
+<li><p>Using Promises to fetch data asynchronously</p>
+</li>
+
+<li><p><a href="./webc">Web Components</a></p>
+</li>
+
+<li><p><a href="./custom-props">Design Tokens with CSS Custom Properties</a></p>
+</li>
+</ul>
+
+<p>Example:</p>
+
+<ul><li><p><a href="./itinerary">Itinerary Custom Element</a></p>
+</li>
+</ul>
+</kram-scene></kram-flow>
+</kram-main>
+</body>
+</html>

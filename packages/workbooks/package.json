@@ -1,0 +1,27 @@
+{
+  "name": "workbooks",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.html",
+  "scripts": {
+    "publish": "npx @11ty/eleventy",
+    "start": "npx @11ty/eleventy --serve",
+    "serve": "npx http-server ./docs",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "eleventy",
+    "markdown"
+  ],
+  "author": "kubiak@calpoly.edu",
+  "license": "BSD-3-Clause",
+  "devDependencies": {
+    "@11ty/eleventy": "^2.0.1",
+    "@11ty/eleventy-plugin-syntaxhighlight": "^5.0.0",
+    "@11ty/eleventy-plugin-vite": "^4.0.0",
+    "http-server": "^14.1.1"
+  },
+  "dependencies": {
+    "@cre.ative/kram-11ty": "file:.yalc/@cre.ative/kram-11ty"
+  }
+}

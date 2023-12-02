@@ -1,0 +1,28 @@
+{
+  "name": "csc-437-examples",
+  "version": "1.0.0",
+  "description": "Code examples for CSC 437 — Dynamic Web Development",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kubiak-calpoly/csc-437-examples.git"
+  },
+  "keywords": [
+    "WebDevelopment"
+  ],
+  "author": "kubiak@calpoly.edu",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/kubiak-calpoly/csc-437-examples/issues"
+  },
+  "homepage": "https://github.com/kubiak-calpoly/csc-437-examples#readme",
+  "workspaces": [
+    "packages/*"
+  ],
+  "dependencies": {
+    "@cre.ative/kram-11ty": "file:.yalc/@cre.ative/kram-11ty"
+  }
+}
