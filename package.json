@@ -22,7 +22,5 @@
   "workspaces": [
     "packages/*"
   ],
-  "dependencies": {
-    "@cre.ative/kram-11ty": "file:.yalc/@cre.ative/kram-11ty"
-  }
+  "dependencies": {}
 }

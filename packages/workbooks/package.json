@@ -18,8 +18,7 @@
   "devDependencies": {
     "@11ty/eleventy": "^2.0.1",
     "@11ty/eleventy-plugin-syntaxhighlight": "^5.0.0",
-    "@11ty/eleventy-plugin-vite": "^4.0.0",
-    "http-server": "^14.1.1"
+    "@11ty/eleventy-plugin-vite": "^4.0.0"
   },
   "dependencies": {
     "@cre.ative/kram-11ty": "file:.yalc/@cre.ative/kram-11ty"

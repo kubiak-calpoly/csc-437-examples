@@ -1,5 +1,6 @@
 # Dependency directories
 node_modules/
+node_modules
 
 # TypeScript cache
 *.tsbuildinfo
@@ -28,6 +29,8 @@ kram_modules/
 
 # MacOS
 .DS_Store
+
+# Yalc
 /.yalc
 .yalc
 yalc.lock
