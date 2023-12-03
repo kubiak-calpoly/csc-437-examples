@@ -15,17 +15,27 @@
       rel="stylesheet"
     />
     <style>
+      * {
+        margin: 0;
+      }
       body {
         font-family: Merriweather, Baskerville, Cambria,
           "Noto Serif", "Bitstream Charter", serif;
         background-color: rgb(238 237 231);
       }
       header {
+        padding: 0.5em;
         background-color: #008000;
         color: #fff;
       }
       header a {
         color: #ff0;
+      }
+      section {
+        padding: 0.5em;
+      }
+      details {
+        padding: 0.5em;
       }
       h1,
       h2,
@@ -62,6 +72,9 @@
       h3,
       a {
         color: #008000;
+      }
+      p + * {
+        margin-top: 0.25rem;
       }
       svg.outline-map {
         fill: #ff0;
