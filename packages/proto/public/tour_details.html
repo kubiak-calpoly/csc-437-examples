@@ -15,6 +15,11 @@
       rel="stylesheet"
     />
     <style>
+      :root {
+        --size-spacing-small: 0.25rem;
+        --size-spacing-medium: 0.5rem;
+        --size-spacing-large: 1rem;
+      }
       * {
         margin: 0;
       }
@@ -24,19 +29,24 @@
         background-color: rgb(238 237 231);
       }
       header {
-        padding: 0.5em;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        justify-content: space-between;
+        padding: var(--size-spacing-medium);
         background-color: #008000;
         color: #fff;
       }
       header a {
         color: #ff0;
       }
+      header svg.outline-map {
+        align-self: end;
+      }
       section {
-        padding: 0.5em;
+        padding: var(--size-spacing-medium);
       }
-      details {
-        padding: 0.5em;
-      }
+
       h1,
       h2,
       h3,
@@ -69,12 +79,18 @@
         font-weight: normal;
         font-style: italic;
       }
+      details {
+        padding: var(--size-spacing-medium);
+      }
+      summary > :first-child {
+        display: inline-block;
+      }
       h3,
       a {
         color: #008000;
       }
       p + * {
-        margin-top: 0.25rem;
+        margin-top: var(--size-spacing-small);
       }
       svg.outline-map {
         fill: #ff0;
