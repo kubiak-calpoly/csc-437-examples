@@ -77,6 +77,3 @@ dt {
   font-family: var(--font-family-display);
   font-weight: bold;
 }
-dd {
-  margin-left: var(--size-spacing-large);
-}

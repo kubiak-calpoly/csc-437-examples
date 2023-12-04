@@ -1,6 +1,6 @@
 .itinerary {
   display: grid;
-  grid-template-columns: [start] auto [header] 2fr [info] 1fr [end];
+  grid-template-columns: [start] auto [header] 4fr [info] 1fr 2fr 1fr 2fr [end];
   gap: var(--size-spacing-medium) var(--size-spacing-large);
   align-items: baseline;
   margin: var(--size-spacing-small);
@@ -19,21 +19,20 @@
 }
 
 .itinerary > details > summary {
-  position: relative; /* for marker positioning */
+  position: relative;
+  padding-left: 2rem;
   list-style: none;
   grid-column: header / end;
 }
 
-.itinerary > details[open] > summary {
-}
-
 .itinerary > details > summary::before {
   content: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg" fill="rgb(42 143 42)"><path d="m624 300h-48v336h-134.88l158.88 317.64 158.88-317.64h-134.88zm-24 546.36-81.121-162.36h162.24z"/></svg>');
+  display: inline-block;
   position: absolute;
   height: 2rem;
   width: 2rem;
   bottom: 0;
-  right: 0;
+  left: 0;
   color: var(--color-accent);
   transform: rotate(0);
   transition: transform 0.5s;
@@ -47,21 +46,32 @@
   border: 2px solid var(--color-accent);
 }
 
-.itinerary > .transportation dl,
-.itinerary > .transportation ol {
-  grid-column: info;
+.itinerary > .transportation .timings {
+  grid-column: info / end;
+  grid-template-columns: subgrid;
 }
 
-.itinerary > .destination img {
-  width: 100%;
-  grid-column: start / info;
+.itinerary > .transportation ol,
+.itinerary > .transportation ol > li {
+  display: contents;
 }
 
-.itinerary > .destination ul {
-  grid-column: info;
+.itinerary > .transportation h4 {
+  grid-column: header;
+  text-align: right;
+}
+
+.itinerary > .destination > * {
+  grid-column: header;
 }
 
 .itinerary > .destination h3 {
   font-style: normal;
   font-weight: bold;
+}
+
+.itinerary > .destination img {
+  width: 100%;
+  grid-column: info / end;
+  grid-row-end: span 2;
 }
