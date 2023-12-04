@@ -1,18 +1,32 @@
 .itinerary {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: [start] auto [header] 2fr [info] 1fr [end];
   gap: var(--size-spacing-medium) var(--size-spacing-large);
   align-items: baseline;
   margin: var(--size-spacing-small);
 }
 
+.itinerary > .dates {
+  color: var(--color-accent);
+  font-family: var(--font-family-display);
+  font-weight: bold;
+  grid-column: start;
+}
+
 .itinerary > details {
   padding: var(--size-spacing-medium);
+  display: contents;
 }
+
 .itinerary > details > summary {
+  position: relative; /* for marker positioning */
   list-style: none;
-  position: relative;
+  grid-column: header / end;
 }
+
+.itinerary > details[open] > summary {
+}
+
 .itinerary > details > summary::before {
   content: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg" fill="rgb(42 143 42)"><path d="m624 300h-48v336h-134.88l158.88 317.64 158.88-317.64h-134.88zm-24 546.36-81.121-162.36h162.24z"/></svg>');
   position: absolute;
@@ -33,6 +47,21 @@
   border: 2px solid var(--color-accent);
 }
 
+.itinerary > .transportation dl,
+.itinerary > .transportation ol {
+  grid-column: info;
+}
+
 .itinerary > .destination img {
   width: 100%;
+  grid-column: start / info;
+}
+
+.itinerary > .destination ul {
+  grid-column: info;
+}
+
+.itinerary > .destination h3 {
+  font-style: normal;
+  font-weight: bold;
 }

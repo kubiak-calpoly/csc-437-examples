@@ -2,8 +2,7 @@
   margin: 0;
 }
 body {
-  font-family: Merriweather, Baskerville, Cambria, "Noto Serif",
-    "Bitstream Charter", serif;
+  font-family: var(--font-family-body);
   background-color: var(--color-background-page);
 }
 header {
@@ -31,8 +30,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: Kanit, "Trebuchet MS", Calibri, Roboto,
-    "Segoe UI", Ubuntu, sans-serif;
+  font-family: var(--font-family-display);
 }
 h1 {
   font-size: 2.5rem;
@@ -76,6 +74,7 @@ svg.icon {
 }
 dt {
   color: var(--color-accent);
+  font-family: var(--font-family-display);
   font-weight: bold;
 }
 dd {
