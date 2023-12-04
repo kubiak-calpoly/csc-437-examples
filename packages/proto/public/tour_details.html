@@ -15,123 +15,9 @@
       href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,200;0,400;0,700;1,700&family=Merriweather:wght@400;700&display=swap"
       rel="stylesheet"
     />
-    <style>
-      :root {
-        --size-spacing-small: 0.25rem;
-        --size-spacing-medium: 0.5rem;
-        --size-spacing-large: 1rem;
-
-        --color-accent: rgb(42 143 42);
-        --color-background-header: var(--color-accent);
-        --color-background-page: rgb(238 237 231);
-        --color-link-inverted: rgb(255 208 0);
-        --color-link: var(--color-accent);
-        --color-text: rgb(51 51 51);
-        --color-text-heading: var(--color-accent);
-        --color-text-inverted: rgb(255 255 255);
-      }
-      * {
-        margin: 0;
-      }
-      body {
-        font-family: Merriweather, Baskerville, Cambria,
-          "Noto Serif", "Bitstream Charter", serif;
-        background-color: var(--color-background-page);
-      }
-      header {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: baseline;
-        justify-content: space-between;
-        padding: var(--size-spacing-medium);
-        background-color: var(--color-background-header);
-        color: var(--color-text-inverted);
-      }
-      header a {
-        color: var(--color-link-inverted);
-      }
-      header svg.outline-map {
-        align-self: end;
-      }
-      section {
-        padding: var(--size-spacing-medium);
-      }
-
-      h1,
-      h2,
-      h3,
-      h4,
-      h5,
-      h6 {
-        font-family: Kanit, "Trebuchet MS", Calibri, Roboto,
-          "Segoe UI", Ubuntu, sans-serif;
-      }
-      h1 {
-        font-size: 2.5rem;
-        font-style: oblique;
-      }
-      h2 {
-        font-size: 2rem;
-      }
-      h3 {
-        font-size: 1.5rem;
-        font-weight: normal;
-        font-style: oblique;
-      }
-      h4 {
-        font-size: 1.25rem;
-      }
-      h5 {
-        font-size: 1rem;
-      }
-      h6 {
-        font-size: 1rem;
-        font-weight: normal;
-        font-style: italic;
-      }
-      details {
-        padding: var(--size-spacing-medium);
-      }
-      details > summary {
-        list-style: none;
-        position: relative;
-      }
-      details > summary::before {
-        content: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg" fill="rgb(42 143 42)"><path d="m624 300h-48v336h-134.88l158.88 317.64 158.88-317.64h-134.88zm-24 546.36-81.121-162.36h162.24z"/></svg>');
-        position: absolute;
-        height: 2rem;
-        width: 2rem;
-        bottom: 0;
-        right: 0;
-        color: var(--color-accent);
-        transform: rotate(0);
-        transition: transform 0.5s;
-      }
-      details[open] > summary::before {
-        transform: rotate(180deg);
-      }
-      h3,
-      a {
-        color: var(--color-accent);
-      }
-      p + * {
-        margin-top: var(--size-spacing-small);
-      }
-      svg.outline-map {
-        fill: var(--color-link-inverted);
-      }
-      svg.icon {
-        display: inline;
-        fill: currentColor;
-        height: 4rem;
-        width: 4rem;
-        vertical-align: middle;
-      }
-      .flight,
-      .rail {
-        border: 2px solid var(--color-accent);
-      }
-    </style>
+    <link rel="stylesheet" href="/styles/tokens.css" />
+    <link rel="stylesheet" href="/styles/page.css" />
+    <link rel="stylesheet" href="/styles/itinerary.css" />
   </head>
   <body>
     <svg width="0" height="0">
@@ -176,7 +62,7 @@
 
     <section>
       <h2>Itinerary</h2>
-      <main>
+      <main class="itinerary">
         <details class="flight">
           <summary>
             <h3>
