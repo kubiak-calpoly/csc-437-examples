@@ -11,4 +11,9 @@
   --color-text: rgb(51 51 51);
   --color-text-heading: var(--color-accent);
   --color-text-inverted: rgb(255 255 255);
+
+  --font-family-display: Kanit, "Trebuchet MS", Calibri, Roboto,
+    "Segoe UI", Ubuntu, sans-serif;
+  --font-family-body: Merriweather, Baskerville, Cambria,
+    "Noto Serif", "Bitstream Charter", serif;
 }
