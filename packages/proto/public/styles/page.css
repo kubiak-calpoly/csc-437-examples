@@ -74,3 +74,10 @@ svg.icon {
   width: 4rem;
   vertical-align: middle;
 }
+dt {
+  color: var(--color-accent);
+  font-weight: bold;
+}
+dd {
+  margin-left: var(--size-spacing-large);
+}

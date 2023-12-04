@@ -1,3 +1,11 @@
+.itinerary {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--size-spacing-medium) var(--size-spacing-large);
+  align-items: baseline;
+  margin: var(--size-spacing-small);
+}
+
 .itinerary > details {
   padding: var(--size-spacing-medium);
 }
@@ -21,7 +29,10 @@
   transform: rotate(180deg);
 }
 
-.itinerary > .flight,
-.itinerary > .rail {
+.itinerary > .transportation {
   border: 2px solid var(--color-accent);
+}
+
+.itinerary > .destination img {
+  width: 100%;
 }
