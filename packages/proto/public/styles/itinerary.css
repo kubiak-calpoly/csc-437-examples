@@ -65,6 +65,10 @@
   grid-column: header;
 }
 
+.itinerary > .destination > ul {
+  align-self: end;
+}
+
 .itinerary > .destination h3 {
   font-style: normal;
   font-weight: bold;
