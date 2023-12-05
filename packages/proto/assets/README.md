@@ -3,6 +3,8 @@
 ## Icons
 
 [Icons by Aidan Cooke](https://thenounproject.com/aidancookedesign/)
+[Icons by Ranah Pixel](https://thenounproject.com/ranahpixel/)
+[Icons by Startup Graphic Design](https://thenounproject.com/ppanggm/)
 
 ## Photography
 
