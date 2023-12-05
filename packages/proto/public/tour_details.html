@@ -19,8 +19,43 @@
     <link rel="stylesheet" href="/styles/page.css" />
     <link rel="stylesheet" href="/styles/itinerary.css" />
     <link rel="stylesheet" href="/styles/timings.css" />
+    <script>
+      class BlzAccommodation extends HTMLElement {
+        constructor() {
+          super();
+          let content = document.getElementById(
+            "blz-accommodation-template"
+          ).content;
+          this.attachShadow({ mode: "open" }).appendChild(
+            content.cloneNode(true)
+          );
+        }
+      }
+
+      customElements.define(
+        "blz-accommodation",
+        BlzAccommodation
+      );
+    </script>
+    <script>
+      class BlzDestination extends HTMLElement {
+        constructor() {
+          super();
+          let content = document.getElementById(
+            "blz-destination-template"
+          ).content;
+          this.attachShadow({ mode: "open" }).appendChild(
+            content.cloneNode(true)
+          );
+        }
+      }
+
+      customElements.define("blz-destination", BlzDestination);
+    </script>
   </head>
+
   <body>
+    <!-- SVG Symbol Definitions -->
     <svg width="0" height="0">
       <defs>
         <symbol id="icon-airplane" viewBox="240 240 720 720">
@@ -45,6 +80,98 @@
         </symbol>
       </defs>
     </svg>
+
+    <!-- HTML Custom Element Templates -->
+    <template id="blz-accommodation-template">
+      <p>
+        Stay at
+        <slot>*** Accommodation Name Goes HERE ***</slot>
+      </p>
+      <style>
+        * {
+          margin: 0;
+        }
+      </style>
+    </template>
+
+    <template id="blz-destination-template">
+      <p class="dates">
+        <slot name="dates">*** Date Range ***</slot>
+      </p>
+      <details>
+        <summary>
+          <h3>
+            <slot name="name">*** Name of Destination ***</slot>
+          </h3>
+          <p><slot name="nights">##</slot> nights</p>
+        </summary>
+        <slot name="featured-image">
+          *** Featured Image ***
+        </slot>
+        <div class="list">
+          <slot>
+            *** Accommodations and Excursions Go HERE ***
+          </slot>
+        </div>
+      </details>
+      <style>
+        * {
+          margin: 0;
+        }
+        :host {
+          display: contents;
+        }
+        .dates {
+          color: var(--color-accent);
+          font-family: var(--font-family-display);
+          font-weight: bold;
+          grid-column: start;
+        }
+        ::slotted(img) {
+          width: 100%;
+          grid-column: info / end;
+          grid-row-end: span 2;
+        }
+        details {
+          padding: var(--size-spacing-medium);
+          display: contents;
+        }
+        summary {
+          position: relative;
+          list-style: none;
+          grid-column: header;
+        }
+        summary::before {
+          content: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg" fill="rgb(42 143 42)"><path d="m624 300h-48v336h-134.88l158.88 317.64 158.88-317.64h-134.88zm-24 546.36-81.121-162.36h162.24z"/></svg>');
+          display: inline-block;
+          position: absolute;
+          height: 2rem;
+          width: 2rem;
+          bottom: 0;
+          left: 0;
+          color: var(--color-accent);
+          transform: rotate(0);
+          transition: transform 0.5s;
+        }
+        h3 {
+          color: var(--color-accent);
+          font-family: var(--font-family-display);
+          font-size: 1.5rem;
+          font-weight: bold;
+        }
+        details[open] > summary::before {
+          transform: rotate(180deg);
+        }
+        .list {
+          display: flex;
+          flex-direction: column;
+          grid-column: header;
+          align-self: end;
+        }
+      </style>
+    </template>
+
+    <!-- PAGE START -->
     <header>
       <h1>Blazing Travels</h1>
       <svg
@@ -121,34 +248,24 @@
           </ol>
         </details>
 
-        <span class="dates">
-          <time datetime="2024-10-14">14 Oct</time>
-          &ndash;
-          <time datetime="2024-10-18">18 Oct</time>
-        </span>
-        <details class="destination">
-          <summary>
-            <h3><a href="place.html">Venice</a></h3>
-            <p>4 nights</p>
-            <p>
-              Stay at
-              <a href="stay.html">Locanda San Barnaba</a>
-            </p>
-          </summary>
+        <blz-destination>
+          <span slot="nights">4</span>
+          <a slot="name" href="place.html">Venice</a>
+          <span slot="dates">14 Oct &ndash; 18 Oct</span>
           <img
+            slot="featured-image"
             src="/images/preview/Canal_Grande_Chiesa_della_Salute_e_Dogana_dal_ponte_dell_Accademia.jpg"
           />
-          <ul>
-            <li>
-              Vaporetto trip to
-              <a href="excursion.html">Murano</a>
-            </li>
-            <li>
-              Walking tour of
-              <a href="excursion.html">Piazza San Marco</a>
-            </li>
-          </ul>
-        </details>
+          <blz-accommodation>
+            <a href="#">Locanda San Barnaba</a>
+          </blz-accommodation>
+          <blz-excursion>
+            <a href="#">Murano</a>
+          </blz-excursion>
+          <blz-excursion type="walking">
+            <a href="#">Piazza San Marco</a>
+          </blz-excursion>
+        </blz-destination>
 
         <span class="dates">
           <time datetime="2024-10-18">18 Oct</time>
@@ -190,12 +307,12 @@
           <summary>
             <h3><a href="place.html">Florence</a></h3>
             <p>3 nights</p>
-            <p>Stay at <a href="#">Hotel Perseo</a></p>
           </summary>
           <img
             src="/images/preview/Firenze_-_Vista_dal_Piazzale_Michelangelo.jpg"
           />
           <ul>
+            <li>Stay at <a href="#">Hotel Perseo</a></li>
             <li>Walking tour of Duomo, Campanile</li>
             <li>Rail excursion to Lucca</li>
             <li>Trip to Fiesole via city bus</li>
@@ -242,12 +359,12 @@
           <summary>
             <h3><a href="place.html">Rome</a></h3>
             <p>4 nights</p>
-            <p>Stay at <a href="#">La Piccola Maison</a></p>
           </summary>
           <img
             src="/images/preview/Colosseum_in_Rome,_Italy_-_April_2007.jpg"
           />
           <ul>
+            <li>Stay at <a href="#">La Piccola Maison</a></li>
             <li>
               Tour of Forum, Colosseum, Palatino Hill via Metro
             </li>
