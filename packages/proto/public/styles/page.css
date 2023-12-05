@@ -1,5 +1,8 @@
-* {
+*,
+*::before,
+*::after {
   margin: 0;
+  box-sizing: border-box;
 }
 body {
   font-family: var(--font-family-body);
@@ -67,10 +70,13 @@ svg.outline-map {
 }
 svg.icon {
   display: inline;
-  fill: currentColor;
   height: 4rem;
   width: 4rem;
-  vertical-align: middle;
+  vertical-align: top;
+  fill: currentColor;
+}
+h3 > svg.icon:first-child {
+  margin-right: var(--size-spacing-small);
 }
 dt {
   color: var(--color-accent);
