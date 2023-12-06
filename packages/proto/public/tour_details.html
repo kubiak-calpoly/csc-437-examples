@@ -19,39 +19,6 @@
     <link rel="stylesheet" href="/styles/page.css" />
     <link rel="stylesheet" href="/styles/itinerary.css" />
     <link rel="stylesheet" href="/styles/timings.css" />
-    <script>
-      class BlzAccommodation extends HTMLElement {
-        constructor() {
-          super();
-          let content = document.getElementById(
-            "blz-accommodation-template"
-          ).content;
-          this.attachShadow({ mode: "open" }).appendChild(
-            content.cloneNode(true)
-          );
-        }
-      }
-
-      customElements.define(
-        "blz-accommodation",
-        BlzAccommodation
-      );
-    </script>
-    <script>
-      class BlzDestination extends HTMLElement {
-        constructor() {
-          super();
-          let content = document.getElementById(
-            "blz-destination-template"
-          ).content;
-          this.attachShadow({ mode: "open" }).appendChild(
-            content.cloneNode(true)
-          );
-        }
-      }
-
-      customElements.define("blz-destination", BlzDestination);
-    </script>
   </head>
 
   <body>
@@ -180,6 +147,103 @@
         }
       </style>
     </template>
+    <script>
+      class BlzAccommodation extends HTMLElement {
+        constructor() {
+          super();
+          let content = document.getElementById(
+            "blz-accommodation-template"
+          ).content;
+          this.attachShadow({ mode: "open" }).appendChild(
+            content.cloneNode(true)
+          );
+        }
+      }
+
+      customElements.define(
+        "blz-accommodation",
+        BlzAccommodation
+      );
+    </script>
+
+    <template id="blz-excursion-template">
+      <p id="message">
+        Visit
+        <slot id="place">*** Place Visited Goes HERE ***</slot>
+      </p>
+      <style>
+        * {
+          margin: 0;
+        }
+      </style>
+    </template>
+    <script>
+      class BlzExcursion extends HTMLElement {
+        constructor() {
+          super();
+          const content = document.getElementById(
+            "blz-excursion-template"
+          ).content;
+          this.attachShadow({ mode: "open" }).appendChild(
+            content.cloneNode(true)
+          );
+        }
+
+        connectedCallback() {
+          const type = this.getAttribute("type");
+
+          if (type) {
+            this._updateMessage(type);
+          }
+        }
+
+        attributeChangedCallback(name, oldValue, newValue) {
+          if (name === "type") {
+            this._updateMessage(newValue);
+          }
+        }
+
+        _updateMessage(type) {
+          let message =
+            this.shadowRoot.getElementById("message");
+          let place = this.shadowRoot.getElementById("place");
+
+          switch (type) {
+            case "bus":
+              message.replaceChildren(
+                "Take a city bus to ",
+                place
+              );
+              break;
+            case "metro":
+              message.replaceChildren(
+                "Travel to ",
+                place,
+                " via Metro"
+              );
+              break;
+            case "train":
+              message.replaceChildren(
+                "Take a rail journey to ",
+                place
+              );
+              break;
+            case "walking":
+              message.replaceChildren(
+                "Tour ",
+                place,
+                " on foot"
+              );
+              break;
+            default:
+              message.replaceChildren("Visit ", place);
+              break;
+          }
+        }
+      }
+
+      customElements.define("blz-excursion", BlzExcursion);
+    </script>
 
     <template id="blz-destination-template">
       <p class="dates">
@@ -267,6 +331,21 @@
         }
       </style>
     </template>
+    <script>
+      class BlzDestination extends HTMLElement {
+        constructor() {
+          super();
+          let content = document.getElementById(
+            "blz-destination-template"
+          ).content;
+          this.attachShadow({ mode: "open" }).appendChild(
+            content.cloneNode(true)
+          );
+        }
+      }
+
+      customElements.define("blz-destination", BlzDestination);
+    </script>
 
     <!-- PAGE START -->
     <header>
@@ -476,7 +555,7 @@
           <blz-accommodation>
             <a href="#">La Piccola Maison</a>
           </blz-accommodation>
-          <blz-excursion>
+          <blz-excursion type="metro">
             <a href="#">Vatican, St Peter’s</a>
           </blz-excursion>
           <blz-excursion type="walking">
