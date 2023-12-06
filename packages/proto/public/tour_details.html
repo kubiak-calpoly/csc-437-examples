@@ -245,6 +245,22 @@
       customElements.define("blz-excursion", BlzExcursion);
     </script>
 
+    <template id="blz-itinerary-item-template">
+      <p class="dates">
+        <slot name="dates">*** Date Range ***</slot>
+      </p>
+      <details>
+        <summary>
+          <h3>
+            <slot name="icon"></slot>
+            <slot name="name">*** Name of Item ***</slot>
+          </h3>
+          <slot name="summary"></slot>
+        </summary>
+        <slot>*** Details here ***</slot>
+      </details>
+    </template>
+
     <template id="blz-destination-template">
       <p class="dates">
         <slot name="dates">*** Date Range ***</slot>
@@ -337,6 +353,37 @@
           super();
           let content = document.getElementById(
             "blz-destination-template"
+          ).content;
+          this.attachShadow({ mode: "open" }).appendChild(
+            content.cloneNode(true)
+          );
+        }
+      }
+
+      customElements.define("blz-destination", BlzDestination);
+    </script>
+
+    <template id="blz-transportation-template">
+      <p class="dates">
+        <slot name="dates">*** Date Range ***</slot>
+      </p>
+      <details>
+        <summary>
+          <h3>
+            <svg class="icon">
+              <use xlink:href="#icon-train" />
+            </svg>
+            <slot name="name">*** Name of Journey ***</slot>
+          </h3>
+        </summary>
+      </details>
+    </template>
+    <script>
+      class BlzDestination extends HTMLElement {
+        constructor() {
+          super();
+          let content = document.getElementById(
+            "blz-transportation-template"
           ).content;
           this.attachShadow({ mode: "open" }).appendChild(
             content.cloneNode(true)
@@ -505,6 +552,32 @@
             <a href="#">Fiesole</a>
           </blz-excursion>
         </blz-destination>
+
+        <blz-transportation type="rail">
+          <time slot="dates" datetime="2024-10-21">21 Oct</time>
+          <span slot="name">Florence &rarr; Rome</span>
+          <blz-segment>
+            <span slot="name">9435 Frecciarossa</span>
+            <blz-endpoint slot="departure">
+              <span slot="place">Firenze S.M.N.</span>
+              <time
+                slot="time"
+                datetime="2024-10-21 15:38:00+0100"
+              >
+                3:38 PM
+              </time>
+            </blz-endpoint>
+            <blz-endpoint slot="arrival">
+              <span slot="place">Roma Termini</span>
+              <time
+                slot="time"
+                datetime="2024-10-21 17:10:00+0100"
+              >
+                5:10 PM
+              </time>
+            </blz-endpoint>
+          </blz-segment>
+        </blz-transportation>
 
         <span class="dates">
           <time datetime="2024-10-21">21 Oct</time>
