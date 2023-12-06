@@ -20,29 +20,11 @@
     <link rel="stylesheet" href="/styles/itinerary.css" />
     <link rel="stylesheet" href="/styles/timings.css" />
   </head>
+
   <body>
+    <!-- SVG Symbol Definitions -->
     <svg width="0" height="0">
       <defs>
-        <symbol id="icon-airplane" viewBox="240 240 720 720">
-          <g>
-            <path d="m540 444h120v24h-120z" />
-            <path
-              d="m792 780c-28.801 0-55.199 10.199-75.961 27.121-8.5195-22.801-30.359-39.121-56.039-39.121-2.7617 0-5.6406 0.23828-8.5195 0.71875-18.121-23.16-45.84-36.719-75.48-36.719-24.602 0-48.238 9.4805-66 26.398-6-1.5586-12-2.3984-18-2.3984-31.801 0-58.801 20.762-68.281 49.441-5.1602-0.83984-10.32-1.4414-15.719-1.4414-3.8398 0-7.6797 0.23828-11.52 0.71875-22.68-30.598-58.199-48.719-96.48-48.719v24c32.762 0 63 16.559 80.762 44.281l4.4414 6.9609 8.0391-1.6797c4.918-1.082 9.8359-1.5625 14.758-1.5625 39.719 0 72 32.281 72 72h24c0-39.121-23.52-72.84-57.238-87.719 8.3984-23.879 35.281-39.359 62.398-28.922l7.6797 3 5.5195-6.1211c13.68-15.477 33.242-24.238 53.641-24.238 24.359 0 46.922 12.238 60.359 32.762l4.9219 7.4414 8.5195-2.5195c3.8398-1.2031 7.0781-1.6836 10.199-1.6836 19.801 0 36 16.199 36 36h0.23828c-15.117 20.039-24.238 45-24.238 72h24c0-52.922 43.078-96 96-96 3.7188 0 7.3203 0.23828 10.801 0.60156l5.2812 0.60156 3.9609-3.6016c24.355-21.602 55.559-33.602 87.957-33.602v-24c-36.48 0-71.762 12.84-99.84 36.359-2.6406-0.23828-5.3984-0.35938-8.1602-0.35938z"
-            />
-            <path
-              d="m696.6 432c-15.961-32.039-47.398-55.199-84.602-59.281v-72.719h-24v72.719c-37.199 4.0781-68.641 27.238-84.602 59.281h-215.4v57.359l88.078 22.078c-9.8398 10.684-16.078 24.844-16.078 40.562 0 33.121 26.879 60 60 60s60-26.879 60-60c0-13.68-4.8008-26.16-12.602-36.238h30.719c14.883 42 54.844 72.238 101.88 72.238 46.922 0 86.879-30.121 101.76-72.121h30.602c-7.6836 10.082-12.363 22.562-12.363 36.121 0 33.121 26.879 60 60 60s60-26.879 60-60c0-15.719-6.2383-29.879-16.078-40.559l88.078-22.082v-57.359zm-276.6 156c-19.801 0-36-16.199-36-36s16.199-36 36-36 36 16.199 36 36-16.199 36-36 36zm-22.559-96-85.441-21.359v-14.641h182.76c-1.8008 7.6797-2.7617 15.719-2.7617 24 0 4.0781 0.23828 8.0391 0.71875 12zm202.56 72c-46.32 0-84-37.68-84-84s37.68-84 84-84 84 37.68 84 84-37.68 84-84 84zm180 24c-19.801 0-36-16.199-36-36s16.199-36 36-36 36 16.199 36 36-16.199 36-36 36zm108-117.36-85.441 21.359h-95.281c0.48047-3.9609 0.71875-7.9219 0.71875-12 0-8.2812-0.96094-16.32-2.7617-24h182.77z"
-            />
-          </g>
-        </symbol>
-        <symbol id="icon-train" viewBox="0 0 1200 1200">
-          <g>
-            <path d="m60 870.6h1080v48h-1080z" />
-            <path d="m943.68 576h98.16v48h-98.16z" />
-            <path
-              d="m330.6 845.4h48v-25.078h50.16v25.078h48v-25.078h246.48v25.078h48v-25.078h50.16v25.078h48v-25.078h172.44v-48h-172.44v-343.56h-244.32v343.56h-442.92v-181.8h294.6v-261.12h565.08v-48h-698.88l-208.8 261.12v277.8h196.44zm342.48-368.64h148.32v295.56h-148.32zm-306.96-147.36h62.641v213.12h-233.16z"
-            />
-          </g>
-        </symbol>
         <symbol id="icon-venice" viewBox="0 0 1200 1200">
           <g>
             <path
@@ -132,6 +114,315 @@
         </symbol>
       </defs>
     </svg>
+
+    <!-- HTML Custom Element Templates -->
+    <template id="blz-accommodation-template">
+      <p>
+        Stay at
+        <slot>*** Accommodation Name Goes HERE ***</slot>
+      </p>
+      <style>
+        * {
+          margin: 0;
+        }
+      </style>
+    </template>
+    <script>
+      class BlzAccommodation extends HTMLElement {
+        constructor() {
+          super();
+          let content = document.getElementById(
+            "blz-accommodation-template"
+          ).content;
+          this.attachShadow({ mode: "open" }).appendChild(
+            content.cloneNode(true)
+          );
+        }
+      }
+
+      customElements.define(
+        "blz-accommodation",
+        BlzAccommodation
+      );
+    </script>
+
+    <template id="blz-excursion-template">
+      <p id="message">
+        Visit
+        <slot id="place">*** Place Visited Goes HERE ***</slot>
+      </p>
+      <style>
+        * {
+          margin: 0;
+        }
+      </style>
+    </template>
+    <script>
+      class BlzExcursion extends HTMLElement {
+        constructor() {
+          super();
+          const content = document.getElementById(
+            "blz-excursion-template"
+          ).content;
+          this.attachShadow({ mode: "open" }).appendChild(
+            content.cloneNode(true)
+          );
+        }
+
+        connectedCallback() {
+          const type = this.getAttribute("type");
+
+          if (type) {
+            this._updateMessage(type);
+          }
+        }
+
+        attributeChangedCallback(name, oldValue, newValue) {
+          if (name === "type") {
+            this._updateMessage(newValue);
+          }
+        }
+
+        _updateMessage(type) {
+          let message =
+            this.shadowRoot.getElementById("message");
+          let place = this.shadowRoot.getElementById("place");
+
+          switch (type) {
+            case "bus":
+              message.replaceChildren(
+                "Take a city bus to ",
+                place
+              );
+              break;
+            case "metro":
+              message.replaceChildren(
+                "Travel to ",
+                place,
+                " via Metro"
+              );
+              break;
+            case "train":
+              message.replaceChildren(
+                "Take a rail journey to ",
+                place
+              );
+              break;
+            case "walking":
+              message.replaceChildren(
+                "Tour ",
+                place,
+                " on foot"
+              );
+              break;
+            default:
+              message.replaceChildren("Visit ", place);
+              break;
+          }
+        }
+      }
+
+      customElements.define("blz-excursion", BlzExcursion);
+    </script>
+
+    <template id="blz-itinerary-item-template">
+      <p class="dates">
+        <slot name="dates">*** Date Range ***</slot>
+      </p>
+      <details>
+        <summary>
+          <h3>
+            <slot name="icon"></slot>
+            <slot name="name">*** Name of Item ***</slot>
+          </h3>
+          <slot name="summary"></slot>
+        </summary>
+        <slot>*** Details here ***</slot>
+      </details>
+      <style>
+        * {
+          margin: 0;
+        }
+        :host {
+          display: contents;
+        }
+        .dates {
+          color: var(--color-accent);
+          font-family: var(--font-family-display);
+          font-weight: bold;
+          grid-column: start;
+        }
+
+        details {
+          padding: var(--size-spacing-medium);
+          display: contents;
+        }
+        summary {
+          position: relative;
+          list-style: none;
+          grid-column: var(
+            --blz-summary-grid-column,
+            header / end
+          );
+          padding-bottom: var(--size-spacing-large);
+          padding-left: calc(
+            var(--size-icon-large) + var(--size-spacing-medium)
+          );
+          min-height: calc(
+            var(--size-icon-large) + var(--size-spacing-large)
+          );
+        }
+        h3 {
+          color: var(--color-accent);
+          font-family: var(--font-family-display);
+          font-size: 1.5rem;
+          font-weight: bold;
+        }
+        summary::after {
+          content: url('data:image/svg+xml;utf8,<svg width="64" height="16" viewBox="0 0 64 16" fill="rgb(42 143 43)" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M23.7539 3L31.5 10L39.2461 3H64V13H0V3H23.7539Z"/></svg>');
+          display: block;
+          position: absolute;
+          top: var(--size-icon-large);
+          left: 0;
+          height: var(--size-spacing-large);
+          width: var(--size-icon-large);
+        }
+        details[open] > summary::after {
+          content: url('data:image/svg+xml;utf8,<svg width="64" height="16" viewBox="0 0 64 16" fill="rgb(42 143 43)" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M32 5.67712L24.699 12H1V4H63V12H39.301L32 5.67712ZM38.9282 13H64V3H0V13H25.0718L32 7L38.9282 13Z"/></svg>');
+        }
+        ::slotted([slot="icon"]) {
+          position: absolute;
+          top: 0;
+          left: 0;
+        }
+      </style>
+    </template>
+    <script>
+      class BlzItineraryItem extends HTMLElement {
+        constructor() {
+          super();
+          let content = document.getElementById(
+            "blz-itinerary-item-template"
+          ).content;
+          this.attachShadow({ mode: "open" }).appendChild(
+            content.cloneNode(true)
+          );
+        }
+      }
+
+      customElements.define(
+        "blz-itinerary-item",
+        BlzItineraryItem
+      );
+    </script>
+
+    <template id="blz-destination-template">
+      <blz-itinerary-item>
+        <slot slot="dates" name="dates"
+          >*** Date Range ***</slot
+        >
+        <slot slot="icon" name="icon"></slot>
+        <slot slot="name" name="name"
+          >*** Name of Destination ***</slot
+        >
+        <slot name="featured-image">
+          *** Featured Image ***
+        </slot>
+        <div class="list">
+          <slot>
+            *** Accommodations and Excursions Go HERE ***
+          </slot>
+        </div>
+      </blz-itinerary-item>
+      <style>
+        * {
+          margin: 0;
+        }
+        :host {
+          display: contents;
+        }
+        :root {
+          --blz-summary-grid-column: header;
+        }
+        ::slotted(img) {
+          width: 100%;
+          grid-column: info / end;
+          grid-row-end: span 2;
+        }
+        .list {
+          display: flex;
+          flex-direction: column;
+          grid-column: header;
+          align-self: end;
+        }
+      </style>
+    </template>
+    <script>
+      class BlzDestination extends HTMLElement {
+        constructor() {
+          super();
+          let content = document.getElementById(
+            "blz-destination-template"
+          ).content;
+          this.attachShadow({ mode: "open" }).appendChild(
+            content.cloneNode(true)
+          );
+        }
+      }
+
+      customElements.define("blz-destination", BlzDestination);
+    </script>
+
+    <template id="blz-transportation-template">
+      <blz-itinerary-item>
+        <slot slot="dates" name="dates">
+          *** Date Range ***
+        </slot>
+        <svg slot="icon" class="icon">
+          <use
+            xlink:href="/icons/transportation.svg#icon-train"
+          />
+        </svg>
+        <slot slot="name" name="name">
+          *** Name of Journey ***
+        </slot>
+      </blz-itinerary-item>
+      <style>
+        * {
+          margin: 0;
+        }
+        :host {
+          display: contents;
+        }
+        svg.icon {
+          display: inline;
+          height: 4rem;
+          width: 4rem;
+          vertical-align: top;
+          fill: currentColor;
+        }
+      </style>
+    </template>
+    <script>
+      class BlzTransportation extends HTMLElement {
+        constructor() {
+          super();
+          let content = document.getElementById(
+            "blz-transportation-template"
+          ).content;
+          this.attachShadow({ mode: "open" }).appendChild(
+            content.cloneNode(true)
+          );
+        }
+      }
+
+      customElements.define(
+        "blz-transportation",
+        BlzTransportation
+      );
+    </script>
+
+    <!-- PAGE START -->
     <header>
       <h1>Blazing Travels</h1>
       <svg
@@ -161,7 +452,9 @@
           <summary>
             <h3>
               <svg class="icon">
-                <use xlink:href="#icon-airplane" />
+                <use
+                  xlink:href="/icons/transportation.svg/#icon-airplane"
+                />
               </svg>
               SFO &rarr; FRA &rarr; VCE
             </h3>
@@ -208,40 +501,27 @@
           </ol>
         </details>
 
-        <span class="dates">
-          <time datetime="2024-10-14">14 Oct</time>
-          &ndash;
-          <time datetime="2024-10-18">18 Oct</time>
-        </span>
-        <details class="destination">
-          <summary>
-            <h3>
-              <svg class="icon">
-                <use xlink:href="#icon-venice" />
-              </svg>
-              <a href="place.html">Venice</a>
-            </h3>
-            <p>4 nights</p>
-          </summary>
+        <blz-destination>
+          <span slot="dates">14 Oct &ndash; 18 Oct</span>
+          <span slot="nights">4</span>
+          <a slot="name" href="place.html">Venice</a>
+          <svg slot="icon" class="icon">
+            <use xlink:href="/icons/italy.svg#icon-venice" />
+          </svg>
           <img
-            class="featured"
+            slot="featured-image"
             src="/images/preview/Canal_Grande_Chiesa_della_Salute_e_Dogana_dal_ponte_dell_Accademia.jpg"
           />
-          <ul>
-            <li>
-              Stay at
-              <a href="stay.html">Locanda San Barnaba</a>
-            </li>
-            <li>
-              Vaporetto trip to
-              <a href="excursion.html">Murano</a>
-            </li>
-            <li>
-              Walking tour of
-              <a href="excursion.html">Piazza San Marco</a>
-            </li>
-          </ul>
-        </details>
+          <blz-accommodation>
+            <a href="#">Locanda San Barnaba</a>
+          </blz-accommodation>
+          <blz-excursion>
+            <a href="#">Murano</a>
+          </blz-excursion>
+          <blz-excursion type="walking">
+            <a href="#">Piazza San Marco</a>
+          </blz-excursion>
+        </blz-destination>
 
         <span class="dates">
           <time datetime="2024-10-18">18 Oct</time>
@@ -250,7 +530,9 @@
           <summary>
             <h3>
               <svg class="icon">
-                <use xlink:href="#icon-train" />
+                <use
+                  xlink:href="/icons/transportation.svg#icon-train"
+                />
               </svg>
               Venice &rarr; Florence
             </h3>
@@ -274,32 +556,60 @@
           </dl>
         </details>
 
-        <span class="dates">
-          <time datetime="2024-10-18">18 Oct</time>
-          &ndash;
-          <time datetime="2024-10-21">21 Oct</time>
-        </span>
-        <details class="destination">
-          <summary>
-            <h3>
-              <svg class="icon">
-                <use xlink:href="#icon-florence" />
-              </svg>
-              <a href="place.html">Florence</a>
-            </h3>
-            <p>3 nights</p>
-          </summary>
+        <blz-destination>
+          <span slot="dates">
+            <time datetime="2024-10-18">18 Oct</time>
+            &ndash;
+            <time datetime="2024-10-21">21 Oct</time>
+          </span>
+          <span slot="nights">3</span>
+          <a slot="name" href="place.html">Florence</a>
+          <svg slot="icon" class="icon">
+            <use xlink:href="/icons/italy.svg#icon-florence" />
+          </svg>
           <img
-            class="featured"
+            slot="featured-image"
             src="/images/preview/Firenze_-_Vista_dal_Piazzale_Michelangelo.jpg"
           />
-          <ul>
-            <li>Stay at <a href="#">Hotel Perseo</a></li>
-            <li>Walking tour of Duomo, Campanile</li>
-            <li>Rail excursion to Lucca</li>
-            <li>Trip to Fiesole via city bus</li>
-          </ul>
-        </details>
+          <blz-accommodation>
+            <a href="#">Hotel Perseo</a>
+          </blz-accommodation>
+          <blz-excursion type="train">
+            <a href="#">Lucca</a>
+          </blz-excursion>
+          <blz-excursion type="walking">
+            <a href="#">Duomo, Campanile</a>
+          </blz-excursion>
+          <blz-excursion type="bus">
+            <a href="#">Fiesole</a>
+          </blz-excursion>
+        </blz-destination>
+
+        <blz-transportation type="rail">
+          <time slot="dates" datetime="2024-10-21">21 Oct</time>
+          <span slot="name">Florence &rarr; Rome</span>
+          <blz-segment>
+            <span slot="name">9435 Frecciarossa</span>
+            <blz-endpoint slot="departure">
+              <span slot="place">Firenze S.M.N.</span>
+              <time
+                slot="time"
+                datetime="2024-10-21 15:38:00+0100"
+              >
+                3:38 PM
+              </time>
+            </blz-endpoint>
+            <blz-endpoint slot="arrival">
+              <span slot="place">Roma Termini</span>
+              <time
+                slot="time"
+                datetime="2024-10-21 17:10:00+0100"
+              >
+                5:10 PM
+              </time>
+            </blz-endpoint>
+          </blz-segment>
+        </blz-transportation>
 
         <span class="dates">
           <time datetime="2024-10-21">21 Oct</time>
@@ -308,7 +618,9 @@
           <summary>
             <h3>
               <svg class="icon">
-                <use xlink:href="#icon-train" />
+                <use
+                  xlink:href="/icons/transportation.svg#icon-train"
+                />
               </svg>
               Florence &rarr; Rome
             </h3>
@@ -332,33 +644,31 @@
           </dl>
         </details>
 
-        <span class="dates">
-          <time datetime="2024-10-21">21 Oct</time>
-          &ndash;
-          <time datetime="2024-10-25">25 Oct</time>
-        </span>
-        <details class="destination">
-          <summary>
-            <h3>
-              <svg class="icon">
-                <use xlink:href="#icon-rome" />
-              </svg>
-              <a href="place.html">Rome</a>
-            </h3>
-            <p>4 nights</p>
-          </summary>
+        <blz-destination>
+          <span slot="dates">
+            <time datetime="2024-10-21">21 Oct</time>
+            &ndash;
+            <time datetime="2024-10-25">25 Oct</time>
+          </span>
+          <span slot="nights">4</span>
+          <a slot="name" href="place.html">Rome</a>
+          <svg slot="icon" class="icon">
+            <use xlink:href="/icons/italy.svg#icon-rome" />
+          </svg>
           <img
-            class="featured"
+            slot="featured-image"
             src="/images/preview/Colosseum_in_Rome,_Italy_-_April_2007.jpg"
           />
-          <ul>
-            <li>Stay at <a href="#">La Piccola Maison</a></li>
-            <li>
-              Tour of Forum, Colosseum, Palatino Hill via Metro
-            </li>
-            <li>Tour of Vatican, St Peter’s via Metro</li>
-          </ul>
-        </details>
+          <blz-accommodation>
+            <a href="#">La Piccola Maison</a>
+          </blz-accommodation>
+          <blz-excursion type="metro">
+            <a href="#">Vatican, St Peter’s</a>
+          </blz-excursion>
+          <blz-excursion type="walking">
+            <a href="#">Forum, Colosseum, Palatino Hill</a>
+          </blz-excursion>
+        </blz-destination>
 
         <span class="dates">
           <time datetime="2024-10-25">25 Oct</time>
