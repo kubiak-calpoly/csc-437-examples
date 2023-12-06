@@ -346,9 +346,9 @@
         </details>
 
         <blz-destination>
+          <span slot="dates">14 Oct &ndash; 18 Oct</span>
           <span slot="nights">4</span>
           <a slot="name" href="place.html">Venice</a>
-          <span slot="dates">14 Oct &ndash; 18 Oct</span>
           <svg slot="icon" class="icon">
             <use xlink:href="#icon-venice" />
           </svg>
@@ -398,32 +398,34 @@
           </dl>
         </details>
 
-        <span class="dates">
-          <time datetime="2024-10-18">18 Oct</time>
-          &ndash;
-          <time datetime="2024-10-21">21 Oct</time>
-        </span>
-        <details class="destination">
-          <summary>
-            <h3>
-              <svg class="icon">
-                <use xlink:href="#icon-florence" />
-              </svg>
-              <a href="place.html">Florence</a>
-            </h3>
-            <p>3 nights</p>
-          </summary>
+        <blz-destination>
+          <span slot="dates">
+            <time datetime="2024-10-18">18 Oct</time>
+            &ndash;
+            <time datetime="2024-10-21">21 Oct</time>
+          </span>
+          <span slot="nights">3</span>
+          <a slot="name" href="place.html">Florence</a>
+          <svg slot="icon" class="icon">
+            <use xlink:href="#icon-florence" />
+          </svg>
           <img
-            class="featured"
+            slot="featured-image"
             src="/images/preview/Firenze_-_Vista_dal_Piazzale_Michelangelo.jpg"
           />
-          <ul>
-            <li>Stay at <a href="#">Hotel Perseo</a></li>
-            <li>Walking tour of Duomo, Campanile</li>
-            <li>Rail excursion to Lucca</li>
-            <li>Trip to Fiesole via city bus</li>
-          </ul>
-        </details>
+          <blz-accommodation>
+            <a href="#">Hotel Perseo</a>
+          </blz-accommodation>
+          <blz-excursion type="train">
+            <a href="#">Lucca</a>
+          </blz-excursion>
+          <blz-excursion type="walking">
+            <a href="#">Duomo, Campanile</a>
+          </blz-excursion>
+          <blz-excursion type="bus">
+            <a href="#">Fiesole</a>
+          </blz-excursion>
+        </blz-destination>
 
         <span class="dates">
           <time datetime="2024-10-21">21 Oct</time>
@@ -456,33 +458,31 @@
           </dl>
         </details>
 
-        <span class="dates">
-          <time datetime="2024-10-21">21 Oct</time>
-          &ndash;
-          <time datetime="2024-10-25">25 Oct</time>
-        </span>
-        <details class="destination">
-          <summary>
-            <h3>
-              <svg class="icon">
-                <use xlink:href="#icon-rome" />
-              </svg>
-              <a href="place.html">Rome</a>
-            </h3>
-            <p>4 nights</p>
-          </summary>
+        <blz-destination>
+          <span slot="dates">
+            <time datetime="2024-10-21">21 Oct</time>
+            &ndash;
+            <time datetime="2024-10-25">25 Oct</time>
+          </span>
+          <span slot="nights">4</span>
+          <a slot="name" href="place.html">Rome</a>
+          <svg slot="icon" class="icon">
+            <use xlink:href="#icon-rome" />
+          </svg>
           <img
-            class="featured"
+            slot="featured-image"
             src="/images/preview/Colosseum_in_Rome,_Italy_-_April_2007.jpg"
           />
-          <ul>
-            <li>Stay at <a href="#">La Piccola Maison</a></li>
-            <li>
-              Tour of Forum, Colosseum, Palatino Hill via Metro
-            </li>
-            <li>Tour of Vatican, St Peter’s via Metro</li>
-          </ul>
-        </details>
+          <blz-accommodation>
+            <a href="#">La Piccola Maison</a>
+          </blz-accommodation>
+          <blz-excursion>
+            <a href="#">Vatican, St Peter’s</a>
+          </blz-excursion>
+          <blz-excursion type="walking">
+            <a href="#">Forum, Colosseum, Palatino Hill</a>
+          </blz-excursion>
+        </blz-destination>
 
         <span class="dates">
           <time datetime="2024-10-25">25 Oct</time>
