@@ -2,9 +2,8 @@
 
 ## Icons
 
-[Icons by Aidan Cooke](https://thenounproject.com/aidancookedesign/)
-[Icons by Ranah Pixel](https://thenounproject.com/ranahpixel/)
-[Icons by Startup Graphic Design](https://thenounproject.com/ppanggm/)
+[Transportation icons by Aidan Cooke](https://thenounproject.com/aidancookedesign/)
+[Italy icons by Startup Graphic Design](https://thenounproject.com/ppanggm/)
 
 ## Photography
 

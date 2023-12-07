@@ -76,6 +76,8 @@
 }
 
 .itinerary > .destination > ul {
+  list-style: none;
+  padding: 0;
   align-self: end;
 }
 
@@ -88,4 +90,7 @@
   width: 100%;
   grid-column: info / end;
   grid-row-end: span 2;
+}
+
+.itinerary > blz-destination {
 }
