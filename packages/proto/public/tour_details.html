@@ -95,7 +95,7 @@
             this.shadowRoot.getElementById("message");
           const place = this.shadowRoot.getElementById("place");
           const setMessage = (...children) =>
-            message.replaceChildren(children);
+            message.replaceChildren(...children);
 
           switch (type) {
             case "bus":
