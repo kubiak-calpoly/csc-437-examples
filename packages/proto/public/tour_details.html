@@ -184,39 +184,27 @@
         }
 
         _updateMessage(type) {
-          let message =
+          const message =
             this.shadowRoot.getElementById("message");
-          let place = this.shadowRoot.getElementById("place");
+          const place = this.shadowRoot.getElementById("place");
+          const setMessage = (...children) =>
+            message.replaceChildren(children);
 
           switch (type) {
             case "bus":
-              message.replaceChildren(
-                "Take a city bus to ",
-                place
-              );
+              setMessage("Take a city bus to ", place);
               break;
             case "metro":
-              message.replaceChildren(
-                "Travel to ",
-                place,
-                " via Metro"
-              );
+              setMessage("Travel to ", place, " via Metro");
               break;
             case "train":
-              message.replaceChildren(
-                "Take a rail journey to ",
-                place
-              );
+              setMessage("Take a rail journey to ", place);
               break;
             case "walking":
-              message.replaceChildren(
-                "Tour ",
-                place,
-                " on foot"
-              );
+              setMessage("Tour ", place, " on foot");
               break;
             default:
-              message.replaceChildren("Visit ", place);
+              setMessage("Visit ", place);
               break;
           }
         }
@@ -242,6 +230,7 @@
       <style>
         * {
           margin: 0;
+          box-sizing: border-box;
         }
         :host {
           display: contents;
@@ -337,6 +326,7 @@
       <style>
         * {
           margin: 0;
+          box-sizing: border-box;
         }
         :host {
           display: contents;
@@ -373,6 +363,138 @@
       customElements.define("blz-destination", BlzDestination);
     </script>
 
+    <template id="blz-segment-template">
+      <h4>
+        <slot name="name"> *** Name of Segment *** </slot>
+      </h4>
+      <dl class="timings">
+        <slot></slot>
+      </dl>
+      <style>
+        * {
+          margin: 0;
+          box-sizing: border-box;
+        }
+        :host {
+          display: contents;
+        }
+        :root {
+        }
+        h4 {
+          grid-column: header;
+          text-align: right;
+          font-size: 1.25rem;
+          font-family: var(--font-family-display);
+        }
+        .timings {
+          display: grid;
+          grid-column: info / end;
+          grid-template-columns: 1fr 2fr 1fr 2fr;
+          grid-template-columns: subgrid
+          grid-auto-flow: column dense;
+          align-items: baseline;
+          gap: var(--size-spacing-small)
+            var(--size-spacing-large);
+        }
+      </style>
+    </template>
+
+    <script>
+      class BlzSegment extends HTMLElement {
+        constructor() {
+          super();
+          let content = document.getElementById(
+            "blz-segment-template"
+          ).content;
+          this.attachShadow({ mode: "open" }).appendChild(
+            content.cloneNode(true)
+          );
+        }
+      }
+
+      customElements.define("blz-segment", BlzSegment);
+    </script>
+
+    <template id="blz-endpoint-template">
+      <dt id="endtype">*** Depart / Arrive ***</dt>
+      <dd><slot> *** City / Airport / Station *** </slot></dd>
+      <dd><slot name="time"> *** Time *** </slot></dd>
+      <style>
+        * {
+          margin: 0;
+          box-sizing: border-box;
+        }
+        :host {
+          display: contents;
+        }
+        dt {
+          /* Depart / Arrive */
+          grid-row: 2;
+          color: inherit;
+          font-family: var(--font-family-display);
+          font-weight: bold;
+        }
+        dt + dd {
+          /* City / Airport / Station */
+          grid-column-end: span 2;
+          font-family: var(--font-family-display);
+          font-weight: bold;
+        }
+        dt + dd + dd {
+          /* Time */
+          grid-row: 2;
+          white-space: nowrap;
+        }
+      </style>
+    </template>
+
+    <script>
+      class BlzEndpoint extends HTMLElement {
+        constructor() {
+          super();
+          let content = document.getElementById(
+            "blz-endpoint-template"
+          ).content;
+          this.attachShadow({ mode: "open" }).appendChild(
+            content.cloneNode(true)
+          );
+        }
+
+        connectedCallback() {
+          const type = this.getAttribute("type");
+
+          if (type) {
+            this._updateType(type);
+          }
+        }
+
+        attributeChangedCallback(name, oldValue, newValue) {
+          if (name === "type") {
+            this._updateType(newValue);
+          }
+        }
+
+        _updateType(type) {
+          const endtype =
+            this.shadowRoot.getElementById("endtype");
+          const setLabel = (s) => endtype.replaceChildren(s);
+
+          switch (type) {
+            case "arrive":
+              setLabel("Arrive");
+              break;
+            case "depart":
+              setLabel("Depart");
+              break;
+            default:
+              setLabel("At");
+          }
+        }
+      }
+
+      customElements.define("blz-endpoint", BlzEndpoint);
+    </script>
+
     <template id="blz-transportation-template">
       <blz-itinerary-item>
         <slot slot="dates" name="dates">
@@ -380,12 +502,14 @@
         </slot>
         <svg slot="icon" class="icon">
           <use
+            id="use-icon"
             xlink:href="/icons/transportation.svg#icon-train"
           />
         </svg>
         <slot slot="name" name="name">
           *** Name of Journey ***
         </slot>
+        <slot></slot>
       </blz-itinerary-item>
       <style>
         * {
@@ -413,6 +537,43 @@
           this.attachShadow({ mode: "open" }).appendChild(
             content.cloneNode(true)
           );
+        }
+
+        connectedCallback() {
+          const type = this.getAttribute("type");
+
+          if (type) {
+            this._updateType(type);
+          }
+        }
+
+        attributeChangedCallback(name, oldValue, newValue) {
+          if (name === "type") {
+            this._updateType(newValue);
+          }
+        }
+
+        _updateType(type) {
+          const useIcon =
+            this.shadowRoot.getElementById("use-icon");
+
+          const setIcon = (id) =>
+            useIcon.setAttribute(
+              "xlink:href",
+              `/icons/transportation.svg#${id}`
+            );
+
+          switch (type) {
+            case "air":
+              setIcon("icon-airplane");
+              break;
+            case "rail":
+              setIcon("icon-train");
+              break;
+            default:
+              setIcon("icon-default");
+              break;
+          }
         }
       }
 
@@ -442,64 +603,56 @@
     <section>
       <h2>Itinerary</h2>
       <main class="itinerary">
-        <span class="dates">
-          <time datetime="2024-10-13">13 Oct</time>
-          &ndash;
-          <time datetime="2024-10-14">14 Oct</time>
-        </span>
-
-        <details class="transportation">
-          <summary>
-            <h3>
-              <svg class="icon">
-                <use
-                  xlink:href="/icons/transportation.svg/#icon-airplane"
-                />
-              </svg>
-              SFO &rarr; FRA &rarr; VCE
-            </h3>
-          </summary>
-          <ol>
-            <li>
-              <h4>United UA926</h4>
-              <dl class="timings">
-                <dt>Depart</dt>
-                <dd>San Francisco (SFO)</dd>
-                <dd>
-                  <time datetime="2024-10-13 19:05:00-0800"
-                    >7:05 PM</time
-                  >
-                </dd>
-                <dt>Arrive</dt>
-                <dd>Frankfurt (FRA)</dd>
-                <dd>
-                  <time datetime="2024-10-14 14:55:00+0100"
-                    >2:55 PM<sub>+1 day</sub></time
-                  >
-                </dd>
-              </dl>
-            </li>
-            <li>
-              <h4>Lufthansa LH330</h4>
-              <dl class="timings">
-                <dt>Depart</dt>
-                <dd>Frankfurt (FRA)</dd>
-                <dd>
-                  <time datetime="2024-10-14 17:15:00+0100"
-                    >5:15 PM</time
-                  >
-                </dd>
-                <dt>Arrive</dt>
-                <dd>Venice (VCE)</dd>
-                <dd>
-                  <time datetime="2024-10-14 18:30:00+0100"
-                    >6:30 PM</time
-                  >
-                </dd>
-              </dl>
-            </li>
-          </ol>
-        </details>
+        <blz-transportation type="air">
+          <span slot="dates">
+            <time datetime="2024-10-13">13 Oct</time>
+            &ndash;
+            <time datetime="2024-10-14">14 Oct</time>
+          </span>
+          <span slot="name">SFO &rarr; FRA &rarr; VCE</span>
+          <blz-segment>
+            <span slot="name">United UA926</span>
+            <blz-endpoint type="depart">
+              San Francisco (SFO)
+              <time
+                slot="time"
+                datetime="2024-10-13 19:05:00-0800"
+              >
+                7:05 PM
+              </time>
+            </blz-endpoint>
+            <blz-endpoint type="arrive">
+              Frankfurt (FRA)
+              <time
+                slot="time"
+                datetime="2024-10-14 14:55:00+0100"
+              >
+                2:55 PM<sub>+1 day</sub>
+              </time>
+            </blz-endpoint>
+          </blz-segment>
+          <blz-segment>
+            <span slot="name">Lufthansa LH330</span>
+            <blz-endpoint type="depart">
+              Frankfurt (FRA)
+              <time
+                slot="time"
+                datetime="2024-10-14 17:15:00+0100"
+              >
+                5:15 PM
+              </time>
+            </blz-endpoint>
+            <blz-endpoint type="arrive">
+              Venice (VCE)
+              <time
+                slot="time"
+                datetime="2024-10-14 18:30:00+0100"
+              >
+                6:30 PM
+              </time>
+            </blz-endpoint>
+          </blz-segment>
+        </blz-transportation>
 
         <blz-destination>
           <span slot="dates">14 Oct &ndash; 18 Oct</span>
@@ -523,38 +676,31 @@
           </blz-excursion>
         </blz-destination>
 
-        <span class="dates">
-          <time datetime="2024-10-18">18 Oct</time>
-        </span>
-        <details class="transportation">
-          <summary>
-            <h3>
-              <svg class="icon">
-                <use
-                  xlink:href="/icons/transportation.svg#icon-train"
-                />
-              </svg>
-              Venice &rarr; Florence
-            </h3>
-          </summary>
-          <h4>9407 Frecciarossa</h4>
-          <dl class="timings">
-            <dt>Depart</dt>
-            <dd>Venezia S. Lucia</dd>
-            <dd>
-              <time datetime="2024-10-18 09:25:00+0100"
-                >9:25 AM</time
+        <blz-transportation type="rail">
+          <time slot="dates" datetime="2024-10-21">21 Oct</time>
+          <span slot="name">Venice &rarr; Florence</span>
+          <blz-segment>
+            <span slot="name">9407 Frecciarossa</span>
+            <blz-endpoint type="depart">
+              Venezia S. Lucia
+              <time
+                slot="time"
+                datetime="2024-10-18 09:25:00+0100"
               >
-            </dd>
-            <dt>Arrive</dt>
-            <dd>Firenze S.M.N.</dd>
-            <dd>
-              <time datetime="2024-10-18 11:30:00+0100"
-                >11:30 AM</time
+                9:25 AM
+              </time>
+            </blz-endpoint>
+            <blz-endpoint type="arrive">
+              Firenze S.M.N.
+              <time
+                slot="time"
+                datetime="2024-10-18 11:30:00+0100"
               >
-            </dd>
-          </dl>
-        </details>
+                11:30 AM
+              </time>
+            </blz-endpoint>
+          </blz-segment>
+        </blz-transportation>
 
         <blz-destination>
           <span slot="dates">
@@ -590,8 +736,8 @@
           <span slot="name">Florence &rarr; Rome</span>
           <blz-segment>
             <span slot="name">9435 Frecciarossa</span>
-            <blz-endpoint slot="departure">
-              <span slot="place">Firenze S.M.N.</span>
+            <blz-endpoint type="depart">
+              Firenze S.M.N.
               <time
                 slot="time"
                 datetime="2024-10-21 15:38:00+0100"
@@ -599,8 +745,8 @@
                 3:38 PM
               </time>
             </blz-endpoint>
-            <blz-endpoint slot="arrival">
-              <span slot="place">Roma Termini</span>
+            <blz-endpoint type="arrive">
+              Roma Termini
               <time
                 slot="time"
                 datetime="2024-10-21 17:10:00+0100"
@@ -610,39 +756,6 @@
             </blz-endpoint>
           </blz-segment>
         </blz-transportation>
-
-        <span class="dates">
-          <time datetime="2024-10-21">21 Oct</time>
-        </span>
-        <details class="transportation">
-          <summary>
-            <h3>
-              <svg class="icon">
-                <use
-                  xlink:href="/icons/transportation.svg#icon-train"
-                />
-              </svg>
-              Florence &rarr; Rome
-            </h3>
-          </summary>
-          <h4>9435 Frecciarossa</h4>
-          <dl class="timings">
-            <dt>Depart</dt>
-            <dd>Firenze S.M.N.</dd>
-            <dd>
-              <time datetime="2024-10-21 15:38:00+0100"
-                >3:38 PM</time
-              >
-            </dd>
-            <dt>Arrive</dt>
-            <dd>Roma Termini</dd>
-            <dd>
-              <time datetime="2024-10-21 17:10:00+0100"
-                >5:10 PM</time
-              >
-            </dd>
-          </dl>
-        </details>
 
         <blz-destination>
           <span slot="dates">
@@ -670,59 +783,52 @@
           </blz-excursion>
         </blz-destination>
 
-        <span class="dates">
-          <time datetime="2024-10-25">25 Oct</time>
-        </span>
-        <details class="transportation">
-          <summary>
-            <h3>
-              <svg class="icon">
-                <use xlink:href="#icon-airplane" />
-              </svg>
-              FCO &rarr; FRA &rarr; SFO
-            </h3>
-          </summary>
-          <ol>
-            <li>
-              <h4>Lufthansa LH233</h4>
-              <dl class="timings">
-                <dt>Depart</dt>
-                <dd>Rome (FCO)</dd>
-                <dd>
-                  <time datetime="2024-10-25 13:25:00+0100"
-                    >1:25 PM</time
-                  >
-                </dd>
-                <dt>Arrive</dt>
-                <dd>Frankfurt (FRA)</dd>
-                <dd>
-                  <time datetime="2024-10-25 15:20:00+0100"
-                    >3:20 PM</time
-                  >
-                </dd>
-              </dl>
-            </li>
-            <li>
-              <h4>United UA927</h4>
-              <dl class="timings">
-                <dt>Depart</dt>
-                <dd>Frankfurt (FRA)</dd>
-                <dd>
-                  <time datetime="2024-10-25 17:25:00+0100"
-                    >5:25 PM</time
-                  >
-                </dd>
-                <dt>Arrive</dt>
-                <dd>San Francisco (SFO)</dd>
-                <dd>
-                  <time datetime="2024-10-25 19:45:00-0800"
-                    >7:45 PM</time
-                  >
-                </dd>
-              </dl>
-            </li>
-          </ol>
-        </details>
+        <blz-transportation type="air">
+          <time slot="dates" datetime="2024-10-25">25 Oct</time>
+          <span slot="name"> FCO &rarr; FRA &rarr; SFO </span>
+          <blz-segment>
+            <span slot="name">Lufthansa LH233</span>
+            <blz-endpoint type="depart">
+              Rome (FCO)
+              <time
+                slot="time"
+                datetime="2024-10-25 13:25:00+0100"
+              >
+                1:25 PM
+              </time>
+            </blz-endpoint>
+            <blz-endpoint type="arrive">
+              Frankfurt (FRA)
+              <time
+                slot="time"
+                datetime="2024-10-25 15:20:00+0100"
+              >
+                3:20 PM
+              </time>
+            </blz-endpoint>
+          </blz-segment>
+          <blz-segment>
+            <span slot="name">United UA927</span>
+            <blz-endpoint type="depart">
+              Frankfurt (FRA)
+              <time
+                slot="time"
+                datetime="2024-10-25 17:25:00+0100"
+              >
+                5:25 PM
+              </time>
+            </blz-endpoint>
+            <blz-endpoint type="arrive">
+              San Francisco (SFO)
+              <time
+                slot="time"
+                datetime="2024-10-25 19:45:00-0800"
+              >
+                7:45 PM
+              </time>
+            </blz-endpoint>
+          </blz-segment>
+        </blz-transportation>
       </main>
     </section>
 
