@@ -128,10 +128,15 @@
               value="2024-10-25" />
           </label>
         </fieldset>
+        <button>Clear Selection</button>
         <script>
           const cal = document.getElementById(
             "calendar-widget"
           );
+          const clear = document.querySelector(
+            "#calendar-widget + button"
+          );
+
           cal.addEventListener("change", (ev) => {
             const date = new Date(ev.target.value);
             console.log("Date Selected:", date.toUTCString());
@@ -144,11 +149,29 @@
                 new Date(start) <= date &&
                 date <= new Date(end);
               el.classList.toggle("is-hidden", !shown);
-              el.querySelector("details").setAttribute(
-                "open",
-                shown
-              );
+              if (shown) {
+                el.querySelector("details").setAttribute(
+                  "open",
+                  "open"
+                );
+              }
             });
+          });
+
+          clear.addEventListener("click", () => {
+            const current = cal.querySelector("input:checked");
+            if (current) {
+              const items =
+                document.querySelector(".itinerary").children;
+
+              Array.from(items).forEach((el) => {
+                el.classList.remove("is-hidden");
+                el.querySelector("details").removeAttribute(
+                  "open"
+                );
+              });
+              current.checked = false;
+            }
           });
         </script>
       </section>

@@ -46,3 +46,8 @@
 .calendar label:has(input:checked) {
   color: var(--color-link-inverted);
 }
+
+.calendar button {
+  display: block;
+  margin: 0 auto;
+}
