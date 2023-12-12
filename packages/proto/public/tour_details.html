@@ -15,20 +15,119 @@
     <link rel="stylesheet" href="/styles/tokens.css" />
     <link rel="stylesheet" href="/styles/page.css" />
     <link rel="stylesheet" href="/styles/itinerary.css" />
+    <link rel="stylesheet" href="/styles/calendar.css" />
+    <link rel="stylesheet" href="/styles/map.css" />
+    <link rel="stylesheet" href="/styles/entourage.css" />
     <link rel="stylesheet" href="/styles/timings.css" />
   </head>
   <body>
     <header>
       <h1>Blazing Travels</h1>
-      <svg class="outline-map">
-        <use xlink:href="/maps/italy.svg#map-italy" />
-      </svg>
       <p>12 days in <a href="place.html">Italy</a></p>
     </header>
 
-    <section>
-      <h2>Itinerary</h2>
-      <main class="itinerary">
+    <main class="page">
+      <section class="calendar">
+        <fieldset>
+          <label>
+            13
+            <input
+              type="radio"
+              name="date"
+              value="2024-10-13" />
+          </label>
+          <label>
+            14
+            <input
+              type="radio"
+              name="date"
+              value="2024-10-14" />
+          </label>
+          <label>
+            15
+            <input
+              type="radio"
+              name="date"
+              value="2024-10-15" />
+          </label>
+          <label>
+            16
+            <input
+              type="radio"
+              name="date"
+              value="2024-10-16" />
+          </label>
+          <label>
+            17
+            <input
+              type="radio"
+              name="date"
+              value="2024-10-17" />
+          </label>
+          <label>
+            18
+            <input
+              type="radio"
+              name="date"
+              value="2024-10-18" />
+          </label>
+          <label>
+            19
+            <input
+              type="radio"
+              name="date"
+              value="2024-10-19" />
+          </label>
+          <label>
+            20
+            <input
+              type="radio"
+              name="date"
+              value="2024-10-20" />
+          </label>
+          <label>
+            21
+            <input
+              type="radio"
+              name="date"
+              value="2024-10-21" />
+          </label>
+          <label>
+            22
+            <input
+              type="radio"
+              name="date"
+              value="2024-10-22" />
+          </label>
+          <label>
+            23
+            <input
+              type="radio"
+              name="date"
+              value="2024-10-23" />
+          </label>
+          <label>
+            24
+            <input
+              type="radio"
+              name="date"
+              value="2024-10-24" />
+          </label>
+          <label>
+            25
+            <input
+              type="radio"
+              name="date"
+              value="2024-10-25" />
+          </label>
+        </fieldset>
+      </section>
+      <section class="map">
+        <svg class="outline-map">
+          <use xlink:href="/maps/italy.svg#map-italy" />
+        </svg>
+      </section>
+      <section class="itinerary">
         <span class="dates">
           <time datetime="2024-10-13">13 Oct</time>
           &ndash;
@@ -109,6 +208,7 @@
             </p>
           </summary>
           <img
+            class="featured"
             src="/images/preview/Canal_Grande_Chiesa_della_Salute_e_Dogana_dal_ponte_dell_Accademia.jpg" />
           <ul>
             <li>
@@ -294,16 +394,15 @@
             </li>
           </ol>
         </details>
-      </main>
-    </section>
-
-    <section>
-      <h2>Entourage</h2>
-      <ul>
-        <li><a href="person.html">Person 1</a></li>
-        <li><a href="person.html">Person 2</a></li>
-        <li><a href="person.html">Person 3</a></li>
-      </ul>
-    </section>
+      </section>
+      <section class="entourage">
+        <h2>Entourage</h2>
+        <ul>
+          <li><a href="person.html">Person 1</a></li>
+          <li><a href="person.html">Person 2</a></li>
+          <li><a href="person.html">Person 3</a></li>
+        </ul>
+      </section>
+    </main>
   </body>
 </html>

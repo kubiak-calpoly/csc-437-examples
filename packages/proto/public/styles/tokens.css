@@ -3,6 +3,7 @@
   --size-spacing-medium: 0.5rem;
   --size-spacing-large: 1rem;
   --size-icon-large: 4rem;
+  --size-width-sidebar: 20rem;
 
   --color-accent: rgb(42 143 42);
   --color-background-header: var(--color-accent);

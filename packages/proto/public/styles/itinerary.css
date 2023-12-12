@@ -1,5 +1,6 @@
 .itinerary {
   display: grid;
+  grid-area: itinerary;
   grid-template-columns: [start] auto [header] 4fr [info] 1fr 2fr 1fr 2fr [end];
   gap: var(--size-spacing-large) var(--size-spacing-medium);
   align-items: baseline;
