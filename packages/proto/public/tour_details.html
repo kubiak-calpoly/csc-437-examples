@@ -15,10 +15,18 @@
     <link rel="stylesheet" href="/styles/tokens.css" />
     <link rel="stylesheet" href="/styles/page.css" />
     <link rel="stylesheet" href="/styles/itinerary.css" />
-    <link rel="stylesheet" href="/styles/calendar.css" />
     <link rel="stylesheet" href="/styles/map.css" />
     <link rel="stylesheet" href="/styles/entourage.css" />
     <link rel="stylesheet" href="/styles/timings.css" />
+    <script type="module">
+      import {
+        CalendarWidget,
+        ItineraryItem
+      } from "/js/itinerary.js";
+
+      customElements.define("calendar-widget", CalendarWidget);
+      customElements.define("itinerary-item", ItineraryItem);
+    </script>
   </head>
   <body>
     <header>
@@ -27,154 +35,10 @@
     </header>
 
     <main class="page">
-      <section class="calendar">
-        <fieldset id="calendar-widget">
-          <h6>Su</h6>
-          <h6>Mo</h6>
-          <h6>Tu</h6>
-          <h6>We</h6>
-          <h6>Th</h6>
-          <h6>Fr</h6>
-          <h6>Sa</h6>
-          <label>
-            13
-            <input
-              type="radio"
-              name="date"
-              value="2024-10-13" />
-          </label>
-          <label>
-            14
-            <input
-              type="radio"
-              name="date"
-              value="2024-10-14" />
-          </label>
-          <label>
-            15
-            <input
-              type="radio"
-              name="date"
-              value="2024-10-15" />
-          </label>
-          <label>
-            16
-            <input
-              type="radio"
-              name="date"
-              value="2024-10-16" />
-          </label>
-          <label>
-            17
-            <input
-              type="radio"
-              name="date"
-              value="2024-10-17" />
-          </label>
-          <label>
-            18
-            <input
-              type="radio"
-              name="date"
-              value="2024-10-18" />
-          </label>
-          <label>
-            19
-            <input
-              type="radio"
-              name="date"
-              value="2024-10-19" />
-          </label>
-          <label>
-            20
-            <input
-              type="radio"
-              name="date"
-              value="2024-10-20" />
-          </label>
-          <label>
-            21
-            <input
-              type="radio"
-              name="date"
-              value="2024-10-21" />
-          </label>
-          <label>
-            22
-            <input
-              type="radio"
-              name="date"
-              value="2024-10-22" />
-          </label>
-          <label>
-            23
-            <input
-              type="radio"
-              name="date"
-              value="2024-10-23" />
-          </label>
-          <label>
-            24
-            <input
-              type="radio"
-              name="date"
-              value="2024-10-24" />
-          </label>
-          <label>
-            25
-            <input
-              type="radio"
-              name="date"
-              value="2024-10-25" />
-          </label>
-        </fieldset>
-        <button>Clear Selection</button>
-        <script>
-          const cal = document.getElementById(
-            "calendar-widget"
-          );
-          const clear = document.querySelector(
-            "#calendar-widget + button"
-          );
-
-          cal.addEventListener("change", (ev) => {
-            const date = new Date(ev.target.value);
-            console.log("Date Selected:", date.toUTCString());
-            const items =
-              document.querySelector(".itinerary").children;
-            Array.from(items).forEach((el) => {
-              const start = el.dataset.startDate;
-              const end = el.dataset.endDate || start;
-              const shown =
-                new Date(start) <= date &&
-                date <= new Date(end);
-              el.classList.toggle("is-hidden", !shown);
-              if (shown) {
-                el.querySelector("details").setAttribute(
-                  "open",
-                  "open"
-                );
-              }
-            });
-          });
-
-          clear.addEventListener("click", () => {
-            const current = cal.querySelector("input:checked");
-            if (current) {
-              const items =
-                document.querySelector(".itinerary").children;
-
-              Array.from(items).forEach((el) => {
-                el.classList.remove("is-hidden");
-                el.querySelector("details").removeAttribute(
-                  "open"
-                );
-              });
-              current.checked = false;
-            }
-          });
-        </script>
-      </section>
+      <calendar-widget
+        start-date="2024-10-13"
+        end-date="2024-10-25">
+      </calendar-widget>
       <section class="map">
         <svg class="outline-map">
           <use xlink:href="/maps/italy.svg#map-italy" />
