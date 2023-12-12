@@ -66,6 +66,8 @@ p + * {
   margin-top: var(--size-spacing-small);
 }
 svg.outline-map {
+  height: 200px;
+  width: 200px;
   fill: var(--color-link-inverted);
 }
 svg.icon {
