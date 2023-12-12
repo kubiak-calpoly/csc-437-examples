@@ -3,3 +3,4 @@ semi: true
 singleQuote: false
 bracketSameLine: true
 htmlWhitespaceSensitivity: strict
+proseWrap: always
