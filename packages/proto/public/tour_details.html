@@ -28,7 +28,7 @@
 
     <main class="page">
       <section class="calendar">
-        <fieldset>
+        <fieldset id="calendar-widget">
           <h6>Su</h6>
           <h6>Mo</h6>
           <h6>Tu</h6>
@@ -128,6 +128,29 @@
               value="2024-10-25" />
           </label>
         </fieldset>
+        <script>
+          const cal = document.getElementById(
+            "calendar-widget"
+          );
+          cal.addEventListener("change", (ev) => {
+            const date = new Date(ev.target.value);
+            console.log("Date Selected:", date.toUTCString());
+            const items =
+              document.querySelector(".itinerary").children;
+            Array.from(items).forEach((el) => {
+              const start = el.dataset.startDate;
+              const end = el.dataset.endDate || start;
+              const shown =
+                new Date(start) <= date &&
+                date <= new Date(end);
+              el.classList.toggle("is-hidden", !shown);
+              el.querySelector("details").setAttribute(
+                "open",
+                shown
+              );
+            });
+          });
+        </script>
       </section>
       <section class="map">
         <svg class="outline-map">
@@ -135,272 +158,306 @@
         </svg>
       </section>
       <section class="itinerary">
-        <span class="dates">
-          <time datetime="2024-10-13">13 Oct</time>
-          &ndash;
-          <time datetime="2024-10-14">14 Oct</time>
-        </span>
+        <div
+          class="itinerary-item"
+          data-start-date="2024-10-13"
+          data-end-date="2024-10-14">
+          <span class="dates">
+            <time datetime="2024-10-13">13 Oct</time>
+            &ndash;
+            <time datetime="2024-10-14">14 Oct</time>
+          </span>
 
-        <details name="itinerary" class="transportation">
-          <summary>
-            <h3>
-              <svg class="icon">
-                <use
-                  xlink:href="/icons/transportation.svg/#icon-airplane" />
-              </svg>
-              SFO &rarr; FRA &rarr; VCE
-            </h3>
-          </summary>
-          <ol>
-            <li>
-              <h4>United UA926</h4>
-              <dl class="timings">
-                <dt>Depart</dt>
-                <dd>San Francisco (SFO)</dd>
-                <dd>
-                  <time datetime="2024-10-13 19:05:00-0800"
-                    >7:05 PM</time
-                  >
-                </dd>
-                <dt>Arrive</dt>
-                <dd>Frankfurt (FRA)</dd>
-                <dd>
-                  <time datetime="2024-10-14 14:55:00+0100"
-                    >2:55 PM<sub>+1 day</sub></time
-                  >
-                </dd>
-              </dl>
-            </li>
-            <li>
-              <h4>Lufthansa LH330</h4>
-              <dl class="timings">
-                <dt>Depart</dt>
-                <dd>Frankfurt (FRA)</dd>
-                <dd>
-                  <time datetime="2024-10-14 17:15:00+0100"
-                    >5:15 PM</time
-                  >
-                </dd>
-                <dt>Arrive</dt>
-                <dd>Venice (VCE)</dd>
-                <dd>
-                  <time datetime="2024-10-14 18:30:00+0100"
-                    >6:30 PM</time
-                  >
-                </dd>
-              </dl>
-            </li>
-          </ol>
-        </details>
+          <details name="itinerary" class="transportation">
+            <summary>
+              <h3>
+                <svg class="icon">
+                  <use
+                    xlink:href="/icons/transportation.svg/#icon-airplane" />
+                </svg>
+                SFO &rarr; FRA &rarr; VCE
+              </h3>
+            </summary>
+            <ol>
+              <li>
+                <h4>United UA926</h4>
+                <dl class="timings">
+                  <dt>Depart</dt>
+                  <dd>San Francisco (SFO)</dd>
+                  <dd>
+                    <time datetime="2024-10-13 19:05:00-0800"
+                      >7:05 PM</time
+                    >
+                  </dd>
+                  <dt>Arrive</dt>
+                  <dd>Frankfurt (FRA)</dd>
+                  <dd>
+                    <time datetime="2024-10-14 14:55:00+0100"
+                      >2:55 PM<sub>+1 day</sub></time
+                    >
+                  </dd>
+                </dl>
+              </li>
+              <li>
+                <h4>Lufthansa LH330</h4>
+                <dl class="timings">
+                  <dt>Depart</dt>
+                  <dd>Frankfurt (FRA)</dd>
+                  <dd>
+                    <time datetime="2024-10-14 17:15:00+0100"
+                      >5:15 PM</time
+                    >
+                  </dd>
+                  <dt>Arrive</dt>
+                  <dd>Venice (VCE)</dd>
+                  <dd>
+                    <time datetime="2024-10-14 18:30:00+0100"
+                      >6:30 PM</time
+                    >
+                  </dd>
+                </dl>
+              </li>
+            </ol>
+          </details>
+        </div>
 
-        <span class="dates">
-          <time datetime="2024-10-14">14 Oct</time>
-          &ndash;
-          <time datetime="2024-10-18">18 Oct</time>
-        </span>
-        <details name="itinerary" class="destination">
-          <summary>
-            <h3>
-              <svg class="icon">
-                <use
-                  xlink:href="/icons/italy.svg#icon-venice" />
-              </svg>
-              <a href="place.html">Venice</a>
-            </h3>
+        <div
+          class="itinerary-item"
+          data-start-date="2024-10-14"
+          data-end-date="2024-10-18">
+          <span class="dates">
+            <time datetime="2024-10-14">14 Oct</time>
+            &ndash;
+            <time datetime="2024-10-18">18 Oct</time>
+          </span>
+          <details name="itinerary" class="destination">
+            <summary>
+              <h3>
+                <svg class="icon">
+                  <use
+                    xlink:href="/icons/italy.svg#icon-venice" />
+                </svg>
+                <a href="place.html">Venice</a>
+              </h3>
 
-            <p>4 nights</p>
-            <p>
-              Stay at
-              <a href="stay.html">Locanda San Barnaba</a>
-            </p>
-          </summary>
-          <img
-            class="featured"
-            src="/images/preview/Canal_Grande_Chiesa_della_Salute_e_Dogana_dal_ponte_dell_Accademia.jpg" />
-          <ul>
-            <li>
-              Vaporetto trip to
-              <a href="excursion.html">Murano</a>
-            </li>
-            <li>
-              Walking tour of
-              <a href="excursion.html">Piazza San Marco</a>
-            </li>
-          </ul>
-        </details>
+              <p>4 nights</p>
+              <p>
+                Stay at
+                <a href="stay.html">Locanda San Barnaba</a>
+              </p>
+            </summary>
+            <img
+              class="featured"
+              src="/images/preview/Canal_Grande_Chiesa_della_Salute_e_Dogana_dal_ponte_dell_Accademia.jpg" />
+            <ul>
+              <li>
+                Vaporetto trip to
+                <a href="excursion.html">Murano</a>
+              </li>
+              <li>
+                Walking tour of
+                <a href="excursion.html">Piazza San Marco</a>
+              </li>
+            </ul>
+          </details>
+        </div>
 
-        <span class="dates">
-          <time datetime="2024-10-18">18 Oct</time>
-        </span>
-        <details name="itinerary" class="transportation">
-          <summary>
-            <h3>
-              <svg class="icon">
-                <use
-                  xlink:href="/icons/transportation.svg#icon-train" />
-              </svg>
-              Venice &rarr; Florence
-            </h3>
-          </summary>
-          <h4>9407 Frecciarossa</h4>
-          <dl class="timings">
-            <dt>Depart</dt>
-            <dd>Venezia S. Lucia</dd>
-            <dd>
-              <time datetime="2024-10-18 09:25:00+0100"
-                >9:25 AM</time
-              >
-            </dd>
-            <dt>Arrive</dt>
-            <dd>Firenze S.M.N.</dd>
-            <dd>
-              <time datetime="2024-10-18 11:30:00+0100"
-                >11:30 AM</time
-              >
-            </dd>
-          </dl>
-        </details>
+        <div
+          class="itinerary-item"
+          data-start-date="2024-10-18">
+          <span class="dates">
+            <time datetime="2024-10-18">18 Oct</time>
+          </span>
+          <details name="itinerary" class="transportation">
+            <summary>
+              <h3>
+                <svg class="icon">
+                  <use
+                    xlink:href="/icons/transportation.svg#icon-train" />
+                </svg>
+                Venice &rarr; Florence
+              </h3>
+            </summary>
+            <h4>9407 Frecciarossa</h4>
+            <dl class="timings">
+              <dt>Depart</dt>
+              <dd>Venezia S. Lucia</dd>
+              <dd>
+                <time datetime="2024-10-18 09:25:00+0100"
+                  >9:25 AM</time
+                >
+              </dd>
+              <dt>Arrive</dt>
+              <dd>Firenze S.M.N.</dd>
+              <dd>
+                <time datetime="2024-10-18 11:30:00+0100"
+                  >11:30 AM</time
+                >
+              </dd>
+            </dl>
+          </details></div
+        >
 
-        <span class="dates">
-          <time datetime="2024-10-18">18 Oct</time>
-          &ndash;
-          <time datetime="2024-10-21">21 Oct</time>
-        </span>
-        <details name="itinerary" class="destination">
-          <summary>
-            <h3>
-              <svg class="icon">
-                <use
-                  xlink:href="/icons/italy.svg#icon-florence" />
-              </svg>
-              <a href="place.html">Florence</a>
-            </h3>
-            <p>3 nights</p>
-            <p>Stay at <a href="#">Hotel Perseo</a></p>
-          </summary>
-          <img
-            class="featured"
-            src="/images/preview/Firenze_-_Vista_dal_Piazzale_Michelangelo.jpg" />
-          <ul>
-            <li>Walking tour of Duomo, Campanile</li>
-            <li>Rail excursion to Lucca</li>
-            <li>Trip to Fiesole via city bus</li>
-          </ul>
-        </details>
+        <div
+          class="itinerary-item"
+          data-start-date="2024-10-18"
+          data-end-date="2024-10-21">
+          <span class="dates">
+            <time datetime="2024-10-18">18 Oct</time>
+            &ndash;
+            <time datetime="2024-10-21">21 Oct</time>
+          </span>
+          <details name="itinerary" class="destination">
+            <summary>
+              <h3>
+                <svg class="icon">
+                  <use
+                    xlink:href="/icons/italy.svg#icon-florence" />
+                </svg>
+                <a href="place.html">Florence</a>
+              </h3>
+              <p>3 nights</p>
+              <p>Stay at <a href="#">Hotel Perseo</a></p>
+            </summary>
+            <img
+              class="featured"
+              src="/images/preview/Firenze_-_Vista_dal_Piazzale_Michelangelo.jpg" />
+            <ul>
+              <li>Walking tour of Duomo, Campanile</li>
+              <li>Rail excursion to Lucca</li>
+              <li>Trip to Fiesole via city bus</li>
+            </ul>
+          </details>
+        </div>
 
-        <span class="dates">
-          <time datetime="2024-10-21">21 Oct</time>
-        </span>
-        <details name="itinerary" class="transportation">
-          <summary>
-            <h3>
-              <svg class="icon">
-                <use
-                  xlink:href="/icons/transportation.svg#icon-train" />
-              </svg>
-              Florence &rarr; Rome
-            </h3>
-          </summary>
-          <h4>9435 Frecciarossa</h4>
-          <dl class="timings">
-            <dt>Depart</dt>
-            <dd>Firenze S.M.N.</dd>
-            <dd>
-              <time datetime="2024-10-21 15:38:00+0100"
-                >3:38 PM</time
-              >
-            </dd>
-            <dt>Arrive</dt>
-            <dd>Roma Termini</dd>
-            <dd>
-              <time datetime="2024-10-21 17:10:00+0100"
-                >5:10 PM</time
-              >
-            </dd>
-          </dl>
-        </details>
+        <div
+          class="itinerary-item"
+          data-start-date="2024-10-21">
+          <span class="dates">
+            <time datetime="2024-10-21">21 Oct</time>
+          </span>
+          <details name="itinerary" class="transportation">
+            <summary>
+              <h3>
+                <svg class="icon">
+                  <use
+                    xlink:href="/icons/transportation.svg#icon-train" />
+                </svg>
+                Florence &rarr; Rome
+              </h3>
+            </summary>
+            <h4>9435 Frecciarossa</h4>
+            <dl class="timings">
+              <dt>Depart</dt>
+              <dd>Firenze S.M.N.</dd>
+              <dd>
+                <time datetime="2024-10-21 15:38:00+0100"
+                  >3:38 PM</time
+                >
+              </dd>
+              <dt>Arrive</dt>
+              <dd>Roma Termini</dd>
+              <dd>
+                <time datetime="2024-10-21 17:10:00+0100"
+                  >5:10 PM</time
+                >
+              </dd>
+            </dl>
+          </details>
+        </div>
 
-        <span class="dates">
-          <time datetime="2024-10-21">21 Oct</time>
-          &ndash;
-          <time datetime="2024-10-25">25 Oct</time>
-        </span>
-        <details name="itinerary" class="destination">
-          <summary>
-            <h3>
-              <svg class="icon">
-                <use xlink:href="/icons/italy.svg#icon-rome" />
-              </svg>
-              <a href="place.html">Rome</a>
-            </h3>
-            <p>4 nights</p>
-            <p>Stay at <a href="#">La Piccola Maison</a></p>
-          </summary>
-          <img
-            class="featured"
-            src="/images/preview/Colosseum_in_Rome,_Italy_-_April_2007.jpg" />
-          <ul>
-            <li>
-              Tour of Forum, Colosseum, Palatino Hill via Metro
-            </li>
-            <li>Tour of Vatican, St Peter’s via Metro</li>
-          </ul>
-        </details>
+        <div
+          class="itinerary-item"
+          data-start-date="2024-10-21"
+          data-end-date="2024-10-25">
+          <span class="dates">
+            <time datetime="2024-10-21">21 Oct</time>
+            &ndash;
+            <time datetime="2024-10-25">25 Oct</time>
+          </span>
+          <details name="itinerary" class="destination">
+            <summary>
+              <h3>
+                <svg class="icon">
+                  <use
+                    xlink:href="/icons/italy.svg#icon-rome" />
+                </svg>
+                <a href="place.html">Rome</a>
+              </h3>
+              <p>4 nights</p>
+              <p>Stay at <a href="#">La Piccola Maison</a></p>
+            </summary>
+            <img
+              class="featured"
+              src="/images/preview/Colosseum_in_Rome,_Italy_-_April_2007.jpg" />
+            <ul>
+              <li>
+                Tour of Forum, Colosseum, Palatino Hill via
+                Metro
+              </li>
+              <li>Tour of Vatican, St Peter’s via Metro</li>
+            </ul>
+          </details>
+        </div>
 
-        <span class="dates">
-          <time datetime="2024-10-25">25 Oct</time>
-        </span>
-        <details name="itinerary" class="transportation">
-          <summary>
-            <h3>
-              <svg class="icon">
-                <use
-                  xlink:href="/icons/transportation.svg/#icon-airplane" />
-              </svg>
-              FCO &rarr; FRA &rarr; SFO
-            </h3>
-          </summary>
-          <ol>
-            <li>
-              <h4>Lufthansa LH233</h4>
-              <dl class="timings">
-                <dt>Depart</dt>
-                <dd>Rome (FCO)</dd>
-                <dd>
-                  <time datetime="2024-10-25 13:25:00+0100"
-                    >1:25 PM</time
-                  >
-                </dd>
-                <dt>Arrive</dt>
-                <dd>Frankfurt (FRA)</dd>
-                <dd>
-                  <time datetime="2024-10-25 15:20:00+0100"
-                    >3:20 PM</time
-                  >
-                </dd>
-              </dl>
-            </li>
-            <li>
-              <h4>United UA927</h4>
-              <dl class="timings">
-                <dt>Depart</dt>
-                <dd>Frankfurt (FRA)</dd>
-                <dd>
-                  <time datetime="2024-10-25 17:25:00+0100"
-                    >5:25 PM</time
-                  >
-                </dd>
-                <dt>Arrive</dt>
-                <dd>San Francisco (SFO)</dd>
-                <dd>
-                  <time datetime="2024-10-25 19:45:00-0800"
-                    >7:45 PM</time
-                  >
-                </dd>
-              </dl>
-            </li>
-          </ol>
-        </details>
+        <div
+          class="itinerary-item"
+          data-start-date="2024-10-25">
+          <span class="dates">
+            <time datetime="2024-10-25">25 Oct</time>
+          </span>
+          <details name="itinerary" class="transportation">
+            <summary>
+              <h3>
+                <svg class="icon">
+                  <use
+                    xlink:href="/icons/transportation.svg/#icon-airplane" />
+                </svg>
+                FCO &rarr; FRA &rarr; SFO
+              </h3>
+            </summary>
+            <ol>
+              <li>
+                <h4>Lufthansa LH233</h4>
+                <dl class="timings">
+                  <dt>Depart</dt>
+                  <dd>Rome (FCO)</dd>
+                  <dd>
+                    <time datetime="2024-10-25 13:25:00+0100"
+                      >1:25 PM</time
+                    >
+                  </dd>
+                  <dt>Arrive</dt>
+                  <dd>Frankfurt (FRA)</dd>
+                  <dd>
+                    <time datetime="2024-10-25 15:20:00+0100"
+                      >3:20 PM</time
+                    >
+                  </dd>
+                </dl>
+              </li>
+              <li>
+                <h4>United UA927</h4>
+                <dl class="timings">
+                  <dt>Depart</dt>
+                  <dd>Frankfurt (FRA)</dd>
+                  <dd>
+                    <time datetime="2024-10-25 17:25:00+0100"
+                      >5:25 PM</time
+                    >
+                  </dd>
+                  <dt>Arrive</dt>
+                  <dd>San Francisco (SFO)</dd>
+                  <dd>
+                    <time datetime="2024-10-25 19:45:00-0800"
+                      >7:45 PM</time
+                    >
+                  </dd>
+                </dl>
+              </li>
+            </ol>
+          </details>
+        </div>
       </section>
       <section class="entourage">
         <h2>Entourage</h2>
