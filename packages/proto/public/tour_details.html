@@ -22,10 +22,12 @@
       import {
         CalendarWidget,
         ItineraryItem,
-        EntourageTable
+        EntourageTable,
+        MapWidget
       } from "/js/blazing.js";
 
       customElements.define("calendar-widget", CalendarWidget);
+      customElements.define("map-widget", MapWidget);
       customElements.define("itinerary-item", ItineraryItem);
       customElements.define("entourage-table", EntourageTable);
     </script>
@@ -41,11 +43,9 @@
         start-date="2024-10-13"
         end-date="2024-10-25">
       </calendar-widget>
-      <section class="map">
-        <svg class="outline-map">
-          <use xlink:href="/maps/italy.svg#map-italy" />
-        </svg>
-      </section>
+
+      <map-widget src="/maps/italy.geo.json"> </map-widget>
+
       <section class="itinerary">
         <itinerary-item
           item-class="transportation"
