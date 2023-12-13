@@ -121,18 +121,20 @@ export class CalendarWidget extends HTMLElement {
   _handleChange(ev) {
     const date = new Date(ev.target.value);
     console.log("Date Selected:", date.toUTCString());
-    const items = document.querySelector(".itinerary").children;
+    const items = document.querySelectorAll(
+      ".itinerary > itinerary-item"
+    );
     Array.from(items).forEach((el) => {
-      const start = el.dataset.startDate;
-      const end = el.dataset.endDate || start;
+      console.log("Checking dates of", el);
+      const start = el.getAttribute("start-date");
+      const end = el.getAttribute("end-date") || start;
       const shown =
         new Date(start) <= date && date <= new Date(end);
-      el.classList.toggle("is-hidden", !shown);
       if (shown) {
-        el.querySelector("details").setAttribute(
-          "open",
-          "open"
-        );
+        el.setAttribute("open", "open");
+        el.removeAttribute("hidden");
+      } else {
+        el.setAttribute("hidden", "hidden");
       }
     });
   }
@@ -141,12 +143,14 @@ export class CalendarWidget extends HTMLElement {
     const current =
       this.shadowRoot.querySelector("input:checked");
     if (current) {
-      const items =
-        document.querySelector(".itinerary").children;
+      const items = document.querySelectorAll(
+        ".itinerary > itinerary-item"
+      );
+      console.log("Clearing checked", current);
 
       Array.from(items).forEach((el) => {
-        el.classList.remove("is-hidden");
-        el.querySelector("details").removeAttribute("open");
+        el.removeAttribute("hidden");
+        el.removeAttribute("open");
       });
       current.checked = false;
     }
@@ -184,6 +188,9 @@ export class ItineraryItem extends HTMLElement {
     <style>
       :host {
         display: contents;
+      }
+      :host([hidden]) {
+        display: none;
       }
       #dates {
         color: var(--color-accent);
@@ -246,6 +253,8 @@ export class ItineraryItem extends HTMLElement {
     const start = this.getAttribute("start-date");
     const end = this.getAttribute("end-date");
     const itemClass = this.getAttribute("item-class");
+    const open = this.getAttribute("open");
+    const hidden = this.getAttribute("hidden");
 
     const startTime = document.createElement("time");
     startTime.setAttribute("datetime", start);
@@ -260,6 +269,40 @@ export class ItineraryItem extends HTMLElement {
     }
 
     details.classList.add(itemClass);
+
+    this._toggleOpen(open);
+    this._toggleHidden(hidden);
+  }
+
+  static get observedAttributes() {
+    return ["open", "hidden"];
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    console.log(
+      "Itinerary Item attribute changed",
+      name,
+      newValue
+    );
+    switch (name) {
+      case "open":
+        this._toggleOpen(newValue);
+
+      case "hidden":
+        this._toggleHidden(newValue);
+    }
+  }
+
+  _toggleOpen(value) {
+    const details = this.shadowRoot.getElementById("details");
+
+    if (value) details.setAttribute("open", "open");
+    else details.removeAttribute("open");
+  }
+
+  _toggleHidden(value) {
+    if (value) this.classList.add("is-hidden");
+    else this.classList.remove("is-hidden");
   }
 }
 
