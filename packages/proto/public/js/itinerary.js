@@ -1,3 +1,5 @@
+import { html, effect } from "./blazing.js";
+
 export class CalendarWidget extends HTMLElement {
   constructor() {
     super();
@@ -5,7 +7,6 @@ export class CalendarWidget extends HTMLElement {
       CalendarWidget.template.cloneNode(true)
     );
     this._onchange = this._handleChange.bind(this);
-    this._onclick = this._clearCalendar.bind(this);
   }
 
   static template = html`
@@ -19,7 +20,11 @@ export class CalendarWidget extends HTMLElement {
         <h6>Fr</h6>
         <h6>Sa</h6>
       </fieldset>
-      <button id="clear">Clear Selection</button>
+      <button
+        id="clear"
+        onclick="CalendarWidget.handleClearSelection(event)">
+        Clear Selection
+      </button>
     </section>
     <style>
       :host {
@@ -78,6 +83,41 @@ export class CalendarWidget extends HTMLElement {
     </style>
   `;
 
+  static handleClearSelection = effect(function () {
+    const current =
+      this.shadowRoot.querySelector("input:checked");
+    if (current) {
+      const items = document.querySelectorAll(
+        ".itinerary > itinerary-item"
+      );
+
+      Array.from(items).forEach((el) => {
+        el.removeAttribute("hidden");
+        el.removeAttribute("open");
+      });
+      current.checked = false;
+    }
+  });
+
+  static handleSelection = effect(function (ev) {
+    const date = new Date(ev.target.value);
+    const items = document.querySelectorAll(
+      ".itinerary > itinerary-item"
+    );
+    Array.from(items).forEach((el) => {
+      const start = el.getAttribute("start-date");
+      const end = el.getAttribute("end-date") || start;
+      const shown =
+        new Date(start) <= date && date <= new Date(end);
+      if (shown) {
+        el.setAttribute("open", "open");
+        el.removeAttribute("hidden");
+      } else {
+        el.setAttribute("hidden", "hidden");
+      }
+    });
+  });
+
   connectedCallback() {
     const grid = this.shadowRoot.getElementById("grid");
     const clear = this.shadowRoot.getElementById("clear");
@@ -85,15 +125,8 @@ export class CalendarWidget extends HTMLElement {
     const end = new Date(this.getAttribute("end-date"));
 
     this._initializeCalendar(start, end);
-    grid.addEventListener("change", this._onchange);
-    clear.addEventListener("click", this._onclick);
-  }
-
-  disconnectedCallback() {
-    const grid = this.shadowRoot.getElementById("grid");
-    const clear = this.shadowRoot.getElementById("clear");
-    grid.removeEventListener("change", this._onchange);
-    clear.removeEventListener("click", this._onchange);
+    // grid.addEventListener("change", this._onchange);
+    //clear.addEventListener("click", this._onclick);
   }
 
   _initializeCalendar(start, end) {
@@ -111,50 +144,17 @@ export class CalendarWidget extends HTMLElement {
 
       const label = document.createElement("label");
       label.innerHTML = `${ymd.d}
-        <input type="radio" name="cal" value="${format(ymd)}"/>
+        <input type="radio" 
+          name="cal"
+          onchange="CalendarWidget.handleSelection(event)"
+          value="${format(ymd)}"/>
       `;
 
       grid.append(label);
     });
   }
 
-  _handleChange(ev) {
-    const date = new Date(ev.target.value);
-    console.log("Date Selected:", date.toUTCString());
-    const items = document.querySelectorAll(
-      ".itinerary > itinerary-item"
-    );
-    Array.from(items).forEach((el) => {
-      console.log("Checking dates of", el);
-      const start = el.getAttribute("start-date");
-      const end = el.getAttribute("end-date") || start;
-      const shown =
-        new Date(start) <= date && date <= new Date(end);
-      if (shown) {
-        el.setAttribute("open", "open");
-        el.removeAttribute("hidden");
-      } else {
-        el.setAttribute("hidden", "hidden");
-      }
-    });
-  }
-
-  _clearCalendar() {
-    const current =
-      this.shadowRoot.querySelector("input:checked");
-    if (current) {
-      const items = document.querySelectorAll(
-        ".itinerary > itinerary-item"
-      );
-      console.log("Clearing checked", current);
-
-      Array.from(items).forEach((el) => {
-        el.removeAttribute("hidden");
-        el.removeAttribute("open");
-      });
-      current.checked = false;
-    }
-  }
+  _handleChange(ev) {}
 }
 
 function datesInRange(start, end) {
@@ -278,12 +278,7 @@ export class ItineraryItem extends HTMLElement {
     return ["open", "hidden"];
   }
 
-  attributeChangedCallback(name, oldValue, newValue) {
-    console.log(
-      "Itinerary Item attribute changed",
-      name,
-      newValue
-    );
+  attributeChangedCallback(name, _, newValue) {
     switch (name) {
       case "open":
         this._toggleOpen(newValue);
@@ -327,13 +322,4 @@ function formatDate(datestring) {
   const d = dt.getUTCDate();
 
   return `${d} ${m}`;
-}
-
-function html(strings, ...values) {
-  const html = strings.flatMap((s, i) =>
-    i ? [values[i - 1], s] : [s]
-  );
-  let tpl = document.createElement("template");
-  tpl.innerHTML = html;
-  return tpl.content;
 }
