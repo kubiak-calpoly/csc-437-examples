@@ -2,7 +2,10 @@
   --size-spacing-small: 0.25rem;
   --size-spacing-medium: 0.5rem;
   --size-spacing-large: 1rem;
-  --size-icon-large: 4rem;
+  --size-font-min: 9px;
+  --size-icon-small: 1.5rem;
+  --size-icon-medium: 3rem;
+  --size-icon-large: 5rem;
   --size-width-sidebar: 20rem;
 
   --color-accent: rgb(42 143 42);

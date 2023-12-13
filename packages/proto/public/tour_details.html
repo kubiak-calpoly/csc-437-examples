@@ -23,7 +23,7 @@
         CalendarWidget,
         ItineraryItem
       } from "/js/itinerary.js";
-      // import { EntourageTable } from "/js/entourage.js";
+      import { EntourageTable } from "/js/entourage.js";
 
       customElements.define(
         "calendar-widget",
@@ -31,7 +31,7 @@
         (window.CalendarWidget = CalendarWidget)
       );
       customElements.define("itinerary-item", ItineraryItem);
-      // customElements.define("entourage-table", EntourageTable);
+      customElements.define("entourage-table", EntourageTable);
     </script>
   </head>
   <body>
@@ -289,14 +289,8 @@
           </ol>
         </itinerary-item>
       </section>
-      <section class="entourage">
-        <h2>Entourage</h2>
-        <ul>
-          <li><a href="person.html">Person 1</a></li>
-          <li><a href="person.html">Person 2</a></li>
-          <li><a href="person.html">Person 3</a></li>
-        </ul>
-      </section>
+      <entourage-table src="/data/entourage.json">
+      </entourage-table>
     </main>
   </body>
 </html>
