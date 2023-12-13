@@ -21,15 +21,11 @@
     <script type="module">
       import {
         CalendarWidget,
-        ItineraryItem
-      } from "/js/itinerary.js";
-      import { EntourageTable } from "/js/entourage.js";
+        ItineraryItem,
+        EntourageTable
+      } from "/js/blazing.js";
 
-      customElements.define(
-        "calendar-widget",
-        // allow calling static methods from inline js:
-        (window.CalendarWidget = CalendarWidget)
-      );
+      customElements.define("calendar-widget", CalendarWidget);
       customElements.define("itinerary-item", ItineraryItem);
       customElements.define("entourage-table", EntourageTable);
     </script>

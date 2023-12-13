@@ -71,7 +71,7 @@ export class EntourageTable extends HTMLElement {
   `;
 
   connectedCallback() {
-    const src = new Date(this.getAttribute("src"));
+    const src = this.getAttribute("src");
 
     if (src) {
       this._fetchData(src);
@@ -89,7 +89,7 @@ export class EntourageTable extends HTMLElement {
       if (oldValue) {
         rows.replaceChildren();
       }
-      if (newValue) {
+      if (newValue && oldValue !== null) {
         this._fetchData(newValue);
       }
     }
@@ -111,7 +111,6 @@ export class EntourageTable extends HTMLElement {
   _appendRows(people) {
     const rows = this.shadowRoot.getElementById("rows");
 
-    console.log("People:", people);
     people.forEach((row) => {
       const {
         avatar,
