@@ -19,17 +19,32 @@ export class MapWidget extends HTMLElement {
   static template = html`
     <section>
       <h2>Map</h2>
-      <svg viewBox="0 0 1000 1000" id="map-area">
-        <g class="map"></g>
-      </svg>
+      <div class="overlay">
+        <svg viewBox="0 0 1000 1000" id="map-area">
+          <g class="basemap"></g>
+        </svg>
+        <div id="markers">
+          <slot></slot>
+        </div>
+      </div>
     </section>
     <style>
       :host {
         grid-area: map;
       }
-      svg#map-area {
+      .overlay {
         width: 100%;
         aspect-ratio: 1;
+        position: relative;
+      }
+      .overlay > * {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+      }
+      svg#map-area {
         fill: none;
         stroke: var(--color-accent);
         stroke-width: 5px;
@@ -70,19 +85,26 @@ export class MapWidget extends HTMLElement {
         return null;
       })
       .then((geojson) => {
+        this._updateGeoGenerator(geojson);
         this._renderMap(geojson);
+        this._positionContents();
       });
+  }
+
+  _updateGeoGenerator(geojson) {
+    const base = geoEquirectangular();
+    const projection = geojson
+      ? base.fitExtent(this._viewBox, geojson)
+      : base;
+    this._geoGenerator = geoPath().projection(projection);
   }
 
   _renderMap(geojson) {
     const { features } = geojson;
-    const projection = geoEquirectangular().fitExtent(
-      this._viewBox,
-      geojson
+    const paths = features.map(this._geoGenerator);
+    const g = this.shadowRoot.querySelector(
+      "#map-area .basemap"
     );
-    const geoGenerator = geoPath().projection(projection);
-    const paths = features.map(geoGenerator);
-    const g = this.shadowRoot.querySelector("#map-area .map");
 
     paths.forEach((d) => {
       const el = document.createElementNS(
@@ -92,5 +114,82 @@ export class MapWidget extends HTMLElement {
       el.setAttributeNS(null, "d", d);
       g.append(el);
     });
+  }
+
+  _positionContents() {
+    const mapArea = this.shadowRoot.getElementById("map-area");
+    const { width } = mapArea.getBoundingClientRect();
+    const scale = width / this._viewBox[1][1];
+
+    Array.from(this.children).forEach((marker) => {
+      const lat = marker.getAttribute("lat");
+      const lon = marker.getAttribute("lon");
+      const text = marker.textContent;
+
+      if (lat && lon) {
+        const feature = {
+          type: "Feature",
+          properties: { name: text },
+          geometry: {
+            type: "Point",
+            coordinates: [lon, lat]
+          }
+        };
+        const path = this._geoGenerator(feature);
+        console.log("Point generated:", path);
+        const matches = path.match(/M([.0-9-]+),([.0-9-]+)/);
+        if (matches) {
+          const [_, x, y] = matches;
+          marker.setPosition(
+            scale * parseFloat(x),
+            scale * parseFloat(y)
+          );
+        }
+      }
+    });
+  }
+}
+
+export class MapMarker extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({ mode: "open" }).appendChild(
+      MapMarker.template.cloneNode(true)
+    );
+  }
+
+  static template = html`
+    <i>
+      <svg class="icon">
+        <use xlink:href="/icons/markers.svg#icon-poi"></use>
+      </svg>
+      <label><slot></slot></label>
+    </i>
+    <style>
+      :host {
+        position: absolute;
+        bottom: 100%;
+        left: -1rem;
+      }
+      i {
+        display: inline-block;
+      }
+      svg.icon {
+        display: inline;
+        height: 2rem;
+        width: 2rem;
+        vertical-align: bottom;
+        fill: var(--color-accent);
+      }
+    </style>
+  `;
+
+  setPosition(x, y) {
+    console.log("Coordinates:", x, y);
+
+    this.shadowRoot.firstElementChild.style.setProperty(
+      "transform",
+      `translate(${x}px,${y}px)`
+    );
   }
 }

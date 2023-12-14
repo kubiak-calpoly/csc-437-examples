@@ -21,15 +21,17 @@
     <script type="module">
       import {
         CalendarWidget,
-        ItineraryItem,
         EntourageTable,
+        ItineraryItem,
+        MapMarker,
         MapWidget
       } from "/js/blazing.js";
 
-      customElements.define("calendar-widget", CalendarWidget);
-      customElements.define("map-widget", MapWidget);
-      customElements.define("itinerary-item", ItineraryItem);
       customElements.define("entourage-table", EntourageTable);
+      customElements.define("calendar-widget", CalendarWidget);
+      customElements.define("itinerary-item", ItineraryItem);
+      customElements.define("map-marker", MapMarker);
+      customElements.define("map-widget", MapWidget);
     </script>
   </head>
   <body>
@@ -44,7 +46,17 @@
         end-date="2024-10-25">
       </calendar-widget>
 
-      <map-widget src="/maps/italy.geo.json"> </map-widget>
+      <map-widget src="/maps/italy.geo.json">
+        <map-marker lat="45.4397" lon="12.3319">
+          Venice
+        </map-marker>
+        <map-marker lat="43.7714" lon="11.2542">
+          Florence
+        </map-marker>
+        <map-marker lat="41.8931" lon="12.4828">
+          Rome
+        </map-marker>
+      </map-widget>
 
       <section class="itinerary">
         <itinerary-item
@@ -54,7 +66,7 @@
           <h3 slot="summary">
             <svg class="icon">
               <use
-                xlink:href="/icons/transportation.svg/#icon-airplane" />
+                xlink:href="/icons/transportation.svg#icon-airplane" />
             </svg>
             SFO &rarr; FRA &rarr; VCE
           </h3>
