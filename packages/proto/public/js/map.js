@@ -31,6 +31,7 @@ export class MapWidget extends HTMLElement {
     <style>
       :host {
         grid-area: map;
+        padding: 0 var(--size-spacing-medium);
       }
       .overlay {
         width: 100%;
@@ -76,7 +77,6 @@ export class MapWidget extends HTMLElement {
   }
 
   _fetchData(src) {
-    console.log("Fetching GeoJSON data", src);
     fetch(src)
       .then((response) => {
         if (response.status === 200) {
@@ -136,7 +136,6 @@ export class MapWidget extends HTMLElement {
           }
         };
         const path = this._geoGenerator(feature);
-        console.log("Point generated:", path);
         const matches = path.match(/M([.0-9-]+),([.0-9-]+)/);
         if (matches) {
           const [_, x, y] = matches;
@@ -170,9 +169,16 @@ export class MapMarker extends HTMLElement {
         position: absolute;
         bottom: 100%;
         left: -1rem;
+        --transform-marker: scale(1);
+      }
+      :host([selected]) {
+        --transform-marker: scale(1.5);
       }
       i {
         display: inline-block;
+      }
+      i:hover {
+        --transform-marker: scale(1.5);
       }
       svg.icon {
         display: inline;
@@ -180,13 +186,17 @@ export class MapMarker extends HTMLElement {
         width: 2rem;
         vertical-align: bottom;
         fill: var(--color-accent);
+        transform-origin: bottom center;
+        transition: transform 0.5s;
+        transform: var(--transform-marker);
+      }
+      label {
+        margin-left: -0.5em;
       }
     </style>
   `;
 
   setPosition(x, y) {
-    console.log("Coordinates:", x, y);
-
     this.shadowRoot.firstElementChild.style.setProperty(
       "transform",
       `translate(${x}px,${y}px)`

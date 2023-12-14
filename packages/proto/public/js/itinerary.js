@@ -10,7 +10,10 @@ export class ItineraryItem extends HTMLElement {
 
   static template = html`
     <span id="dates"></span>
-    <details id="details" name="itin">
+    <details
+      id="details"
+      name="itin"
+      ontoggle="ItineraryItem.handleToggle(event)">
       <summary>
         <slot name="summary"></slot>
       </summary>
@@ -78,6 +81,21 @@ export class ItineraryItem extends HTMLElement {
     </style>
   `;
 
+  static handleToggle = effect(function (event) {
+    const markerId = this.getAttribute("marker");
+    const isOpen = event.newState === "open";
+
+    console.log("Toggled", markerId);
+    if (markerId) {
+      const marker = document.getElementById(markerId);
+
+      if (marker) {
+        if (isOpen) marker.setAttribute("selected", "selected");
+        else marker.removeAttribute("selected");
+      }
+    }
+  });
+
   connectedCallback() {
     const dates = this.shadowRoot.getElementById("dates");
     const details = this.shadowRoot.getElementById("details");
@@ -130,6 +148,10 @@ export class ItineraryItem extends HTMLElement {
     if (value) this.classList.add("is-hidden");
     else this.classList.remove("is-hidden");
   }
+}
+
+if (window) {
+  window.ItineraryItem = ItineraryItem;
 }
 
 const months = [

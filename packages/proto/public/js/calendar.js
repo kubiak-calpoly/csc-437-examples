@@ -28,6 +28,7 @@ export class CalendarWidget extends HTMLElement {
     <style>
       :host {
         grid-area: calendar;
+        padding: 0 var(--size-spacing-medium);
       }
 
       fieldset {
