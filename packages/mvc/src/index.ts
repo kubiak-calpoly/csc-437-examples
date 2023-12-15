@@ -1,5 +1,7 @@
 import express, { Request, Response } from "express";
 import { Eta } from "eta";
+import { Tour } from "./models/Tour.ts";
+import tours from "./services/tours.ts";
 
 const app = express();
 const eta = new Eta({
@@ -22,6 +24,13 @@ const port = process.env.PORT || 3000;
 app.get("/hello/:name", (req: Request, res: Response) => {
   const { name } = req.params;
   res.send(eta.render("./hello", { name }));
+});
+
+app.get("/tours/:id", (req: Request, res: Response) => {
+  const { id } = req.params;
+  tours
+    .get(id)
+    .then((data: Tour) => res.send(eta.render("./tour", data)));
 });
 
 app.listen(port, () => {

@@ -1,6 +1,6 @@
 import express from "express";
 import { Eta } from "eta";
-import tours from "./services/tours";
+import tours from "./services/tours.mts";
 const app = express();
 const eta = new Eta({
     views: "./views"
