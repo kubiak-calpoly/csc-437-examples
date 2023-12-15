@@ -1,0 +1,53 @@
+.entourage {
+  --color-avatar-bg: var(--color-accent);
+
+  grid-area: entourage;
+  padding: 0 var(--size-spacing-medium);
+}
+.entourage table {
+  width: 100%;
+}
+.entourage thead {
+  font-size: var(--size-font-min);
+}
+.entourage tr > :first-child {
+  text-align: left;
+  padding-left: 0;
+}
+.entourage tr > :last-child {
+  text-align: right;
+  padding-right: 0;
+}
+.entourage th,
+.entourage td {
+  padding: 0 var(--size-spacing-small);
+  vertical-align: baseline;
+}
+.entourage td[rowspan] {
+  vertical-align: top;
+}
+.entourage .avatar {
+  display: inline-block;
+  position: relative;
+  width: var(--size-icon-medium);
+  aspect-ratio: 1;
+  background-color: var(--color-avatar-bg);
+  border-radius: 50%;
+  text-align: center;
+  font-size: calc(0.66 * var(--size-icon-medium));
+  font-family: var(--font-family-display);
+  color: var(--color-link-inverted);
+  overflow: hidden;
+}
+.entourage .name {
+  font-family: var(--font-family-display);
+  color: var(--color-accent);
+  font-size: 125%;
+}
+.entourage .airport {
+  font-family: var(--font-family-display);
+  font-size: 75%;
+}
+.entourage img {
+  width: 100%;
+}

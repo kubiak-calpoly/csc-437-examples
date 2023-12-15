@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="/styles/tokens.css" />
     <link rel="stylesheet" href="/styles/page.css" />
     <link rel="stylesheet" href="/styles/itinerary.css" />
+    <link rel="stylesheet" href="/styles/entourage.css" />
     <link rel="stylesheet" href="/styles/timings.css" />
     <script type="module">
       import {
@@ -78,8 +79,7 @@
           it.entourage[0].inbound) %>
       </section>
 
-      <entourage-table src="/data/entourage.json">
-      </entourage-table>
+      <%~ include("./partials/entourage.eta", it.entourage) %>
     </main>
   </body>
 </html>
