@@ -46,195 +46,38 @@
 
       <map-widget src="/maps/italy.geo.json">
         <% it.destinations.forEach(function(dst, i){ %>
+
         <map-marker
           id="<%= `marker-destination-${i}` %>"
           lat="<%= dst.location.lat %>"
-          lon="<%= dst.location.lon %>" >
+          lon="<%= dst.location.lon %>">
           <%= dst.name %>
         </map-marker>
+
         <% }) %>
       </map-widget>
 
       <section class="itinerary">
-        <itinerary-item
-          item-class="transportation"
-          start-date="2024-10-13"
-          end-date="2024-10-14">
-          <h3 slot="summary">
-            <svg class="icon">
-              <use
-                xlink:href="/icons/transportation.svg#icon-airplane" />
-            </svg>
-            SFO &rarr; FRA &rarr; VCE
-          </h3>
-          <ol>
-            <li>
-              <h4>United UA926</h4>
-              <dl class="timings">
-                <dt>Depart</dt>
-                <dd>San Francisco (SFO)</dd>
-                <dd>
-                  <time datetime="2024-10-13 19:05:00-0800"
-                    >7:05 PM</time
-                  >
-                </dd>
-                <dt>Arrive</dt>
-                <dd>Frankfurt (FRA)</dd>
-                <dd>
-                  <time datetime="2024-10-14 14:55:00+0100"
-                    >2:55 PM<sub>+1 day</sub></time
-                  >
-                </dd>
-              </dl>
-            </li>
-            <li>
-              <h4>Lufthansa LH330</h4>
-              <dl class="timings">
-                <dt>Depart</dt>
-                <dd>Frankfurt (FRA)</dd>
-                <dd>
-                  <time datetime="2024-10-14 17:15:00+0100"
-                    >5:15 PM</time
-                  >
-                </dd>
-                <dt>Arrive</dt>
-                <dd>Venice (VCE)</dd>
-                <dd>
-                  <time datetime="2024-10-14 18:30:00+0100"
-                    >6:30 PM</time
-                  >
-                </dd>
-              </dl>
-            </li>
-          </ol>
-        </itinerary-item>
-
-        <%~ 
-          include("./partials/destination.eta", 
-            {_i_: 0, ...it.destinations[0]} ) 
-        %>
-        
-        <itinerary-item
-          item-class="transportation"
-          start-date="2024-10-18">
-          <h3 slot="summary">
-            <svg class="icon">
-              <use
-                xlink:href="/icons/transportation.svg#icon-train" />
-            </svg>
-            Venice &rarr; Florence
-          </h3>
-          <h4>9407 Frecciarossa</h4>
-          <dl class="timings">
-            <dt>Depart</dt>
-            <dd>Venezia S. Lucia</dd>
-            <dd>
-              <time datetime="2024-10-18 09:25:00+0100"
-                >9:25 AM</time
-              >
-            </dd>
-            <dt>Arrive</dt>
-            <dd>Firenze S.M.N.</dd>
-            <dd>
-              <time datetime="2024-10-18 11:30:00+0100"
-                >11:30 AM</time
-              >
-            </dd>
-          </dl>
-        </itinerary-item>
-
-        <%~ 
-          include("./partials/destination.eta", 
-            {_i_: 1, ...it.destinations[1]} ) 
-        %>
-        
-     
-        <itinerary-item
-          item-class="transportation"
-          start-date="2024-10-21">
-          <h3 slot="summary">
-            <svg class="icon">
-              <use
-                xlink:href="/icons/transportation.svg#icon-train" />
-            </svg>
-            Florence &rarr; Rome
-          </h3>
-          <h4>9435 Frecciarossa</h4>
-          <dl class="timings">
-            <dt>Depart</dt>
-            <dd>Firenze S.M.N.</dd>
-            <dd>
-              <time datetime="2024-10-21 15:38:00+0100"
-                >3:38 PM</time
-              >
-            </dd>
-            <dt>Arrive</dt>
-            <dd>Roma Termini</dd>
-            <dd>
-              <time datetime="2024-10-21 17:10:00+0100"
-                >5:10 PM</time
-              >
-            </dd>
-          </dl>
-        </itinerary-item>
-
-        <%~ 
-          include("./partials/destination.eta", 
-            {_i_: 2, ...it.destinations[2]} ) 
-        %>
-        
-        <itinerary-item
-          item-class="transportation"
-          start-date="2024-10-25">
-          <h3 slot="summary">
-            <svg class="icon">
-              <use
-                xlink:href="/icons/transportation.svg/#icon-airplane" />
-            </svg>
-            FCO &rarr; FRA &rarr; SFO
-          </h3>
-          <ol>
-            <li>
-              <h4>Lufthansa LH233</h4>
-              <dl class="timings">
-                <dt>Depart</dt>
-                <dd>Rome (FCO)</dd>
-                <dd>
-                  <time datetime="2024-10-25 13:25:00+0100"
-                    >1:25 PM</time
-                  >
-                </dd>
-                <dt>Arrive</dt>
-                <dd>Frankfurt (FRA)</dd>
-                <dd>
-                  <time datetime="2024-10-25 15:20:00+0100"
-                    >3:20 PM</time
-                  >
-                </dd>
-              </dl>
-            </li>
-            <li>
-              <h4>United UA927</h4>
-              <dl class="timings">
-                <dt>Depart</dt>
-                <dd>Frankfurt (FRA)</dd>
-                <dd>
-                  <time datetime="2024-10-25 17:25:00+0100"
-                    >5:25 PM</time
-                  >
-                </dd>
-                <dt>Arrive</dt>
-                <dd>San Francisco (SFO)</dd>
-                <dd>
-                  <time datetime="2024-10-25 19:45:00-0800"
-                    >7:45 PM</time
-                  >
-                </dd>
-              </dl>
-            </li>
-          </ol>
-        </itinerary-item>
+        <!-- outbound flight -->
+        <%~ include("./partials/transportation.eta",
+          it.entourage[0].outbound ) %>
+        <!-- loop over destinations -->
+        <% it.destinations.forEach(function(dst, i){ %>
+        <!-- destination partial -->
+        <%~ include("./partials/destination.eta", 
+          {_i_: i, ...it.destinations[i]} ) %>
+        <!-- transportation partial -->
+        <% if ( i < it.transportation.length ) { %>
+        <%~ include("./partials/transportation.eta",
+          it.transportation[i]) %>
+        <% } %>
+        <!-- end loop destinations -->
+        <% }) %>
+        <!-- return flight -->
+        <%~ include("./partials/transportation.eta",
+          it.entourage[0].inbound) %>
       </section>
+
       <entourage-table src="/data/entourage.json">
       </entourage-table>
     </main>

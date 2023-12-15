@@ -112,8 +112,8 @@ export class ItineraryItem extends HTMLElement {
 
     if (end) {
       const endTime = document.createElement("time");
-      endTime.setAttribute("datetime", start);
-      endTime.textContent = formatDate(start);
+      endTime.setAttribute("datetime", end);
+      endTime.textContent = formatDate(end);
       dates.append(endTime);
     }
 

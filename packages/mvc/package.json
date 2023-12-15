@@ -29,7 +29,8 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "eta": "^3.2.0",
     "express": "^4.18.2",
-    "eta": "^3.2.0"
+    "moment": "^2.29.4"
   }
 }
