@@ -30,12 +30,23 @@
     </li>
     <% }) %>
     
-    <% it.excursions.forEach(function(ex){ %>
+    <% it.excursions.forEach(function(ex){ 
+      const before = {
+        walking: "Walking tour of ",
+        train: "Train trip to ",
+        tour: "Tour of "
+      }[ex.type] || "Travel to ";
+      const after = {
+        metro: " by city Metro",
+        bus: " by bus",
+        boat: " by boat",
+      }[ex.type] || "";
+    %>
     <li>
-      Trip to 
+      <%= before %>
       <a href="<%= ex.link %>">
         <%= ex.name %>
-      </a>
+      </a><%= after %>
     </li>
     <% }) %>
     

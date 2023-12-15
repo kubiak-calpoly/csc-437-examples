@@ -57,7 +57,7 @@ let tours: Array<Tour> = [
           {
             name: "Murano",
             link: "/features/venice/murano",
-            type: undefined
+            type: "boat"
           },
           {
             name: "Piazza San Marco",

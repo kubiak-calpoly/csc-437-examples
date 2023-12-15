@@ -36,6 +36,7 @@ export interface Excursion {
 }
 
 type ExcursionType =
+  | "boat"
   | "bus"
   | "metro"
   | "train"
