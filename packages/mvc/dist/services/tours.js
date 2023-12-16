@@ -33,7 +33,35 @@ __export(tours_exports, {
 });
 module.exports = __toCommonJS(tours_exports);
 var import_moment = __toESM(require("moment"));
-var import_profiles = __toESM(require("./profiles"));
+let profiles = [
+  {
+    id: "blaze",
+    name: "Blaze Pasquale",
+    nickname: void 0,
+    home: "Oakland, CA",
+    airports: ["SFO", "OAK", "SJC"],
+    color: "#8A81BE",
+    avatar: "/data/avatars/Blaze Pasquale.png"
+  },
+  {
+    id: "mondy",
+    name: "Pia Mondrian",
+    nickname: "Mondy",
+    home: "Ventura, CA",
+    airports: ["LAX"],
+    avatar: void 0,
+    color: void 0
+  },
+  {
+    id: "izzy",
+    name: "Isabel Nuton",
+    nickname: "Izzy",
+    home: "San Miguel de Allende, Gto., Mexico",
+    airports: ["BJX", "QRO"],
+    avatar: void 0,
+    color: void 0
+  }
+];
 let tours = [
   {
     id: "tour0",
@@ -181,7 +209,7 @@ let tours = [
     ],
     entourage: [
       {
-        profile: import_profiles.default.get("blaze"),
+        profile: profiles[0],
         outbound: {
           type: "air",
           routing: ["SFO", "FRA", "VCE"],
@@ -264,12 +292,12 @@ let tours = [
         }
       },
       {
-        profile: import_profiles.default.get("mondy"),
+        profile: profiles[1],
         inbound: void 0,
         outbound: void 0
       },
       {
-        profile: import_profiles.default.get("izzy"),
+        profile: profiles[1],
         inbound: void 0,
         outbound: void 0
       }

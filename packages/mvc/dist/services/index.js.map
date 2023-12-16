@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../src/services/index.ts"],
+  "sourcesContent": ["export { connect } from \"./connect\";\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA,qBAAwB;",
+  "names": []
+}

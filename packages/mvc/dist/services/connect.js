@@ -26,41 +26,34 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-var profiles_exports = {};
-__export(profiles_exports, {
-  create: () => create,
-  default: () => profiles_default,
-  get: () => get
+var connect_exports = {};
+__export(connect_exports, {
+  connect: () => connect
 });
-module.exports = __toCommonJS(profiles_exports);
-var import_profile = __toESM(require("./mongo/profile"));
-function get(id) {
-  return new Promise((resolve, reject) => {
-    import_profile.default.find({ id }).then((found) => {
-      if (found && found.length)
-        resolve(found[0].toObject());
-      else
-        reject(`Profile not found {id: ${id}}`);
-    });
-  });
+module.exports = __toCommonJS(connect_exports);
+var import_mongoose = __toESM(require("mongoose"));
+var import_dotenv = __toESM(require("dotenv"));
+import_mongoose.default.set("debug", true);
+import_dotenv.default.config();
+function getMongoURI(dbname) {
+  let connection_string = `mongodb://localhost:27017/${dbname}`;
+  const { MONGO_USER, MONGO_PWD, MONGO_CLUSTER } = process.env;
+  if (MONGO_USER && MONGO_PWD && MONGO_CLUSTER) {
+    console.log(
+      "Connecting to MongoDB at",
+      `mongodb+srv://${MONGO_USER}:<password>@${MONGO_CLUSTER}/${dbname}`
+    );
+    connection_string = `mongodb+srv://${MONGO_USER}:${MONGO_PWD}@${MONGO_CLUSTER}/${dbname}?retryWrites=true&w=majority`;
+  } else {
+    console.log("Connecting to MongoDB at ", connection_string);
+  }
+  return connection_string;
 }
-function create(profile) {
-  return new Promise((resolve, reject) => {
-    const p = new import_profile.default(profile);
-    p.save().then((created) => {
-      if (created)
-        resolve(created.toObject());
-      else
-        reject(
-          `Profile not created: ${JSON.stringify(profile)}`
-        );
-    });
-  });
+function connect(dbname) {
+  import_mongoose.default.connect(getMongoURI(dbname)).catch((error) => console.log(error));
 }
-var profiles_default = { get, create };
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
-  create,
-  get
+  connect
 });
-//# sourceMappingURL=profiles.js.map
+//# sourceMappingURL=connect.js.map

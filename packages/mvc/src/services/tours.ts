@@ -1,7 +1,38 @@
 // CRUD services for Tours
 import moment from "moment";
 import { Tour } from "../models/Tour";
-import profiles from "./profiles";
+import { Profile } from "../models/Profile";
+
+// in-memory DB
+let profiles: Array<Profile> = [
+  {
+    id: "blaze",
+    name: "Blaze Pasquale",
+    nickname: undefined,
+    home: "Oakland, CA",
+    airports: ["SFO", "OAK", "SJC"],
+    color: "#8A81BE",
+    avatar: "/data/avatars/Blaze Pasquale.png"
+  },
+  {
+    id: "mondy",
+    name: "Pia Mondrian",
+    nickname: "Mondy",
+    home: "Ventura, CA",
+    airports: ["LAX"],
+    avatar: undefined,
+    color: undefined
+  },
+  {
+    id: "izzy",
+    name: "Isabel Nuton",
+    nickname: "Izzy",
+    home: "San Miguel de Allende, Gto., Mexico",
+    airports: ["BJX", "QRO"],
+    avatar: undefined,
+    color: undefined
+  }
+];
 
 let tours: Array<Tour> = [
   {
@@ -153,7 +184,7 @@ let tours: Array<Tour> = [
     ],
     entourage: [
       {
-        profile: profiles.get("blaze"),
+        profile: profiles[0],
         outbound: {
           type: "air",
           routing: ["SFO", "FRA", "VCE"],
@@ -236,12 +267,12 @@ let tours: Array<Tour> = [
         }
       },
       {
-        profile: profiles.get("mondy"),
+        profile: profiles[1],
         inbound: undefined,
         outbound: undefined
       },
       {
-        profile: profiles.get("izzy"),
+        profile: profiles[1],
         inbound: undefined,
         outbound: undefined
       }

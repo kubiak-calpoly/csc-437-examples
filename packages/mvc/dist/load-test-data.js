@@ -21,46 +21,41 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
   mod
 ));
-var import_express = __toESM(require("express"));
-var import_eta = require("eta");
-var import_tours = __toESM(require("./services/tours"));
-var import_profiles = __toESM(require("./services/profiles"));
 var import_services = require("./services");
-const app = (0, import_express.default)();
-const eta = new import_eta.Eta({
-  views: "./views"
-});
-const port = process.env.PORT || 3e3;
-[
-  "data",
-  "icons",
-  "js",
-  "images",
-  "maps",
-  "pages",
-  "styles"
-].forEach(
-  (dir) => app.use(`/${dir}`, import_express.default.static(`static/${dir}`))
-);
+var import_profiles = __toESM(require("./services/profiles"));
+let test_profiles = [
+  {
+    id: "blaze",
+    name: "Blaze Pasquale",
+    nickname: void 0,
+    home: "Oakland, CA",
+    airports: ["SFO", "OAK", "SJC"],
+    color: "#8A81BE",
+    avatar: "/data/avatars/Blaze Pasquale.png"
+  },
+  {
+    id: "mondy",
+    name: "Pia Mondrian",
+    nickname: "Mondy",
+    home: "Ventura, CA",
+    airports: ["LAX"],
+    avatar: void 0,
+    color: void 0
+  },
+  {
+    id: "izzy",
+    name: "Isabel Nuton",
+    nickname: "Izzy",
+    home: "San Miguel de Allende, Gto., Mexico",
+    airports: ["BJX", "QRO"],
+    avatar: void 0,
+    color: void 0
+  }
+];
 (0, import_services.connect)("blazing");
-app.get("/hello/:name", (req, res) => {
-  const { name } = req.params;
-  res.send(eta.render("./hello", { name }));
-});
-app.get("/tour/:id", (req, res) => {
-  const { id } = req.params;
-  import_tours.default.get(id).then((data) => res.send(eta.render("./tour", data)));
-});
-app.get("/profile/:id", (req, res) => {
-  const { id } = req.params;
-  const { edit } = req.query;
-  import_profiles.default.get(id).then((pr) => {
-    const data = { edit, ...pr };
-    console.log("Data for /profile: ", JSON.stringify(data));
-    res.send(eta.render("./profile", data));
-  });
-});
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
-//# sourceMappingURL=index.js.map
+Promise.all(test_profiles.map(import_profiles.default.create)).then(
+  (docs) => docs.forEach(
+    (doc) => console.log("Profile created:", JSON.stringify(doc))
+  )
+);
+//# sourceMappingURL=load-test-data.js.map
