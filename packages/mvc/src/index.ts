@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import { Eta } from "eta";
-import { Tour } from "./models/Tour.ts";
-import tours from "./services/tours.ts";
+import { Tour } from "./models/Tour";
+import tours from "./services/tours";
 
 const app = express();
 const eta = new Eta({

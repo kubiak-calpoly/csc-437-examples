@@ -2,7 +2,7 @@
   <h2>Entourage</h2>
   <table>
     <tbody>
-      <% it.map((item) => item.traveler).forEach(function(tr){ %>
+      <% it.map((item) => item.profile).forEach(function(tr){ %>
       <tr>
         <td rowspan="2">
           <span class="avatar" 

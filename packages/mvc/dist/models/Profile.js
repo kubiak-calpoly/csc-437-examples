@@ -12,6 +12,6 @@ var __copyProps = (to, from, except, desc) => {
   return to;
 };
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-var Tour_exports = {};
-module.exports = __toCommonJS(Tour_exports);
-//# sourceMappingURL=Tour.js.map
+var Profile_exports = {};
+module.exports = __toCommonJS(Profile_exports);
+//# sourceMappingURL=Profile.js.map

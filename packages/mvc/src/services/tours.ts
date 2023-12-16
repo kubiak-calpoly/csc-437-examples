@@ -1,34 +1,7 @@
 // CRUD services for Tours
 import moment from "moment";
-import { Tour, Traveler } from "../models/Tour";
-
-// in-memory DB
-let blaze: Traveler = {
-  name: "Blaze Pasquale",
-  nickname: undefined,
-  home: "Oakland, CA",
-  airports: ["SFO", "OAK", "SJC"],
-  color: "#8A81BE",
-  avatar: "/data/avatars/Blaze Pasquale.png"
-};
-
-let mondy: Traveler = {
-  name: "Pia Mondrian",
-  nickname: "Mondy",
-  home: "Ventura, CA",
-  airports: ["LAX"],
-  avatar: undefined,
-  color: undefined
-};
-
-let izzy: Traveler = {
-  name: "Isabel Nuton",
-  nickname: "Izzy",
-  home: "San Miguel de Allende, Gto., Mexico",
-  airports: ["BJX", "QRO"],
-  avatar: undefined,
-  color: undefined
-};
+import { Tour } from "../models/Tour";
+import profiles from "./profiles";
 
 let tours: Array<Tour> = [
   {
@@ -180,7 +153,7 @@ let tours: Array<Tour> = [
     ],
     entourage: [
       {
-        traveler: blaze,
+        profile: profiles.get("blaze"),
         outbound: {
           type: "air",
           routing: ["SFO", "FRA", "VCE"],
@@ -263,12 +236,12 @@ let tours: Array<Tour> = [
         }
       },
       {
-        traveler: mondy,
+        profile: profiles.get("mondy"),
         inbound: undefined,
         outbound: undefined
       },
       {
-        traveler: izzy,
+        profile: profiles.get("izzy"),
         inbound: undefined,
         outbound: undefined
       }
@@ -277,7 +250,11 @@ let tours: Array<Tour> = [
 ];
 
 export function get(id: String): Promise<Tour> {
-  return new Promise((resolve) => resolve(tours[0]));
+  return new Promise((resolve, reject) => {
+    const found = tours.find((t) => t.id === id);
+    if (found) resolve(tours[0]);
+    else reject(`Tour not found: ${id}`);
+  });
 }
 
 export default { get };

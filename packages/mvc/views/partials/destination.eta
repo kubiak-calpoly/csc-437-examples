@@ -42,6 +42,7 @@
         boat: " by boat",
       }[ex.type] || "";
     %>
+    
     <li>
       <%= before %>
       <a href="<%= ex.link %>">

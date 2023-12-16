@@ -1,5 +1,6 @@
 import moment, { Moment } from "moment";
-import { Point } from "./Geo.ts";
+import { Point } from "./Geo";
+import { Profile } from "./Profile";
 
 export interface Tour {
   id: string;
@@ -8,7 +9,7 @@ export interface Tour {
   transportation: Array<Transportation>;
   startDate: Date;
   endDate: Date;
-  entourage: Array<TravellerOnTour>;
+  entourage: Array<Traveler>;
 }
 
 export interface Destination {
@@ -67,16 +68,7 @@ export interface Endpoint {
 }
 
 export interface Traveler {
-  name: string;
-  nickname: string | undefined;
-  home: string;
-  airports: Array<String>;
-  avatar: string | undefined;
-  color: string | undefined;
-}
-
-export interface TravelerOnTour {
-  traveler: Traveler;
+  profile: Profile;
   outbound: Transportation | undefined;
   inbound: Transportation | undefined;
 }
