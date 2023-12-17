@@ -84,3 +84,18 @@ dt {
   font-family: var(--font-family-display);
   font-weight: bold;
 }
+input,
+select {
+  font-family: inherit;
+}
+button {
+  font-family: var(--font-family-display);
+}
+input,
+select,
+button {
+  background: var(--color-background-control);
+  border: 1px solid var(--color-border-control);
+  border-radius: var(--size-corner-medium);
+  padding: var(--size-spacing-small);
+}

@@ -1,4 +1,4 @@
-// utils.js -- web component utilities
+// utils/webc.js -- web component utilities
 
 // return an HTML <template> from tagged literal
 export function html(strings, ...values) {

@@ -12,9 +12,9 @@
     <link
       href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,200;0,400;0,700;1,700&family=Merriweather:wght@400;700&display=swap"
       rel="stylesheet" />
-      <link rel="stylesheet" href="/styles/tokens.css" />
-      <link rel="stylesheet" href="/styles/page.css" />
-      <link rel="stylesheet" href="/styles/profile.css" />
+    <link rel="stylesheet" href="/styles/tokens.css" />
+    <link rel="stylesheet" href="/styles/page.css" />
+    <link rel="stylesheet" href="/styles/profile.css" />
   </head>
   <body>
     <%~ include("./partials/header.eta", {name: it.name || "New Profile"}) %>
