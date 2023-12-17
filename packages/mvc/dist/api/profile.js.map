@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../src/api/profile.ts"],
+  "sourcesContent": ["import { Request, Response, Router } from \"express\";\n\nconst profiles = Router();\n\nprofiles.post(\"/\", (req: Request, res: Response) => {\n  console.log(\"Received a profile:\", req.body);\n});\n\nexport default profiles;\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA,qBAA0C;AAE1C,MAAM,eAAW,uBAAO;AAExB,SAAS,KAAK,KAAK,CAAC,KAAc,QAAkB;AAClD,UAAQ,IAAI,uBAAuB,IAAI,IAAI;AAC7C,CAAC;AAED,IAAO,kBAAQ;",
+  "names": []
+}

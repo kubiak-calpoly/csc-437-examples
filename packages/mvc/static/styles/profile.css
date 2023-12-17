@@ -1,0 +1,35 @@
+.profile {
+  display: grid;
+  grid-template-columns: [label] 2fr [value] 3fr [end];
+  gap: var(--size-spacing-medium);
+  width: 100%;
+  padding: var(--size-spacing-medium);
+}
+
+.profile form,
+.profile label,
+.profile dl {
+  display: contents;
+}
+
+.profile dt,
+.profile label > span:first-child {
+  grid-column: label;
+  white-space: nowrap;
+  text-align: right;
+  font-family: var(--font-family-display);
+}
+
+.profile dd,
+.profile input {
+  grid-column: value;
+}
+
+.profile input {
+  width: 100%;
+}
+
+.profile button {
+  grid-column: value;
+  width: auto;
+}

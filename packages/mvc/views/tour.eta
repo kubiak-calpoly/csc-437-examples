@@ -34,10 +34,7 @@
     </script>
   </head>
   <body>
-    <header>
-      <h1>Blazing Travels</h1>
-      <p><%= it.name %></p>
-    </header>
+    <%~ include("./partials/header.eta", it) %>
 
     <main class="page">
       <calendar-widget

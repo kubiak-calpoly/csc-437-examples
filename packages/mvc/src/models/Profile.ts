@@ -1,9 +1,9 @@
 export interface Profile {
   id: string;
   name: string;
-  nickname: string | undefined;
+  nickname?: string;
   home: string;
   airports: Array<String>;
-  avatar: string | undefined;
-  color: string | undefined;
+  avatar?: string;
+  color?: string;
 }

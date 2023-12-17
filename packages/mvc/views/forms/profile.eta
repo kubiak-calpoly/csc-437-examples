@@ -1,0 +1,54 @@
+<form onsubmit="return ProfileForm.submit(event)">
+  <label>
+    <span>Name</span>
+    <input name="name" 
+      value="<%= it.name || "" %>"
+    >
+  </label>
+  <label>
+    <span>Nickname</span>
+    <input name="nickname" 
+      value="<%= it.nickname || "" %>"
+      >
+  </label>
+  <label>
+    <span>Home city</span>
+    <input name="home" 
+      value="<%= it.home || "" %>"
+    >
+  </label>
+  <label>
+    <span>Home airport(s)</span>
+    <input name="home" 
+      value="<%= (it.airports || []).join(",")%>"
+    >
+  </label>
+  <label>
+    <span>Color</span>
+    <input name="color"
+      value="<%=it.color || undefined %>"
+    >
+  </label>
+  <button type="submit">Done</button>
+</form>
+<script>
+class ProfileForm {
+  static submit ( event ) {
+    const form = event.target;
+    const data = new FormData(form);
+    
+    event.preventDefault();
+    console.log("Submitting form data:", data);
+    fetch("/api/profiles", {
+      method: "POST",
+      body: JSON.stringify(Object.fromEntries(data)),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).then((response) => {});
+    
+    return false;
+  }
+};
+window.ProfileForm = ProfileForm;
+</script>

@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../src/api/index.ts"],
+  "sourcesContent": ["import express, { Router } from \"express\";\nimport profiles from \"./profiles\";\n\nconst api = Router();\n\napi.use(express.json());\n\napi.use(\"/profiles\", profiles);\n\nexport default api;\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA,qBAAgC;AAChC,sBAAqB;AAErB,MAAM,UAAM,uBAAO;AAEnB,IAAI,IAAI,eAAAA,QAAQ,KAAK,CAAC;AAEtB,IAAI,IAAI,aAAa,gBAAAC,OAAQ;AAE7B,IAAO,cAAQ;",
+  "names": ["express", "profiles"]
+}

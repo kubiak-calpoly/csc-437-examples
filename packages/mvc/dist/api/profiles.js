@@ -28,41 +28,24 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var profiles_exports = {};
 __export(profiles_exports, {
-  create: () => create,
-  default: () => profiles_default,
-  get: () => get
+  default: () => profiles_default
 });
 module.exports = __toCommonJS(profiles_exports);
-var import_profile = __toESM(require("./mongo/profile"));
-function get(id) {
-  return new Promise((resolve, reject) => {
-    import_profile.default.find({ id }).then((found) => {
-      if (found && found.length)
-        resolve(found[0].toObject());
-      else
-        reject(`Profile not found {id: ${id}}`);
-    });
-  });
-}
-function create(profile) {
-  return new Promise((resolve, reject) => {
-    const p = new import_profile.default(profile);
-    p.save().then((created) => {
-      if (created)
-        resolve(created.toObject());
-      else
-        reject(
-          `Profile not created: ${JSON.stringify(profile)}`
-        );
-    }).catch((error) => {
-      reject(`Profile failed validation: ${error}`);
-    });
-  });
-}
-var profiles_default = { get, create };
-// Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  create,
-  get
+var import_express = require("express");
+var import_profiles = __toESM(require("../services/profiles"));
+const api = (0, import_express.Router)();
+api.post("/", (req, res) => {
+  console.log("Received a profile:", req.body);
+  const { id, name, nickname, home, airports, avatar, color } = req.body;
+  import_profiles.default.create({
+    id,
+    name,
+    nickname,
+    home,
+    airports,
+    avatar,
+    color
+  }).then((profile) => res.status(200).send(profile)).catch((error) => res.status(400).send({ error }));
 });
+var profiles_default = api;
 //# sourceMappingURL=profiles.js.map
