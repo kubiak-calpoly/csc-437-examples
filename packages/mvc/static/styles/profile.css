@@ -7,6 +7,7 @@
 }
 
 .profile profile-form,
+.profile profile-form form,
 .profile dl {
   display: contents;
 }

@@ -5,6 +5,10 @@ import { Profile } from "./models/Profile";
 import tours from "./services/tours";
 import profiles from "./services/profiles";
 import { connect } from "./services";
+import {
+  basicAuth,
+  authenticatedUser
+} from "./auth/basic-auth";
 import api from "./api";
 
 const app = express();
@@ -41,24 +45,43 @@ app.get("/tour/:id", (req: Request, res: Response) => {
     .then((data: Tour) => res.send(eta.render("./tour", data)));
 });
 
-app.get("/profile/new", (_: Request, res: Response) => {
-  res.send(eta.render("./profile", { $new: true }));
-});
+app.get(
+  "/profile/new",
+  basicAuth,
+  (req: Request, res: Response) => {
+    res.send(
+      eta.render("./profile", {
+        $new: true,
+        $user: authenticatedUser(req)
+      })
+    );
+  }
+);
 
-app.get("/profile/show/:id", (req: Request, res: Response) => {
-  const { id } = req.params;
-  profiles.get(id).then((data: Profile) => {
-    console.log("Data for /profile: ", JSON.stringify(data));
-    res.send(eta.render("./profile", data));
-  });
-});
+app.get(
+  "/profile/show/:id",
+  basicAuth,
+  (req: Request, res: Response) => {
+    const { id } = req.params;
+    profiles.get(id).then((data: Profile) => {
+      console.log("Data for /profile: ", JSON.stringify(data));
+      res.send(eta.render("./profile", data));
+    });
+  }
+);
 
-app.get("/profile/edit/:id", (req: Request, res: Response) => {
-  const { id } = req.params;
-  profiles.get(id).then((old: Profile) => {
-    res.send(eta.render("./profile", { $edit: true, ...old }));
-  });
-});
+app.get(
+  "/profile/edit/:id",
+  basicAuth,
+  (req: Request, res: Response) => {
+    const { id } = req.params;
+    profiles.get(id).then((old: Profile) => {
+      res.send(
+        eta.render("./profile", { $edit: true, ...old })
+      );
+    });
+  }
+);
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
