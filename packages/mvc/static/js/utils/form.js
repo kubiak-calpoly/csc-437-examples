@@ -3,13 +3,15 @@
 // A Request object that contains a form's data
 export class FormDataRequest {
   constructor(formData) {
-    this.data = formData;
+    this.body = JSON.stringify(Object.fromEntries(formData));
+
+    console.log("FormDataRequest", this.body);
   }
 
   post(url) {
-    return fetch("url", {
+    return fetch(url, {
       method: "POST",
-      body: JSON.stringify(Object.fromEntries(this.data)),
+      body: this.body,
       headers: {
         "Content-Type": "application/json"
       }

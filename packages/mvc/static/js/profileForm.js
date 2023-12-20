@@ -9,20 +9,15 @@ export class ProfileForm extends HTMLElement {
   }
 
   static template = html`
-    <form>
-      <slot></slot>
-      <div id="footer">
-        <button
-          type="button"
-          onclick="ProfileForm.handleSubmit(event)">
-          <slot name="ok">Ok</slot>
-        </button>
-      </div>
-    </form>
+    <slot id="form"></slot>
+    <div id="footer">
+      <button
+        type="button"
+        onclick="ProfileForm.handleSubmit(event)">
+        <slot name="ok">Ok</slot>
+      </button>
+    </div>
     <style>
-      form {
-        display: contents;
-      }
       #footer {
         grid-column: value;
         background: var(--color-background-shading);
@@ -39,8 +34,10 @@ export class ProfileForm extends HTMLElement {
   `;
 
   static handleSubmit(event) {
-    const form = event.target.closest("form");
-    const data = new FormData(form);
+    const root = event.currentTarget.getRootNode();
+    const formSlot = root.getElementById("form");
+    const slotted = formSlot.assignedElements();
+    const data = new FormData(slotted[0]);
     const request = new FormDataRequest(data);
 
     request.post("/api/profiles");
@@ -69,6 +66,7 @@ export class FormControl extends HTMLElement {
       label {
         display: contents;
       }
+      
   `;
 
   connectedCallback() {

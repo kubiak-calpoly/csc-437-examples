@@ -1,4 +1,3 @@
-import { Document } from "mongoose";
 import { Profile } from "../models/Profile";
 import profileModel from "./mongo/profile";
 
