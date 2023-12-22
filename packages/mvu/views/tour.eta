@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com" />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,200;0,400;0,700;1,700&family=Merriweather:wght@400;700&display=swap"
+      rel="stylesheet" />
+    <link rel="stylesheet" href="/styles/tokens.css" />
+    <link rel="stylesheet" href="/styles/page.css" />
+    <link rel="stylesheet" href="/styles/itinerary.css" />
+    <link rel="stylesheet" href="/styles/entourage.css" />
+    <link rel="stylesheet" href="/styles/timings.css" />
+    <script type="module">
+      import {
+        CalendarWidget,
+        EntourageTable,
+        ItineraryItem,
+        MapMarker,
+        MapWidget
+      } from "/js/blazing.js";
+
+      customElements.define("entourage-table", EntourageTable);
+      customElements.define("calendar-widget", CalendarWidget);
+      customElements.define("itinerary-item", ItineraryItem);
+      customElements.define("map-marker", MapMarker);
+      customElements.define("map-widget", MapWidget);
+    </script>
+  </head>
+  <body>
+    <tour-provider for="tour01">
+      <blazing-header> </blazing-header>
+
+      <calendar-widget> </calendar-widget>
+
+      <map-widget src="/maps/italy.geo.json">
+        <map-marker
+          id="<%= `marker-destination-${i}` %>"
+          lat="<%= dst.location.lat %>"
+          lon="<%= dst.location.lon %>">
+        </map-marker>
+      </map-widget>
+
+      <itinerary-builder> </itinerary-builder>
+
+      <entourage-table> </entourage-table>
+    </tour-provider>
+  </body>
+</html>

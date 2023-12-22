@@ -22,5 +22,11 @@
   "workspaces": [
     "packages/*"
   ],
-  "dependencies": {}
+  "devDependencies": {
+    "vite": "^5.0.10"
+  },
+  "dependencies": {
+    "@lit/context": "^1.1.0",
+    "lit-html": "^3.1.0"
+  }
 }

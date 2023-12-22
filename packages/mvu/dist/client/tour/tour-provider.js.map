@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../src/client/tour/tour-provider.ts"],
+  "sourcesContent": ["import { LitElement } from \"lit\";\nimport { property } from \"lit/decorators.js\";\nimport { provide } from \"@lit/context\";\nimport type {\n  Tour,\n  Destination,\n  Transportation,\n  Traveler\n} from \"../../models/Tour\";\n\nimport { tourContext } from \"./tour-context.js\";\n\nexport class TourProvider extends LitElement {\n  @provide({ context: tourContext })\n  @property({ attribute: false })\n  tour: Tour | undefined;\n\n  @property()\n  tourId = \"\";\n\n  connectedCallback() {\n    fetch(`/api/tours/${this.tourId}`)\n      .then((res) => {\n        if (res.status === 200) {\n          res.json().then((json) => (this.tour = json as Tour));\n        }\n      })\n      .catch((err) => console.log(\"Error when reading tour\"));\n  }\n}\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA,iBAA2B;AAC3B,wBAAyB;AACzB,qBAAwB;AAQxB,0BAA4B;AAErB,MAAM,qBAAqB,sBAAW;AAAA,EAG3C;AAAA,EAGA,SAAS;AAAA,EAET,oBAAoB;AAClB,UAAM,cAAc,KAAK,MAAM,EAAE,EAC9B,KAAK,CAAC,QAAQ;AACb,UAAI,IAAI,WAAW,KAAK;AACtB,YAAI,KAAK,EAAE,KAAK,CAAC,SAAU,KAAK,OAAO,IAAa;AAAA,MACtD;AAAA,IACF,CAAC,EACA,MAAM,CAAC,QAAQ,QAAQ,IAAI,yBAAyB,CAAC;AAAA,EAC1D;AACF;AAdE;AAAA,MAFC,wBAAQ,EAAE,SAAS,gCAAY,CAAC;AAAA,MAChC,4BAAS,EAAE,WAAW,MAAM,CAAC;AAAA,GAFnB,aAGX;AAGA;AAAA,MADC,4BAAS;AAAA,GALC,aAMX;",
+  "names": []
+}

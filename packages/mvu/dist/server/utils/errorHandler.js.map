@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../src/server/utils/errorHandler.ts"],
+  "sourcesContent": ["import { NextFunction, Request, Response } from \"express\";\n\nexport default function errorHandler(\n  err: Error,\n  req: Request,\n  res: Response,\n  next: NextFunction\n) {\n  console.error(err);\n  res\n    .status(500)\n    .send({ errors: [{ message: \"Something went wrong\" }] });\n}\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAEe,SAAR,aACL,KACA,KACA,KACA,MACA;AACA,UAAQ,MAAM,GAAG;AACjB,MACG,OAAO,GAAG,EACV,KAAK,EAAE,QAAQ,CAAC,EAAE,SAAS,uBAAuB,CAAC,EAAE,CAAC;AAC3D;",
+  "names": []
+}

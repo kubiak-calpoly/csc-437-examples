@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../src/server/utils/HTTPError.ts"],
+  "sourcesContent": ["export class HTTPError extends Error {\n  statusCode: number = 500;\n\n  constructor(message: string, status: number = 500) {\n    super(`HTTP Error (${status}): ${message}`);\n    this.statusCode = status;\n  }\n}\n\nexport class BadRequestError extends HTTPError {\n  constructor(message: string) {\n    super(message, 400);\n  }\n}\n\nexport class NotFoundError extends HTTPError {\n  constructor(message: string) {\n    super(message, 404);\n  }\n}\n\nexport class ConflictError extends HTTPError {\n  constructor(message: string) {\n    super(message, 409);\n  }\n}\n\nexport class InternalError extends HTTPError {\n  constructor(message: string) {\n    super(message, 500);\n  }\n}\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAO,MAAM,kBAAkB,MAAM;AAAA,EACnC,aAAqB;AAAA,EAErB,YAAY,SAAiB,SAAiB,KAAK;AACjD,UAAM,eAAe,MAAM,MAAM,OAAO,EAAE;AAC1C,SAAK,aAAa;AAAA,EACpB;AACF;AAEO,MAAM,wBAAwB,UAAU;AAAA,EAC7C,YAAY,SAAiB;AAC3B,UAAM,SAAS,GAAG;AAAA,EACpB;AACF;AAEO,MAAM,sBAAsB,UAAU;AAAA,EAC3C,YAAY,SAAiB;AAC3B,UAAM,SAAS,GAAG;AAAA,EACpB;AACF;AAEO,MAAM,sBAAsB,UAAU;AAAA,EAC3C,YAAY,SAAiB;AAC3B,UAAM,SAAS,GAAG;AAAA,EACpB;AACF;AAEO,MAAM,sBAAsB,UAAU;AAAA,EAC3C,YAAY,SAAiB;AAC3B,UAAM,SAAS,GAAG;AAAA,EACpB;AACF;",
+  "names": []
+}
