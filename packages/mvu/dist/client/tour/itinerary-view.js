@@ -25,24 +25,38 @@ var __decorateClass = (decorators, target, key, kind) => {
     __defProp(target, key, result);
   return result;
 };
-var view_itinerary_exports = {};
-__export(view_itinerary_exports, {
+var itinerary_view_exports = {};
+__export(itinerary_view_exports, {
   ItineraryView: () => ItineraryView
 });
-module.exports = __toCommonJS(view_itinerary_exports);
+module.exports = __toCommonJS(itinerary_view_exports);
 var import_lit = require("lit");
 var import_decorators = require("lit/decorators.js");
 var import_context = require("@lit/context");
-var import_tour_context = require("./tour-context.js");
-class ItineraryView extends import_lit.LitElement {
-  tour;
-}
+var import_tour_context = require("./tour-context");
+let ItineraryView = class extends import_lit.LitElement {
+  constructor() {
+    super(...arguments);
+    this.tour = {
+      name: "Unnamed Tour"
+    };
+  }
+  render() {
+    const { name } = this.tour;
+    console.log("Rendering itinerary-view for tour", this.tour);
+    console.log("Name:", name);
+    return import_lit.html`<h1>${name}</h1>`;
+  }
+};
 __decorateClass([
-  (0, import_context.consume)({ context: import_tour_context.tourContext }),
-  (0, import_decorators.property)({ attribute: false })
+  (0, import_context.consume)({ context: import_tour_context.tourContext, subscribe: true }),
+  (0, import_decorators.state)()
 ], ItineraryView.prototype, "tour", 2);
+ItineraryView = __decorateClass([
+  (0, import_decorators.customElement)("itinerary-view")
+], ItineraryView);
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   ItineraryView
 });
-//# sourceMappingURL=view-itinerary.js.map
+//# sourceMappingURL=itinerary-view.js.map

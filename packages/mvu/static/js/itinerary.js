@@ -1,4 +1,4 @@
-import { html, effect } from "./utils.js";
+import { html, effect } from "./utils/index.js";
 
 export class ItineraryItem extends HTMLElement {
   constructor() {

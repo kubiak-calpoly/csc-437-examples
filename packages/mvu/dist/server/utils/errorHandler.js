@@ -26,12 +26,14 @@ class ErrorHandler {
   isHTTPError(error) {
     return error instanceof import_HTTPError.HTTPError;
   }
-  handleError(error, response) {
+  handleError(error, response, next) {
     if (error instanceof import_HTTPError.HTTPError && response) {
       this.handleHTTPError(error, response);
     } else {
       this.handleCriticalError(error, response);
     }
+    if (next)
+      next(error);
   }
   handleHTTPError(error, res) {
     res.status(error.statusCode).send(
@@ -44,7 +46,9 @@ class ErrorHandler {
   }
   handleCriticalError(error, res) {
     if (res) {
-      res.status(500).send(error.message);
+      res.status(500).send(
+        `<h1>Internal Server Error (500)</h1><p>${error}</p>`
+      );
     } else {
       console.log("Application Error", error.message);
     }

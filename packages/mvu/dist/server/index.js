@@ -23,6 +23,7 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 ));
 var import_express_async_errors = require("express-async-errors");
 var import_express = __toESM(require("express"));
+var import_vite_express = __toESM(require("vite-express"));
 var import_eta = require("eta");
 var import_services = require("./services");
 var import_services2 = require("./services");
@@ -32,7 +33,7 @@ const app = (0, import_express.default)();
 const eta = new import_eta.Eta({
   views: "./views"
 });
-const port = process.env.PORT || 3e3;
+const port = process.env.PORT ? parseInt(process.env.PORT) : 3e3;
 [
   "data",
   "icons",
@@ -50,10 +51,15 @@ app.get("/hello/:name", (req, res) => {
   const { name } = req.params;
   res.send(eta.render("./hello", { name }));
 });
-app.get("/tour/:id", (req, res) => {
-  const { id } = req.params;
-  import_services.tour_service.get(id).then((data) => res.send(eta.render("./tour", data)));
-});
+app.get(
+  "/tour/:id",
+  (req, res, next) => {
+    const { id } = req.params;
+    import_services.tour_service.get(id).then(
+      (data) => res.send(eta.render("./tour", data))
+    ).catch((error) => next(error));
+  }
+);
 app.get("/profile/new", (req, res) => {
   res.send(
     eta.render("./profile", {
@@ -66,10 +72,6 @@ app.get(
   (req, res, next) => {
     const { id } = req.params;
     import_services.profile_service.get(id).then((data) => {
-      console.log(
-        "Data for /profile: ",
-        JSON.stringify(data)
-      );
       res.send(eta.render("./profile", data));
     }).catch((error) => next(error));
   }
@@ -82,10 +84,12 @@ app.get("/profile/edit/:id", (req, res) => {
 });
 app.use(
   (err, req, res, next) => {
-    import_errorHandler.errorHandler.handleError(err, res);
+    import_errorHandler.errorHandler.handleError(err, res, next);
   }
 );
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+import_vite_express.default.listen(app, port, () => {
+  console.log(
+    `Vite-Express server running at http://localhost:${port}`
+  );
 });
 //# sourceMappingURL=index.js.map

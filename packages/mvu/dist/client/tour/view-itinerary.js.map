@@ -1,7 +1,7 @@
 {
   "version": 3,
   "sources": ["../../../src/client/tour/view-itinerary.ts"],
-  "sourcesContent": ["import { LitElement } from \"lit\";\nimport { property } from \"lit/decorators.js\";\nimport { consume } from \"@lit/context\";\nimport type { Tour } from \"../../models/Tour\";\n\nimport { tourContext } from \"./tour-context.js\";\n\nexport class ItineraryBuilder extends LitElement {\n  @consume({ context: tourContext })\n  @property({ attribute: false })\n  public tour?: Tour;\n}\n"],
-  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA,iBAA2B;AAC3B,wBAAyB;AACzB,qBAAwB;AAGxB,0BAA4B;AAErB,MAAM,yBAAyB,sBAAW;AAAA,EAGxC;AACT;AADS;AAAA,MAFN,wBAAQ,EAAE,SAAS,gCAAY,CAAC;AAAA,MAChC,4BAAS,EAAE,WAAW,MAAM,CAAC;AAAA,GAFnB,iBAGJ;",
+  "sourcesContent": ["import { LitElement } from \"lit\";\nimport { property } from \"lit/decorators.js\";\nimport { consume } from \"@lit/context\";\nimport type { Tour } from \"../../models/Tour\";\n\nimport { tourContext } from \"./tour-context.js\";\n\nexport class ItineraryView extends LitElement {\n  @consume({ context: tourContext })\n  @property({ attribute: false })\n  public tour?: Tour;\n}\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA,iBAA2B;AAC3B,wBAAyB;AACzB,qBAAwB;AAGxB,0BAA4B;AAErB,MAAM,sBAAsB,sBAAW;AAAA,EAGrC;AACT;AADS;AAAA,MAFN,wBAAQ,EAAE,SAAS,gCAAY,CAAC;AAAA,MAChC,4BAAS,EAAE,WAAW,MAAM,CAAC;AAAA,GAFnB,cAGJ;",
   "names": []
 }

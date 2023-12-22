@@ -17,37 +17,19 @@
     <link rel="stylesheet" href="/styles/itinerary.css" />
     <link rel="stylesheet" href="/styles/entourage.css" />
     <link rel="stylesheet" href="/styles/timings.css" />
-    <script type="module">
-      import {
-        CalendarWidget,
-        EntourageTable,
-        ItineraryItem,
-        MapMarker,
-        MapWidget
-      } from "/js/blazing.js";
-
-      customElements.define("entourage-table", EntourageTable);
-      customElements.define("calendar-widget", CalendarWidget);
-      customElements.define("itinerary-item", ItineraryItem);
-      customElements.define("map-marker", MapMarker);
-      customElements.define("map-widget", MapWidget);
-    </script>
+    <script
+      type="module"
+      src="/src/client/tour/index.ts"></script>
   </head>
   <body>
-    <tour-provider for="tour01">
+    <tour-provider for="<%= it.id %>">
       <blazing-header> </blazing-header>
 
       <calendar-widget> </calendar-widget>
 
-      <map-widget src="/maps/italy.geo.json">
-        <map-marker
-          id="<%= `marker-destination-${i}` %>"
-          lat="<%= dst.location.lat %>"
-          lon="<%= dst.location.lon %>">
-        </map-marker>
-      </map-widget>
+      <map-widget src="/maps/italy.geo.json"> </map-widget>
 
-      <itinerary-builder> </itinerary-builder>
+      <itinerary-view> </itinerary-view>
 
       <entourage-table> </entourage-table>
     </tour-provider>

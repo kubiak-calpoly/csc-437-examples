@@ -2,7 +2,7 @@ import {
   geoEquirectangular,
   geoPath
 } from "https://cdn.jsdelivr.net/npm/d3-geo@3/+esm";
-import { html, effect } from "./utils.js";
+import { html, effect } from "./utils/index.js";
 
 export class MapWidget extends HTMLElement {
   constructor() {

@@ -4,6 +4,7 @@ import express, {
   Request,
   Response
 } from "express";
+import ViteExpress from "vite-express";
 import { Eta } from "eta";
 import { Tour } from "../models/Tour";
 import { Profile } from "../models/Profile";
@@ -20,7 +21,9 @@ const app = express();
 const eta = new Eta({
   views: "./views"
 });
-const port = process.env.PORT || 3000;
+const port = process.env.PORT
+  ? parseInt(process.env.PORT)
+  : 3000;
 
 // Static files served
 
@@ -49,12 +52,18 @@ app.get("/hello/:name", (req: Request, res: Response) => {
   res.send(eta.render("./hello", { name }));
 });
 
-app.get("/tour/:id", (req: Request, res: Response) => {
-  const { id } = req.params;
-  tour_service
-    .get(id)
-    .then((data: Tour) => res.send(eta.render("./tour", data)));
-});
+app.get(
+  "/tour/:id",
+  (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    tour_service
+      .get(id)
+      .then((data: Tour) =>
+        res.send(eta.render("./tour", data))
+      )
+      .catch((error) => next(error));
+  }
+);
 
 app.get("/profile/new", (req: Request, res: Response) => {
   res.send(
@@ -71,10 +80,6 @@ app.get(
     profile_service
       .get(id)
       .then((data) => {
-        console.log(
-          "Data for /profile: ",
-          JSON.stringify(data)
-        );
         res.send(eta.render("./profile", data));
       })
       .catch((error) => next(error));
@@ -95,10 +100,12 @@ app.use(
     res: Response,
     next: NextFunction
   ) => {
-    errorHandler.handleError(err, res);
+    errorHandler.handleError(err, res, next);
   }
 );
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+ViteExpress.listen(app, port, () => {
+  console.log(
+    `Vite-Express server running at http://localhost:${port}`
+  );
 });

@@ -1,5 +1,9 @@
 import { LitElement } from "lit";
-import { property } from "lit/decorators.js";
+import {
+  customElement,
+  property,
+  state
+} from "lit/decorators.js";
 import { provide } from "@lit/context";
 import type {
   Tour,
@@ -10,21 +14,29 @@ import type {
 
 import { tourContext } from "./tour-context.js";
 
+@customElement("tour-provider")
 export class TourProvider extends LitElement {
   @provide({ context: tourContext })
-  @property({ attribute: false })
-  tour: Tour | undefined;
-
-  @property()
-  tourId = "";
+  @state()
+  tour: Tour = {
+    name: "Original Tour"
+  } as Tour;
 
   connectedCallback() {
-    fetch(`/api/tours/${this.tourId}`)
+    const tourId = this.getAttribute("for");
+    console.log("Tour ID:", tourId);
+
+    fetch(`/api/tours/${tourId}`)
       .then((res) => {
         if (res.status === 200) {
-          res.json().then((json) => (this.tour = json as Tour));
+          res.json().then((json) => {
+            this.tour = json as Tour;
+            console.log("Assigning new tour data", json);
+          });
         }
       })
-      .catch((err) => console.log("Error when reading tour"));
+      .catch((err) =>
+        console.log("Error when reading tour", err)
+      );
   }
 }

@@ -24,9 +24,18 @@ module.exports = __toCommonJS(tours_exports);
 var import_express = require("express");
 var import_services = require("../services");
 const api = (0, import_express.Router)();
-api.post("/", (req, res) => {
-  console.log("Received a tour:", req.body);
-  import_services.tour_service.create(req.body).then((tour) => res.status(200).send(tour)).catch((error) => res.status(400).send({ error }));
-});
+api.get(
+  "/:id",
+  (req, res, next) => {
+    const id = req.params.id;
+    import_services.tour_service.get(id).then((tour) => res.status(200).send(tour)).catch((error) => next(error));
+  }
+);
+api.post(
+  "/",
+  (req, res, next) => {
+    import_services.tour_service.create(req.body).then((tour) => res.status(201).send(tour)).catch((error) => next(error));
+  }
+);
 var tours_default = api;
 //# sourceMappingURL=tours.js.map

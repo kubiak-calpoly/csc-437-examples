@@ -8,13 +8,15 @@ class ErrorHandler {
 
   public handleError(
     error: Error | HTTPError,
-    response?: Response
+    response?: Response,
+    next?: NextFunction
   ): void {
     if (error instanceof HTTPError && response) {
       this.handleHTTPError(error as HTTPError, response);
     } else {
       this.handleCriticalError(error, response);
     }
+    if (next) next(error);
   }
 
   handleHTTPError(error: HTTPError, res: Response) {
@@ -31,7 +33,11 @@ class ErrorHandler {
 
   handleCriticalError(error: Error, res?: Response) {
     if (res) {
-      res.status(500).send(error.message);
+      res
+        .status(500)
+        .send(
+          `<h1>Internal Server Error (500)</h1><p>${error}</p>`
+        );
     } else {
       console.log("Application Error", error.message);
     }

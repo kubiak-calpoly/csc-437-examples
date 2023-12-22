@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../src/client/tour/itinerary-view.ts"],
+  "sourcesContent": ["import { html, LitElement } from \"lit\";\nimport {\n  customElement,\n  state,\n  property\n} from \"lit/decorators.js\";\nimport { consume } from \"@lit/context\";\nimport type { Tour } from \"../../models/Tour\";\n\nimport { tourContext } from \"./tour-context\";\n\n@customElement(\"itinerary-view\")\nexport class ItineraryView extends LitElement {\n  @consume({ context: tourContext, subscribe: true })\n  @state()\n  tour: Tour = {\n    name: \"Unnamed Tour\"\n  } as Tour;\n\n  render() {\n    const { name } = this.tour;\n\n    console.log(\"Rendering itinerary-view for tour\", this.tour);\n    console.log(\"Name:\", name);\n\n    return html`<h1>${name}</h1>`;\n  }\n}\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA,iBAAiC;AACjC,wBAIO;AACP,qBAAwB;AAGxB,0BAA4B;AAGrB,IAAM,gBAAN,cAA4B,sBAAW;AAAA,EAAvC;AAAA;AAGL,gBAAa;AAAA,MACX,MAAM;AAAA,IACR;AAAA;AAAA,EAEA,SAAS;AACP,UAAM,EAAE,KAAK,IAAI,KAAK;AAEtB,YAAQ,IAAI,qCAAqC,KAAK,IAAI;AAC1D,YAAQ,IAAI,SAAS,IAAI;AAEzB,WAAO,sBAAW,IAAI;AAAA,EACxB;AACF;AAZE;AAAA,MAFC,wBAAQ,EAAE,SAAS,iCAAa,WAAW,KAAK,CAAC;AAAA,MACjD,yBAAM;AAAA,GAFI,cAGX;AAHW,gBAAN;AAAA,MADN,iCAAc,gBAAgB;AAAA,GAClB;",
+  "names": []
+}
