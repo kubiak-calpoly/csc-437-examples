@@ -1,4 +1,4 @@
-import { LitElement } from "lit";
+import { html, LitElement } from "lit";
 import {
   customElement,
   property,
@@ -16,6 +16,9 @@ import { tourContext } from "./tour-context.js";
 
 @customElement("tour-provider")
 export class TourProvider extends LitElement {
+  @property({ attribute: "for" })
+  tourId: string = "";
+
   @provide({ context: tourContext })
   @state()
   tour: Tour = {
@@ -23,10 +26,9 @@ export class TourProvider extends LitElement {
   } as Tour;
 
   connectedCallback() {
-    const tourId = this.getAttribute("for");
-    console.log("Tour ID:", tourId);
+    console.log("Tour ID:", this.tourId);
 
-    fetch(`/api/tours/${tourId}`)
+    fetch(`/api/tours/${this.tourId}`)
       .then((res) => {
         if (res.status === 200) {
           res.json().then((json) => {

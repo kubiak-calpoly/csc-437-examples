@@ -22,16 +22,6 @@
       src="/src/client/tour/index.ts"></script>
   </head>
   <body>
-    <tour-provider for="<%= it.id %>">
-      <blazing-header> </blazing-header>
-
-      <calendar-widget> </calendar-widget>
-
-      <map-widget src="/maps/italy.geo.json"> </map-widget>
-
-      <itinerary-view> </itinerary-view>
-
-      <entourage-table> </entourage-table>
-    </tour-provider>
+    <tour-page tour-id="<%= it.id %>"> </tour-page>
   </body>
 </html>

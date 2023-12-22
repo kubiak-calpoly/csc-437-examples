@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../src/client/tour/tour-page.ts"],
+  "sourcesContent": ["import { html, LitElement } from \"lit\";\nimport {\n  customElement,\n  property,\n  state\n} from \"lit/decorators.js\";\n\n@customElement(\"tour-page\")\nexport class TourPage extends LitElement {\n  @property({ attribute: \"tour-id\" })\n  tourId: string = \"\";\n\n  render() {\n    return html`\n      <tour-provider for=\"${this.tourId}\">\n        <blazing-header> </blazing-header>\n        <calendar-widget> </calendar-widget>\n        <map-widget src=\"/maps/italy.geo.json\"> </map-widget>\n        <itinerary-view> </itinerary-view>\n        <entourage-table> </entourage-table>\n      </tour-provider>\n    `;\n  }\n}\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA,iBAAiC;AACjC,wBAIO;AAGA,IAAM,WAAN,cAAuB,sBAAW;AAAA,EAAlC;AAAA;AAEL,kBAAiB;AAAA;AAAA,EAEjB,SAAS;AACP,WAAO;AAAA,4BACiB,KAAK,MAAM;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA,EAQrC;AACF;AAbE;AAAA,MADC,4BAAS,EAAE,WAAW,UAAU,CAAC;AAAA,GADvB,SAEX;AAFW,WAAN;AAAA,MADN,iCAAc,WAAW;AAAA,GACb;",
+  "names": []
+}

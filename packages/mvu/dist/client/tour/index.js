@@ -19,16 +19,19 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 var tour_exports = {};
 __export(tour_exports, {
   ItineraryView: () => import_itinerary_view.ItineraryView,
+  TourPage: () => import_tour_page.TourPage,
   TourProvider: () => import_tour_provider.TourProvider,
   tourContext: () => import_tour_context.tourContext
 });
 module.exports = __toCommonJS(tour_exports);
 var import_itinerary_view = require("./itinerary-view");
 var import_tour_provider = require("./tour-provider");
+var import_tour_page = require("./tour-page");
 var import_tour_context = require("./tour-context");
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   ItineraryView,
+  TourPage,
   TourProvider,
   tourContext
 });
