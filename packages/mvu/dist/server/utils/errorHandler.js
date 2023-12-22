@@ -18,11 +18,41 @@ var __copyProps = (to, from, except, desc) => {
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var errorHandler_exports = {};
 __export(errorHandler_exports, {
-  default: () => errorHandler
+  errorHandler: () => errorHandler
 });
 module.exports = __toCommonJS(errorHandler_exports);
-function errorHandler(err, req, res, next) {
-  console.error(err);
-  res.status(500).send({ errors: [{ message: "Something went wrong" }] });
+var import_HTTPError = require("./HTTPError");
+class ErrorHandler {
+  isHTTPError(error) {
+    return error instanceof import_HTTPError.HTTPError;
+  }
+  handleError(error, response) {
+    if (error instanceof import_HTTPError.HTTPError && response) {
+      this.handleHTTPError(error, response);
+    } else {
+      this.handleCriticalError(error, response);
+    }
+  }
+  handleHTTPError(error, res) {
+    res.status(error.statusCode).send(
+      `<h1>HTTP Error (${error.statusCode})</h1><p>${error.message}</p>`
+    );
+    console.log(
+      `HTTP Error (${error.statusCode})`,
+      error.message
+    );
+  }
+  handleCriticalError(error, res) {
+    if (res) {
+      res.status(500).send(error.message);
+    } else {
+      console.log("Application Error", error.message);
+    }
+  }
 }
+const errorHandler = new ErrorHandler();
+// Annotate the CommonJS export names for ESM import in node:
+0 && (module.exports = {
+  errorHandler
+});
 //# sourceMappingURL=errorHandler.js.map

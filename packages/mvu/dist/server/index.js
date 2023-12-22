@@ -21,11 +21,13 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
   mod
 ));
+var import_express_async_errors = require("express-async-errors");
 var import_express = __toESM(require("express"));
 var import_eta = require("eta");
 var import_services = require("./services");
 var import_services2 = require("./services");
 var import_api = __toESM(require("./api"));
+var import_errorHandler = require("./utils/errorHandler");
 const app = (0, import_express.default)();
 const eta = new import_eta.Eta({
   views: "./views"
@@ -78,6 +80,11 @@ app.get("/profile/edit/:id", (req, res) => {
     res.send(eta.render("./profile", { $edit: true, ...old }));
   });
 });
+app.use(
+  (err, req, res, next) => {
+    import_errorHandler.errorHandler.handleError(err, res);
+  }
+);
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });

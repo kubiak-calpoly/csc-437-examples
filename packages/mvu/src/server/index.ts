@@ -1,16 +1,16 @@
+import "express-async-errors";
 import express, {
   NextFunction,
   Request,
   Response
 } from "express";
-// import "express-async-errors";
 import { Eta } from "eta";
 import { Tour } from "../models/Tour";
 import { Profile } from "../models/Profile";
 import { tour_service, profile_service } from "./services";
 import { connect } from "./services";
 import api from "./api";
-import errorHandler from "./utils/errorHandler";
+import { errorHandler } from "./utils/errorHandler";
 import {
   NotFoundError,
   InternalError
@@ -21,10 +21,6 @@ const eta = new Eta({
   views: "./views"
 });
 const port = process.env.PORT || 3000;
-
-// HTTP error handling
-
-// app.use(errorHandler);
 
 // Static files served
 
@@ -91,6 +87,17 @@ app.get("/profile/edit/:id", (req: Request, res: Response) => {
     res.send(eta.render("./profile", { $edit: true, ...old }));
   });
 });
+
+app.use(
+  (
+    err: Error,
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    errorHandler.handleError(err, res);
+  }
+);
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);

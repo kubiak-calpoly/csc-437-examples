@@ -2,7 +2,7 @@ export class HTTPError extends Error {
   statusCode: number = 500;
 
   constructor(message: string, status: number = 500) {
-    super(`HTTP Error (${status}): ${message}`);
+    super(message);
     this.statusCode = status;
   }
 }

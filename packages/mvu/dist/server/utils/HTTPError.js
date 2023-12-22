@@ -28,7 +28,7 @@ module.exports = __toCommonJS(HTTPError_exports);
 class HTTPError extends Error {
   statusCode = 500;
   constructor(message, status = 500) {
-    super(`HTTP Error (${status}): ${message}`);
+    super(message);
     this.statusCode = status;
   }
 }
