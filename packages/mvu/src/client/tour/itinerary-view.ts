@@ -1,4 +1,4 @@
-import { html, LitElement } from "lit";
+import { css, html, LitElement } from "lit";
 import {
   customElement,
   state,
@@ -58,6 +58,53 @@ export class ItineraryView extends LitElement {
       `;
     };
 
-    return this.destinations.map(destinationView);
+    return html`
+      <section class="itinerary">
+        ${this.destinations.map(destinationView)}
+      </section>
+    `;
   }
+
+  static styles = css`
+    .itinerary {
+      display: grid;
+      grid-area: itinerary;
+      align-self: start;
+      grid-template-columns: [start] auto [header] 4fr [info] 1fr 2fr 1fr 2fr [end];
+      gap: var(--size-spacing-large) var(--size-spacing-medium);
+      align-items: baseline;
+      margin: var(--size-spacing-small);
+    }
+
+    itinerary-item {
+      display: contents;
+    }
+
+    itinerary-item > h3 > .icon:first-child {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    itinerary-item ol,
+    itinerary-item ol > li {
+      display: contents;
+    }
+
+    itinerary-item h4 {
+      grid-column: header;
+      text-align: right;
+    }
+
+    itinerary-item[item-class="destination"] h3 {
+      font-style: normal;
+      font-weight: bold;
+    }
+
+    itinerary-item img.featured {
+      width: 100%;
+      grid-column: info / end;
+      grid-row-end: span 2;
+    }
+  `;
 }
