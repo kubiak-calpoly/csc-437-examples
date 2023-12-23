@@ -36,22 +36,58 @@ let TourPage = class extends import_lit.LitElement {
   constructor() {
     super(...arguments);
     this.tourId = "";
+    this.tour = {
+      id: "tour-skeleton",
+      name: "Skeleton Tour",
+      destinations: [],
+      transportation: [],
+      startDate: /* @__PURE__ */ new Date(),
+      endDate: /* @__PURE__ */ new Date(),
+      entourage: []
+    };
+  }
+  connectedCallback() {
+    console.log("Tour ID:", this.tourId);
+    super.connectedCallback();
+    fetch(`/api/tours/${this.tourId}`).then((res) => {
+      if (res.status === 200) {
+        res.json().then((json) => {
+          this.tour = json;
+          console.log(
+            "Tour-page assigning new tour data",
+            json
+          );
+        });
+      }
+    }).catch(
+      (err) => console.log("Error when reading tour", err)
+    );
   }
   render() {
+    const { name, destinations } = this.tour;
+    console.log(
+      `Rendering tour ${name}, destinations = `,
+      destinations
+    );
     return import_lit.html`
-      <tour-provider for="${this.tourId}">
-        <blazing-header> </blazing-header>
+      <main class="page">
+        <blazing-header title=${name}> </blazing-header>
         <calendar-widget> </calendar-widget>
         <map-widget src="/maps/italy.geo.json"> </map-widget>
-        <itinerary-view> </itinerary-view>
+        <itinerary-view .destinations="${destinations}">
+        </itinerary-view>
         <entourage-table> </entourage-table>
-      </tour-provider>
+      </main>
     `;
   }
 };
+TourPage.styles = import_lit.css``;
 __decorateClass([
   (0, import_decorators.property)({ attribute: "tour-id" })
 ], TourPage.prototype, "tourId", 2);
+__decorateClass([
+  (0, import_decorators.state)()
+], TourPage.prototype, "tour", 2);
 TourPage = __decorateClass([
   (0, import_decorators.customElement)("tour-page")
 ], TourPage);

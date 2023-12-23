@@ -4,25 +4,60 @@ import {
   state,
   property
 } from "lit/decorators.js";
-import { consume } from "@lit/context";
-import type { Tour } from "../../models/Tour";
+import type { Tour, Destination } from "../../models/Tour";
+import "./itinerary-item";
 
 import { tourContext } from "./tour-context";
 
 @customElement("itinerary-view")
 export class ItineraryView extends LitElement {
-  @consume({ context: tourContext, subscribe: true })
-  @state()
-  tour: Tour = {
-    name: "Unnamed Tour"
-  } as Tour;
+  @property()
+  destinations: Array<Destination> = [];
+
+  @property()
+  startDate: Date = new Date();
 
   render() {
-    const { name } = this.tour;
+    const destinations = this.destinations;
+    const startDates = destinations
+      .map((dst) => dst.nights)
+      .reduce(
+        (acc, nights, i) =>
+          acc.concat([
+            new Date(
+              acc[i].getTime() + nights * (24 * 60 * 60 * 1000)
+            )
+          ]),
+        [this.startDate]
+      );
 
-    console.log("Rendering itinerary-view for tour", this.tour);
-    console.log("Name:", name);
+    console.log(
+      "Rendering itinerary-view for tour",
+      destinations
+    );
 
-    return html`<h1>Itinerary ${name}</h1>`;
+    const destinationView = (dst: Destination, i: number) => {
+      const startDate = startDates[i];
+      const nights = dst.nights;
+      const endDate: Date = new Date(
+        startDate.getTime() + nights * (24 * 60 * 60 * 1000)
+      );
+
+      return html`
+        <itinerary-item
+          marker="marker-destination-${i}"
+          item-class="destination"
+          start-date="${startDate}"
+          end-date="${endDate}">
+          <h3 slot="summary"> ${dst.name} </h3>
+          <p slot="summary">
+            ${nights} night${nights === 1 ? "" : "s"}
+          </p>
+          <img class="featured" src="${dst.featuredImage}" />
+        </itinerary-item>
+      `;
+    };
+
+    return this.destinations.map(destinationView);
   }
 }

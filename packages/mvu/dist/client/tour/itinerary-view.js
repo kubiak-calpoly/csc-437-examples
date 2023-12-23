@@ -32,26 +32,45 @@ __export(itinerary_view_exports, {
 module.exports = __toCommonJS(itinerary_view_exports);
 var import_lit = require("lit");
 var import_decorators = require("lit/decorators.js");
-var import_context = require("@lit/context");
-var import_tour_context = require("./tour-context");
 let ItineraryView = class extends import_lit.LitElement {
   constructor() {
     super(...arguments);
-    this.tour = {
-      name: "Unnamed Tour"
-    };
+    this.destinations = [];
   }
   render() {
-    const { name } = this.tour;
-    console.log("Rendering itinerary-view for tour", this.tour);
-    console.log("Name:", name);
-    return import_lit.html`<h1>${name}</h1>`;
+    const destinations = this.destinations;
+    console.log(
+      "Rendering itinerary-view for tour",
+      destinations
+    );
+    const destinationView = (dst, i) => {
+      const startDate = /* @__PURE__ */ new Date();
+      const endDate = /* @__PURE__ */ new Date();
+      return import_lit.html`
+        <itinerary-item
+          marker="marker-destination-${i}"
+          item-class="destination"
+          start-date="${startDate}"
+          end-date="${endDate}">
+          <h3 slot="summary">
+            <a href="place.html"> ${dst.name} </a>
+          </h3>
+          <p slot="summary">
+            ${Math.round(
+        (endDate.getTime() - startDate.getTime()) / (24 * 60 * 60 * 1e3)
+      )}
+            nights
+          </p>
+          <img class="featured" src="${dst.featuredImage}" />
+        </itinerary-item>
+      `;
+    };
+    return this.destinations.map(destinationView);
   }
 };
 __decorateClass([
-  (0, import_context.consume)({ context: import_tour_context.tourContext, subscribe: true }),
-  (0, import_decorators.state)()
-], ItineraryView.prototype, "tour", 2);
+  (0, import_decorators.property)()
+], ItineraryView.prototype, "destinations", 2);
 ItineraryView = __decorateClass([
   (0, import_decorators.customElement)("itinerary-view")
 ], ItineraryView);
