@@ -108,19 +108,19 @@ ItineraryItem.styles = import_lit.css`
         var(--size-icon-large) + var(--size-spacing-large)
       );
     }
-    summary::after {
-      /* SVG icon: blz-expand-down.svg */
-      content: url('data:image/svg+xml;utf8,<svg width="64" height="16" viewBox="0 0 64 16" fill="rgb(42 143 43)" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M23.7539 3L31.5 10L39.2461 3H64V13H0V3H23.7539Z"/></svg>');
-      display: block;
+    details > summary::before {
+      content: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg" fill="rgb(42 143 42)"><path d="m624 300h-48v336h-134.88l158.88 317.64 158.88-317.64h-134.88zm-24 546.36-81.121-162.36h162.24z"/></svg>');
       position: absolute;
-      top: var(--size-icon-large);
-      left: 0;
-      height: var(--size-spacing-large);
-      width: var(--size-icon-large);
+      height: 2rem;
+      width: 2rem;
+      bottom: 0;
+      right: 0;
+      color: var(--color-accent);
+      transform: rotate(0);
+      transition: transform 0.5s;
     }
-
-    details[open] > summary::after {
-      content: url('data:image/svg+xml;utf8,<svg width="64" height="16" viewBox="0 0 64 16" fill="rgb(42 143 43)" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M32 5.67712L24.699 12H1V4H63V12H39.301L32 5.67712ZM38.9282 13H64V3H0V13H25.0718L32 7L38.9282 13Z"/></svg>');
+    details[open] > summary::before {
+      transform: rotate(180deg);
     }
   `;
 __decorateClass([
@@ -136,10 +136,10 @@ __decorateClass([
   (0, import_decorators.property)()
 ], ItineraryItem.prototype, "marker", 2);
 __decorateClass([
-  (0, import_decorators.property)({ reflect: true })
+  (0, import_decorators.property)({ reflect: true, type: Boolean })
 ], ItineraryItem.prototype, "open", 2);
 __decorateClass([
-  (0, import_decorators.property)({ reflect: true })
+  (0, import_decorators.property)({ reflect: true, type: Boolean })
 ], ItineraryItem.prototype, "hidden", 2);
 ItineraryItem = __decorateClass([
   (0, import_decorators.customElement)("itinerary-item")

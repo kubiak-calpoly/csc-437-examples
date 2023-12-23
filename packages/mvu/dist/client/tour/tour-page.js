@@ -32,6 +32,9 @@ __export(tour_page_exports, {
 module.exports = __toCommonJS(tour_page_exports);
 var import_lit = require("lit");
 var import_decorators = require("lit/decorators.js");
+var import_blazing_header = require("../shared/blazing-header");
+var import_itinerary_view = require("./itinerary-view");
+var import_calendar_widget = require("./calendar-widget");
 let TourPage = class extends import_lit.LitElement {
   constructor() {
     super(...arguments);
@@ -64,7 +67,7 @@ let TourPage = class extends import_lit.LitElement {
     );
   }
   render() {
-    const { name, destinations } = this.tour;
+    const { name, startDate, endDate, destinations } = this.tour;
     console.log(
       `Rendering tour ${name}, destinations = `,
       destinations
@@ -72,7 +75,10 @@ let TourPage = class extends import_lit.LitElement {
     return import_lit.html`
       <main class="page">
         <blazing-header title=${name}> </blazing-header>
-        <calendar-widget> </calendar-widget>
+        <calendar-widget
+          start-date=${startDate}
+          end-date=${endDate}>
+        </calendar-widget>
         <map-widget src="/maps/italy.geo.json"> </map-widget>
         <itinerary-view .destinations="${destinations}">
         </itinerary-view>

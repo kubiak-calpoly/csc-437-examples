@@ -3,10 +3,10 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("itinerary-item")
 export class ItineraryItem extends LitElement {
-  @property({ attribute: "start-date" })
+  @property()
   startDate: Date = new Date();
 
-  @property({ attribute: "end-date" })
+  @property()
   endDate: Date = new Date();
 
   @property({ attribute: "item-class" })
@@ -43,7 +43,7 @@ export class ItineraryItem extends LitElement {
   }
 
   static styles = css`
-    <style > :host {
+    :host {
       display: contents;
     }
     :host([hidden]) {
@@ -150,8 +150,7 @@ const months = [
   "Dec"
 ];
 
-function formatDate(datestring) {
-  const dt = new Date(datestring);
+function formatDate(dt: Date) {
   const m = months[dt.getUTCMonth()];
   const d = dt.getUTCDate();
 

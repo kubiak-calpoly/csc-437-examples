@@ -12,6 +12,7 @@ import type {
 } from "../../models/Tour";
 import "../shared/blazing-header";
 import "./itinerary-view";
+import "./calendar-widget";
 
 @customElement("tour-page")
 export class TourPage extends LitElement {
@@ -28,6 +29,9 @@ export class TourPage extends LitElement {
     endDate: new Date(),
     entourage: []
   } as Tour;
+
+  @state()
+  selectedDate: Date | undefined;
 
   connectedCallback() {
     console.log("Tour ID:", this.tourId);
@@ -51,7 +55,8 @@ export class TourPage extends LitElement {
   }
 
   render() {
-    const { name, destinations } = this.tour;
+    const { name, startDate, endDate, destinations } =
+      this.tour;
 
     console.log(
       `Rendering tour ${name}, destinations = `,
@@ -60,10 +65,18 @@ export class TourPage extends LitElement {
 
     return html`
       <main class="page">
-        <blazing-header title=${name}> </blazing-header>
-        <calendar-widget> </calendar-widget>
+        <blazing-header title="${name}"> </blazing-header>
+        <calendar-widget
+          .handleChange=${(selected: Date | undefined) =>
+            (this.selectedDate = selected)}
+          start-date=${startDate}
+          end-date=${endDate}>
+        </calendar-widget>
         <map-widget src="/maps/italy.geo.json"> </map-widget>
-        <itinerary-view .destinations="${destinations}">
+        <itinerary-view
+          .startDate=${new Date(startDate)}
+          .selectedDate=${this.selectedDate}
+          .destinations=${destinations}>
         </itinerary-view>
         <entourage-table> </entourage-table>
       </main>

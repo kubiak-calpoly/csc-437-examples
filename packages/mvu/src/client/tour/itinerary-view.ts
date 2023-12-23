@@ -17,6 +17,9 @@ export class ItineraryView extends LitElement {
   @property()
   startDate: Date = new Date();
 
+  @property()
+  selectedDate: Date | undefined;
+
   render() {
     const destinations = this.destinations;
     const startDates = destinations
@@ -33,6 +36,7 @@ export class ItineraryView extends LitElement {
 
     console.log(
       "Rendering itinerary-view for tour",
+      this.selectedDate,
       destinations
     );
 
@@ -42,13 +46,18 @@ export class ItineraryView extends LitElement {
       const endDate: Date = new Date(
         startDate.getTime() + nights * (24 * 60 * 60 * 1000)
       );
+      const hidden =
+        this.selectedDate &&
+        (this.selectedDate.getTime() < startDate.getTime() ||
+          this.selectedDate.getTime() > endDate.getTime());
 
       return html`
         <itinerary-item
           marker="marker-destination-${i}"
           item-class="destination"
-          start-date="${startDate}"
-          end-date="${endDate}">
+          .startDate=${startDate}
+          .endDate=${endDate}
+          ?hidden=${hidden}>
           <h3 slot="summary"> ${dst.name} </h3>
           <p slot="summary">
             ${nights} night${nights === 1 ? "" : "s"}
@@ -74,10 +83,6 @@ export class ItineraryView extends LitElement {
       gap: var(--size-spacing-large) var(--size-spacing-medium);
       align-items: baseline;
       margin: var(--size-spacing-small);
-    }
-
-    itinerary-item {
-      display: contents;
     }
 
     itinerary-item > h3 > .icon:first-child {
