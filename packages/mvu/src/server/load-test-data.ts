@@ -4,8 +4,7 @@ import tour_service from "./services/tour_service";
 import {
   Destination,
   Tour,
-  Transportation,
-  Traveler
+  Transportation
 } from "../models/Tour";
 
 let test_tours: Array<Tour> = [

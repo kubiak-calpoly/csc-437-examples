@@ -1,10 +1,18 @@
-import { css, html, LitElement } from "lit";
+import { css, html, svg, LitElement } from "lit";
 import {
   customElement,
   state,
   property
 } from "lit/decorators.js";
-import type { Tour, Destination } from "../../models/Tour";
+import moment from "moment";
+import type {
+  Tour,
+  Destination,
+  Transportation,
+  TransportationType,
+  Segment
+} from "../../models/Tour";
+import { reset, elements } from "../shared/css-base";
 import "./itinerary-item";
 
 import { tourContext } from "./tour-context";
@@ -15,6 +23,9 @@ export class ItineraryView extends LitElement {
   destinations: Array<Destination> = [];
 
   @property()
+  transportation: Array<Transportation> = [];
+
+  @property()
   startDate: Date = new Date();
 
   @property()
@@ -22,6 +33,7 @@ export class ItineraryView extends LitElement {
 
   render() {
     const destinations = this.destinations;
+    const transportation = this.transportation;
     const startDates = destinations
       .map((dst) => dst.nights)
       .reduce(
@@ -67,49 +79,131 @@ export class ItineraryView extends LitElement {
       `;
     };
 
+    const segmentView = (seg: Segment) => {
+      const depMoment = moment(seg.departure.time);
+      const arrMoment = moment(seg.arrival.time);
+
+      return html`
+        <h4
+          >${[seg.provider, seg.name]
+            .filter(Boolean)
+            .join(" ")}</h4
+        >
+        <dl class="timings">
+          <dt>Depart</dt>
+          <dd>${seg.departure.station}</dd>
+          <dd>
+            <time datetime="${depMoment.format()}">
+              ${depMoment.format("h:mm A")}
+            </time>
+          </dd>
+          <dt>Arrive</dt>
+          <dd>${seg.arrival.station}</dd>
+          <dd>
+            <time datetime="${arrMoment.format()}">
+              ${arrMoment.format("h:mm A")}
+            </time>
+          </dd>
+        </dl>
+      `;
+    };
+
+    const transportationView = (trn: Transportation) => {
+      const startDate = new Date(trn.startDate);
+      const endDate = trn.endDate
+        ? new Date(trn.endDate)
+        : startDate;
+      const icon = iconForTransportation(trn.type);
+
+      return html`
+        <itinerary-item
+          item-class="transportation"
+          .startDate=${startDate}
+          .endDate=${endDate}>
+          <h3 slot="summary">
+            <svg class="icon" viewBox="0 0 64 64">${icon}</svg>
+          </h3>
+          ${trn.segments.map(segmentView)}
+        </itinerary-item>
+      `;
+    };
+
     return html`
       <section class="itinerary">
-        ${this.destinations.map(destinationView)}
+        ${this.destinations.flatMap((d, i) =>
+          i < transportation.length
+            ? [
+                destinationView(d, i),
+                transportationView(transportation[i])
+              ]
+            : destinationView(d, i)
+        )}
       </section>
     `;
   }
 
-  static styles = css`
-    .itinerary {
-      display: grid;
-      grid-area: itinerary;
-      align-self: start;
-      grid-template-columns: [start] auto [header] 4fr [info] 1fr 2fr 1fr 2fr [end];
-      gap: var(--size-spacing-large) var(--size-spacing-medium);
-      align-items: baseline;
-      margin: var(--size-spacing-small);
-    }
+  static styles = [
+    reset,
+    elements,
+    css`
+      .itinerary {
+        display: grid;
+        grid-area: itinerary;
+        align-self: start;
+        grid-template-columns: [start] auto [header] 4fr [info] 1fr 2fr 1fr 2fr [end];
+        gap: var(--size-spacing-large)
+          var(--size-spacing-medium);
+        align-items: baseline;
+        margin: var(--size-spacing-small);
+      }
 
-    itinerary-item > h3 > .icon:first-child {
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
+      svg.icon {
+        display: inline;
+        height: 4rem;
+        width: 4rem;
+        vertical-align: top;
+        fill: currentColor;
+      }
 
-    itinerary-item ol,
-    itinerary-item ol > li {
-      display: contents;
-    }
+      itinerary-item > h3 > .icon:first-child {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
 
-    itinerary-item h4 {
-      grid-column: header;
-      text-align: right;
-    }
+      itinerary-item ol,
+      itinerary-item ol > li {
+        display: contents;
+      }
 
-    itinerary-item[item-class="destination"] h3 {
-      font-style: normal;
-      font-weight: bold;
-    }
+      itinerary-item h4 {
+        grid-column: header;
+        text-align: right;
+      }
 
-    itinerary-item img.featured {
-      width: 100%;
-      grid-column: info / end;
-      grid-row-end: span 2;
-    }
-  `;
+      itinerary-item[item-class="destination"] h3 {
+        font-style: normal;
+        font-weight: bold;
+      }
+
+      itinerary-item img.featured {
+        width: 100%;
+        grid-column: info / end;
+        grid-row-end: span 2;
+      }
+    `
+  ];
+}
+
+function iconForTransportation(type: TransportationType) {
+  const hash: { [key in TransportationType]: String } = {
+    air: "icon-airplane",
+    rail: "icon-train",
+    ship: "icon-ship",
+    bus: "icon-bus"
+  };
+
+  return svg`
+    <use href="/icons/transportation.svg#${hash[type]}" />
+    `;
 }

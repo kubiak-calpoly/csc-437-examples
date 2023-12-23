@@ -14,9 +14,6 @@
       rel="stylesheet" />
     <link rel="stylesheet" href="/styles/tokens.css" />
     <link rel="stylesheet" href="/styles/page.css" />
-    <link rel="stylesheet" href="/styles/itinerary.css" />
-    <link rel="stylesheet" href="/styles/entourage.css" />
-    <link rel="stylesheet" href="/styles/timings.css" />
     <script
       type="module"
       src="/src/client/tour/index.ts"></script>

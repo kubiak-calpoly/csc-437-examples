@@ -20,7 +20,6 @@ export class CalendarWidget extends LitElement {
     const start = new Date(this.startDate);
     const end = new Date(this.endDate);
     const dates = datesInRange(start, end);
-    console.log(`dates In Range ${start}, ${end}`, dates);
 
     const renderDate = (d) => {
       const ymd = {

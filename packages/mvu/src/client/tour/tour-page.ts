@@ -7,9 +7,10 @@ import {
 import type {
   Tour,
   Destination,
-  Transportation,
-  Traveler
+  Transportation
 } from "../../models/Tour";
+import { Profile } from "../../models/Profile";
+import { reset, elements } from "../shared/css-base";
 import "../shared/blazing-header";
 import "./itinerary-view";
 import "./calendar-widget";
@@ -42,10 +43,6 @@ export class TourPage extends LitElement {
         if (res.status === 200) {
           res.json().then((json) => {
             this.tour = json as Tour;
-            console.log(
-              "Tour-page assigning new tour data",
-              json
-            );
           });
         }
       })
@@ -55,17 +52,17 @@ export class TourPage extends LitElement {
   }
 
   render() {
-    const { name, startDate, endDate, destinations } =
-      this.tour;
-
-    console.log(
-      `Rendering tour ${name}, destinations = `,
-      destinations
-    );
+    const {
+      name,
+      startDate,
+      endDate,
+      destinations,
+      transportation
+    } = this.tour;
 
     return html`
+      <blazing-header title="${name}"> </blazing-header>
       <main class="page">
-        <blazing-header title="${name}"> </blazing-header>
         <calendar-widget
           .handleChange=${(selected: Date | undefined) =>
             (this.selectedDate = selected)}
@@ -76,12 +73,43 @@ export class TourPage extends LitElement {
         <itinerary-view
           .startDate=${new Date(startDate)}
           .selectedDate=${this.selectedDate}
-          .destinations=${destinations}>
+          .destinations=${destinations}
+          .transportation=${transportation}>
         </itinerary-view>
         <entourage-table> </entourage-table>
       </main>
     `;
   }
 
-  static styles = css``;
+  static styles = [
+    reset,
+    elements,
+    css`
+      main.page {
+        display: grid;
+        grid-template-columns: var(--size-width-sidebar) auto;
+        grid-template-rows: auto auto 1fr;
+        grid-template-areas:
+          "calendar  itinerary"
+          "map       itinerary"
+          "entourage itinerary";
+      }
+      
+      calendar-widget {
+        grid-area: calendar;
+      }
+      
+      map-widget {
+        grid-area: map;
+      }
+      
+      itinerary-view {
+        grid-area: itinerary;
+      }
+      
+      entourage-table: {
+        grid-area-entourage;
+      }
+    `
+  ];
 }

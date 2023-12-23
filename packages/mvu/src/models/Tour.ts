@@ -8,7 +8,7 @@ export interface Tour {
   transportation: Array<Transportation>;
   startDate: Date;
   endDate: Date;
-  entourage: Array<Traveler>;
+  entourage: Array<Profile>;
 }
 
 export interface Destination {
@@ -47,7 +47,11 @@ export interface Transportation {
   segments: Array<Segment>;
 }
 
-type TransportationType = "air" | "rail" | "ship" | "bus";
+export type TransportationType =
+  | "air"
+  | "rail"
+  | "ship"
+  | "bus";
 
 export interface Segment {
   name: string;
@@ -60,10 +64,4 @@ export interface Endpoint {
   station: string;
   time: Date;
   tzOffset: number;
-}
-
-export interface Traveler {
-  profile: Profile;
-  outbound: Transportation | undefined;
-  inbound: Transportation | undefined;
 }
