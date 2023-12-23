@@ -23,6 +23,6 @@ export class ItineraryView extends LitElement {
     console.log("Rendering itinerary-view for tour", this.tour);
     console.log("Name:", name);
 
-    return html`<h1>${name}</h1>`;
+    return html`<h1>Itinerary ${name}</h1>`;
   }
 }
