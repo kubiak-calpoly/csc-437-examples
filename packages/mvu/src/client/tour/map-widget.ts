@@ -177,7 +177,6 @@ export class MapWidget extends LitElement {
 
     const projectionFn = (pt: Point) => {
       const { lat, lon } = pt;
-      console.log("Projecting point:", pt);
       if (lat && lon) {
         const features: any = [
           {

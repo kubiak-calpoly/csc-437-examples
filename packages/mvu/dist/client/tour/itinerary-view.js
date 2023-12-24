@@ -123,11 +123,13 @@ let ItineraryView = class extends import_lit.LitElement {
       const startDate = new Date(trn.startDate);
       const endDate = trn.endDate ? new Date(trn.endDate) : startDate;
       const icon = iconForTransportation(trn.type);
+      const hidden = this.selectedDate && (this.selectedDate.getTime() < startDate.getTime() || this.selectedDate.getTime() > endDate.getTime());
       return import_lit.html`
         <itinerary-item
           item-class="transportation"
           .startDate=${startDate}
-          .endDate=${endDate}>
+          .endDate=${endDate}
+          ?hidden=${hidden}>
           <h3 slot="summary">
             <svg class="icon">${icon}</svg>
           </h3>

@@ -11,7 +11,7 @@ let test_tours: Array<Tour> = [
   {
     id: "tour0",
     name: "Trip to Italy",
-    startDate: new Date("2024-10-13"),
+    startDate: new Date("2024-10-14"),
     endDate: new Date("2024-10-25"),
     destinations: [
       {

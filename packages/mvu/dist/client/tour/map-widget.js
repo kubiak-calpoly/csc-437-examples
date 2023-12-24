@@ -140,7 +140,6 @@ let MapWidget = class extends import_lit.LitElement {
     const scale = width / this._viewBox[1][1];
     const projectionFn = (pt) => {
       const { lat, lon } = pt;
-      console.log("Projecting point:", pt);
       if (lat && lon) {
         const features = [
           {

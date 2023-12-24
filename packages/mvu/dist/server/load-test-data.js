@@ -27,7 +27,7 @@ let test_tours = [
   {
     id: "tour0",
     name: "Trip to Italy",
-    startDate: /* @__PURE__ */ new Date("2024-10-13"),
+    startDate: /* @__PURE__ */ new Date("2024-10-14"),
     endDate: /* @__PURE__ */ new Date("2024-10-25"),
     destinations: [
       {
