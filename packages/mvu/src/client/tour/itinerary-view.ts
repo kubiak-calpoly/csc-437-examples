@@ -121,7 +121,7 @@ export class ItineraryView extends LitElement {
           .startDate=${startDate}
           .endDate=${endDate}>
           <h3 slot="summary">
-            <svg class="icon" viewBox="0 0 64 64">${icon}</svg>
+            <svg class="icon">${icon}</svg>
           </h3>
           ${trn.segments.map(segmentView)}
         </itinerary-item>

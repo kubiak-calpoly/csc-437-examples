@@ -32,9 +32,11 @@ __export(tour_page_exports, {
 module.exports = __toCommonJS(tour_page_exports);
 var import_lit = require("lit");
 var import_decorators = require("lit/decorators.js");
+var import_css_base = require("../shared/css-base");
 var import_blazing_header = require("../shared/blazing-header");
 var import_itinerary_view = require("./itinerary-view");
 var import_calendar_widget = require("./calendar-widget");
+var import_map_widget = require("./map-widget");
 let TourPage = class extends import_lit.LitElement {
   constructor() {
     super(...arguments);
@@ -56,10 +58,6 @@ let TourPage = class extends import_lit.LitElement {
       if (res.status === 200) {
         res.json().then((json) => {
           this.tour = json;
-          console.log(
-            "Tour-page assigning new tour data",
-            json
-          );
         });
       }
     }).catch(
@@ -67,33 +65,83 @@ let TourPage = class extends import_lit.LitElement {
     );
   }
   render() {
-    const { name, startDate, endDate, destinations } = this.tour;
-    console.log(
-      `Rendering tour ${name}, destinations = `,
-      destinations
-    );
+    const {
+      name,
+      startDate,
+      endDate,
+      destinations,
+      transportation
+    } = this.tour;
+    const renderMarker = (dst, i) => {
+      return import_lit.html` <map-marker
+        id="marker-destination-${i}"
+        lat=${dst.location.lat}
+        lon=${dst.location.lon}>
+        ${dst.name}
+      </map-marker>`;
+    };
     return import_lit.html`
+      <blazing-header title="${name}"> </blazing-header>
       <main class="page">
-        <blazing-header title=${name}> </blazing-header>
         <calendar-widget
+          .handleChange=${(selected) => this.selectedDate = selected}
           start-date=${startDate}
           end-date=${endDate}>
         </calendar-widget>
-        <map-widget src="/maps/italy.geo.json"> </map-widget>
-        <itinerary-view .destinations="${destinations}">
+        <map-widget src="/maps/italy.geo.json">
+          ${destinations.map(renderMarker)}
+        </map-widget>
+        <itinerary-view
+          .startDate=${new Date(startDate)}
+          .selectedDate=${this.selectedDate}
+          .destinations=${destinations}
+          .transportation=${transportation}>
         </itinerary-view>
         <entourage-table> </entourage-table>
       </main>
     `;
   }
 };
-TourPage.styles = import_lit.css``;
+TourPage.styles = [
+  import_css_base.reset,
+  import_css_base.elements,
+  import_lit.css`
+      main.page {
+        display: grid;
+        grid-template-columns: var(--size-width-sidebar) auto;
+        grid-template-rows: auto auto 1fr;
+        grid-template-areas:
+          "calendar  itinerary"
+          "map       itinerary"
+          "entourage itinerary";
+      }
+      
+      calendar-widget {
+        grid-area: calendar;
+      }
+      
+      map-widget {
+        grid-area: map;
+      }
+      
+      itinerary-view {
+        grid-area: itinerary;
+      }
+      
+      entourage-table: {
+        grid-area-entourage;
+      }
+    `
+];
 __decorateClass([
   (0, import_decorators.property)({ attribute: "tour-id" })
 ], TourPage.prototype, "tourId", 2);
 __decorateClass([
   (0, import_decorators.state)()
 ], TourPage.prototype, "tour", 2);
+__decorateClass([
+  (0, import_decorators.state)()
+], TourPage.prototype, "selectedDate", 2);
 TourPage = __decorateClass([
   (0, import_decorators.customElement)("tour-page")
 ], TourPage);

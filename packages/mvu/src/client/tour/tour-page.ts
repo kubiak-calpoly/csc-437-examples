@@ -14,6 +14,7 @@ import { reset, elements } from "../shared/css-base";
 import "../shared/blazing-header";
 import "./itinerary-view";
 import "./calendar-widget";
+import "./map-widget";
 
 @customElement("tour-page")
 export class TourPage extends LitElement {
@@ -60,6 +61,15 @@ export class TourPage extends LitElement {
       transportation
     } = this.tour;
 
+    const renderMarker = (dst: Destination, i: number) => {
+      return html` <map-marker
+        id="marker-destination-${i}"
+        lat=${dst.location.lat}
+        lon=${dst.location.lon}>
+        ${dst.name}
+      </map-marker>`;
+    };
+
     return html`
       <blazing-header title="${name}"> </blazing-header>
       <main class="page">
@@ -69,7 +79,9 @@ export class TourPage extends LitElement {
           start-date=${startDate}
           end-date=${endDate}>
         </calendar-widget>
-        <map-widget src="/maps/italy.geo.json"> </map-widget>
+        <map-widget src="/maps/italy.geo.json">
+          ${destinations.map(renderMarker)}
+        </map-widget>
         <itinerary-view
           .startDate=${new Date(startDate)}
           .selectedDate=${this.selectedDate}

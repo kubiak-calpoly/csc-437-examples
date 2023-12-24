@@ -32,6 +32,7 @@ __export(itinerary_item_exports, {
 module.exports = __toCommonJS(itinerary_item_exports);
 var import_lit = require("lit");
 var import_decorators = require("lit/decorators.js");
+var import_css_base = require("../shared/css-base");
 let ItineraryItem = class extends import_lit.LitElement {
   constructor() {
     super(...arguments);
@@ -47,9 +48,11 @@ let ItineraryItem = class extends import_lit.LitElement {
         <time datetime=${this.startDate}>
           ${formatDate(this.startDate)}
         </time>
-        <time datetime=${this.endDate}>
-          ${formatDate(this.endDate)}
-        </time>
+        ${this.endDate && this.endDate > this.startDate ? import_lit.html`
+              <time datetime=${this.endDate}>
+                ${formatDate(this.endDate)}
+              </time>
+            ` : null}
       </span>
       <details
         id="details"
@@ -63,71 +66,75 @@ let ItineraryItem = class extends import_lit.LitElement {
       </details>`;
   }
 };
-ItineraryItem.styles = import_lit.css`
-    <style > :host {
-      display: contents;
-    }
-    :host([hidden]) {
-      display: none;
-    }
-    #dates {
-      color: var(--color-accent);
-      font-family: var(--font-family-display);
-      font-weight: bold;
-      grid-column: start;
-    }
-    #dates time {
-      white-space: nowrap;
-    }
-    #dates time + time::before {
-      display: inline-block;
-      content: " – ";
-    }
-    details {
-      padding: var(--size-spacing-medium);
-      display: contents;
-    }
-    details.destination > summary,
-    details.destination > ::slotted(*) {
-      grid-column: header;
-    }
-    ::slotted(ul) {
-      list-style: none;
-      padding: 0;
-      align-self: end;
-    }
-    summary {
-      position: relative;
-      padding-bottom: var(--size-spacing-large);
-      padding-left: calc(
-        var(--size-icon-large) + var(--size-spacing-medium)
-      );
-      list-style: none;
-      grid-column: header / end;
-      min-height: calc(
-        var(--size-icon-large) + var(--size-spacing-large)
-      );
-    }
-    details > summary::before {
-      content: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg" fill="rgb(42 143 42)"><path d="m624 300h-48v336h-134.88l158.88 317.64 158.88-317.64h-134.88zm-24 546.36-81.121-162.36h162.24z"/></svg>');
-      position: absolute;
-      height: 2rem;
-      width: 2rem;
-      bottom: 0;
-      right: 0;
-      color: var(--color-accent);
-      transform: rotate(0);
-      transition: transform 0.5s;
-    }
-    details[open] > summary::before {
-      transform: rotate(180deg);
-    }
-  `;
+ItineraryItem.styles = [
+  import_css_base.reset,
+  import_css_base.elements,
+  import_lit.css`
+      :host {
+        display: contents;
+      }
+      :host([hidden]) {
+        display: none;
+      }
+      #dates {
+        color: var(--color-accent);
+        font-family: var(--font-family-display);
+        font-weight: bold;
+        grid-column: start;
+      }
+      #dates time {
+        white-space: nowrap;
+      }
+      #dates time + time::before {
+        display: inline-block;
+        content: " – ";
+      }
+      details {
+        padding: var(--size-spacing-medium);
+        display: contents;
+      }
+      details.destination > summary,
+      details.destination > ::slotted(*) {
+        grid-column: header;
+      }
+      ::slotted(ul) {
+        list-style: none;
+        padding: 0;
+        align-self: end;
+      }
+      summary {
+        position: relative;
+        padding-bottom: var(--size-spacing-large);
+        padding-left: calc(
+          var(--size-icon-large) + var(--size-spacing-medium)
+        );
+        list-style: none;
+        grid-column: header / end;
+        min-height: calc(
+          var(--size-icon-large) + var(--size-spacing-large)
+        );
+      }
+      details > summary::before {
+        content: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg" fill="rgb(42 143 42)"><path d="m624 300h-48v336h-134.88l158.88 317.64 158.88-317.64h-134.88zm-24 546.36-81.121-162.36h162.24z"/></svg>');
+        position: absolute;
+        height: 2rem;
+        width: 2rem;
+        bottom: 0;
+        right: 0;
+        color: var(--color-accent);
+        transform: rotate(0);
+        transition: transform 0.5s;
+      }
+      details[open] > summary::before {
+        transform: rotate(180deg);
+      }
+    `
+];
 __decorateClass([
-  (0, import_decorators.property)({ attribute: "start-date" })
+  (0, import_decorators.property)()
 ], ItineraryItem.prototype, "startDate", 2);
 __decorateClass([
-  (0, import_decorators.property)({ attribute: "end-date" })
+  (0, import_decorators.property)()
 ], ItineraryItem.prototype, "endDate", 2);
 __decorateClass([
   (0, import_decorators.property)({ attribute: "item-class" })
@@ -144,9 +151,6 @@ __decorateClass([
 ItineraryItem = __decorateClass([
   (0, import_decorators.customElement)("itinerary-item")
 ], ItineraryItem);
-if (window) {
-  window.ItineraryItem = ItineraryItem;
-}
 const months = [
   "Jan",
   "Feb",
@@ -161,8 +165,7 @@ const months = [
   "Nov",
   "Dec"
 ];
-function formatDate(datestring) {
-  const dt = new Date(datestring);
+function formatDate(dt) {
   const m = months[dt.getUTCMonth()];
   const d = dt.getUTCDate();
   return `${d} ${m}`;

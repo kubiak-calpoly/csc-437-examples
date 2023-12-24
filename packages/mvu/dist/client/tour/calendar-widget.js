@@ -35,31 +35,37 @@ var import_decorators = require("lit/decorators.js");
 let CalendarWidget = class extends import_lit.LitElement {
   constructor() {
     super(...arguments);
-    this.startDate = /* @__PURE__ */ new Date();
-    this.endDate = /* @__PURE__ */ new Date();
+    this.startDate = Date.now();
+    this.endDate = Date.now();
+    this.handleChange = (date) => {
+    };
   }
   render() {
+    const start = new Date(this.startDate);
+    const end = new Date(this.endDate);
     const dates = datesInRange(start, end);
     const renderDate = (d) => {
       const ymd = {
         d: d.getUTCDate(),
         m: d.getUTCMonth() + 1,
-        y: d.getUTCFullYear()
+        y: d.getUTCFullYear(),
+        day: d.getUTCDay()
       };
       const format = ({ y, m, d: d2 }) => [y, m, d2].join("-");
       return import_lit.html`
-        <label>
+        <label style="grid-column: ${ymd.day + 1}">
           ${ymd.d}
           <input
             type="radio"
             name="cal"
-            onchange="CalendarWidget.handleSelection(event)"
+            @change="this._handleSelection"
             value="${format(ymd)}" />
         </label>
       `;
     };
     return import_lit.html` <section>
-      <fieldset id="grid">
+      <fieldset
+        @change="${(event) => this.handleChange(new Date(event.target.value))}">
         <h6>Su</h6>
         <h6>Mo</h6>
         <h6>Tu</h6>
@@ -67,13 +73,11 @@ let CalendarWidget = class extends import_lit.LitElement {
         <h6>Th</h6>
         <h6>Fr</h6>
         <h6>Sa</h6>
+        ${dates.map(renderDate)}
       </fieldset>
-      <button
-        id="clear"
-        onclick="CalendarWidget.handleClearSelection(event)">
+      <button id="clear" @click="${() => this.handleChange()}">
         Clear Selection
       </button>
-      ${dates.map(renderDate)}
     </section>`;
   }
 };
@@ -133,55 +137,26 @@ CalendarWidget.styles = import_lit.css`
       margin: 0 auto;
     }
   `;
-CalendarWidget.handleClearSelection = effect(function() {
-  const current = this.shadowRoot.querySelector("input:checked");
-  if (current) {
-    const items = document.querySelectorAll(
-      ".itinerary > itinerary-item"
-    );
-    Array.from(items).forEach((el) => {
-      el.removeAttribute("hidden");
-      el.removeAttribute("open");
-    });
-    current.checked = false;
-  }
-});
-CalendarWidget.handleSelection = effect(function(ev) {
-  const date = new Date(ev.target.value);
-  const items = document.querySelectorAll(
-    ".itinerary > itinerary-item"
-  );
-  Array.from(items).forEach((el) => {
-    const start2 = el.getAttribute("start-date");
-    const end2 = el.getAttribute("end-date") || start2;
-    const shown = new Date(start2) <= date && date <= new Date(end2);
-    if (shown) {
-      el.setAttribute("open", "open");
-      el.removeAttribute("hidden");
-    } else {
-      el.setAttribute("hidden", "hidden");
-    }
-  });
-});
 __decorateClass([
-  (0, import_decorators.property)({ attribute: "start-date", type: Date })
+  (0, import_decorators.property)({ attribute: "start-date" })
 ], CalendarWidget.prototype, "startDate", 2);
 __decorateClass([
   (0, import_decorators.property)({ attribute: "end-date", type: Date })
 ], CalendarWidget.prototype, "endDate", 2);
 __decorateClass([
-  (0, import_decorators.state)()
-], CalendarWidget.prototype, "selected", 2);
+  (0, import_decorators.property)()
+], CalendarWidget.prototype, "handleChange", 2);
 CalendarWidget = __decorateClass([
   (0, import_decorators.customElement)("calendar-widget")
 ], CalendarWidget);
 if (window) {
   window.CalendarWidget = CalendarWidget;
 }
-function datesInRange(start2, end2) {
+function datesInRange(start, end) {
+  const endTime = end ? end.getTime() : start.getTime();
   let result = [];
-  let i = new Date(start2);
-  while (i <= (end2 || start2)) {
+  let i = new Date(start);
+  while (i.getTime() <= endTime) {
     result.push(new Date(i));
     i.setUTCDate(i.getUTCDate() + 1);
   }

@@ -32,6 +32,7 @@ __export(blazing_header_exports, {
 module.exports = __toCommonJS(blazing_header_exports);
 var import_lit = require("lit");
 var import_decorators = require("lit/decorators.js");
+var import_css_base = require("../shared/css-base");
 let BlazingHeader = class extends import_lit.LitElement {
   constructor() {
     super(...arguments);
@@ -46,20 +47,24 @@ let BlazingHeader = class extends import_lit.LitElement {
     `;
   }
 };
-BlazingHeader.styles = import_lit.css`
-    header {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: baseline;
-      justify-content: space-between;
-      padding: var(--size-spacing-medium);
-      background-color: var(--color-background-header);
-      color: var(--color-text-inverted);
-    }
-    header a {
-      color: var(--color-link-inverted);
-    }
-  `;
+BlazingHeader.styles = [
+  import_css_base.reset,
+  import_css_base.elements,
+  import_lit.css`
+      header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        justify-content: space-between;
+        padding: var(--size-spacing-medium);
+        background-color: var(--color-background-header);
+        color: var(--color-text-inverted);
+      }
+      header a {
+        color: var(--color-link-inverted);
+      }
+    `
+];
 __decorateClass([
   (0, import_decorators.property)()
 ], BlazingHeader.prototype, "title", 2);
