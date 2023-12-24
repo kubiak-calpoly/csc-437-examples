@@ -1,7 +1,9 @@
 "use strict";
+var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __export = (target, all) => {
   for (var name in all)
@@ -15,6 +17,14 @@ var __copyProps = (to, from, except, desc) => {
   }
   return to;
 };
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var __decorateClass = (decorators, target, key, kind) => {
   var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc(target, key) : target;
@@ -32,7 +42,9 @@ __export(tour_page_exports, {
 module.exports = __toCommonJS(tour_page_exports);
 var import_lit = require("lit");
 var import_decorators = require("lit/decorators.js");
+var import_context = require("@lit/context");
 var import_css_base = require("../shared/css-base");
+var import_tour_context = __toESM(require("./tour-context"));
 var import_blazing_header = require("../shared/blazing-header");
 var import_itinerary_view = require("./itinerary-view");
 var import_calendar_widget = require("./calendar-widget");
@@ -92,10 +104,7 @@ let TourPage = class extends import_lit.LitElement {
           ${destinations.map(renderMarker)}
         </map-widget>
         <itinerary-view
-          .startDate=${new Date(startDate)}
           .selectedDate=${this.selectedDate}
-          .destinations=${destinations}
-          .transportation=${transportation}
           .handleDestinationToggle=${(open, dst) => this._selectedDestination = open ? dst : void 0}>
         </itinerary-view>
         <entourage-table> </entourage-table>
@@ -138,6 +147,7 @@ __decorateClass([
   (0, import_decorators.property)({ attribute: "tour-id" })
 ], TourPage.prototype, "tourId", 2);
 __decorateClass([
+  (0, import_context.provide)({ context: import_tour_context.default }),
   (0, import_decorators.state)()
 ], TourPage.prototype, "tour", 2);
 __decorateClass([

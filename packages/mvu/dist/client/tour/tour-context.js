@@ -18,13 +18,9 @@ var __copyProps = (to, from, except, desc) => {
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var tour_context_exports = {};
 __export(tour_context_exports, {
-  tourContext: () => tourContext
+  default: () => tour_context_default
 });
 module.exports = __toCommonJS(tour_context_exports);
 var import_context = require("@lit/context");
-const tourContext = (0, import_context.createContext)(Symbol("tour"));
-// Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  tourContext
-});
+var tour_context_default = (0, import_context.createContext)(Symbol("tour"));
 //# sourceMappingURL=tour-context.js.map

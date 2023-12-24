@@ -42,33 +42,42 @@ __export(itinerary_view_exports, {
 module.exports = __toCommonJS(itinerary_view_exports);
 var import_lit = require("lit");
 var import_decorators = require("lit/decorators.js");
+var import_context = require("@lit/context");
 var import_moment = __toESM(require("moment"));
 var import_css_base = require("../shared/css-base");
 var import_itinerary_item = require("./itinerary-item");
+var import_tour_context = __toESM(require("./tour-context"));
 let ItineraryView = class extends import_lit.LitElement {
   constructor() {
     super(...arguments);
-    this.destinations = [];
-    this.transportation = [];
+    this.tour = {
+      id: "not_a_tour",
+      name: "Unnamed",
+      destinations: [],
+      transportation: [],
+      startDate: /* @__PURE__ */ new Date(),
+      endDate: /* @__PURE__ */ new Date(),
+      entourage: []
+    };
     this.startDate = /* @__PURE__ */ new Date();
     this.handleDestinationToggle = (open, d) => {
     };
   }
   render() {
-    const destinations = this.destinations;
-    const transportation = this.transportation;
-    const startDates = destinations.map((dst) => dst.nights).reduce(
+    console.log(
+      "Rendering itinerary-view for tour",
+      this.tour.startDate,
+      this.tour.destinations,
+      this.tour.transportation
+    );
+    const transportation = this.tour.transportation;
+    const startDates = this.tour.destinations.map((dst) => dst.nights).reduce(
       (acc, nights, i) => acc.concat([
         new Date(
           acc[i].getTime() + nights * (24 * 60 * 60 * 1e3)
         )
       ]),
-      [this.startDate]
-    );
-    console.log(
-      "Rendering itinerary-view for tour",
-      this.selectedDate,
-      destinations
+      [new Date(this.tour.startDate)]
     );
     const destinationView = (dst, i) => {
       const startDate = startDates[i];
@@ -139,7 +148,7 @@ let ItineraryView = class extends import_lit.LitElement {
     };
     return import_lit.html`
       <section class="itinerary">
-        ${this.destinations.flatMap(
+        ${this.tour.destinations.flatMap(
       (d, i) => i < transportation.length ? [
         destinationView(d, i),
         transportationView(transportation[i])
@@ -224,11 +233,9 @@ ItineraryView.styles = [
     `
 ];
 __decorateClass([
-  (0, import_decorators.property)()
-], ItineraryView.prototype, "destinations", 2);
-__decorateClass([
-  (0, import_decorators.property)()
-], ItineraryView.prototype, "transportation", 2);
+  (0, import_context.consume)({ context: import_tour_context.default, subscribe: true }),
+  (0, import_decorators.property)({ attribute: false })
+], ItineraryView.prototype, "tour", 2);
 __decorateClass([
   (0, import_decorators.property)()
 ], ItineraryView.prototype, "startDate", 2);

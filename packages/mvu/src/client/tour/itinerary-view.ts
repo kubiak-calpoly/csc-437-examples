@@ -4,6 +4,7 @@ import {
   state,
   property
 } from "lit/decorators.js";
+import { consume } from "@lit/context";
 import moment from "moment";
 import type {
   Tour,
@@ -14,16 +15,21 @@ import type {
 } from "../../models/Tour";
 import { reset, elements } from "../shared/css-base";
 import "./itinerary-item";
-
-import { tourContext } from "./tour-context";
+import tourContext from "./tour-context";
 
 @customElement("itinerary-view")
 export class ItineraryView extends LitElement {
-  @property()
-  destinations: Array<Destination> = [];
-
-  @property()
-  transportation: Array<Transportation> = [];
+  @consume({ context: tourContext, subscribe: true })
+  @property({ attribute: false })
+  tour: Tour = {
+    id: "not_a_tour",
+    name: "Unnamed",
+    destinations: [],
+    transportation: [],
+    startDate: new Date(),
+    endDate: new Date(),
+    entourage: []
+  } as Tour;
 
   @property()
   startDate: Date = new Date();
@@ -38,9 +44,15 @@ export class ItineraryView extends LitElement {
   ) => {};
 
   render() {
-    const destinations = this.destinations;
-    const transportation = this.transportation;
-    const startDates = destinations
+    console.log(
+      "Rendering itinerary-view for tour",
+      this.tour.startDate,
+      this.tour.destinations,
+      this.tour.transportation
+    );
+
+    const transportation = this.tour.transportation;
+    const startDates = this.tour.destinations
       .map((dst) => dst.nights)
       .reduce(
         (acc, nights, i) =>
@@ -49,14 +61,8 @@ export class ItineraryView extends LitElement {
               acc[i].getTime() + nights * (24 * 60 * 60 * 1000)
             )
           ]),
-        [this.startDate]
+        [new Date(this.tour.startDate)]
       );
-
-    console.log(
-      "Rendering itinerary-view for tour",
-      this.selectedDate,
-      destinations
-    );
 
     const destinationView = (dst: Destination, i: number) => {
       const startDate = startDates[i];
@@ -144,7 +150,7 @@ export class ItineraryView extends LitElement {
 
     return html`
       <section class="itinerary">
-        ${this.destinations.flatMap((d, i) =>
+        ${this.tour.destinations.flatMap((d, i) =>
           i < transportation.length
             ? [
                 destinationView(d, i),

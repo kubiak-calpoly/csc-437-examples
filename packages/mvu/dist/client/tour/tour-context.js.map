@@ -1,7 +1,7 @@
 {
   "version": 3,
   "sources": ["../../../src/client/tour/tour-context.ts"],
-  "sourcesContent": ["import { createContext } from \"@lit/context\";\nimport type { Tour } from \"../../models/Tour\";\nexport const tourContext = createContext<Tour>(Symbol(\"tour\"));\n"],
-  "mappings": ";;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA,qBAA8B;AAEvB,MAAM,kBAAc,8BAAoB,OAAO,MAAM,CAAC;",
+  "sourcesContent": ["import { createContext } from \"@lit/context\";\nimport type { Tour } from \"../../models/Tour\";\nexport default createContext<Tour>(Symbol(\"tour\"));\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA,qBAA8B;AAE9B,IAAO,2BAAQ,8BAAoB,OAAO,MAAM,CAAC;",
   "names": []
 }

@@ -4,6 +4,7 @@ import {
   property,
   state
 } from "lit/decorators.js";
+import { provide } from "@lit/context";
 import type {
   Tour,
   Destination,
@@ -11,6 +12,7 @@ import type {
 } from "../../models/Tour";
 import { Profile } from "../../models/Profile";
 import { reset, elements } from "../shared/css-base";
+import tourContext from "./tour-context";
 import "../shared/blazing-header";
 import "./itinerary-view";
 import "./calendar-widget";
@@ -21,6 +23,7 @@ export class TourPage extends LitElement {
   @property({ attribute: "tour-id" })
   tourId: string = "";
 
+  @provide({ context: tourContext })
   @state()
   tour: Tour = {
     id: "tour-skeleton",
@@ -87,10 +90,7 @@ export class TourPage extends LitElement {
           ${destinations.map(renderMarker)}
         </map-widget>
         <itinerary-view
-          .startDate=${new Date(startDate)}
           .selectedDate=${this.selectedDate}
-          .destinations=${destinations}
-          .transportation=${transportation}
           .handleDestinationToggle=${(
             open: boolean,
             dst: Destination
