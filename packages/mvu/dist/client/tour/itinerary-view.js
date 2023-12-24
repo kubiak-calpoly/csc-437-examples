@@ -157,7 +157,7 @@ ItineraryView.styles = [
         display: grid;
         grid-area: itinerary;
         align-self: start;
-        grid-template-columns: [start] auto [header] 4fr [info] 1fr 2fr 1fr 2fr [end];
+        grid-template-columns: [start] auto [header info] 1fr 2fr 1fr 2fr [end];
         gap: var(--size-spacing-large)
           var(--size-spacing-medium);
         align-items: baseline;
@@ -168,14 +168,8 @@ ItineraryView.styles = [
         display: inline;
         height: 4rem;
         width: 4rem;
-        vertical-align: top;
+        vertical-align: middle;
         fill: currentColor;
-      }
-
-      itinerary-item > h3 > .icon:first-child {
-        position: absolute;
-        top: 0;
-        left: 0;
       }
 
       itinerary-item ol,
@@ -184,8 +178,8 @@ ItineraryView.styles = [
       }
 
       itinerary-item h4 {
-        grid-column: header;
-        text-align: right;
+        grid-column: info/end;
+        text-align: center;
       }
 
       itinerary-item[item-class="destination"] h3 {
@@ -197,6 +191,35 @@ ItineraryView.styles = [
         width: 100%;
         grid-column: info / end;
         grid-row-end: span 2;
+      }
+
+      .timings {
+        display: grid;
+        grid-column: info / end;
+        grid-template-columns: 1fr 2fr 1fr 2fr;
+        grid-template-columns: subgrid;
+        grid-auto-flow: column dense;
+        align-items: baseline;
+        gap: var(--size-spacing-small) var(--size-spacing-large);
+      }
+
+      .timings > dt {
+        /* Depart / Arrive */
+        grid-row: 2;
+        color: inherit;
+      }
+
+      .timings > dt + dd {
+        /* City / Airport / Station */
+        grid-column-end: span 2;
+        font-family: var(--font-family-display);
+        font-weight: bold;
+      }
+
+      .timings > dt + dd + dd {
+        /* Time */
+        grid-row: 2;
+        white-space: nowrap;
       }
     `
 ];
