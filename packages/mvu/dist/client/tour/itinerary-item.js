@@ -39,7 +39,8 @@ let ItineraryItem = class extends import_lit.LitElement {
     this.startDate = /* @__PURE__ */ new Date();
     this.endDate = /* @__PURE__ */ new Date();
     this.itemClass = "transportation";
-    this.marker = "";
+    this.handleToggle = (_) => {
+    };
     this.open = false;
     this.hidden = false;
   }
@@ -58,7 +59,7 @@ let ItineraryItem = class extends import_lit.LitElement {
         id="details"
         name="itin"
         ${open}
-        ontoggle="ItineraryItem.handleToggle(event)">
+        @toggle="${(event) => this.handleToggle(event.newState === "open")}">
         <summary>
           <slot name="summary"></slot>
         </summary>
@@ -141,7 +142,7 @@ __decorateClass([
 ], ItineraryItem.prototype, "itemClass", 2);
 __decorateClass([
   (0, import_decorators.property)()
-], ItineraryItem.prototype, "marker", 2);
+], ItineraryItem.prototype, "handleToggle", 2);
 __decorateClass([
   (0, import_decorators.property)({ reflect: true, type: Boolean })
 ], ItineraryItem.prototype, "open", 2);

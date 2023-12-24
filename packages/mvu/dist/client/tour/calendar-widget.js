@@ -35,8 +35,8 @@ var import_decorators = require("lit/decorators.js");
 let CalendarWidget = class extends import_lit.LitElement {
   constructor() {
     super(...arguments);
-    this.startDate = Date.now();
-    this.endDate = Date.now();
+    this.startDate = Date.now().toString();
+    this.endDate = Date.now().toString();
     this.handleChange = (date) => {
     };
   }
@@ -65,7 +65,7 @@ let CalendarWidget = class extends import_lit.LitElement {
     };
     return import_lit.html` <section>
       <fieldset
-        @change="${(event) => this.handleChange(new Date(event.target.value))}">
+        @change="${(event) => this.handleChange(new Date(event.target?.value))}">
         <h6>Su</h6>
         <h6>Mo</h6>
         <h6>Tu</h6>
@@ -149,9 +149,6 @@ __decorateClass([
 CalendarWidget = __decorateClass([
   (0, import_decorators.customElement)("calendar-widget")
 ], CalendarWidget);
-if (window) {
-  window.CalendarWidget = CalendarWidget;
-}
 function datesInRange(start, end) {
   const endTime = end ? end.getTime() : start.getTime();
   let result = [];

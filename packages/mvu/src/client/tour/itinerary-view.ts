@@ -31,12 +31,11 @@ export class ItineraryView extends LitElement {
   @property()
   selectedDate: Date | undefined;
 
-  @state()
-  selectedDestination: Destination | undefined;
-
-  changeDestination(dst: Destination) {
-    this.selectedDestination = dst;
-  }
+  @property()
+  handleDestinationToggle = (
+    open: boolean,
+    d: Destination
+  ) => {};
 
   render() {
     const destinations = this.destinations;
@@ -69,16 +68,17 @@ export class ItineraryView extends LitElement {
         this.selectedDate &&
         (this.selectedDate.getTime() < startDate.getTime() ||
           this.selectedDate.getTime() > endDate.getTime());
+      const open = !hidden;
 
       return html`
         <itinerary-item
-          marker="marker-destination-${i}"
           item-class="destination"
           .startDate=${startDate}
           .endDate=${endDate}
           ?hidden=${hidden}
-          handleDestinationChange=${() =>
-            this.changeDestination(dst)}>
+          ?open=${open}
+          .handleToggle=${(open: boolean) =>
+            this.handleDestinationToggle(open, dst)}>
           <h3 slot="summary"> ${dst.name} </h3>
           <p slot="summary">
             ${nights} night${nights === 1 ? "" : "s"}

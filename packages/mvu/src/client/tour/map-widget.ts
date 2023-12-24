@@ -12,6 +12,7 @@ import {
   GeoPermissibleObjects
 } from "d3-geo";
 import { Point } from "../../models/Geo";
+import { Destination } from "../../models/Tour";
 import { reset, elements } from "../shared/css-base";
 
 type ProjectionFn = (pt: Point) => { x: number; y: number };
@@ -109,7 +110,11 @@ export class MapWidget extends LitElement {
     }
   }
 
-  override attributeChangedCallback(name, oldValue, newValue) {
+  attributeChangedCallback(
+    name: string,
+    oldValue: string,
+    newValue: string
+  ) {
     super.attributeChangedCallback(name, oldValue, newValue);
     if (name === "src") {
       if (oldValue) {
@@ -136,6 +141,13 @@ export class MapWidget extends LitElement {
       });
   }
 
+  _clearData() {
+    this._mapSvg = svg`
+      <g class="basemap">
+      </g>
+    `;
+    this.projection = new MapProjection();
+  }
   _updateGeoGenerator(geojson: any): Generator {
     const base = geoEquirectangular();
     const projection = geojson
@@ -203,6 +215,9 @@ export class MapMarker extends LitElement {
   @property()
   lon = 0;
 
+  @property({ type: Boolean, reflect: true })
+  selected = false;
+
   @consume({ context: mapContext, subscribe: true })
   @property({ attribute: false })
   projection = new MapProjection();
@@ -217,7 +232,9 @@ export class MapMarker extends LitElement {
     return html`
       <i style="transform: translate(${x}px,${y}px)">
         <svg class="icon">${icon}</svg>
-        <label><slot></slot></label>
+        <label>
+          <slot></slot>
+        </label>
       </i>
     `;
   }

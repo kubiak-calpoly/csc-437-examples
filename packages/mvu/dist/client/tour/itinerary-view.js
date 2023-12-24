@@ -51,9 +51,8 @@ let ItineraryView = class extends import_lit.LitElement {
     this.destinations = [];
     this.transportation = [];
     this.startDate = /* @__PURE__ */ new Date();
-  }
-  changeDestination(dst) {
-    this.selectedDestination = dst;
+    this.handleDestinationToggle = (open, d) => {
+    };
   }
   render() {
     const destinations = this.destinations;
@@ -78,14 +77,15 @@ let ItineraryView = class extends import_lit.LitElement {
         startDate.getTime() + nights * (24 * 60 * 60 * 1e3)
       );
       const hidden = this.selectedDate && (this.selectedDate.getTime() < startDate.getTime() || this.selectedDate.getTime() > endDate.getTime());
+      const open = !hidden;
       return import_lit.html`
         <itinerary-item
-          marker="marker-destination-${i}"
           item-class="destination"
           .startDate=${startDate}
           .endDate=${endDate}
           ?hidden=${hidden}
-          handleDestinationChange=${() => this.changeDestination(dst)}>
+          ?open=${open}
+          .handleToggle=${(open2) => this.handleDestinationToggle(open2, dst)}>
           <h3 slot="summary"> ${dst.name} </h3>
           <p slot="summary">
             ${nights} night${nights === 1 ? "" : "s"}
@@ -211,8 +211,8 @@ __decorateClass([
   (0, import_decorators.property)()
 ], ItineraryView.prototype, "selectedDate", 2);
 __decorateClass([
-  (0, import_decorators.state)()
-], ItineraryView.prototype, "selectedDestination", 2);
+  (0, import_decorators.property)()
+], ItineraryView.prototype, "handleDestinationToggle", 2);
 ItineraryView = __decorateClass([
   (0, import_decorators.customElement)("itinerary-view")
 ], ItineraryView);

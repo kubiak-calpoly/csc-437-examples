@@ -74,9 +74,9 @@ let TourPage = class extends import_lit.LitElement {
     } = this.tour;
     const renderMarker = (dst, i) => {
       return import_lit.html` <map-marker
-        id="marker-destination-${i}"
         lat=${dst.location.lat}
-        lon=${dst.location.lon}>
+        lon=${dst.location.lon}
+        ?selected=${dst.name === this._selectedDestination?.name}>
         ${dst.name}
       </map-marker>`;
     };
@@ -95,7 +95,8 @@ let TourPage = class extends import_lit.LitElement {
           .startDate=${new Date(startDate)}
           .selectedDate=${this.selectedDate}
           .destinations=${destinations}
-          .transportation=${transportation}>
+          .transportation=${transportation}
+          .handleDestinationToggle=${(open, dst) => this._selectedDestination = open ? dst : void 0}>
         </itinerary-view>
         <entourage-table> </entourage-table>
       </main>
@@ -142,6 +143,9 @@ __decorateClass([
 __decorateClass([
   (0, import_decorators.state)()
 ], TourPage.prototype, "selectedDate", 2);
+__decorateClass([
+  (0, import_decorators.state)()
+], TourPage.prototype, "_selectedDestination", 2);
 TourPage = __decorateClass([
   (0, import_decorators.customElement)("tour-page")
 ], TourPage);

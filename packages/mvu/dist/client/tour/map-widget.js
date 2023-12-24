@@ -110,6 +110,13 @@ let MapWidget = class extends import_lit.LitElement {
       this.projection = this._updateProjection(generator);
     });
   }
+  _clearData() {
+    this._mapSvg = import_lit.svg`
+      <g class="basemap">
+      </g>
+    `;
+    this.projection = new MapProjection();
+  }
   _updateGeoGenerator(geojson) {
     const base = (0, import_d3_geo.geoEquirectangular)();
     const projection = geojson ? base.fitExtent(this._viewBox, geojson) : base;
@@ -133,6 +140,7 @@ let MapWidget = class extends import_lit.LitElement {
     const scale = width / this._viewBox[1][1];
     const projectionFn = (pt) => {
       const { lat, lon } = pt;
+      console.log("Projecting point:", pt);
       if (lat && lon) {
         const features = [
           {
@@ -203,6 +211,7 @@ let MapMarker = class extends import_lit.LitElement {
     super(...arguments);
     this.lat = 0;
     this.lon = 0;
+    this.selected = false;
     this.projection = new MapProjection();
   }
   render() {
@@ -214,7 +223,9 @@ let MapMarker = class extends import_lit.LitElement {
     return import_lit.html`
       <i style="transform: translate(${x}px,${y}px)">
         <svg class="icon">${icon}</svg>
-        <label><slot></slot></label>
+        <label>
+          <slot></slot>
+        </label>
       </i>
     `;
   }
@@ -256,7 +267,11 @@ __decorateClass([
   (0, import_decorators.property)()
 ], MapMarker.prototype, "lon", 2);
 __decorateClass([
-  (0, import_context.consume)({ context: mapContext })
+  (0, import_decorators.property)({ type: Boolean, reflect: true })
+], MapMarker.prototype, "selected", 2);
+__decorateClass([
+  (0, import_context.consume)({ context: mapContext, subscribe: true }),
+  (0, import_decorators.property)({ attribute: false })
 ], MapMarker.prototype, "projection", 2);
 MapMarker = __decorateClass([
   (0, import_decorators.customElement)("map-marker")

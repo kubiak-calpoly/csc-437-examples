@@ -14,7 +14,7 @@ export class ItineraryItem extends LitElement {
   itemClass: string = "transportation";
 
   @property()
-  marker: string = "";
+  handleToggle = (_: boolean) => {};
 
   @property({ reflect: true, type: Boolean })
   open: boolean = false;
@@ -39,7 +39,8 @@ export class ItineraryItem extends LitElement {
         id="details"
         name="itin"
         ${open}
-        ontoggle="ItineraryItem.handleToggle(event)">
+        @toggle="${(event: ToggleEvent) =>
+          this.handleToggle(event.newState === "open")}">
         <summary>
           <slot name="summary"></slot>
         </summary>
@@ -113,7 +114,7 @@ export class ItineraryItem extends LitElement {
   ];
 }
 
-//   static handleToggle = effect(function (event) {
+//  static handleToggle = effect(function (event) {
 //     const markerId = this.getAttribute("marker");
 //     const isOpen = event.newState === "open";
 //

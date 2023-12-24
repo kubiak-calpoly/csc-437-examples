@@ -35,6 +35,9 @@ export class TourPage extends LitElement {
   @state()
   selectedDate: Date | undefined;
 
+  @state()
+  _selectedDestination: Destination | undefined;
+
   connectedCallback() {
     console.log("Tour ID:", this.tourId);
     super.connectedCallback();
@@ -63,9 +66,10 @@ export class TourPage extends LitElement {
 
     const renderMarker = (dst: Destination, i: number) => {
       return html` <map-marker
-        id="marker-destination-${i}"
         lat=${dst.location.lat}
-        lon=${dst.location.lon}>
+        lon=${dst.location.lon}
+        ?selected=${dst.name ===
+        this._selectedDestination?.name}>
         ${dst.name}
       </map-marker>`;
     };
@@ -86,7 +90,14 @@ export class TourPage extends LitElement {
           .startDate=${new Date(startDate)}
           .selectedDate=${this.selectedDate}
           .destinations=${destinations}
-          .transportation=${transportation}>
+          .transportation=${transportation}
+          .handleDestinationToggle=${(
+            open: boolean,
+            dst: Destination
+          ) =>
+            (this._selectedDestination = open
+              ? dst
+              : undefined)}>
         </itinerary-view>
         <entourage-table> </entourage-table>
       </main>

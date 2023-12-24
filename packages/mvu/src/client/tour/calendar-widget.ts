@@ -8,20 +8,20 @@ import {
 @customElement("calendar-widget")
 export class CalendarWidget extends LitElement {
   @property({ attribute: "start-date" })
-  startDate: String = Date.now();
+  startDate: string = Date.now().toString();
 
   @property({ attribute: "end-date", type: Date })
-  endDate: String = Date.now();
+  endDate: string = Date.now().toString();
 
   @property()
-  handleChange: (Date) => void = (date) => {};
+  handleChange = (date: Date) => {};
 
   render() {
     const start = new Date(this.startDate);
     const end = new Date(this.endDate);
     const dates = datesInRange(start, end);
 
-    const renderDate = (d) => {
+    const renderDate = (d: Date) => {
       const ymd = {
         d: d.getUTCDate(),
         m: d.getUTCMonth() + 1,
@@ -45,8 +45,8 @@ export class CalendarWidget extends LitElement {
 
     return html` <section>
       <fieldset
-        @change="${(event) =>
-          this.handleChange(new Date(event.target.value))}">
+        @change="${(event: InputEvent) =>
+          this.handleChange(new Date(event.target?.value))}">
         <h6>Su</h6>
         <h6>Mo</h6>
         <h6>Tu</h6>
@@ -118,10 +118,6 @@ export class CalendarWidget extends LitElement {
       margin: 0 auto;
     }
   `;
-}
-
-if (window) {
-  window.CalendarWidget = CalendarWidget;
 }
 
 function datesInRange(start: Date, end?: Date) {
