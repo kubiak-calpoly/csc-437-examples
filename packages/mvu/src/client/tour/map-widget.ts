@@ -7,12 +7,14 @@ import {
 import { createContext, consume, provide } from "@lit/context";
 import {
   geoEquirectangular,
-  geoPath
-} from "https://cdn.jsdelivr.net/npm/d3-geo@3/+esm";
-import { Point } from "../../../models/Geo.ts";
+  geoPath,
+  GeoPath,
+  GeoPermissibleObjects
+} from "d3-geo";
+import { Point } from "../../models/Geo";
 import { reset, elements } from "../shared/css-base";
 
-type ProjectionFn = (Point) => { x: number; y: number };
+type ProjectionFn = (pt: Point) => { x: number; y: number };
 
 class MapProjection {
   _projection: ProjectionFn = (_) => ({
@@ -20,8 +22,8 @@ class MapProjection {
     y: 0
   });
 
-  constructor(fn: ProjectionFn) {
-    this._projection = fn || ((_) => ({ x: 0, y: 0 }));
+  constructor(fn: ProjectionFn = (_) => ({ x: 0, y: 0 })) {
+    this._projection = fn;
   }
 
   project(pt: Point) {
@@ -33,9 +35,11 @@ const mapContext = createContext<MapProjection>(
   Symbol("mapProjection")
 );
 
+type Generator = GeoPath<any, GeoPermissibleObjects>;
+
 @customElement("map-widget")
 export class MapWidget extends LitElement {
-  _viewBox = [
+  _viewBox: [[number, number], [number, number]] = [
     [0, 0],
     [1000, 1000]
   ];
@@ -48,9 +52,6 @@ export class MapWidget extends LitElement {
       <g class="basemap">
       </g>
     `;
-
-  @state()
-  _geoGenerator = undefined;
 
   @provide({ context: mapContext })
   @state()
@@ -108,7 +109,7 @@ export class MapWidget extends LitElement {
     }
   }
 
-  attributeChangedCallback(name, oldValue, newValue) {
+  override attributeChangedCallback(name, oldValue, newValue) {
     super.attributeChangedCallback(name, oldValue, newValue);
     if (name === "src") {
       if (oldValue) {
@@ -120,7 +121,7 @@ export class MapWidget extends LitElement {
     }
   }
 
-  _fetchData(src) {
+  _fetchData(src: string) {
     fetch(src)
       .then((response) => {
         if (response.status === 200) {
@@ -129,49 +130,54 @@ export class MapWidget extends LitElement {
         return null;
       })
       .then((geojson) => {
-        this._updateGeoGenerator(geojson);
-        this._mapSvg = this._renderMap(geojson);
-        this._positionContents();
+        const generator = this._updateGeoGenerator(geojson);
+        this._mapSvg = this._renderMap(geojson, generator);
+        this.projection = this._updateProjection(generator);
       });
   }
 
-  _updateGeoGenerator(geojson) {
+  _updateGeoGenerator(geojson: any): Generator {
     const base = geoEquirectangular();
     const projection = geojson
       ? base.fitExtent(this._viewBox, geojson)
       : base;
-    this._geoGenerator = geoPath().projection(projection);
+    return geoPath(projection);
   }
 
-  _renderMap(geojson) {
+  _renderMap(geojson: any, generator: Generator) {
     const { features } = geojson;
-    const paths = features.map(this._geoGenerator);
+    const paths = features.map(generator);
 
     return svg`
     <g class="basemap">
-      ${paths.map((p) => svg`<path d=${p} />`)}
+      ${paths.map((p: any) => svg`<path d=${p} />`)}
     </g>
     `;
   }
 
-  _positionContents() {
-    const mapArea = this.shadowRoot.getElementById("map-area");
+  _updateProjection(generator: Generator) {
+    const mapArea = this.shadowRoot?.getElementById("map-area");
     const markers = Array.from(this.children);
-    const { width } = mapArea.getBoundingClientRect();
+    const { width } = mapArea?.getBoundingClientRect() || {
+      width: 0
+    };
     const scale = width / this._viewBox[1][1];
 
     const projectionFn = (pt: Point) => {
       const { lat, lon } = pt;
+      console.log("Projecting point:", pt);
       if (lat && lon) {
-        const feature = {
-          type: "Feature",
-          properties: { name: "marker" },
-          geometry: {
-            type: "Point",
-            coordinates: [lon, lat]
+        const features: any = [
+          {
+            type: "Feature",
+            properties: { name: "marker" },
+            geometry: {
+              type: "Point",
+              coordinates: [lon, lat]
+            }
           }
-        };
-        const path = this._geoGenerator(feature);
+        ];
+        const [path] = features.map(generator);
         const matches = path.match(/M([.0-9-]+),([.0-9-]+)/);
         if (matches) {
           const [_, x, y] = matches;
@@ -185,7 +191,7 @@ export class MapWidget extends LitElement {
       return { x: 0, y: 0 };
     };
 
-    this.projection = new MapProjection(projectionFn);
+    return new MapProjection(projectionFn);
   }
 }
 
@@ -197,7 +203,8 @@ export class MapMarker extends LitElement {
   @property()
   lon = 0;
 
-  @consume({ context: mapContext })
+  @consume({ context: mapContext, subscribe: true })
+  @property({ attribute: false })
   projection = new MapProjection();
 
   render() {

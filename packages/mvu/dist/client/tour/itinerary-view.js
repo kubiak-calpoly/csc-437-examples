@@ -52,6 +52,9 @@ let ItineraryView = class extends import_lit.LitElement {
     this.transportation = [];
     this.startDate = /* @__PURE__ */ new Date();
   }
+  changeDestination(dst) {
+    this.selectedDestination = dst;
+  }
   render() {
     const destinations = this.destinations;
     const transportation = this.transportation;
@@ -81,7 +84,8 @@ let ItineraryView = class extends import_lit.LitElement {
           item-class="destination"
           .startDate=${startDate}
           .endDate=${endDate}
-          ?hidden=${hidden}>
+          ?hidden=${hidden}
+          handleDestinationChange=${() => this.changeDestination(dst)}>
           <h3 slot="summary"> ${dst.name} </h3>
           <p slot="summary">
             ${nights} night${nights === 1 ? "" : "s"}
@@ -206,6 +210,9 @@ __decorateClass([
 __decorateClass([
   (0, import_decorators.property)()
 ], ItineraryView.prototype, "selectedDate", 2);
+__decorateClass([
+  (0, import_decorators.state)()
+], ItineraryView.prototype, "selectedDestination", 2);
 ItineraryView = __decorateClass([
   (0, import_decorators.customElement)("itinerary-view")
 ], ItineraryView);

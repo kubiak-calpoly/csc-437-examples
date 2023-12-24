@@ -31,6 +31,13 @@ export class ItineraryView extends LitElement {
   @property()
   selectedDate: Date | undefined;
 
+  @state()
+  selectedDestination: Destination | undefined;
+
+  changeDestination(dst: Destination) {
+    this.selectedDestination = dst;
+  }
+
   render() {
     const destinations = this.destinations;
     const transportation = this.transportation;
@@ -69,7 +76,9 @@ export class ItineraryView extends LitElement {
           item-class="destination"
           .startDate=${startDate}
           .endDate=${endDate}
-          ?hidden=${hidden}>
+          ?hidden=${hidden}
+          handleDestinationChange=${() =>
+            this.changeDestination(dst)}>
           <h3 slot="summary"> ${dst.name} </h3>
           <p slot="summary">
             ${nights} night${nights === 1 ? "" : "s"}

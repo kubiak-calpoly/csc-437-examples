@@ -34,15 +34,15 @@ module.exports = __toCommonJS(map_widget_exports);
 var import_lit = require("lit");
 var import_decorators = require("lit/decorators.js");
 var import_context = require("@lit/context");
-var import_esm = require("https://cdn.jsdelivr.net/npm/d3-geo@3/+esm");
+var import_d3_geo = require("d3-geo");
 var import_css_base = require("../shared/css-base");
 class MapProjection {
-  constructor(fn) {
+  constructor(fn = (_) => ({ x: 0, y: 0 })) {
     this._projection = (_) => ({
       x: 0,
       y: 0
     });
-    this._projection = fn || ((_) => ({ x: 0, y: 0 }));
+    this._projection = fn;
   }
   project(pt) {
     return this._projection(pt);
@@ -63,7 +63,6 @@ let MapWidget = class extends import_lit.LitElement {
       <g class="basemap">
       </g>
     `;
-    this._geoGenerator = void 0;
     this.projection = new MapProjection();
   }
   render() {
@@ -106,47 +105,49 @@ let MapWidget = class extends import_lit.LitElement {
       }
       return null;
     }).then((geojson) => {
-      this._updateGeoGenerator(geojson);
-      this._mapSvg = this._renderMap(geojson);
-      this._positionContents();
+      const generator = this._updateGeoGenerator(geojson);
+      this._mapSvg = this._renderMap(geojson, generator);
+      this.projection = this._updateProjection(generator);
     });
   }
   _updateGeoGenerator(geojson) {
-    const base = (0, import_esm.geoEquirectangular)();
+    const base = (0, import_d3_geo.geoEquirectangular)();
     const projection = geojson ? base.fitExtent(this._viewBox, geojson) : base;
-    this._geoGenerator = (0, import_esm.geoPath)().projection(projection);
+    return (0, import_d3_geo.geoPath)(projection);
   }
-  _renderMap(geojson) {
+  _renderMap(geojson, generator) {
     const { features } = geojson;
-    const paths = features.map(this._geoGenerator);
+    const paths = features.map(generator);
     return import_lit.svg`
     <g class="basemap">
       ${paths.map((p) => import_lit.svg`<path d=${p} />`)}
     </g>
     `;
   }
-  _positionContents() {
-    const mapArea = this.shadowRoot.getElementById("map-area");
+  _updateProjection(generator) {
+    const mapArea = this.shadowRoot?.getElementById("map-area");
     const markers = Array.from(this.children);
-    const { width } = mapArea.getBoundingClientRect();
+    const { width } = mapArea?.getBoundingClientRect() || {
+      width: 0
+    };
     const scale = width / this._viewBox[1][1];
     const projectionFn = (pt) => {
       const { lat, lon } = pt;
-      console.log("Scaling marker:", text, lat, lon);
       if (lat && lon) {
-        const feature = {
-          type: "Feature",
-          properties: { name: "marker" },
-          geometry: {
-            type: "Point",
-            coordinates: [lon, lat]
+        const features = [
+          {
+            type: "Feature",
+            properties: { name: "marker" },
+            geometry: {
+              type: "Point",
+              coordinates: [lon, lat]
+            }
           }
-        };
-        const path = this._geoGenerator(feature);
+        ];
+        const [path] = features.map(generator);
         const matches = path.match(/M([.0-9-]+),([.0-9-]+)/);
         if (matches) {
           const [_, x, y] = matches;
-          console.log("Positioning marker to", x, y);
           return {
             x: scale * parseFloat(x),
             y: scale * parseFloat(y)
@@ -155,7 +156,7 @@ let MapWidget = class extends import_lit.LitElement {
       }
       return { x: 0, y: 0 };
     };
-    this.projection = new MapProjection(projectionFn);
+    return new MapProjection(projectionFn);
   }
 };
 MapWidget.styles = [
@@ -191,10 +192,8 @@ __decorateClass([
   (0, import_decorators.state)()
 ], MapWidget.prototype, "_mapSvg", 2);
 __decorateClass([
+  (0, import_context.provide)({ context: mapContext }),
   (0, import_decorators.state)()
-], MapWidget.prototype, "_geoGenerator", 2);
-__decorateClass([
-  (0, import_context.provide)({ context: mapProjection })
 ], MapWidget.prototype, "projection", 2);
 MapWidget = __decorateClass([
   (0, import_decorators.customElement)("map-widget")
@@ -257,8 +256,8 @@ __decorateClass([
   (0, import_decorators.property)()
 ], MapMarker.prototype, "lon", 2);
 __decorateClass([
-  (0, import_context.consume)({ context: mapProjection })
-], MapMarker.prototype, "rs", 2);
+  (0, import_context.consume)({ context: mapContext })
+], MapMarker.prototype, "projection", 2);
 MapMarker = __decorateClass([
   (0, import_decorators.customElement)("map-marker")
 ], MapMarker);
