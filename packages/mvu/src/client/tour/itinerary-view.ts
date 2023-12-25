@@ -16,6 +16,7 @@ import type {
 import { reset, elements } from "../shared/css-base";
 import "./itinerary-item";
 import tourContext from "./tour-context";
+import "./tour-link";
 
 @customElement("itinerary-view")
 export class ItineraryView extends LitElement {
@@ -85,7 +86,12 @@ export class ItineraryView extends LitElement {
           ?open=${open}
           .handleToggle=${(open: boolean) =>
             this.handleDestinationToggle(open, dst)}>
-          <h3 slot="summary"> ${dst.name} </h3>
+          <h3 slot="summary">
+            <tour-link
+              href="/tour/${this.tour.id}/destination/${i}">
+              ${dst.name}
+            </tour-link>
+          </h3>
           <p slot="summary">
             ${nights} night${nights === 1 ? "" : "s"}
           </p>

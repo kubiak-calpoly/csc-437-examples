@@ -43,15 +43,20 @@ module.exports = __toCommonJS(tour_page_exports);
 var import_lit = require("lit");
 var import_decorators = require("lit/decorators.js");
 var import_context = require("@lit/context");
+var import_lit_element_router = require("lit-element-router");
 var import_css_base = require("../shared/css-base");
 var import_tour_context = __toESM(require("./tour-context"));
 var import_blazing_header = require("../shared/blazing-header");
+var import_tour_router = require("./tour-router");
 var import_itinerary_view = require("./itinerary-view");
 var import_calendar_widget = require("./calendar-widget");
 var import_map_widget = require("./map-widget");
 let TourPage = class extends import_lit.LitElement {
   constructor() {
     super(...arguments);
+    this.route = "itinerary";
+    this.params = {};
+    this.query = {};
     this.tourId = "";
     this.tour = {
       id: "tour-skeleton",
@@ -62,6 +67,12 @@ let TourPage = class extends import_lit.LitElement {
       endDate: /* @__PURE__ */ new Date(),
       entourage: []
     };
+  }
+  router(route, params, query, data = {}) {
+    this.route = route;
+    this.params = params;
+    this.query = query;
+    console.log(route, params, query, data);
   }
   connectedCallback() {
     console.log("Tour ID:", this.tourId);
@@ -96,22 +107,40 @@ let TourPage = class extends import_lit.LitElement {
       <blazing-header title="${name}"> </blazing-header>
       <main class="page">
         <calendar-widget
-          .handleChange=${(selected) => this.selectedDate = selected}
+          .handleChange=${(selected) => this._selectedDate = selected}
           start-date=${startDate}
           end-date=${endDate}>
         </calendar-widget>
         <map-widget src="/maps/italy.geo.json">
           ${destinations.map(renderMarker)}
         </map-widget>
-        <itinerary-view
-          .selectedDate=${this.selectedDate}
-          .handleDestinationToggle=${(open, dst) => this._selectedDestination = open ? dst : void 0}>
-        </itinerary-view>
+        <tour-router active-route="${this.route}">
+          <itinerary-view
+            route="itinerary"
+            .selectedDate=${this._selectedDate}
+            .handleDestinationToggle=${(open, dst) => this._selectedDestination = open ? dst : void 0}>
+          </itinerary-view>
+          <p route="destination">Your destination here</p>
+        </tour-router>
         <entourage-table> </entourage-table>
       </main>
     `;
   }
 };
+TourPage.routes = [
+  {
+    name: "itinerary",
+    pattern: "tour/:id"
+  },
+  {
+    name: "destination",
+    pattern: "tour/:id/destination/:n"
+  },
+  {
+    name: "not-found",
+    pattern: "*"
+  }
+];
 TourPage.styles = [
   import_css_base.reset,
   import_css_base.elements,
@@ -144,6 +173,15 @@ TourPage.styles = [
     `
 ];
 __decorateClass([
+  (0, import_decorators.state)()
+], TourPage.prototype, "route", 2);
+__decorateClass([
+  (0, import_decorators.state)()
+], TourPage.prototype, "params", 2);
+__decorateClass([
+  (0, import_decorators.state)()
+], TourPage.prototype, "query", 2);
+__decorateClass([
   (0, import_decorators.property)({ attribute: "tour-id" })
 ], TourPage.prototype, "tourId", 2);
 __decorateClass([
@@ -152,11 +190,12 @@ __decorateClass([
 ], TourPage.prototype, "tour", 2);
 __decorateClass([
   (0, import_decorators.state)()
-], TourPage.prototype, "selectedDate", 2);
+], TourPage.prototype, "_selectedDate", 2);
 __decorateClass([
   (0, import_decorators.state)()
 ], TourPage.prototype, "_selectedDestination", 2);
 TourPage = __decorateClass([
+  import_lit_element_router.router,
   (0, import_decorators.customElement)("tour-page")
 ], TourPage);
 // Annotate the CommonJS export names for ESM import in node:

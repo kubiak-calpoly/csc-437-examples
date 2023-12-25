@@ -47,6 +47,7 @@ var import_moment = __toESM(require("moment"));
 var import_css_base = require("../shared/css-base");
 var import_itinerary_item = require("./itinerary-item");
 var import_tour_context = __toESM(require("./tour-context"));
+var import_tour_link = require("./tour-link");
 let ItineraryView = class extends import_lit.LitElement {
   constructor() {
     super(...arguments);
@@ -95,7 +96,12 @@ let ItineraryView = class extends import_lit.LitElement {
           ?hidden=${hidden}
           ?open=${open}
           .handleToggle=${(open2) => this.handleDestinationToggle(open2, dst)}>
-          <h3 slot="summary"> ${dst.name} </h3>
+          <h3 slot="summary">
+            <tour-link
+              href="/tour/${this.tour.id}/destination/${i}">
+              ${dst.name}
+            </tour-link>
+          </h3>
           <p slot="summary">
             ${nights} night${nights === 1 ? "" : "s"}
           </p>

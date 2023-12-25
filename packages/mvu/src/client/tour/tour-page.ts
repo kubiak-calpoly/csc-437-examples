@@ -5,6 +5,7 @@ import {
   state
 } from "lit/decorators.js";
 import { provide } from "@lit/context";
+import { router } from "lit-element-router";
 import type {
   Tour,
   Destination,
@@ -14,12 +15,23 @@ import { Profile } from "../../models/Profile";
 import { reset, elements } from "../shared/css-base";
 import tourContext from "./tour-context";
 import "../shared/blazing-header";
+import "./tour-router";
 import "./itinerary-view";
 import "./calendar-widget";
 import "./map-widget";
 
+@router
 @customElement("tour-page")
 export class TourPage extends LitElement {
+  @state()
+  route: String = "itinerary";
+
+  @state()
+  params: Object = {};
+
+  @state()
+  query: Object = {};
+
   @property({ attribute: "tour-id" })
   tourId: string = "";
 
@@ -36,10 +48,37 @@ export class TourPage extends LitElement {
   } as Tour;
 
   @state()
-  selectedDate: Date | undefined;
+  _selectedDate: Date | undefined;
 
   @state()
   _selectedDestination: Destination | undefined;
+
+  static routes = [
+    {
+      name: "itinerary",
+      pattern: "tour/:id"
+    },
+    {
+      name: "destination",
+      pattern: "tour/:id/destination/:n"
+    },
+    {
+      name: "not-found",
+      pattern: "*"
+    }
+  ];
+
+  router(
+    route: string,
+    params: Object,
+    query: Object,
+    data: Object = {}
+  ) {
+    this.route = route;
+    this.params = params;
+    this.query = query;
+    console.log(route, params, query, data);
+  }
 
   connectedCallback() {
     console.log("Tour ID:", this.tourId);
@@ -82,23 +121,27 @@ export class TourPage extends LitElement {
       <main class="page">
         <calendar-widget
           .handleChange=${(selected: Date | undefined) =>
-            (this.selectedDate = selected)}
+            (this._selectedDate = selected)}
           start-date=${startDate}
           end-date=${endDate}>
         </calendar-widget>
         <map-widget src="/maps/italy.geo.json">
           ${destinations.map(renderMarker)}
         </map-widget>
-        <itinerary-view
-          .selectedDate=${this.selectedDate}
-          .handleDestinationToggle=${(
-            open: boolean,
-            dst: Destination
-          ) =>
-            (this._selectedDestination = open
-              ? dst
-              : undefined)}>
-        </itinerary-view>
+        <tour-router active-route="${this.route}">
+          <itinerary-view
+            route="itinerary"
+            .selectedDate=${this._selectedDate}
+            .handleDestinationToggle=${(
+              open: boolean,
+              dst: Destination
+            ) =>
+              (this._selectedDestination = open
+                ? dst
+                : undefined)}>
+          </itinerary-view>
+          <p route="destination">Your destination here</p>
+        </tour-router>
         <entourage-table> </entourage-table>
       </main>
     `;
