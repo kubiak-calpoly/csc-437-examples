@@ -75,6 +75,9 @@ svg.icon {
   vertical-align: top;
   fill: currentColor;
 }
+h3 > svg.icon:first-child {
+  margin-right: var(--size-spacing-small);
+}
 dt {
   color: var(--color-accent);
   font-family: var(--font-family-display);
