@@ -3,6 +3,14 @@
   --size-spacing-medium: 0.5rem;
   --size-spacing-large: 1rem;
   --size-icon-large: 4rem;
+  --size-corner-small: 2px;
+  --size-corner-medium: var(--size-spacing-small);
+  --size-corner-large: var(--size-spacing-medium);
+  --size-font-body: 1rem;
+
+  --weight-line-light: 1px;
+  --weight-line-medium: 1px;
+  --weight-line-heavy: 4px;
 
   --color-accent: rgb(42 143 42);
   --color-background-header: var(--color-accent);

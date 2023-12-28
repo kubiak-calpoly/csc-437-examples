@@ -1,91 +1,58 @@
 .itinerary {
   display: grid;
-  grid-template-columns: [start] auto [header] 4fr [info] 1fr 2fr 1fr 2fr [end];
+  grid-template-columns: [start dates] auto [header] 1fr [origin] 1fr [icon] auto [terminus] 1fr 1fr [end];
   gap: var(--size-spacing-large) var(--size-spacing-medium);
-  align-items: baseline;
+  align-items: center;
   margin: var(--size-spacing-small);
+  list-style: none;
 }
 
-.itinerary > .dates {
+.itinerary .dates {
   color: var(--color-accent);
   font-family: var(--font-family-display);
   font-weight: bold;
-  grid-column: start;
+  grid-column: dates;
+  align-self: start;
 }
 
-.itinerary > details {
+.itinerary > * {
   padding: var(--size-spacing-medium);
   display: contents;
 }
 
-.itinerary > details > summary {
-  position: relative;
-  padding-bottom: var(--size-spacing-large);
-  padding-left: calc(
-    var(--size-icon-large) + var(--size-spacing-medium)
-  );
-  list-style: none;
-  grid-column: header / end;
-  min-height: calc(
-    var(--size-icon-large) + var(--size-spacing-large)
-  );
-}
-
-.itinerary > details > summary::after {
-  /* SVG icon: blz-expand-down.svg */
-  content: url('data:image/svg+xml;utf8,<svg width="64" height="16" viewBox="0 0 64 16" fill="rgb(42 143 43)" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M23.7539 3L31.5 10L39.2461 3H64V13H0V3H23.7539Z"/></svg>');
-  display: block;
-  position: absolute;
-  top: var(--size-icon-large);
-  left: 0;
-  height: var(--size-spacing-large);
-  width: var(--size-icon-large);
-}
-
-.itinerary > details[open] > summary::after {
-  content: url('data:image/svg+xml;utf8,<svg width="64" height="16" viewBox="0 0 64 16" fill="rgb(42 143 43)" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M32 5.67712L24.699 12H1V4H63V12H39.301L32 5.67712ZM38.9282 13H64V3H0V13H25.0718L32 7L38.9282 13Z"/></svg>');
-}
-
-.itinerary > details > summary > h3 > .icon:first-child {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.itinerary > .transportation {
-  border: 2px solid var(--color-accent);
-}
-
-.itinerary > .transportation .timings {
-  grid-column: info / end;
-  grid-template-columns: subgrid;
-}
-
-.itinerary > .transportation ol,
-.itinerary > .transportation ol > li {
+.itinerary > * > a {
   display: contents;
 }
 
-.itinerary > .transportation h4 {
-  grid-column: header;
+.itinerary > .transportation .origin {
+  grid-column: origin;
   text-align: right;
+  font-family: var(--font-family-display);
+  font-style: italic;
 }
 
-.itinerary > .destination > * {
-  grid-column: header;
+.itinerary > .transportation .terminus {
+  grid-column: terminus;
+  text-align: left;
+  font-family: var(--font-family-display);
+  font-style: italic;
 }
 
-.itinerary > .destination > ul {
-  align-self: end;
+.itinerary .transportation svg.icon {
+  grid-column: icon;
 }
 
 .itinerary > .destination h3 {
+  grid-column: header / end;
   font-style: normal;
   font-weight: bold;
+  border: var(--weight-line-light) solid var(--color-accent);
+  border-radius: var(--size-corner-medium);
+  padding: var(--size-spacing-medium);
 }
 
 .itinerary > .destination img.featured {
   width: 100%;
-  grid-column: info / end;
+  grid-column: header / end;
   grid-row-end: span 2;
 }
