@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com" />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,200;0,400;0,700;1,700&family=Merriweather:wght@400;700&display=swap"
+      rel="stylesheet" />
+    <link rel="stylesheet" href="/styles/tokens.css" />
+    <link rel="stylesheet" href="/styles/page.css" />
+    <link rel="stylesheet" href="/styles/itinerary.css" />
+    <link rel="stylesheet" href="/styles/entourage.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Blazing Travels</h1>
+      <p>12 days in Italy</p>
+    </header>
+
+    <section>
+      <h2>Itinerary</h2>
+
+      <ul class="itinerary">
+        <li class="transportation">
+          <span class="dates">
+            <time datetime="2024-10-13">13 Oct</time>
+            &ndash;
+            <time datetime="2024-10-14">14 Oct</time>
+          </span>
+          <a href="flight/outbound.html">
+            <span class="origin"> SFO </span>
+            <svg class="icon">
+              <use
+                xlink:href="/icons/transportation.svg#icon-airplane" />
+            </svg>
+            <span class="terminus"> VCE </span>
+          </a>
+        </li>
+        <li class="destination">
+          <span class="dates">
+            <time datetime="2024-10-14">14 Oct</time>
+            &ndash;
+            <time datetime="2024-10-18">18 Oct</time>
+          </span>
+          <h3>
+            <a href="destination/venice.html">Venice</a>
+          </h3>
+        </li>
+        <li class="transportation">
+          <span class="dates">
+            <time datetime="2024-10-18">18 Oct</time>
+          </span>
+          <a href="rail/venice-florence.html">
+            <span class="origin">Venice</span>
+            <svg class="icon">
+              <use
+                xlink:href="/icons/transportation.svg#icon-train" />
+            </svg>
+            <span class="terminus">Florence</span>
+          </a>
+        </li>
+        <li class="destination">
+          <span class="dates">
+            <time datetime="2024-10-18">18 Oct</time>
+            &ndash;
+            <time datetime="2024-10-21">21 Oct</time>
+          </span>
+          <h3>
+            <a href="destination/florence.html"> Florence </a>
+          </h3>
+        </li>
+        <li class="transportation">
+          <span class="dates">
+            <time datetime="2024-10-21">21 Oct</time>
+          </span>
+          <a href="rail/florence-rome.html">
+            <span class="origin"> Florence </span>
+            <svg class="icon">
+              <use
+                xlink:href="/icons/transportation.svg#icon-train" />
+            </svg>
+            <span class="terminus"> Rome </span>
+          </a>
+        </li>
+        <li class="destination">
+          <span class="dates">
+            <time datetime="2024-10-21">21 Oct</time>
+            &ndash;
+            <time datetime="2024-10-25">25 Oct</time>
+          </span>
+          <h3>
+            <a href="destination/rome.html"> Rome </a>
+          </h3>
+        </li>
+        <li class="transportation">
+          <span class="dates">
+            <time datetime="2024-10-25">25 Oct</time>
+          </span>
+          <a href="flight/return.html">
+            <span class="origin"> FCO </span>
+            <svg class="icon">
+              <use
+                xlink:href="/icons/transportation.svg#icon-airplane" />
+            </svg>
+            <span class="terminus"> SFO </span>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <section class="entourage">
+      <h2>Entourage</h2>
+      <ul>
+        <li><a href="profile/1.html">Person 1</a></li>
+        <li><a href="profile/2.html">Person 2</a></li>
+        <li><a href="profile/3.html">Person 3</a></li>
+      </ul>
+    </section>
+  </body>
+</html>

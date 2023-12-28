@@ -1,0 +1,85 @@
+*,
+*::before,
+*::after {
+  margin: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: var(--font-family-body);
+  background-color: var(--color-background-page);
+}
+header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: var(--size-spacing-medium);
+  background-color: var(--color-background-header);
+  color: var(--color-text-inverted);
+}
+header a {
+  color: var(--color-link-inverted);
+}
+header svg.outline-map {
+  align-self: end;
+}
+section {
+  padding: var(--size-spacing-medium);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-family-display);
+}
+h1 {
+  font-size: 2.5rem;
+  font-style: oblique;
+}
+h2 {
+  font-size: 2rem;
+}
+h3 {
+  font-size: 1.5rem;
+  font-weight: normal;
+  font-style: oblique;
+}
+h4 {
+  font-size: 1.25rem;
+}
+h5 {
+  font-size: 1rem;
+}
+h6 {
+  font-size: 1rem;
+  font-weight: normal;
+  font-style: italic;
+}
+h3,
+a {
+  color: var(--color-accent);
+}
+p + * {
+  margin-top: var(--size-spacing-small);
+}
+svg.outline-map {
+  fill: var(--color-link-inverted);
+}
+svg.icon {
+  display: inline;
+  height: 4rem;
+  width: 4rem;
+  vertical-align: top;
+  fill: currentColor;
+}
+h3 > svg.icon:first-child {
+  margin-right: var(--size-spacing-small);
+}
+dt {
+  color: var(--color-accent);
+  font-family: var(--font-family-display);
+  font-weight: bold;
+}
