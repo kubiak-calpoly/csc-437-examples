@@ -1,3 +1,1 @@
-export default {
-  root: "./html"
-};
+export default {};
