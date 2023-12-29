@@ -1,0 +1,48 @@
+.itinerary {
+  display: grid;
+  grid-template-columns: [start dates] auto [header] 1fr [origin] 1fr [icon] auto [terminus] 1fr 1fr [end];
+  gap: var(--size-spacing-large) var(--size-spacing-medium);
+  align-items: center;
+  margin: var(--size-spacing-small);
+  list-style: none;
+}
+
+itinerary-item {
+  padding: var(--size-spacing-medium);
+  display: contents;
+}
+
+itinerary-item[hidden] {
+  display: none;
+}
+
+itinerary-item > a {
+  display: contents;
+}
+
+itinerary-item.transportation .origin {
+  grid-column: origin;
+  text-align: right;
+  font-family: var(--font-family-display);
+  font-style: italic;
+}
+
+itinerary-item.transportation .terminus {
+  grid-column: terminus;
+  text-align: left;
+  font-family: var(--font-family-display);
+  font-style: italic;
+}
+
+itinerary-item.transportation svg.icon {
+  grid-column: icon;
+}
+
+itinerary-item.destination h3 {
+  grid-column: header / end;
+  font-style: normal;
+  font-weight: bold;
+  border: var(--weight-line-light) solid var(--color-accent);
+  border-radius: var(--size-corner-medium);
+  padding: var(--size-spacing-medium);
+}

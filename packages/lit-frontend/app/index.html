@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com" />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,200;0,400;0,700;1,700&family=Merriweather:wght@400;700&display=swap"
+      rel="stylesheet" />
+    <link rel="stylesheet" href="/styles/tokens.css" />
+    <link rel="stylesheet" href="/styles/page.css" />
+    <link rel="stylesheet" href="/styles/itinerary.css" />
+    <link rel="stylesheet" href="/styles/entourage.css" />
+    <script
+      type="module"
+      src="/src/calendar-widget.ts"></script>
+    <script type="module" src="/src/itinerary-item.ts"></script>
+    <script
+      type="module"
+      src="/src/entourage-table.ts"></script>
+  </head>
+  <body>
+    <header>
+      <h1>Blazing Travels</h1>
+      <p>12 days in Italy</p>
+    </header>
+
+    <main class="page">
+      <calendar-widget
+        start-date="2024-10-13"
+        end-date="2024-10-25">
+      </calendar-widget>
+
+      <section class="itinerary">
+        <itinerary-item
+          class="transportation"
+          start-date="2024-10-13"
+          end-date="2024-10-14">
+          <a href="flight/outbound.html">
+            <span class="origin"> SFO </span>
+            <svg class="icon">
+              <use
+                xlink:href="/icons/transportation.svg#icon-airplane" />
+            </svg>
+            <span class="terminus"> VCE </span>
+          </a>
+        </itinerary-item>
+        <itinerary-item
+          class="destination"
+          start-date="2024-10-14"
+          end-date="2024-10-18">
+          <h3>
+            <a href="destination/venice.html">Venice</a>
+          </h3>
+        </itinerary-item>
+        <itinerary-item
+          class="transportation"
+          start-date="2024-10-18">
+          <a href="rail/venice-florence.html">
+            <span class="origin">Venice</span>
+            <svg class="icon">
+              <use
+                xlink:href="/icons/transportation.svg#icon-train" />
+            </svg>
+            <span class="terminus">Florence</span>
+          </a>
+        </itinerary-item>
+        <itinerary-item
+          class="destination"
+          start-date="2024-10-18"
+          end-date="2024-10-21">
+          <h3>
+            <a href="destination/florence.html"> Florence </a>
+          </h3>
+        </itinerary-item>
+        <itinerary-item
+          class="transportation"
+          start-date="2024-10-21">
+          <a href="rail/florence-rome.html">
+            <span class="origin"> Florence </span>
+            <svg class="icon">
+              <use
+                xlink:href="/icons/transportation.svg#icon-train" />
+            </svg>
+            <span class="terminus"> Rome </span>
+          </a>
+        </itinerary-item>
+        <itinerary-item
+          class="destination"
+          start-date="2024-10-21"
+          end-date="2024-10-25">
+          <h3>
+            <a href="destination/rome.html"> Rome </a>
+          </h3>
+        </itinerary-item>
+        <itinerary-item
+          class="transportation"
+          start-date="2024-10-25">
+          <a href="flight/return.html">
+            <span class="origin"> FCO </span>
+            <svg class="icon">
+              <use
+                xlink:href="/icons/transportation.svg#icon-airplane" />
+            </svg>
+            <span class="terminus"> SFO </span>
+          </a>
+        </itinerary-item>
+      </section>
+
+      <entourage-table src="/data/entourage.json">
+      </entourage-table>
+    </main>
+  </body>
+</html>
