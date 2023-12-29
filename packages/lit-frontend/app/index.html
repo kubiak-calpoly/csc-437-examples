@@ -16,6 +16,10 @@
     <link rel="stylesheet" href="/styles/page.css" />
     <link rel="stylesheet" href="/styles/itinerary.css" />
     <link rel="stylesheet" href="/styles/entourage.css" />
+    <script
+      type="module"
+      src="/src/calendar-widget.ts"></script>
+    <script type="module" src="/src/itinerary-item.ts"></script>
   </head>
   <body>
     <header>
@@ -23,16 +27,19 @@
       <p>12 days in Italy</p>
     </header>
 
+    <calendar-widget
+      start-date="2024-10-13"
+      end-date="2024-10-25">
+    </calendar-widget>
+
     <section>
       <h2>Itinerary</h2>
 
-      <ul class="itinerary">
-        <li class="transportation">
-          <span class="dates">
-            <time datetime="2024-10-13">13 Oct</time>
-            &ndash;
-            <time datetime="2024-10-14">14 Oct</time>
-          </span>
+      <main class="itinerary">
+        <itinerary-item
+          class="transportation"
+          start-date="2024-10-13"
+          end-date="2024-10-14">
           <a href="flight/outbound.html">
             <span class="origin"> SFO </span>
             <svg class="icon">
@@ -41,21 +48,18 @@
             </svg>
             <span class="terminus"> VCE </span>
           </a>
-        </li>
-        <li class="destination">
-          <span class="dates">
-            <time datetime="2024-10-14">14 Oct</time>
-            &ndash;
-            <time datetime="2024-10-18">18 Oct</time>
-          </span>
+        </itinerary-item>
+        <itinerary-item
+          class="destination"
+          start-date="2024-10-14"
+          end-date="2024-10-18">
           <h3>
             <a href="destination/venice.html">Venice</a>
           </h3>
-        </li>
-        <li class="transportation">
-          <span class="dates">
-            <time datetime="2024-10-18">18 Oct</time>
-          </span>
+        </itinerary-item>
+        <itinerary-item
+          class="transportation"
+          start-date="2024-10-18">
           <a href="rail/venice-florence.html">
             <span class="origin">Venice</span>
             <svg class="icon">
@@ -64,21 +68,18 @@
             </svg>
             <span class="terminus">Florence</span>
           </a>
-        </li>
-        <li class="destination">
-          <span class="dates">
-            <time datetime="2024-10-18">18 Oct</time>
-            &ndash;
-            <time datetime="2024-10-21">21 Oct</time>
-          </span>
+        </itinerary-item>
+        <itinerary-item
+          class="destination"
+          start-date="2024-10-18"
+          end-date="2024-10-21">
           <h3>
             <a href="destination/florence.html"> Florence </a>
           </h3>
-        </li>
-        <li class="transportation">
-          <span class="dates">
-            <time datetime="2024-10-21">21 Oct</time>
-          </span>
+        </itinerary-item>
+        <itinerary-item
+          class="transportation"
+          start-date="2024-10-21">
           <a href="rail/florence-rome.html">
             <span class="origin"> Florence </span>
             <svg class="icon">
@@ -87,21 +88,18 @@
             </svg>
             <span class="terminus"> Rome </span>
           </a>
-        </li>
-        <li class="destination">
-          <span class="dates">
-            <time datetime="2024-10-21">21 Oct</time>
-            &ndash;
-            <time datetime="2024-10-25">25 Oct</time>
-          </span>
+        </itinerary-item>
+        <itinerary-item
+          class="destination"
+          start-date="2024-10-21"
+          end-date="2024-10-25">
           <h3>
             <a href="destination/rome.html"> Rome </a>
           </h3>
-        </li>
-        <li class="transportation">
-          <span class="dates">
-            <time datetime="2024-10-25">25 Oct</time>
-          </span>
+        </itinerary-item>
+        <itinerary-item
+          class="transportation"
+          start-date="2024-10-25">
           <a href="flight/return.html">
             <span class="origin"> FCO </span>
             <svg class="icon">
@@ -110,8 +108,8 @@
             </svg>
             <span class="terminus"> SFO </span>
           </a>
-        </li>
-      </ul>
+        </itinerary-item>
+      </main>
     </section>
 
     <section class="entourage">

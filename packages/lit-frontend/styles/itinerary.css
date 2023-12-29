@@ -7,52 +7,42 @@
   list-style: none;
 }
 
-.itinerary .dates {
-  color: var(--color-accent);
-  font-family: var(--font-family-display);
-  font-weight: bold;
-  grid-column: dates;
-  align-self: start;
-}
-
-.itinerary > * {
+itinerary-item {
   padding: var(--size-spacing-medium);
   display: contents;
 }
 
-.itinerary > * > a {
+itinerary-item[hidden] {
+  display: none;
+}
+
+itinerary-item > a {
   display: contents;
 }
 
-.itinerary > .transportation .origin {
+itinerary-item.transportation .origin {
   grid-column: origin;
   text-align: right;
   font-family: var(--font-family-display);
   font-style: italic;
 }
 
-.itinerary > .transportation .terminus {
+itinerary-item.transportation .terminus {
   grid-column: terminus;
   text-align: left;
   font-family: var(--font-family-display);
   font-style: italic;
 }
 
-.itinerary .transportation svg.icon {
+itinerary-item.transportation svg.icon {
   grid-column: icon;
 }
 
-.itinerary > .destination h3 {
+itinerary-item.destination h3 {
   grid-column: header / end;
   font-style: normal;
   font-weight: bold;
   border: var(--weight-line-light) solid var(--color-accent);
   border-radius: var(--size-corner-medium);
   padding: var(--size-spacing-medium);
-}
-
-.itinerary > .destination img.featured {
-  width: 100%;
-  grid-column: header / end;
-  grid-row-end: span 2;
 }
