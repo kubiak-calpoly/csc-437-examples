@@ -20,34 +20,15 @@ header {
 header a {
   color: var(--color-link-inverted);
 }
-header svg.outline-map {
-  align-self: end;
-}
-
 main.page {
   display: grid;
-  grid-template-columns: 1fr 3fr;
+  grid-template-columns: var(--size-width-sidebar) auto;
   grid-template-rows: auto auto 1fr;
   grid-template-areas:
     "calendar  itinerary"
     "map       itinerary"
     "entourage itinerary";
 }
-
-calendar-widget {
-  grid-area: calendar;
-  align-self: start;
-}
-
-.itinerary {
-  grid-area: itinerary;
-  align-self: start;
-}
-.entourage {
-  grid-area: entourage;
-  align-self: end;
-}
-
 section {
   padding: var(--size-spacing-medium);
 }
@@ -90,9 +71,7 @@ a {
 p + * {
   margin-top: var(--size-spacing-small);
 }
-svg.outline-map {
-  fill: var(--color-link-inverted);
-}
+
 svg.icon {
   display: inline;
   height: 4rem;
@@ -100,11 +79,23 @@ svg.icon {
   vertical-align: top;
   fill: currentColor;
 }
-h3 > svg.icon:first-child {
-  margin-right: var(--size-spacing-small);
-}
 dt {
   color: var(--color-accent);
   font-family: var(--font-family-display);
   font-weight: bold;
+}
+input,
+select {
+  font-family: inherit;
+}
+button {
+  font-family: var(--font-family-display);
+}
+input,
+select,
+button {
+  background: var(--color-background-control);
+  border: 1px solid var(--color-border-control);
+  border-radius: var(--size-corner-medium);
+  padding: var(--size-spacing-small);
 }
