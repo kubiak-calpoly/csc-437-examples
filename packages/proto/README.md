@@ -13,5 +13,5 @@ npm start
 
 ## Documentation
 
-- Our [Concept Map](inbox/Blazing%20Travel.pdf)
+- Our [Concept Map](inbox/BlazingTravel.pdf)
 - The [Sample Data](inbox/Italy-Tables.pdf) we got from our Client
