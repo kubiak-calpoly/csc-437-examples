@@ -15,4 +15,4 @@ Each module (week) of the course builds on the previous ones.
 In this repo, there is a branch for each module so we can track
 the progress:
 
-- [Module 1](/kubiak-calpoly/csc-437-examples/tree/mod-1): Information Architecture and HTML
+- [Module 1](https://github.com/kubiak-calpoly/csc-437-examples/tree/mod-1): Information Architecture and HTML
