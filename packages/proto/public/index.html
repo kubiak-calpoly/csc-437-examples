@@ -69,6 +69,7 @@
         font-size: 1.5rem;
         font-weight: bold;
         font-style: oblique;
+        color: #008000;
       }
       svg.outline-map {
         fill: #ff0;
@@ -120,8 +121,8 @@
     <section>
       <h2>Itinerary</h2>
       <main>
-        <details class="transportation flight">
-          <summary>
+        <article class="transportation flight">
+          <h3>
             <a href="flight/outbound.html">
               SFO
               <svg class="icon">
@@ -129,79 +130,15 @@
               </svg>
               VCE via FRA
             </a>
-          </summary>
-          <ol>
-            <li>
-              <dl>
-                <dt>Airline</dt>
-                <dd>United</dd>
-                <dt>Flight Number</dt>
-                <dd>UA 926</dd>
-                <dt>Date</dt>
-                <dd>
-                  <time datetime="2024-10-13">13 Oct</time>
-                </dd>
-                <dt>Departure Airport</dt>
-                <dd>San Francisco (SFO)</dd>
-                <dt>Departure Time</dt>
-                <dd>
-                  <time datetime="2024-10-13 19:05:00-0800"
-                    >7:05 PM</time
-                  >
-                </dd>
-                <dt>Arrival Airport</dt>
-                <dd>Frankfurt (FRA)</dd>
-                <dt>Arrival Time</dt>
-                <dd>
-                  <time datetime="2024-10-14 14:55:00+0100"
-                    >2:55 PM<sub>+1 day</sub></time
-                  >
-                </dd>
-              </dl>
-            </li>
-            <li>
-              <dl>
-                <dt>Airline</dt>
-                <dd>Lufthansa</dd>
-                <dt>Flight Number</dt>
-                <dd>LH 330</dd>
-                <dt>Date</dt>
-                <dd>
-                  <time datetime="2024-10-14">14 Oct</time>
-                </dd>
-                <dt>Departure Airport</dt>
-                <dd>Frankfurt (FRA)</dd>
-                <dt>Departure Time</dt>
-                <dd>
-                  <time datetime="2024-10-14 17:15:00+0100"
-                    >5:15 PM</time
-                  >
-                </dd>
-                <dt>Arrival Airport</dt>
-                <dd>Venice (VCE)</dd>
-                <dt>Arrival Time</dt>
-                <dd>
-                  <time datetime="2024-10-14 18:30:00+0100"
-                    >6:30 PM</time
-                  >
-                </dd>
-              </dl>
-            </li>
-          </ol>
-        </details>
-        <details class="destination">
-          <summary>
-            <a href="destination.html">Venice</a>
-          </summary>
-          <p>4 nights</p>
-          <p>
-            Stay at
-            <a href="stay.html">Locanda San Barnaba</a>
-          </p>
-          <img
-            src="/images/preview/Canal_Grande_Chiesa_della_Salute_e_Dogana_dal_ponte_dell_Accademia.jpg"
-          />
-        </details>
+          </h3>
+        </article>
+
+        <article class="destination">
+          <h3>
+            <a href="destination/venice.html">Venice</a>
+          </h3>
+        </article>
+
         <details class="transportation rail">
           <summary>
             Venice
@@ -231,22 +168,13 @@
             </dd>
           </dl>
         </details>
-        <details class="destination">
-          <summary>
-            <a href="destination.html">Florence</a>
-          </summary>
-          <p>18 Oct - 21 Oct</p>
-          <p>3 nights</p>
-          <p>Stay at <a href="#">Hotel Perseo</a></p>
-          <img
-            src="/images/preview/Firenze_-_Vista_dal_Piazzale_Michelangelo.jpg"
-          />
-          <ul>
-            <li>Walking tour of Duomo, Campanile</li>
-            <li>Rail excursion to Lucca</li>
-            <li>Trip to Fiesole via city bus</li>
-          </ul>
-        </details>
+
+        <article class="destination">
+          <h3>
+            <a href="destination/florence.html">Florence</a>
+          </h3>
+        </article>
+
         <details class="transportation rail">
           <summary>
             Florence
@@ -276,25 +204,15 @@
             </dd>
           </dl>
         </details>
-        <details class="destination">
-          <summary>
-            <a href="place.html">Rome</a>
-          </summary>
-          <p>4 nights</p>
-          <p>21 Oct - 25 Oct</p>
-          <p>Stay at <a href="#">La Piccola Maison</a></p>
-          <img
-            src="/images/preview/Colosseum_in_Rome,_Italy_-_April_2007.jpg"
-          />
-          <ul>
-            <li>
-              Tour of Forum, Colosseum, Palatino Hill via Metro
-            </li>
-            <li>Tour of Vatican, St Peter’s via Metro</li>
-          </ul>
-        </details>
-        <details class="transportation flight">
-          <summary>
+
+        <article class="destination">
+          <h3>
+            <a href="destination/rome.html">Rome</a>
+          </h3>
+        </article>
+
+        <article class="transportation flight">
+          <h3>
             <a href="/flight/return.html">
               FCO
               <svg class="icon">
@@ -302,62 +220,8 @@
               </svg>
               SFO via FRA
             </a>
-          </summary>
-          <ol>
-            <li>
-              <dl>
-                <dt>Airline</dt>
-                <dd>Lufthansa</dd>
-                <dt>Flight Number</dt>
-                <dd>LH233</dd>
-                <dt>Date</dt>
-                <dd>
-                  <time datetime="2024-10-25">25 Oct</time>
-                </dd>
-                <dt>Departure</dt>
-                <dd>Rome (FCO)</dd>
-                <dd>
-                  <time datetime="2024-10-25 13:25:00+0100"
-                    >1:25 PM</time
-                  >
-                </dd>
-                <dt>Arrival</dt>
-                <dd>Frankfurt (FRA)</dd>
-                <dd>
-                  <time datetime="2024-10-25 15:20:00+0100"
-                    >3:20 PM</time
-                  >
-                </dd>
-              </dl>
-            </li>
-            <li>
-              <dl>
-                <dt>Airline</dt>
-                <dd>United</dd>
-                <dt>Flight Number</dt>
-                <dd>UA927</dd>
-                <dt>Date</dt>
-                <dd>
-                  <time datetime="2024-10-25">25 Oct</time>
-                </dd>
-                <dt>Departure</dt>
-                <dd>Frankfurt (FRA)</dd>
-                <dd>
-                  <time datetime="2024-10-25 17:25:00+0100"
-                    >5:25 PM</time
-                  >
-                </dd>
-                <dt>Arrival</dt>
-                <dd>San Francisco (SFO)</dd>
-                <dd>
-                  <time datetime="2024-10-25 19:45:00-0800"
-                    >7:45 PM</time
-                  >
-                </dd>
-              </dl>
-            </li>
-          </ol>
-        </details>
+          </h3>
+        </article>
       </main>
     </section>
 
