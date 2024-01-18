@@ -1,0 +1,11 @@
+.flight,
+.rail {
+  border: 2px solid #008000;
+}
+.transportation summary,
+.destination summary {
+  font-size: 1.5rem;
+  font-weight: bold;
+  font-style: oblique;
+  color: #008000;
+}

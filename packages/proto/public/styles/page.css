@@ -1,0 +1,60 @@
+body {
+  font-family: Merriweather, Baskerville, Cambria, "Noto Serif",
+    "Bitstream Charter", serif;
+  background-color: rgb(238 237 231);
+}
+header {
+  background-color: #008000;
+  color: #fff;
+}
+header a {
+  color: #ff0;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+summary {
+  font-family: Kanit, "Trebuchet MS", Calibri, Roboto,
+    "Segoe UI", Ubuntu, sans-serif;
+}
+h1 {
+  font-size: 2.5rem;
+  font-style: oblique;
+}
+h2 {
+  font-size: 2rem;
+}
+h3 {
+  font-size: 1.5rem;
+  font-weight: normal;
+  font-style: oblique;
+}
+h4 {
+  font-size: 1.25rem;
+}
+h5 {
+  font-size: 1rem;
+}
+h6 {
+  font-size: 1rem;
+  font-weight: normal;
+  font-style: italic;
+}
+h3,
+a {
+  color: #008000;
+}
+
+svg.outline-map {
+  fill: #ff0;
+}
+svg.icon {
+  display: inline;
+  fill: currentColor;
+  height: 4rem;
+  width: 4rem;
+  vertical-align: middle;
+}
