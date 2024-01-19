@@ -1,5 +1,13 @@
 .itinerary {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.5rem 1rem;
+  align-items: baseline;
 }
+.itinerary > dt {
+  text-align: right;
+}
+
 .transportation {
   border-top: 2px solid #008000;
   border-bottom: 2px solid #008000;
