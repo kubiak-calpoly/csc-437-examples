@@ -1,3 +1,5 @@
+.itinerary {
+}
 .transportation {
   border-top: 2px solid #008000;
   border-bottom: 2px solid #008000;
@@ -8,4 +10,8 @@
   font-weight: bold;
   font-style: oblique;
   color: #008000;
+}
+
+.entourage {
+  display: none;
 }

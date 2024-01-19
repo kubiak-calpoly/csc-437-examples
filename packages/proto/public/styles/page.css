@@ -3,6 +3,21 @@ body {
     "Bitstream Charter", serif;
   background-color: rgb(238 237 231);
 }
+.page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+.page > header {
+  flex-basis: min-content;
+}
+.page > section {
+  flex-basis: 100%;
+  overflow: auto;
+  margin: 0;
+  padding: 0.5rem;
+}
 header {
   display: flex;
   flex-wrap: wrap;
