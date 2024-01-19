@@ -1,7 +1,7 @@
 .itinerary {
   display: grid;
   grid-template-columns: max-content 1fr;
-  gap: 0 2rem;
+  gap: 0 var(--size-spacing-xlarge);
   align-items: baseline;
 }
 .itinerary > dt {
@@ -17,12 +17,12 @@
 }
 .destination {
   background: white;
-  padding: 1rem 0.5rem;
-  border-radius: 0.5rem;
+  padding: var(--size-spacing-large) var(--size-spacing-medium);
+  border-radius: var(--size-radius-medium);
 }
 
 .transportation summary {
-  font-size: 1.5rem;
+  font-size: var(--size-type-large);
   font-style: oblique;
 }
 

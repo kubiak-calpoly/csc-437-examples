@@ -1,7 +1,6 @@
 body {
-  font-family: Merriweather, Baskerville, Cambria, "Noto Serif",
-    "Bitstream Charter", serif;
-  background-color: rgb(238 237 231);
+  font-family: var(--font-family-body);
+  background-color: var(--color-background-page);
 }
 .page {
   display: flex;
@@ -16,23 +15,23 @@ body {
   flex-basis: 100%;
   overflow: auto;
   margin: 0;
-  padding: 0.5rem;
+  padding: var(--size-spacing-medium);
 }
 header {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
-  padding: 0.5rem;
-  gap: 2rem;
-  background-color: #008000;
-  color: #fff;
+  padding: var(--size-spacing-medium);
+  gap: var(--size-spacing-xlarge);
+  background-color: var(--color-background-header);
+  color: var(--color-text-inverted);
 }
 header a {
-  color: #ff0;
+  color: var(--color-link-inverted);
 }
 body > section {
-  margin: 0.5rem;
+  margin: var(--size-spacing-medium);
 }
 h1,
 h2,
@@ -42,40 +41,43 @@ h5,
 h6,
 dt,
 summary {
-  font-family: Kanit, "Trebuchet MS", Calibri, Roboto,
-    "Segoe UI", Ubuntu, sans-serif;
-  line-height: 1.125;
+  font-family: var(--font-family-display);
+  line-height: var(--font-line-height-display);
 }
 h1 {
-  font-size: 2.5rem;
+  font-size: var(--size-type-xxlarge);
   font-style: oblique;
   line-height: 1;
+  font-weight: var(--font-weight-bold);
 }
 h2 {
-  font-size: 2rem;
+  font-size: var(--size-type-xlarge);
+  font-weight: var(--font-weight-bold);
 }
 h3 {
-  font-size: 1.5rem;
-  font-weight: normal;
+  font-size: var(--size-type-large);
+  font-weight: var(--font-weight-normal);
   font-style: oblique;
 }
 h4 {
-  font-size: 1.25rem;
+  font-size: var(--size-type-mlarge);
+  font-weight: var(--font-weight-bold);
 }
 h5 {
-  font-size: 1rem;
+  font-size: var(--size-type-body);
+  font-weight: var(--font-weight-bold);
 }
 h6 {
-  font-size: 1rem;
-  font-weight: normal;
+  font-size: var(--size-type-body);
+  font-weight: var(--font-weight-normal);
   font-style: italic;
 }
 dt {
-  font-weight: bold;
+  font-weight: var(--size-type-body);
 }
 h3,
 a {
-  color: #008000;
+  color: var(--color-accent);
 }
 svg.outline-map {
   fill: #ff0;
@@ -83,7 +85,7 @@ svg.outline-map {
 svg.icon {
   display: inline;
   fill: currentColor;
-  height: 4rem;
-  width: 4rem;
+  height: var(--size-icon-large);
+  width: var(--size-icon-large);
   vertical-align: middle;
 }
