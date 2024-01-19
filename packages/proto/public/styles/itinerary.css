@@ -1,7 +1,7 @@
 .itinerary {
   display: grid;
   grid-template-columns: max-content 1fr;
-  gap: 0.5rem 1rem;
+  gap: 0 2rem;
   align-items: baseline;
 }
 .itinerary > dt {
@@ -9,15 +9,21 @@
 }
 
 .transportation {
+  text-align: center;
+  /*
   border-top: 2px solid #008000;
   border-bottom: 2px solid #008000;
+  */
 }
-.transportation summary,
-.destination summary {
+.destination {
+  background: white;
+  padding: 1rem 0.5rem;
+  border-radius: 0.5rem;
+}
+
+.transportation summary {
   font-size: 1.5rem;
-  font-weight: bold;
   font-style: oblique;
-  color: #008000;
 }
 
 .entourage {

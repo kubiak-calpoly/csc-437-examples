@@ -40,6 +40,7 @@ h3,
 h4,
 h5,
 h6,
+dt,
 summary {
   font-family: Kanit, "Trebuchet MS", Calibri, Roboto,
     "Segoe UI", Ubuntu, sans-serif;
@@ -69,11 +70,13 @@ h6 {
   font-weight: normal;
   font-style: italic;
 }
+dt {
+  font-weight: bold;
+}
 h3,
 a {
   color: #008000;
 }
-
 svg.outline-map {
   fill: #ff0;
 }
