@@ -4,11 +4,20 @@ body {
   background-color: rgb(238 237 231);
 }
 header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 0.5rem;
+  gap: 2rem;
   background-color: #008000;
   color: #fff;
 }
 header a {
   color: #ff0;
+}
+body > section {
+  margin: 0.5rem;
 }
 h1,
 h2,
@@ -24,6 +33,7 @@ summary {
 h1 {
   font-size: 2.5rem;
   font-style: oblique;
+  line-height: 1;
 }
 h2 {
   font-size: 2rem;

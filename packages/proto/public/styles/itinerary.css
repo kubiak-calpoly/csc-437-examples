@@ -1,6 +1,6 @@
-.flight,
-.rail {
-  border: 2px solid #008000;
+.transportation {
+  border-top: 2px solid #008000;
+  border-bottom: 2px solid #008000;
 }
 .transportation summary,
 .destination summary {
