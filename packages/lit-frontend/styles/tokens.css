@@ -1,16 +1,19 @@
 :root {
+  --size-icon-normal: 1em;
+  --size-icon-large: 4rem;
+
   --size-spacing-small: 0.25rem;
   --size-spacing-medium: 0.5rem;
   --size-spacing-large: 1rem;
-  --size-icon-large: 4rem;
-  --size-corner-small: 2px;
-  --size-corner-medium: var(--size-spacing-small);
-  --size-corner-large: var(--size-spacing-medium);
-  --size-font-body: 1rem;
+  --size-spacing-xlarge: 2rem;
 
-  --weight-line-light: 1px;
-  --weight-line-medium: 1px;
-  --weight-line-heavy: 4px;
+  --size-radius-medium: var(--size-spacing-medium);
+
+  --size-type-body: 1rem;
+  --size-type-mlarge: 1.25rem;
+  --size-type-large: 1.5rem;
+  --size-type-xlarge: 2rem;
+  --size-type-xxlarge: 2.5rem;
 
   --color-accent: rgb(42 143 42);
   --color-background-header: var(--color-accent);
@@ -21,8 +24,15 @@
   --color-text-heading: var(--color-accent);
   --color-text-inverted: rgb(255 255 255);
 
-  --font-family-display: Kanit, "Trebuchet MS", Calibri, Roboto,
-    "Segoe UI", Ubuntu, sans-serif;
   --font-family-body: Merriweather, Baskerville, Cambria,
     "Noto Serif", "Bitstream Charter", serif;
+  --font-family-display: Kanit, "Trebuchet MS", Calibri, Roboto,
+    "Segoe UI", Ubuntu, sans-serif;
+
+  --font-line-height-body: 1.5;
+  --font-line-height-display: 1.125;
+
+  --font-weight-normal: 400;
+  --font-weight-light: 200;
+  --font-weight-bold: 700;
 }
