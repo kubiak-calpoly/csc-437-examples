@@ -1,47 +1,9 @@
-// module Kram_72c5d10a_webc (ES6)
+// module Kram_410211f0_webc (ES6)
           import { css, html, LitElement } from 'lit'
-import { customElement } from 'lit/decorators.js'
-          console.log('Loading module "Kram_72c5d10a_webc"')
+import { customElement, property } from 'lit/decorators.js'
+          console.log('Loading module "Kram_410211f0_webc"')
           export function Program ({connectStore, initializeStore}) {
-            // JS Definition from scene 4
-class ArrowButtonElement extends HTMLElement {
-  static get observedAttributes() {
-    return ["heading"];
-  }
-
-  constructor() {
-    super();
-    let content = document.getElementById(
-      "arrow-button-template"
-    ).content;
-    this.attachShadow({ mode: "open" }).appendChild(
-      content.cloneNode(true)
-    );
-  }
-
-  connectedCallback() {
-    const heading = this.getAttribute("heading");
-
-    if (heading) {
-      this._updateRotation(heading);
-    }
-  }
-
-  attributeChangedCallback(name, oldValue, newValue) {
-    if (name === "heading") {
-      this._updateRotation(newValue);
-    }
-  }
-
-  _updateRotation(heading) {
-    const button = this.shadowRoot.firstElementChild;
-    button.style.setProperty("--arrow-rotation", heading);
-  }
-}
-
-customElements.define("arrow-button", ArrowButtonElement);
-
-// JS Definition from scene 5
+            // JS Definition from scene 5
 class V1DropdownElement extends HTMLElement {
   constructor() {
     super();

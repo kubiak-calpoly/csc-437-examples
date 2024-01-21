@@ -1,60 +1,7 @@
 const templates_html = `<html>
           <body>
-            <template id="hello-style-template">
-  <h1>Hello, <slot class="fancy">world</slot>!</h1>
-
-  <style>
-    h1 {
-      font-family: Georgia;
-      font-size: 6rem;
-    }
-
-    .fancy {
-      font-style: italic;
-      color: darkorange;
-    }
-  </style>
-</template>
-
-<template id="greet-world-template">
-  <h1>
-    <slot name="greeting">Hello</slot>,
-    <slot name="recipient">world</slot>!
-  </h1>
-
-  <style>
-    h1 {
-      font-family: Georgia;
-      font-size: 6rem;
-    }
-
-    slot[name="recipient"] {
-      font-style: italic;
-      color: darkorange;
-    }
-  </style>
-</template>
-
-<template id="arrow-button-template">
-  <button>
-    <svg viewBox="0 0 24 24">
-      <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
-        d="M3.5 10.4853L11.9853 2L20.4706 10.4853L17.9706 12.9853L14 9.01472V22H10V8.98528L6 12.9853L3.5 10.4853Z"
-      /></svg
-    ><slot></slot>
-  </button>
-
-  <style>
-    svg {
-      display: inline-block;
-      width: 1.5rem;
-      height: 1.5rem;
-      fill: currentColor;
-      transform: rotate(var(--arrow-rotation, 0));
-    }
-  </style>
+            <template id="arrow-button-template">
+  <style></style>
 </template>
 
 <template id="dropdown-menu-template">

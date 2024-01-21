@@ -1,7 +1,7 @@
-// module Kram_72c5d10a_webc (Typescript)
+// module Kram_410211f0_webc (Typescript)
           import { css, html, LitElement } from 'lit'
-import { customElement } from 'lit/decorators.js'
-          console.log('Loading module "Kram_72c5d10a_webc"')
+import { customElement, property } from 'lit/decorators.js'
+          console.log('Loading module "Kram_410211f0_webc"')
           export function Program ({connectStore, initializeStore}) {
             // TS Definition from scene 1
 @customElement("hello-world")
@@ -59,9 +59,12 @@ class GreetWorldElement extends LitElement {
 // TS Definition from scene 4
 @customElement("arrow-button")
 class ArrowButtonElement extends LitElement {
+  @property()
+  heading: string = "0";
+
   render() {
     return html`
-      <button>
+      <button style="--arrow-rotation: ${this.heading}">
         <svg viewBox="0 0 24 24">
           <path
             fill-rule="evenodd"

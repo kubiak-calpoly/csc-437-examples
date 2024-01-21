@@ -10,6 +10,7 @@ imports:
   - from: lit/decorators.js
     expose:
       - customElement
+      - property
 ---
 
 ```html
@@ -183,13 +184,19 @@ Using something other than a span may change the styling.
 
 Custom Elements can be defined to accept attributes, even attributes
 that do not exist in standard HTML5.
+Here we are using the CSS `transform` property to rotate the arrow icon.
+On the CSS for our component, we've defined a custom property `--arrow-rotation`
+and then referenced that in the CSS rule for the `svg`.
 
 ```ts
 @customElement("arrow-button")
 class ArrowButtonElement extends LitElement {
+  @property()
+  heading: string = "0";
+
   render() {
     return html`
-      <button>
+      <button style="--arrow-rotation: ${this.heading}">
         <svg viewBox="0 0 24 24">
           <path
             fill-rule="evenodd"
@@ -213,74 +220,36 @@ class ArrowButtonElement extends LitElement {
 }
 ```
 
-```html
-<template id="arrow-button-template">
-  <style></style>
-</template>
-```
+We declare a `heading` property on `ArrowButtonElement`.
+Declaring a value inside a class like this means we can later access it as `this.heading` from
+any member functions such as `render()`.
+The `@property` decorator also binds this property to the HTML/DOM attribute `heading`.
+(There are options for disabling the binding or binding to a different attribute.)
 
-Here we are using the CSS `transform` property to rotate the arrow icon.
-On the CSS for our component, we've defined a custom property `--arrow-rotation`
-and then referenced that in the CSS rule for the `svg`.
-The last step is to copy the value of the `heading` attribute into the
+The last step is to copy the value of the `heading` property into the
 `--arrow-rotation` property.
-This cannot be done in the template, so we have to add some code to the
-Javascript class that defines our custom element.
+This is where the template literal interpolation syntax `${}` comes in handy.
+We access the value of `this.heading` and use it to set the `--arrow-rotation`
+custom property on the `button`.
 
-We already have written the `constructor` for that class, but there is no
-way to access the host element's attributes from the constructor.
-Instead we need to use the _lifecycle callbacks_ that are provided to
-us by the Web Components API.
+> Lit is doing a little magic here to figure out what parts of our template change
+> and what does not.
+> The HTML Custom Elements spec requires that the template be static, so Lit passes
+> it a static template on first render.
+> But it then adds code to modify the Shadow DOM whenever the attribute changes.
+> Without Lit, we would need to write that code ourselves.
 
-```js
-class ArrowButtonElement extends HTMLElement {
-  static get observedAttributes() {
-    return ["heading"];
-  }
+As a result, `render()`` is still functional—remember, view is a function of state.
+But it is also reactive, meaning that it is automatically re-evaluated when the state
+changes.
+This evaluation can be very fine-grained because most of the template is static.
+Only the interpolated pieces need to be re-evaluated.
 
-  constructor() {
-    super();
-    let content = document.getElementById(
-      "arrow-button-template"
-    ).content;
-    this.attachShadow({ mode: "open" }).appendChild(
-      content.cloneNode(true)
-    );
-  }
-
-  connectedCallback() {
-    const heading = this.getAttribute("heading");
-
-    if (heading) {
-      this._updateRotation(heading);
-    }
-  }
-
-  attributeChangedCallback(name, oldValue, newValue) {
-    if (name === "heading") {
-      this._updateRotation(newValue);
-    }
-  }
-
-  _updateRotation(heading) {
-    const button = this.shadowRoot.firstElementChild;
-    button.style.setProperty("--arrow-rotation", heading);
-  }
-}
-
-customElements.define("arrow-button", ArrowButtonElement);
-```
-
-The `connectedCallback` function is invoked each time the custom element
-is connected to a host element. In a static page, this will happen only once.
-But if the DOM is being manipulated such that the host element is moved,
-`connectedCallback` will be called again.
-Because `connectedCallback` is a member function of our custom element
-class, it can access the host element via `this`.
+Next, we'll see how we can use Lit to create a component which responds to user interactions.
 
 ---
 
-# An Interactive Component
+## An Interactive Component
 
 ```html
 <section>

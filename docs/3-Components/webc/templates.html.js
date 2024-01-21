@@ -1,10 +1,6 @@
 export default `<html>
           <body>
-            <template id="arrow-button-template">
-  <style></style>
-</template>
-
-<template id="dropdown-menu-template">
+            <template id="dropdown-menu-template">
 
   <input type="checkbox" id="is-shown" />
   <label for="is-shown">

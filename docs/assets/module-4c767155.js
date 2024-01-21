@@ -1,39 +1,9 @@
-import './lit-element-d3f56664.js';
+import './query-3c00c485.js';
 
-// module Kram_748885b0_webc (ES6)
-          console.log('Loading module "Kram_748885b0_webc"');
+// module Kram_72c5d10a_webc (ES6)
+          console.log('Loading module "Kram_72c5d10a_webc"');
           function Program ({connectStore, initializeStore}) {
-            // JS Definition from scene 3
-class HelloStyleElement extends HTMLElement {
-  constructor() {
-    super();
-    let content = document.getElementById(
-      "hello-style-template"
-    ).content;
-    this.attachShadow({ mode: "open" }).appendChild(
-      content.cloneNode(true)
-    );
-  }
-}
-
-customElements.define("hello-style", HelloStyleElement);
-
-// JS Definition from scene 4
-class GreetWorldElement extends HTMLElement {
-  constructor() {
-    super();
-    let content = document.getElementById(
-      "greet-world-template"
-    ).content;
-    this.attachShadow({ mode: "open" }).appendChild(
-      content.cloneNode(true)
-    );
-  }
-}
-
-customElements.define("greet-world", GreetWorldElement);
-
-// JS Definition from scene 5
+            // JS Definition from scene 4
 class ArrowButtonElement extends HTMLElement {
   static get observedAttributes() {
     return ["heading"];
@@ -71,7 +41,7 @@ class ArrowButtonElement extends HTMLElement {
 
 customElements.define("arrow-button", ArrowButtonElement);
 
-// JS Definition from scene 6
+// JS Definition from scene 5
 class V1DropdownElement extends HTMLElement {
   constructor() {
     super();
@@ -116,7 +86,7 @@ class V1DropdownElement extends HTMLElement {
 
 customElements.define("dropdown-menu", V1DropdownElement);
 
-// JS Definition from scene 8
+// JS Definition from scene 7
 class DropdownBaseElement extends HTMLElement {
   constructor() {
     super();
@@ -161,7 +131,7 @@ class DropdownBaseElement extends HTMLElement {
 
 customElements.define("dropdown-base", DropdownBaseElement);
 
-// JS Definition from scene 9
+// JS Definition from scene 8
 class CommandMenuElement extends HTMLElement {
   constructor() {
     super();
@@ -189,7 +159,7 @@ class CommandGroupElement extends HTMLElement {
 customElements.define("command-menu", CommandMenuElement);
 customElements.define("command-group", CommandGroupElement);
 
-// JS Definition from scene 10
+// JS Definition from scene 9
 class ActionItemElement extends HTMLElement {
   constructor() {
     super();
