@@ -2,7 +2,7 @@ import { i as init, r as register } from './runtime-61be59ec.js';
 import { _ as __vitePreload } from './preload-helper-f74f8cca.js';
 
 init({});
-__vitePreload(() => import('./templates.html-c3f2c218.js'),true?[]:void 0)
+__vitePreload(() => import('./templates.html-4b9d0077.js'),true?[]:void 0)
           .then((mod) => register(mod, "templates.html.js", "html", (resource, container) => {
             const parser = new DOMParser();
             const doc = parser.parseFromString(resource.default, 'text/html');
@@ -40,7 +40,7 @@ __vitePreload(() => import('./styles.css-b1be4c51.js'),true?[]:void 0)
           sheet.innerHTML = resource.default;
           container.appendChild(sheet);
         }));
-__vitePreload(() => import('./module-4c767155.js'),true?["assets/module-4c767155.js","assets/query-3c00c485.js"]:void 0)
-          .then((mod) => register(mod, "Kram_72c5d10a_webc", "js", null));
-__vitePreload(() => import('./module-295aeb69.js'),true?["assets/module-295aeb69.js","assets/query-3c00c485.js"]:void 0)
-          .then((mod) => register(mod, "Kram_72c5d10a_webc", "ts", null));
+__vitePreload(() => import('./module-7f5fd8e3.js'),true?["assets/module-7f5fd8e3.js","assets/lit-element-a480b217.js"]:void 0)
+          .then((mod) => register(mod, "Kram_410211f0_webc", "js", null));
+__vitePreload(() => import('./module-637ae1e2.js'),true?["assets/module-637ae1e2.js","assets/lit-element-a480b217.js"]:void 0)
+          .then((mod) => register(mod, "Kram_410211f0_webc", "ts", null));

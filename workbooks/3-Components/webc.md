@@ -11,6 +11,11 @@ imports:
     expose:
       - customElement
       - property
+      - state
+  - from: lit/directives/ref.js
+    expose:
+      - ref
+      - createRef
 ---
 
 ```html
@@ -276,7 +281,7 @@ Next, we'll see how we can use Lit to create a component which responds to user 
 </section>
 ```
 
-We can define a component in HTML, and style it with CSS, but to be really useful, our component needs the ability to do something. We need to implement some interactions, and to do that, we will need Javascript.
+We can define a component in HTML, and style it with CSS, but to be really useful, our component needs the ability to do something. We need to implement some interactions, and to do that, we will need to handle events.
 
 Let's implement a dropdown menu, like the **File** menu in most desktop applications.
 There are two parts to the dropdown component:
@@ -286,27 +291,71 @@ There are two parts to the dropdown component:
 
 So our component will have two slots.
 The _menu_ content will always require markup, so we will make it
-a named slot. Since the _actuator_ will often be untagged text, which makes it a good choice for
+a named slot.
+The _actuator_ will often be untagged text, which makes it a good choice for
 the unnamed slot.
 
-First, we'll define a template, and some styling to handle hiding and revealing the menu. We'll use a checkbox to maintain the open/closed state, and wrapping the `<label>` for the checkbox around the actuator will allow it to control the open/closed state. No Javascript is required here.
+First, we'll define a template, and some styling to handle hiding and revealing the menu. We'll use a checkbox to maintain the open/closed state, and wrapping the `<label>` for the checkbox around the actuator will allow it to control the open/closed state.
+Pretty good for no Javascript!
 
-```html
-<template id="dropdown-menu-template">
+```ts
+@customElement("dropdown-menu")
+class DropdownElementV1 extends LitElement {
+  @property({ reflect: true, type: Boolean })
+  open = false;
 
-  <input type="checkbox" id="is-shown" />
-  <label for="is-shown">
-    <slot>Menu</slot>
-  </label>
-  <slot name="menu">
-    <ul>
-      <li>Command 1</li>
-      <li>Command 2</li>
-      <li>Command 3</li>
-    </ul>
-  <slot>
+  constructor() {
+    super();
 
-  <style>
+    this.clickawayHandler = (ev) => {
+      if (!ev.composedPath().includes(this)) {
+        this._toggle(false);
+      } else {
+        ev.stopPropagation();
+      }
+    };
+  }
+
+  _handleChange(ev: Event) {
+    const target = ev.target;
+    _toggle(target.checked);
+  }
+
+  _toggle(isOpen: boolean) {
+    this.open = isOpen;
+    if (isOpen) {
+      document.addEventListener("click", this.clickawayHandler);
+    } else {
+      document.removeEventListener(
+        "click",
+        this.clickawayHandler
+      );
+    }
+  }
+
+  render() {
+    return html`
+      <input
+        type="checkbox"
+        id="is-shown"
+        @change=${this._handleChange}
+        .checked=${this.open}
+      />
+      <label for="is-shown">
+        <slot>Menu</slot>
+      </label>
+      <slot name="menu">
+        <ul>
+          <li>Command 1</li>
+          <li>Command 2</li>
+          <li>Command 3</li>
+        </ul>
+        <slot> </slot
+      ></slot>
+    `;
+  }
+
+  static styles = css`
     :host {
       display: inline-block;
       position: relative;
@@ -320,12 +369,13 @@ First, we'll define a template, and some styling to handle hiding and revealing 
       cursor: pointer;
     }
 
-    slot[name="menu"]{
+    slot[name="menu"] {
       display: none;
       position: absolute;
       top: 100%;
       left: 0;
       border: 1px solid;
+      background: white;
     }
 
     #is-shown:checked ~ slot[name="menu"] {
@@ -341,57 +391,23 @@ First, we'll define a template, and some styling to handle hiding and revealing 
       list-style: none;
       white-space: nowrap;
     }
-  </style>
-</template>
-```
-
-The logic for closing the menu when the user clicks outside the menu can be applied from the component's constructor, since we have a `this` handle.
-
-```js
-class V1DropdownElement extends HTMLElement {
-  constructor() {
-    super();
-    let content = document.getElementById(
-      "dropdown-menu-template"
-    ).content;
-    this.attachShadow({ mode: "open" }).appendChild(
-      content.cloneNode(true)
-    );
-    this.isShownInput =
-      this.shadowRoot.getElementById("is-shown");
-
-    this.clickawayHandler = (ev) => {
-      if (!ev.composedPath().includes(this)) {
-        this.toggle(false);
-      } else {
-        ev.stopPropagation();
-      }
-    };
-
-    this.isShownInput.addEventListener("change", () =>
-      this.toggleClickAway(this.isShownInput.checked)
-    );
-  }
-
-  toggle(open) {
-    this.isShownInput.checked = open;
-    this.toggleClickAway(open);
-  }
-
-  toggleClickAway(open) {
-    if (open) {
-      document.addEventListener("click", this.clickawayHandler);
-    } else {
-      document.removeEventListener(
-        "click",
-        this.clickawayHandler
-      );
-    }
-  }
+  `;
 }
-
-customElements.define("dropdown-menu", V1DropdownElement);
 ```
+
+The logic for closing the menu when the user clicks outside the menu
+requires two things:
+
+1. programmatically close the menu when user clicks away
+2. detect when the menu is opened, and install our clickaway handler
+
+We declare a boolean property `open` which is _reflected_ as an attribute on
+the `<dropdown-menu>` element.
+This means that the attribute can be changed either from inside the
+component, or from outside, in case some other code wants to open the
+menu.
+We use this property to control the `.checked` property of the `<input>`,
+which we've already arranged, via CSS, to control the menu being open or closed.
 
 Whenever the user clicks outside of our component, we want to close the menu.
 Since all clicks on the page eventually propagate up to the document element,
@@ -401,11 +417,7 @@ To check whether the event came from somewhere inside the component, we get the 
 of the event and check whether it includes our component.
 
 If the click came from outside our component, we will close the menu by setting
-`checked = false` on the checkbox.
-Notice that since the `<input>` is in the shadow DOM, we need to access it via `this.shadowRoot`.
-We put this line of code in a separate member function `toggle(open)` because keeps our constructor tidy.
-It also gives us a head start on an API for our dropdown element.
-In a bit, we'll be glad to have only one place where all the state changes take place.
+`this.open` to false.
 
 Now that we've coded our `"click"` event listener, we need to make sure it gets added to (and removed from) `document` at the appropriate times.
 Essentially, we need to synchronize the addition and removal of the listener with the state of the menu, which is maintained in our checkbox.
@@ -414,10 +426,10 @@ let's enumerate them:
 
 1. The user clicks on the actuator
 2. The user clicks away from an open dropdown
-3. The `toggle()` method is called
+3. The `_toggle()` method is called
 
 This gives us only three places where we need to ensure the listener and the dropdown are in sync.
-Since we implemented click-away to call `toggle()`, we don't need to consider case 2 separately.
+Since we implemented click-away to call `_toggle()`, we don't need to consider case 2 separately.
 
 Let's start with case 1.
 When the user clicks on the actuator, the browser toggles the state of the checkbox, which then causes the menu to appear because of the CSS `:checked` selector.
@@ -425,13 +437,16 @@ There is no Javascript required to implement this interaction.
 So we need to add another event listener to make our component aware of the checkbox state changes.
 
 To address case 1, we need to listen for `"change"` events on the checkbox.
-We set up this event listener in the constructor.
-The handler needs to call `addEventListener` or `removeEventListener` depending on the current state of the checkbox.
-In the interest of localizing all the event listener code, we implement a single function,
-`toggleClickAway(open)`, which will add or remove the listener depending on whether the `open` argument is `true` or `false`.
+We set up this event listener in `render()` using Lit's `@change` syntax.
+The handler needs to call `addEventListener` or `removeEventListener`
+depending on the current state of the checkbox.
+It also needs to toggle `this.open`, which it can do by calling
+`this._toggle`, passing the current `checked` state of the `<input>`,
+which will always be the event's target.
 
-Finally, we handle case 3 (as well as case 2) by calling `toggleClickAway`
-with the same value that's passed to `toggle`.
+Since we need to add/remove the clickaway event handler exactly
+whenever we call `_toggle`, this makes `_toggle` the ideal place
+to add those calls.
 
 ---
 

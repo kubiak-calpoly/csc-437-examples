@@ -1,7 +1,8 @@
-// module Kram_410211f0_webc (Typescript)
+// module Kram_144f7849_webc (Typescript)
           import { css, html, LitElement } from 'lit'
-import { customElement, property } from 'lit/decorators.js'
-          console.log('Loading module "Kram_410211f0_webc"')
+import { customElement, property, state } from 'lit/decorators.js'
+import { ref, createRef } from 'lit/directives/ref.js'
+          console.log('Loading module "Kram_144f7849_webc"')
           export function Program ({connectStore, initializeStore}) {
             // TS Definition from scene 1
 @customElement("hello-world")
@@ -83,6 +84,102 @@ class ArrowButtonElement extends LitElement {
       height: 1.5rem;
       fill: currentColor;
       transform: rotate(var(--arrow-rotation, 0));
+    }
+  `;
+}
+
+// TS Definition from scene 5
+@customElement("dropdown-menu")
+class DropdownElementV1 extends LitElement {
+  @property({ reflect: true, type: Boolean })
+  open = false;
+
+  constructor() {
+    super();
+
+    this.clickawayHandler = (ev) => {
+      if (!ev.composedPath().includes(this)) {
+        this._toggle(false);
+      } else {
+        ev.stopPropagation();
+      }
+    };
+  }
+
+  _handleChange(ev: Event) {
+    const target = ev.target;
+    _toggle(target.checked);
+  }
+
+  _toggle(isOpen: boolean) {
+    this.open = isOpen;
+    if (isOpen) {
+      document.addEventListener("click", this.clickawayHandler);
+    } else {
+      document.removeEventListener(
+        "click",
+        this.clickawayHandler
+      );
+    }
+  }
+
+  render() {
+    return html`
+      <input
+        type="checkbox"
+        id="is-shown"
+        @change=${this._handleChange}
+        .checked=${this.open}
+      />
+      <label for="is-shown">
+        <slot>Menu</slot>
+      </label>
+      <slot name="menu">
+        <ul>
+          <li>Command 1</li>
+          <li>Command 2</li>
+          <li>Command 3</li>
+        </ul>
+        <slot> </slot
+      ></slot>
+    `;
+  }
+
+  static styles = css`
+    :host {
+      display: inline-block;
+      position: relative;
+    }
+
+    #is-shown {
+      display: none;
+    }
+
+    label {
+      cursor: pointer;
+    }
+
+    slot[name="menu"] {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      border: 1px solid;
+      background: white;
+    }
+
+    #is-shown:checked ~ slot[name="menu"] {
+      display: block;
+    }
+
+    /* CSS for slotted elements and default slot content */
+
+    ::slotted(ul[slot="menu"]),
+    slot[name="menu"] > ul {
+      margin: 0;
+      padding: 0.25em;
+      list-style: none;
+      white-space: nowrap;
     }
   `;
 }

@@ -1,62 +1,6 @@
 const templates_html = `<html>
           <body>
-            <template id="arrow-button-template">
-  <style></style>
-</template>
-
-<template id="dropdown-menu-template">
-
-  <input type="checkbox" id="is-shown" />
-  <label for="is-shown">
-    <slot>Menu</slot>
-  </label>
-  <slot name="menu">
-    <ul>
-      <li>Command 1</li>
-      <li>Command 2</li>
-      <li>Command 3</li>
-    </ul>
-  <slot>
-
-  <style>
-    :host {
-      display: inline-block;
-      position: relative;
-    }
-
-    #is-shown {
-      display: none;
-    }
-
-    label {
-      cursor: pointer;
-    }
-
-    slot[name="menu"]{
-      display: none;
-      position: absolute;
-      top: 100%;
-      left: 0;
-      border: 1px solid;
-    }
-
-    #is-shown:checked ~ slot[name="menu"] {
-      display: block;
-    }
-
-    /* CSS for slotted elements and default slot content */
-
-    ::slotted(ul[slot="menu"]),
-    slot[name="menu"] > ul {
-      margin: 0;
-      padding: 0.25em;
-      list-style: none;
-      white-space: nowrap;
-    }
-  </style>
-</template>
-
-<template id="dropdown-base-template">
+            <template id="dropdown-base-template">
   <input type="checkbox" id="is-shown" />
   <label for="is-shown">
     <slot><button onclick="() => null">Menu</button></slot>

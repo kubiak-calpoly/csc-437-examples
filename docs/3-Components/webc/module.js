@@ -1,54 +1,10 @@
-// module Kram_410211f0_webc (ES6)
+// module Kram_144f7849_webc (ES6)
           import { css, html, LitElement } from 'lit'
-import { customElement, property } from 'lit/decorators.js'
-          console.log('Loading module "Kram_410211f0_webc"')
+import { customElement, property, state } from 'lit/decorators.js'
+import { ref, createRef } from 'lit/directives/ref.js'
+          console.log('Loading module "Kram_144f7849_webc"')
           export function Program ({connectStore, initializeStore}) {
-            // JS Definition from scene 5
-class V1DropdownElement extends HTMLElement {
-  constructor() {
-    super();
-    let content = document.getElementById(
-      "dropdown-menu-template"
-    ).content;
-    this.attachShadow({ mode: "open" }).appendChild(
-      content.cloneNode(true)
-    );
-    this.isShownInput =
-      this.shadowRoot.getElementById("is-shown");
-
-    this.clickawayHandler = (ev) => {
-      if (!ev.composedPath().includes(this)) {
-        this.toggle(false);
-      } else {
-        ev.stopPropagation();
-      }
-    };
-
-    this.isShownInput.addEventListener("change", () =>
-      this.toggleClickAway(this.isShownInput.checked)
-    );
-  }
-
-  toggle(open) {
-    this.isShownInput.checked = open;
-    this.toggleClickAway(open);
-  }
-
-  toggleClickAway(open) {
-    if (open) {
-      document.addEventListener("click", this.clickawayHandler);
-    } else {
-      document.removeEventListener(
-        "click",
-        this.clickawayHandler
-      );
-    }
-  }
-}
-
-customElements.define("dropdown-menu", V1DropdownElement);
-
-// JS Definition from scene 7
+            // JS Definition from scene 7
 class DropdownBaseElement extends HTMLElement {
   constructor() {
     super();
