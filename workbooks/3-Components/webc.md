@@ -460,7 +460,7 @@ And the paired selectors target the slots and the default content they contain.
 Or you may have been concerned that we rely on the menu slot being filled by a `<ul>`.
 What if we gave it a `<table>` instead? And what if we wanted to style the actuator differently?
 
-While the `::slotted` pseudo-element has legitimate uses, here is is being used to overstep the
+While the `::slotted` pseudo-element has legitimate uses, here it is being used to overstep the
 boundaries of the component. This violates [Separation of Concerns](https://en.wikipedia.org/wiki/Separation_of_concerns) and [Single-Responsibility Principle](https://en.wikipedia.org/wiki/Single-responsibility_principle).
 
 Let's see how we can solve these problems before adding more functionality to `dropdown-menu`.

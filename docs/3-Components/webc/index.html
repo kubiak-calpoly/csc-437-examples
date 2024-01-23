@@ -299,7 +299,7 @@ And the paired selectors target the slots and the default content they contain.<
 <p>Or you may have been concerned that we rely on the menu slot being filled by a <code data-mark-around="`">&lt;ul&gt;</code>.
 What if we gave it a <code data-mark-around="`">&lt;table&gt;</code> instead? And what if we wanted to style the actuator differently?</p>
 
-<p>While the <code data-mark-around="`">::slotted</code> pseudo-element has legitimate uses, here is is being used to overstep the
+<p>While the <code data-mark-around="`">::slotted</code> pseudo-element has legitimate uses, here it is being used to overstep the
 boundaries of the component. This violates <a href="https://en.wikipedia.org/wiki/Separation_of_concerns">Separation of Concerns</a> and <a href="https://en.wikipedia.org/wiki/Single-responsibility_principle">Single-Responsibility Principle</a>.</p>
 
 <p>Let&rsquo;s see how we can solve these problems before adding more functionality to <code data-mark-around="`">dropdown-menu</code>.</p>
