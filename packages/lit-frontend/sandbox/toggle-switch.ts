@@ -4,13 +4,13 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("toggle-switch")
 class ToggleSwitchElement extends LitElement {
   @property({ reflect: true, type: Boolean })
-  open: boolean = false;
+  on: boolean = false;
 
   render() {
     return html`<label>
       <slot>Label</slot>
       <span class="slider">
-        <input type="checkbox" />
+        <input type="checkbox" @change=${this._handleChange} />
       </span>
     </label>`;
   }
@@ -56,4 +56,9 @@ class ToggleSwitchElement extends LitElement {
       left: 1.5em;
     }
   `;
+
+  _handleChange(ev: Event) {
+    const target = ev.target;
+    this.on = target?.checked;
+  }
 }
