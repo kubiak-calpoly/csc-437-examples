@@ -65,7 +65,7 @@ class DropDownElement extends LitElement {
     }
   `;
 
-  _handleChange(ev: Event) {
+  _handleChange(ev: InputEvent) {
     const target = ev.target;
     this._toggle(target?.checked);
   }
