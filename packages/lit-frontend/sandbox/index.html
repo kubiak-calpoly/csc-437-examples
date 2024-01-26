@@ -22,6 +22,7 @@
     <script type="module" src="./toggle-switch.ts"></script>
     <script type="module" src="./drop-down.ts"></script>
     <script type="module" src="./date-select.ts"></script>
+    <script type="module" src="./entourage-table.ts"></script>
     <script type="module">
       document.addEventListener("date-select:change", (ev) =>
         console.log("Event date-select:change", ev.detail)
@@ -81,6 +82,8 @@
       <drop-down> View </drop-down>
       <drop-down> Help </drop-down>
     </nav>
+    <hello-world></hello-world>
+    <hello-world><h2>Web Components</h2></hello-world>
     <p style="width: 150px">
       <toggle-switch>Lights</toggle-switch>
       <toggle-switch>Camera</toggle-switch>
@@ -88,5 +91,7 @@
     </p>
     <date-select start-date="2024-10-13" end-date="2024-10-25">
     </date-select>
+    <entourage-table src="/data/entourage.json">
+    </entourage-table>
   </body>
 </html>

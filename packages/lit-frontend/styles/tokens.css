@@ -1,5 +1,6 @@
 :root {
-  --size-icon-normal: 1em;
+  --size-icon-small: 1em;
+  --size-icon-medium: 2em;
   --size-icon-large: 4rem;
 
   --size-spacing-small: 0.25rem;
