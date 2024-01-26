@@ -1,24 +1,24 @@
 const scenes_html = `<html>
             <body><div data-scene="1"><hello-world></hello-world>
 </div>
-<div data-scene="1"><hello-world> web components </hello-world>
+<div data-scene="2"><hello-world> web components </hello-world>
 </div>
-<div data-scene="2"><hello-style> component style </hello-style>
+<div data-scene="3"><hello-style> component style </hello-style>
 
 <h1>This &lt;H1&gt; has no style</h1>
 </div>
-<div data-scene="3"><greet-world>
+<div data-scene="4"><greet-world>
   <span slot="greeting">Greetings</span>
   <span slot="recipient">earthlings</span>
 </greet-world>
 </div>
-<div data-scene="4"><arrow-button></arrow-button>
+<div data-scene="5"><arrow-button></arrow-button>
 <arrow-button heading="90deg"></arrow-button>
 <arrow-button heading="180deg"></arrow-button>
 <arrow-button heading="-90deg"></arrow-button>
 <arrow-button heading="45deg"></arrow-button>
 </div>
-<div data-scene="5"><section>
+<div data-scene="6"><section>
   <nav class="menu-bar">
     <dropdown-menu>
       File
@@ -41,7 +41,7 @@ const scenes_html = `<html>
   </nav>
 </section>
 </div>
-<div data-scene="7"><section>
+<div data-scene="8"><section>
   <nav class="menu-bar">
     <dropdown-base>
       File
@@ -65,7 +65,7 @@ const scenes_html = `<html>
   </nav>
 </section>
 </div>
-<div data-scene="9"><format-data name="count">The count is {count}.</format-data>
+<div data-scene="10"><format-data name="count">The count is {count}.</format-data>
 <action-item>↑</action-item>
 <action-item>↓</action-item>
 <action-item>Reset</action-item>

@@ -8,8 +8,8 @@ platform: none
 In this chapter:
 
 - MVU Architecture
-- [State Management](./state)
-- [Reactive Programming](./reactive)
+- [State Management](./state/)
+- [Reactive Programming](./reactive/)
 - Routing
 - Local Storage API
 - Dependency Management

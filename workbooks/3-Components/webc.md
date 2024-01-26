@@ -67,6 +67,8 @@ insert dynamic values and even markup into the template.
 
 But first, let's look at that `<slot>` element in the template.
 
+---
+
 # Slots
 
 ```html

@@ -24,7 +24,7 @@ var __decorateClass = (decorators, target, key, kind) => {
     __defProp(target, key, result);
   return result;
 };
-console.log('Loading module "Kram_410211f0_webc"');
+console.log('Loading module "Kram_46bc579d_webc"');
 function Program({ connectStore, initializeStore }) {
   let HelloWorldElement = class extends s {
     render() {
@@ -112,9 +112,40 @@ function Program({ connectStore, initializeStore }) {
     t("arrow-button")
   ], ArrowButtonElement);
   let DropdownElementV1 = class extends s {
+    constructor() {
+      super();
+      this.open = false;
+      this.clickawayHandler = (ev) => {
+        if (!ev.composedPath().includes(this)) {
+          this._toggle(false);
+        } else {
+          ev.stopPropagation();
+        }
+      };
+    }
+    _handleChange(ev) {
+      const target = ev.target;
+      _toggle(target.checked);
+    }
+    _toggle(isOpen) {
+      this.open = isOpen;
+      if (isOpen) {
+        document.addEventListener("click", this.clickawayHandler);
+      } else {
+        document.removeEventListener(
+          "click",
+          this.clickawayHandler
+        );
+      }
+    }
     render() {
       return x`
-      <input type="checkbox" id="is-shown" />
+      <input
+        type="checkbox"
+        id="is-shown"
+        @change=${this._handleChange}
+        .checked=${this.open}
+      />
       <label for="is-shown">
         <slot>Menu</slot>
       </label>
@@ -149,6 +180,7 @@ function Program({ connectStore, initializeStore }) {
       top: 100%;
       left: 0;
       border: 1px solid;
+      background: white;
     }
 
     #is-shown:checked ~ slot[name="menu"] {
@@ -165,6 +197,9 @@ function Program({ connectStore, initializeStore }) {
       white-space: nowrap;
     }
   `;
+  __decorateClass([
+    n({ reflect: true, type: Boolean })
+  ], DropdownElementV1.prototype, "open", 2);
   DropdownElementV1 = __decorateClass([
     t("dropdown-menu")
   ], DropdownElementV1);

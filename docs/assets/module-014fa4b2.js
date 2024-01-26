@@ -1,10 +1,9 @@
 import './lit-element-a480b217.js';
 
-// module Kram_410211f0_webc (ES6)
-          console.log('Loading module "Kram_410211f0_webc"');
+// module Kram_46bc579d_webc (ES6)
+          console.log('Loading module "Kram_46bc579d_webc"');
           function Program ({connectStore, initializeStore}) {
-
-// JS Definition from scene 7
+            // JS Definition from scene 8
 class DropdownBaseElement extends HTMLElement {
   constructor() {
     super();
@@ -49,7 +48,7 @@ class DropdownBaseElement extends HTMLElement {
 
 customElements.define("dropdown-base", DropdownBaseElement);
 
-// JS Definition from scene 8
+// JS Definition from scene 9
 class CommandMenuElement extends HTMLElement {
   constructor() {
     super();
@@ -77,7 +76,7 @@ class CommandGroupElement extends HTMLElement {
 customElements.define("command-menu", CommandMenuElement);
 customElements.define("command-group", CommandGroupElement);
 
-// JS Definition from scene 9
+// JS Definition from scene 10
 class ActionItemElement extends HTMLElement {
   constructor() {
     super();

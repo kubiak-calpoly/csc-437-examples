@@ -1,8 +1,8 @@
-// module Kram_144f7849_webc (Typescript)
+// module Kram_46bc579d_webc (Typescript)
           import { css, html, LitElement } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { ref, createRef } from 'lit/directives/ref.js'
-          console.log('Loading module "Kram_144f7849_webc"')
+          console.log('Loading module "Kram_46bc579d_webc"')
           export function Program ({connectStore, initializeStore}) {
             // TS Definition from scene 1
 @customElement("hello-world")
@@ -12,7 +12,7 @@ class HelloWorldElement extends LitElement {
   }
 }
 
-// TS Definition from scene 2
+// TS Definition from scene 3
 @customElement("hello-style")
 class HelloStyleElement extends LitElement {
   render() {
@@ -34,7 +34,7 @@ class HelloStyleElement extends LitElement {
   `;
 }
 
-// TS Definition from scene 3
+// TS Definition from scene 4
 @customElement("greet-world")
 class GreetWorldElement extends LitElement {
   render() {
@@ -57,7 +57,7 @@ class GreetWorldElement extends LitElement {
   `;
 }
 
-// TS Definition from scene 4
+// TS Definition from scene 5
 @customElement("arrow-button")
 class ArrowButtonElement extends LitElement {
   @property()
@@ -88,7 +88,7 @@ class ArrowButtonElement extends LitElement {
   `;
 }
 
-// TS Definition from scene 5
+// TS Definition from scene 6
 @customElement("dropdown-menu")
 class DropdownElementV1 extends LitElement {
   @property({ reflect: true, type: Boolean })

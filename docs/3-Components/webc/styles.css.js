@@ -1,9 +1,9 @@
-export default `/* Kram: CSS in Scene 8 */
+export default `/* Kram: CSS in Scene 9 */
 command-group + command-group {
   --command-group-display-top-hr: none;
 }
 
-/* Kram: CSS in Scene 10 */
+/* Kram: CSS in Scene 11 */
 /* CSS to clean up the demo */
 
 .menu-bar {
