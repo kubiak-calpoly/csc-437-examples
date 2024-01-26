@@ -20,12 +20,58 @@
     <link rel="stylesheet" href="/styles/page.css" />
     <script type="module" src="./hello-world.ts"></script>
     <script type="module" src="./toggle-switch.ts"></script>
-    <style></style>
+    <script type="module" src="./drop-down.ts"></script>
+    <style>
+      /* CSS to clean up the demo */
+
+      .menu-bar {
+        display: flex;
+        position: relative;
+        gap: 4em;
+        background: #f0f0f0;
+        padding: 0 0.5em;
+        font-family: var(--font-family-display);
+      }
+
+      .menu-bar::after {
+        content: "";
+        position: absolute;
+        height: 4px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-bottom: 4px solid #888;
+      }
+
+      .menu-bar > * {
+        padding: 0.5em 0;
+      }
+    </style>
   </head>
   <body class="page">
     <header>
       <h1>Blazing Travels</h1>
     </header>
+    <nav class="menu-bar">
+      <drop-down>
+        File
+        <ul slot="menu">
+          <li>New…</li>
+          <li><hr /></li>
+          <li>Open…</li>
+          <li>Open Recent</li>
+          <li><hr /></li>
+          <li>Save</li>
+          <li>Save As…</li>
+          <li>Revert to Last Saved</li>
+          <li><hr /></li>
+          <li>Close</li>
+        </ul>
+      </drop-down>
+      <drop-down> Edit </drop-down>
+      <drop-down> View </drop-down>
+      <drop-down> Help </drop-down>
+    </nav>
     <hello-world></hello-world>
     <hello-world><h2>web components</h2></hello-world>
     <p style="width: 150px">
