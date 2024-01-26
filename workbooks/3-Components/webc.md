@@ -118,6 +118,10 @@ class HelloStyleElement extends LitElement {
       font-style: italic;
       color: darkorange;
     }
+
+    :slotted(*) {
+      display: inline;
+    }
   `;
 }
 ```
