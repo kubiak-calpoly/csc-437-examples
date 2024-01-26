@@ -18,7 +18,7 @@ export class CalendarWidget extends LitElement {
       }
     );
 
-    this._emit(selectionEvent);
+    this.dispatchEvent(selectionEvent);
   }
 
   _handleClear() {
@@ -34,12 +34,7 @@ export class CalendarWidget extends LitElement {
       { bubbles: true }
     );
 
-    this._emit(clearEvent);
-  }
-
-  _emit(event: Event) {
-    console.log("calendar-widget emits event:", event);
-    this.dispatchEvent(event);
+    this.dispatchEvent(clearEvent);
   }
 
   render() {
@@ -72,7 +67,7 @@ export class CalendarWidget extends LitElement {
           <input
             type="radio"
             name="cal"
-            @change="this._handleSelection"
+            @change=${this._handleSelection}
             value="${format(ymd)}"
           />
         </label>

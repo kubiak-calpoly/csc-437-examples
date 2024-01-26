@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com"
+    />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,200;0,400;0,700;1,700&family=Merriweather:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles/reset.css" />
+    <link rel="stylesheet" href="/styles/tokens.css" />
+    <link rel="stylesheet" href="/styles/page.css" />
+    <script type="module" src="./hello-world.ts"></script>
+    <script type="module" src="./toggle-switch.ts"></script>
+    <script type="module" src="./drop-down.ts"></script>
+    <script type="module" src="./date-select.ts"></script>
+    <script type="module" src="./entourage-table.ts"></script>
+    <script type="module">
+      document.addEventListener("date-select:change", (ev) =>
+        console.log("Event date-select:change", ev.detail)
+      );
+      document.addEventListener("date-select:change", (ev) =>
+        console.log("Event date-select:clear")
+      );
+    </script>
+    <style>
+      /* CSS to clean up the demo */
+
+      .menu-bar {
+        display: flex;
+        position: relative;
+        gap: 4em;
+        background: #f0f0f0;
+        padding: 0 0.5em;
+        font-family: var(--font-family-display);
+      }
+
+      .menu-bar::after {
+        content: "";
+        position: absolute;
+        height: 4px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-bottom: 4px solid #888;
+      }
+
+      .menu-bar > * {
+        padding: 0.5em 0;
+      }
+    </style>
+  </head>
+  <body class="page">
+    <header>
+      <h1>Blazing Travels</h1>
+    </header>
+    <nav class="menu-bar">
+      <drop-down>
+        File
+        <ul slot="menu">
+          <li>New…</li>
+          <li><hr /></li>
+          <li>Open…</li>
+          <li>Open Recent</li>
+          <li><hr /></li>
+          <li>Save</li>
+          <li>Save As…</li>
+          <li>Revert to Last Saved</li>
+          <li><hr /></li>
+          <li>Close</li>
+        </ul>
+      </drop-down>
+      <drop-down> Edit </drop-down>
+      <drop-down> View </drop-down>
+      <drop-down> Help </drop-down>
+    </nav>
+    <hello-world></hello-world>
+    <hello-world><h2>Web Components</h2></hello-world>
+    <p style="width: 150px">
+      <toggle-switch>Lights</toggle-switch>
+      <toggle-switch>Camera</toggle-switch>
+      <toggle-switch>Action</toggle-switch>
+    </p>
+    <date-select start-date="2024-10-13" end-date="2024-10-25">
+    </date-select>
+    <entourage-table src="/data/entourage.json">
+    </entourage-table>
+  </body>
+</html>
