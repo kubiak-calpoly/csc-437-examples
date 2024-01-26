@@ -16,8 +16,11 @@
   --size-type-xxlarge: 2.5rem;
 
   --color-accent: rgb(42 143 42);
+  --color-background-control: #ccc;
   --color-background-header: var(--color-accent);
   --color-background-page: rgb(238 237 231);
+  --color-border-control: var(--color-accent);
+  --color-foreground-control: #fff;
   --color-link-inverted: rgb(255 208 0);
   --color-link: var(--color-accent);
   --color-text: rgb(51 51 51);
@@ -35,4 +38,6 @@
   --font-weight-normal: 400;
   --font-weight-light: 200;
   --font-weight-bold: 700;
+
+  --time-transition-control: 300ms;
 }
