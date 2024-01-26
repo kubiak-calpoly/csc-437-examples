@@ -64,4 +64,30 @@ class DropDownElement extends LitElement {
       white-space: nowrap;
     }
   `;
+
+  _handleChange(ev: Event) {
+    const target = ev.target;
+    this._toggle(target?.checked);
+  }
+
+  _toggle(open) {
+    this.open = open;
+    this._toggleClickAway(open);
+  }
+
+  _toggleClickAway(open) {
+    const clickawayHandler = (ev) => {
+      if (!ev.composedPath().includes(this)) {
+        this._toggle(false);
+      } else {
+        ev.stopPropagation();
+      }
+    };
+
+    if (open) {
+      document.addEventListener("click", clickawayHandler);
+    } else {
+      document.removeEventListener("click", clickawayHandler);
+    }
+  }
 }
