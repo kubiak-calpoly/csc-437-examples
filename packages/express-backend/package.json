@@ -25,12 +25,9 @@
     "esbuild": "^0.19.9",
     "esbuild-node-tsc": "^2.0.5",
     "nodemon": "^3.0.2",
-    "ts-node": "^10.9.2",
-    "tsconfig-paths": "^3.15.0",
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "eta": "^3.2.0",
     "express": "^4.18.2",
     "moment": "^2.29.4"
   }
