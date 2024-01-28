@@ -1,12 +1,21 @@
-*,
-*::before,
-*::after {
-  margin: 0;
-  box-sizing: border-box;
-}
 body {
   font-family: var(--font-family-body);
   background-color: var(--color-background-page);
+}
+.page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+.page > header {
+  flex-basis: min-content;
+}
+.page > section {
+  flex-basis: 100%;
+  overflow: auto;
+  margin: 0;
+  padding: var(--size-spacing-medium);
 }
 header {
   display: flex;
@@ -14,73 +23,69 @@ header {
   align-items: baseline;
   justify-content: space-between;
   padding: var(--size-spacing-medium);
+  gap: var(--size-spacing-xlarge);
   background-color: var(--color-background-header);
   color: var(--color-text-inverted);
 }
 header a {
   color: var(--color-link-inverted);
 }
-main.page {
-  display: grid;
-  grid-template-columns: var(--size-width-sidebar) auto;
-  grid-template-rows: auto auto 1fr;
-  grid-template-areas:
-    "calendar  itinerary"
-    "map       itinerary"
-    "entourage itinerary";
+body > section {
+  margin: var(--size-spacing-medium);
 }
-section {
-  padding: var(--size-spacing-medium);
-}
-
 h1,
 h2,
 h3,
 h4,
 h5,
-h6 {
+h6,
+dt,
+summary {
   font-family: var(--font-family-display);
+  line-height: var(--font-line-height-display);
 }
 h1 {
-  font-size: 2.5rem;
+  font-size: var(--size-type-xxlarge);
   font-style: oblique;
+  line-height: 1;
+  font-weight: var(--font-weight-bold);
 }
 h2 {
-  font-size: 2rem;
+  font-size: var(--size-type-xlarge);
+  font-weight: var(--font-weight-bold);
 }
 h3 {
-  font-size: 1.5rem;
-  font-weight: normal;
+  font-size: var(--size-type-large);
+  font-weight: var(--font-weight-normal);
   font-style: oblique;
 }
 h4 {
-  font-size: 1.25rem;
+  font-size: var(--size-type-mlarge);
+  font-weight: var(--font-weight-bold);
 }
 h5 {
-  font-size: 1rem;
+  font-size: var(--size-type-body);
+  font-weight: var(--font-weight-bold);
 }
 h6 {
-  font-size: 1rem;
-  font-weight: normal;
+  font-size: var(--size-type-body);
+  font-weight: var(--font-weight-normal);
   font-style: italic;
+}
+dt {
+  font-weight: var(--size-type-body);
 }
 h3,
 a {
   color: var(--color-accent);
 }
-p + * {
-  margin-top: var(--size-spacing-small);
+svg.outline-map {
+  fill: #ff0;
 }
-
 svg.icon {
   display: inline;
-  height: 4rem;
-  width: 4rem;
-  vertical-align: top;
   fill: currentColor;
-}
-dt {
-  color: var(--color-accent);
-  font-family: var(--font-family-display);
-  font-weight: bold;
+  height: var(--size-icon-large);
+  width: var(--size-icon-large);
+  vertical-align: middle;
 }
