@@ -1,37 +1,33 @@
-import { Profile } from "./models/profile";
+import { Document } from "mongoose";
+import { Profile } from "./models/Profile";
+import ProfileModel from "./models/mongo/profile";
 
-let profiles: Profile[] = [
-  {
-    userid: "blaze",
-    name: "Blaze Pasquale",
-    city: "Oakland, CA",
-    airports: ["SFO", "OAK", "SJC"],
-    color: "#8A81BE",
-    avatar: "/data/avatars/Blaze Pasquale.png"
-  },
-  {
-    userid: "mondy",
-    name: "Pia Mondrian",
-    nickname: "Mondy",
-    city: "Ventura, CA",
-    airports: ["LAX"]
-  },
-  {
-    userid: "izzy",
-    name: "Isabel Nuton",
-    nickname: "Izzy",
-    city: "San Miguel de Allende, Gto., Mexico",
-    airports: ["BJX", "QRO"]
-  }
-];
+function index(): Promise<Profile[]> {
+  return new Promise<Profile[]>((resolve, reject) => {
+    ProfileModel.find().then((index) => resolve(index));
+  });
+}
 
-export default {
-  index: () => profiles,
-  get: (userid: string) => {
-    const found = profiles.find((p) => p.userid === userid);
+function get(userid: String): Promise<Profile> {
+  return new Promise<Profile>((resolve, reject) => {
+    ProfileModel.find({ userid }).then((found) => {
+      if (found && found.length) resolve(found[0].toObject());
+      else reject(`Profile not found {userid: ${userid}}`);
+    });
+  });
+}
 
-    if (found) return found;
+function create(profile: Profile): Promise<Profile> {
+  return new Promise<Profile>((resolve, reject) => {
+    const p = new ProfileModel(profile);
+    p.save().then((created) => {
+      if (created) resolve(created.toObject());
+      else
+        reject(
+          `Profile not created: ${JSON.stringify(profile)}`
+        );
+    });
+  });
+}
 
-    throw `Profile '${userid}' not found`;
-  }
-};
+export default { index, get, create };

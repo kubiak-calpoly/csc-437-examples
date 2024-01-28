@@ -1,4 +1,4 @@
-import { Profile } from "../models/profile";
+import { Profile } from "../models/Profile";
 
 export default function profileView(profile: Profile) {
   const { name, nickname, city, airports, color, avatar } =
