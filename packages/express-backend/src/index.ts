@@ -10,13 +10,14 @@ app.use(express.static("public"));
 
 app.get("/profile/:userid", (req: Request, res: Response) => {
   const { userid } = req.params;
-  const profile = userid ? profiles.get(userid) : undefined;
 
-  if (profile) {
+  try {
+    const profile = profiles.get(userid);
+
     res
       .set("Content-Type", "text/html")
       .send(pageTemplate({ body: profileView(profile) }));
-  } else {
+  } catch (err) {
     res.status(404).end();
   }
 });

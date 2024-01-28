@@ -28,8 +28,10 @@ let profiles: Profile[] = [
 export default {
   index: () => profiles,
   get: (userid: string) => {
-    const matches = profiles.filter((p) => p.userid === userid);
+    const found = profiles.find((p) => p.userid === userid);
 
-    return matches.length ? matches[0] : undefined;
+    if (found) return found;
+
+    throw `Profile '${userid}' not found`;
   }
 };
