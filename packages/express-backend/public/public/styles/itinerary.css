@@ -1,0 +1,31 @@
+.itinerary {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0 var(--size-spacing-xlarge);
+  align-items: baseline;
+}
+.itinerary > dt {
+  text-align: right;
+}
+
+.transportation {
+  text-align: center;
+  /*
+  border-top: 2px solid #008000;
+  border-bottom: 2px solid #008000;
+  */
+}
+.destination {
+  background: white;
+  padding: var(--size-spacing-large) var(--size-spacing-medium);
+  border-radius: var(--size-radius-medium);
+}
+
+.transportation summary {
+  font-size: var(--size-type-large);
+  font-style: oblique;
+}
+
+.entourage {
+  display: none;
+}
