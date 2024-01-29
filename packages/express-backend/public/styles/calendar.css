@@ -1,0 +1,53 @@
+.calendar {
+  grid-area: calendar;
+}
+
+.calendar fieldset {
+  display: grid;
+  grid-template-columns: repeat(7, 2rem);
+  gap: var(--size-spacing-small);
+  justify-content: center;
+  justify-items: streth;
+  border: 0;
+}
+
+.calendar h6 {
+  text-align: center;
+}
+
+.calendar label {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1;
+  padding: var(--size-spacing-small);
+  white-space: nowrap;
+  text-align: center;
+  color: var(--color-accent);
+  font-family: var(--font-family-display);
+  z-index: 0;
+}
+
+.calendar input {
+  appearance: none;
+  background: white;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: -1;
+}
+
+.calendar input:checked {
+  background: var(--color-accent);
+}
+
+.calendar label:has(input:checked) {
+  color: var(--color-link-inverted);
+}
+
+.calendar button {
+  display: block;
+  margin: 0 auto;
+}
