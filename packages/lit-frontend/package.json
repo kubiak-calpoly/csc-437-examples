@@ -4,6 +4,7 @@
   "main": "app/index.html",
   "scripts": {
     "dev": "npx vite",
+    "check": "npx tsc",
     "build": "npx tsc && npx vite build",
     "preview": "npx vite preview"
   },
