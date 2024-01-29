@@ -3,31 +3,20 @@ import { Profile } from "./models/Profile";
 import ProfileModel from "./models/mongo/profile";
 
 function index(): Promise<Profile[]> {
-  return new Promise<Profile[]>((resolve, reject) => {
-    ProfileModel.find().then((index) => resolve(index));
-  });
+  return ProfileModel.find();
 }
 
 function get(userid: String): Promise<Profile> {
-  return new Promise<Profile>((resolve, reject) => {
-    ProfileModel.find({ userid }).then((found) => {
-      if (found && found.length) resolve(found[0].toObject());
-      else reject(`Profile not found {userid: ${userid}}`);
+  return ProfileModel.find({ userid })
+    .then((list) => list[0])
+    .catch((err) => {
+      throw `${userid} Not Found`;
     });
-  });
 }
 
 function create(profile: Profile): Promise<Profile> {
-  return new Promise<Profile>((resolve, reject) => {
-    const p = new ProfileModel(profile);
-    p.save().then((created) => {
-      if (created) resolve(created.toObject());
-      else
-        reject(
-          `Profile not created: ${JSON.stringify(profile)}`
-        );
-    });
-  });
+  const p = new ProfileModel(profile);
+  return p.save();
 }
 
 export default { index, get, create };
