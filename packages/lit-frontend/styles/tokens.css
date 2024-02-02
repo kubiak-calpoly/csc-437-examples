@@ -27,6 +27,7 @@
   --color-link-inverted: rgb(255 208 0);
   --color-link: var(--color-accent);
   --color-text: rgb(51 51 51);
+  --color-shadow-dropdown: rgb(51 51 51 / 50%);
   --color-text-heading: var(--color-accent);
   --color-text-inverted: rgb(255 255 255);
 
@@ -42,5 +43,11 @@
   --font-weight-light: 200;
   --font-weight-bold: 700;
 
+  --line-weight-superfine: 0.5px;
+  --line-weight-fine: 1px;
+  --line-weight-medium: 2px;
+  --line-weight-heavy: 4px;
+
+  --shadow-dropdown: 0 2px 2px var(--color-shadow-dropdown);
   --time-transition-control: 300ms;
 }
