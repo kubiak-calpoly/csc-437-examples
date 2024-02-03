@@ -26,6 +26,7 @@ export class ToggleSwitchElement extends LitElement {
       align-items: center;
       gap: var(--size-spacing-medium);
       line-height: 2em;
+      cursor: pointer;
     }
     .slider {
       display: inline-block;
@@ -43,11 +44,12 @@ export class ToggleSwitchElement extends LitElement {
     }
     input {
       appearance: none;
+      cursor: pointer;
       background-color: var(--color-foreground-control);
       border-radius: 50%;
       width: 1.25em;
       height: 1.25em;
-      vertical-align: center;
+      font-size: inherit;
       position: absolute;
       left: 0;
       transition: left var(--time-transition-control);
