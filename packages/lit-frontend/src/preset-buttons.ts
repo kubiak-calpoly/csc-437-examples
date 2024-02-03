@@ -63,6 +63,7 @@ export class PresetButtonsElement extends LitElement {
       line-height: 1em;
       background-color: var(--color-background-control);
       color: var(--color-text-control);
+      font-family: var(--font-family-display);
       transition: background-color
         var(--time-transition-control);
       cursor: pointer;

@@ -21,6 +21,9 @@
     <script type="module" src="/src/user-panel.ts"></script>
     <script type="module" src="/src/toggle-switch.ts"></script>
     <script type="module" src="/src/preset-buttons.ts"></script>
+    <script
+      type="module"
+      src="/src/calendar-widget.ts"></script>
     <script type="module" src="/src/itinerary-item.ts"></script>
   </head>
   <body class="page">
@@ -39,6 +42,11 @@
         </drop-down>
       </p>
     </header>
+
+    <calendar-widget
+      start-date="2024-10-13"
+      end-date="2024-10-25">
+    </calendar-widget>
 
     <section>
       <h2>Itinerary</h2>

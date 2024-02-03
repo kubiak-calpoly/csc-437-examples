@@ -6,30 +6,3 @@
   gap: 0 var(--size-spacing-xlarge);
   align-items: baseline;
 }
-
-.itinerary > * {
-  display: contents;
-}
-
-.transportation {
-  text-align: center;
-  /*
-  border-top: 2px solid #008000;
-  border-bottom: 2px solid #008000;
-  */
-}
-.destination {
-  grid-column: primary / end;
-  background: var(--color-background-card);
-  padding: var(--size-spacing-large) var(--size-spacing-medium);
-  border-radius: var(--size-corner-medium);
-}
-
-.transportation summary {
-  font-size: var(--size-type-large);
-  font-style: oblique;
-}
-
-.entourage {
-  display: none;
-}

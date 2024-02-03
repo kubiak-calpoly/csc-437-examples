@@ -92,6 +92,10 @@ export class CalendarWidget extends LitElement {
   }
 
   static styles = css`
+    * {
+      margin: 0;
+      box-sizing: border-box;
+    }
     :host {
       grid-area: calendar;
       padding: 0 var(--size-spacing-medium);
@@ -118,7 +122,9 @@ export class CalendarWidget extends LitElement {
       padding: var(--size-spacing-small);
       white-space: nowrap;
       text-align: center;
-      color: var(--color-accent);
+      background-color: var(--color-background-control);
+      border: var(--line-weight-fine) solid var(--color-accent);
+      color: var(--color-text-control);
       font-family: var(--font-family-display);
       z-index: 0;
     }
@@ -139,7 +145,8 @@ export class CalendarWidget extends LitElement {
     }
 
     label:has(input:checked) {
-      color: var(--color-link-inverted);
+      background-color: var(--color-accent);
+      color: var(--color-text-control-inverted);
     }
 
     button {

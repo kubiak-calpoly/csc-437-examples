@@ -48,6 +48,12 @@ class ItineraryItemElement extends LitElement {
       margin: 0;
       box-sizing: border-box;
     }
+    :host(*) {
+      display: contents;
+    }
+    :host([hidden]) {
+      display: none;
+    }
     #dates {
       color: var(--color-accent);
       font-family: var(--font-family-display);
