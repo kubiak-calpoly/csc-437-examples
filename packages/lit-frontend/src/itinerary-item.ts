@@ -78,18 +78,31 @@ class ItineraryItemElement extends LitElement {
     .destination {
       grid-column: primary/end;
       background: var(--color-background-card);
-      padding: var(--size-spacing-large)
-        var(--size-spacing-medium);
       border-radius: var(--size-corner-medium);
+      aspect-ratio: 16/9;
+      background-size: cover;
+      background-position: left 25%;
     }
     .transportation {
       display: grid;
       grid-column: primary/end;
       grid-template-columns: subgrid;
-      align-items: middle;
+      align-items: center;
     }
     .transportation > h3 {
       display: contents;
+      font-size: var(--size-type-mlarge);
+      font-style: oblique;
+    }
+    .destination > h3 {
+      padding: 0 var(--size-spacing-medium);
+    }
+    .destination[style] > h3 {
+      color: var(--color-text-inverted);
+      text-decoration: none;
+      font-weight: var(--font-weight-bold;);
+      text-shadow: var(--shadow-dropdown);
+      text-align: right;
     }
     .transportation > h3 > :first-child {
       text-align: right;
@@ -107,11 +120,11 @@ class ItineraryItemElement extends LitElement {
       font-family: var(--font-family-display);
       font-size: var(--size-type-large);
       font-weight: var(--font-weight-normal);
-      font-style: oblique;
       color: var(--color-accent);
     }
     a {
       color: inherit;
+      text-decoration: none;
     }
     a.itemLink {
       display: contents;
@@ -171,12 +184,19 @@ class ItineraryItemElement extends LitElement {
 
 @customElement("itinerary-destination")
 export class ItineraryDestinationElement extends ItineraryItemElement {
+  @property({ attribute: "img-src" })
+  imgSrc?: string;
+
   renderItem() {
     const content = html`<slot></slot>`;
     const link = this.href
-      ? html`<a href="{href}">${content}</a>`
+      ? html`<a class=:itemLink" href="{href}">${content}</a>`
       : content;
-    return html`<section class="destination">
+    const style = this.imgSrc
+      ? `background-image: url(${this.imgSrc})`
+      : "";
+
+    return html`<section class="destination" style=${style}>
       <h3>${link}</h3>
     </section>`;
   }
