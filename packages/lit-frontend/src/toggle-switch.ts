@@ -59,6 +59,12 @@ export class ToggleSwitchElement extends LitElement {
 
   _handleChange(ev: Event) {
     const target = ev.target as HTMLInputElement;
+    const composedEvent = new Event(ev.type, {
+      bubbles: true,
+      composed: true
+    });
+
     this.on = target?.checked;
+    this.dispatchEvent(composedEvent);
   }
 }

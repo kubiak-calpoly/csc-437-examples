@@ -1,5 +1,6 @@
 import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { ToggleSwitchElement } from "./toggle-switch";
 
 @customElement("user-panel")
 export class UserPanelElement extends LitElement {
@@ -14,15 +15,13 @@ export class UserPanelElement extends LitElement {
           <h1><slot name="name">Your Name</slot></h1>
         </li>
         <li>
-          <slot name="mode-switch">
-            <toggle-switch>Dark Mode</toggle-switch>
-          </slot>
+          <toggle-switch @change=${this._toggleDarkMode}>
+            Dark Mode
+          </toggle-switch>
         </li>
         <slot></slot>
         <li>
-          <slot name="logout">
-            <span>Sign out&hellip;</span>
-          </slot>
+          <slot name="logout">Sign out&hellip;</slot>
         </li>
       </ul>
     `;
@@ -73,4 +72,14 @@ export class UserPanelElement extends LitElement {
       text-align: right;
     }
   `;
+
+  _toggleDarkMode(ev: InputEvent) {
+    const target = ev.target as ToggleSwitchElement;
+    const body = document.body;
+
+    console.log("Toggling Dark mode", ev);
+
+    if (target?.on) body.classList.add("dark-mode");
+    else body.classList.remove("dark-mode");
+  }
 }

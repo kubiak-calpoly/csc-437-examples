@@ -1,8 +1,7 @@
-body {
+.page {
   font-family: var(--font-family-body);
   background-color: var(--color-background-page);
-}
-.page {
+  color: var(--color-text);
   display: flex;
   flex-direction: column;
   height: 100%;
