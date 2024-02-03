@@ -1,18 +1,52 @@
 import { css, html, LitElement } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import {
+  customElement,
+  property,
+  state
+} from "lit/decorators.js";
+import { Entourage } from "./models/entourage";
+import { Profile } from "./models/profile";
 
 @customElement("entourage-table")
 export class EntourageTable extends LitElement {
   @property()
   src: string = "";
 
+  @state()
+  entourage?: Entourage;
+
   render() {
-    return html` <section>
-      <h2>Entourage</h2>
-      <table>
-        <tbody id="rows"></tbody>
-      </table>
-    </section>`;
+    const rows = this.entourage?.people || [];
+
+    const renderRow = (row: Profile) => {
+      const {
+        avatar,
+        name = "** NO NAME **",
+        nickname,
+        color
+      } = row;
+      const avatarImg = avatar
+        ? html`<img src="${avatar}" />`
+        : (nickname || name).slice(0, 1);
+      const colorStyle = color
+        ? `style="--color-avatar-bg: ${color}"`
+        : "";
+
+      return html`
+        <tr>
+          <td>
+            <span class="avatar" ${colorStyle}>
+              ${avatarImg}
+            </span>
+          </td>
+          <td class="name">${name}</td>
+        </tr>
+      `;
+    };
+
+    return html`<table>
+      <tbody>${rows.map(renderRow)}</tbody>
+    </table>`;
   }
 
   static styles = css`
@@ -87,44 +121,8 @@ export class EntourageTable extends LitElement {
         }
         return null;
       })
-      .then((json) => {
-        if (json && json.people) this._appendRows(json.people);
+      .then((json: unknown) => {
+        this.entourage = json as Entourage;
       });
-  }
-
-  _appendRows(people: any) {
-    const rows = this.shadowRoot?.getElementById("rows");
-
-    console.log("People:", people);
-
-    if (rows) {
-      people.forEach((row: any) => {
-        const {
-          avatar,
-          name = "** NO NAME **",
-          nickname,
-          color
-        } = row;
-        const avatarImg = avatar
-          ? `<img src="${avatar}"/>`
-          : (nickname || name).slice(0, 1);
-        const colorStyle = color
-          ? `style="--color-avatar-bg: ${color}"`
-          : "";
-
-        let tr = document.createElement("tr");
-        tr.innerHTML = `
-        <td>
-          <span class="avatar" ${colorStyle}>
-            ${avatarImg}
-          </span>
-        </td>
-        <td class="name">
-          ${name}
-        </td>
-      `;
-        rows.appendChild(tr);
-      });
-    }
   }
 }

@@ -25,6 +25,9 @@
       type="module"
       src="/src/calendar-widget.ts"></script>
     <script type="module" src="/src/itinerary-item.ts"></script>
+    <script
+      type="module"
+      src="/src/entourage-table.ts"></script>
   </head>
   <body class="page">
     <header>
@@ -101,13 +104,7 @@
       </main>
     </section>
 
-    <section class="entourage">
-      <h2>Entourage</h2>
-      <ul>
-        <li><a href="profile/1.html">Person 1</a></li>
-        <li><a href="profile/2.html">Person 2</a></li>
-        <li><a href="profile/3.html">Person 3</a></li>
-      </ul>
-    </section>
+    <entourage-table src="/data/entourage.json">
+    </entourage-table>
   </body>
 </html>
