@@ -1,11 +1,14 @@
 .itinerary {
   display: grid;
-  grid-template-columns: max-content 1fr;
+  grid-template-columns:
+    [start] max-content [primary] 1fr var(--size-icon-large)
+    1fr [end];
   gap: 0 var(--size-spacing-xlarge);
   align-items: baseline;
 }
-.itinerary > dt {
-  text-align: right;
+
+.itinerary > * {
+  display: contents;
 }
 
 .transportation {
@@ -16,6 +19,7 @@
   */
 }
 .destination {
+  grid-column: primary / end;
   background: var(--color-background-card);
   padding: var(--size-spacing-large) var(--size-spacing-medium);
   border-radius: var(--size-corner-medium);

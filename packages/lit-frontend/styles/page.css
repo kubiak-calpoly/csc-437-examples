@@ -22,9 +22,16 @@ header {
   align-items: baseline;
   justify-content: space-between;
   padding: var(--size-spacing-medium);
-  gap: var(--size-spacing-xlarge);
+  gap: 0 var(--size-spacing-xlarge);
   background-color: var(--color-background-header);
   color: var(--color-text-inverted);
+}
+header * + :last-child {
+  flex-grow: 1;
+  text-align: right;
+}
+header h1 {
+  white-space: nowrap;
 }
 header a {
   color: var(--color-link-inverted);

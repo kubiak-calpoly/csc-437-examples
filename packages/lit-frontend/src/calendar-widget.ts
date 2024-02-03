@@ -41,7 +41,6 @@ export class CalendarWidget extends LitElement {
     const start = new Date(this.startDate);
     const end = new Date(this.endDate);
     const dates = datesInRange(start, end);
-    console.log(`dates In Range ${start}, ${end}`, dates);
 
     const renderDate = (d: Date) => {
       const ymd = {
@@ -68,8 +67,7 @@ export class CalendarWidget extends LitElement {
             type="radio"
             name="cal"
             @change=${this._handleSelection}
-            value="${format(ymd)}"
-          />
+            value="${format(ymd)}" />
         </label>
       `;
     };
@@ -77,8 +75,7 @@ export class CalendarWidget extends LitElement {
     return html` <section>
       <fieldset
         @change="${(event: InputEvent) =>
-          this._handleChange(event.target?.value)}"
-      >
+          this._handleChange(event.target?.value)}">
         <h6>Su</h6>
         <h6>Mo</h6>
         <h6>Tu</h6>

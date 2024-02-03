@@ -1,13 +1,15 @@
 import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-@customElement("itinerary-item")
-export class ItineraryItem extends LitElement {
+class ItineraryItemElement extends LitElement {
   @property({ attribute: "start-date" })
   startDate: string = "1970-01-01";
 
   @property({ attribute: "end-date" })
   endDate?: string;
+
+  @property()
+  href?: string;
 
   @property({ reflect: true, type: Boolean })
   hidden: boolean = false;
@@ -16,6 +18,11 @@ export class ItineraryItem extends LitElement {
   _calendar_widget_clear = (_: Event) => {};
 
   render() {
+    const item = this.renderItem();
+    const link = this.href
+      ? html`<a class="itemLink" href="{href}">${item}</a>`
+      : item;
+
     return html`
       <span id="dates">
         <time datetime=${this.startDate}>
@@ -27,11 +34,20 @@ export class ItineraryItem extends LitElement {
             </time>`
           : null}
       </span>
-      <slot></slot>
+      ${link}
     `;
   }
 
+  renderItem() {
+    // subclasses may override
+    return html`<slot></slot>`;
+  }
+
   static styles = css`
+    * {
+      margin: 0;
+      box-sizing: border-box;
+    }
     #dates {
       color: var(--color-accent);
       font-family: var(--font-family-display);
@@ -44,6 +60,53 @@ export class ItineraryItem extends LitElement {
     #dates time + time::before {
       display: inline-block;
       content: " – ";
+    }
+    .destination {
+      grid-column: primary/end;
+      background: var(--color-background-card);
+      padding: var(--size-spacing-large)
+        var(--size-spacing-medium);
+      border-radius: var(--size-corner-medium);
+    }
+    .transportation {
+      display: grid;
+      grid-column: primary/end;
+      grid-template-columns: subgrid;
+    }
+    .transportation > h3 {
+      display: contents;
+    }
+    .transportation > h3 > :first-child {
+      text-align: right;
+    }
+    ::slotted([slot="via"]) {
+      font-weight: var(--font-weight-light);
+      font-style: normal;
+      font-size: 75%;
+    }
+    ::slotted([slot="via"])::before {
+      display: inline;
+      content: "via ";
+    }
+    h3 {
+      font-family: var(--font-family-display);
+      font-size: var(--size-type-large);
+      font-weight: var(--font-weight-normal);
+      font-style: oblique;
+      color: var(--color-accent);
+    }
+    a {
+      color: inherit;
+    }
+    a.itemLink {
+      display: contents;
+    }
+    svg.icon {
+      display: inline;
+      fill: currentColor;
+      height: var(--size-icon-large);
+      width: var(--size-icon-large);
+      vertical-align: middle;
     }
   `;
 
@@ -88,6 +151,50 @@ export class ItineraryItem extends LitElement {
       this._calendar_widget_clear
     );
     super.disconnectedCallback();
+  }
+}
+
+@customElement("itinerary-destination")
+export class ItineraryDestinationElement extends ItineraryItemElement {
+  renderItem() {
+    const content = html`<slot></slot>`;
+    const link = this.href
+      ? html`<a href="{href}">${content}</a>`
+      : content;
+    return html`<section class="destination">
+      <h3>${link}</h3>
+    </section>`;
+  }
+}
+
+@customElement("itinerary-transportation")
+export class ItineraryTransportationElement extends ItineraryItemElement {
+  @property()
+  type?: "air" | "rail";
+
+  renderItem() {
+    const icons = {
+      air: "icon-airplane",
+      rail: "icon-train"
+    };
+    const iconId = this.type
+      ? icons[this.type]
+      : "icon-default";
+
+    return html`<section class="transportation">
+      <h3 class="subgrid">
+        <span>
+          <slot name="origin">BGN</slot>
+        </span>
+        <svg class="icon">
+          <use href="/icons/transportation.svg#${iconId}" />
+        </svg>
+        <span>
+          <slot name="terminus">END</slot>
+          <slot name="via"></slot>
+        </span>
+      </h3>
+    </section>`;
   }
 }
 
