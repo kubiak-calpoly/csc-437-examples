@@ -55,17 +55,25 @@ class ItineraryItemElement extends LitElement {
       display: none;
     }
     #dates {
-      color: var(--color-accent);
-      font-family: var(--font-family-display);
-      font-weight: bold;
+      display: flex;
       grid-column: start;
+      place-self: stretch;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+      font-size: var(--size-type-small);
+      font-family: var(--font-family-display);
+      border-bottom: var(--line-weight-superfine) solid
+        var(--color-accent);
     }
     #dates time {
       white-space: nowrap;
     }
-    #dates time + time::before {
-      display: inline-block;
-      content: " – ";
+    #dates time:first-child {
+      font-weight: var(--font-weight-bold);
+    }
+    #dates time + time {
+      visibility: hidden;
     }
     .destination {
       grid-column: primary/end;
@@ -78,6 +86,7 @@ class ItineraryItemElement extends LitElement {
       display: grid;
       grid-column: primary/end;
       grid-template-columns: subgrid;
+      align-items: middle;
     }
     .transportation > h3 {
       display: contents;

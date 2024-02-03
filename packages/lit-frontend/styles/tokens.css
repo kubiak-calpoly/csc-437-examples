@@ -12,6 +12,7 @@
   --size-corner-medium: var(--size-spacing-small);
   --size-corner-large: var(--size-spacing-medium);
 
+  --size-type-small: 0.75rem;
   --size-type-body: 1rem;
   --size-type-mlarge: 1.25rem;
   --size-type-large: 1.5rem;

@@ -52,7 +52,10 @@ export class EntourageTable extends LitElement {
   static styles = css`
     :host {
       --color-avatar-bg: var(--color-accent);
-      padding: 0 var(--size-spacing-medium);
+    }
+    * {
+      margin: 0;
+      box-sizing: border-box;
     }
     table {
       width: 100%;

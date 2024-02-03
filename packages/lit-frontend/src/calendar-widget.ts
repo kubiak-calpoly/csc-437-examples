@@ -96,10 +96,6 @@ export class CalendarWidget extends LitElement {
       margin: 0;
       box-sizing: border-box;
     }
-    :host {
-      grid-area: calendar;
-      padding: 0 var(--size-spacing-medium);
-    }
 
     fieldset {
       display: grid;
@@ -108,6 +104,7 @@ export class CalendarWidget extends LitElement {
       justify-content: center;
       justify-items: streth;
       border: 0;
+      padding: 0;
     }
 
     h6 {
@@ -125,7 +122,7 @@ export class CalendarWidget extends LitElement {
       background-color: var(--color-background-control);
       border: var(--line-weight-fine) solid var(--color-accent);
       color: var(--color-text-control);
-      font-family: var(--font-family-display);
+      font-size: var(--size-type-small);
       z-index: 0;
     }
 

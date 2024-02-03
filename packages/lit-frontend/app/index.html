@@ -29,7 +29,7 @@
       type="module"
       src="/src/entourage-table.ts"></script>
   </head>
-  <body class="page">
+  <body>
     <header>
       <h1>Blazing Travels</h1>
       <p>12 days in Italy</p>
@@ -45,16 +45,13 @@
         </drop-down>
       </p>
     </header>
+    <main class="page">
+      <calendar-widget
+        start-date="2024-10-13"
+        end-date="2024-10-25">
+      </calendar-widget>
 
-    <calendar-widget
-      start-date="2024-10-13"
-      end-date="2024-10-25">
-    </calendar-widget>
-
-    <section>
-      <h2>Itinerary</h2>
-
-      <main class="itinerary">
+      <section class="itinerary">
         <itinerary-transportation
           start-date="2024-10-13"
           end-date="2024-10-14"
@@ -101,10 +98,9 @@
           <span slot="origin"> FCO </span>
           <span slot="terminus"> SFO </span>
         </itinerary-transportation>
-      </main>
-    </section>
-
-    <entourage-table src="/data/entourage.json">
-    </entourage-table>
+      </section>
+      <entourage-table src="/data/entourage.json">
+      </entourage-table>
+    </main>
   </body>
 </html>

@@ -7,16 +7,9 @@
   height: 100%;
   width: 100%;
 }
-.page > header {
-  flex-basis: min-content;
-}
-.page > section {
-  flex-basis: 100%;
-  overflow: auto;
-  margin: 0;
-  padding: var(--size-spacing-medium);
-}
+
 header {
+  grid-area: header;
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
