@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com" />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,200;0,400;0,700;1,700&family=Merriweather:wght@400;700&display=swap"
+      rel="stylesheet" />
+    <link rel="stylesheet" href="/styles/reset.css" />
+    <link rel="stylesheet" href="/styles/tokens.css" />
+    <link rel="stylesheet" href="/styles/page.css" />
+    <script type="module" src="/src/drop-down.ts"></script>
+    <script type="module" src="/src/user-panel.ts"></script>
+    <script type="module" src="/src/toggle-switch.ts"></script>
+    <script type="module" src="/src/preset-buttons.ts"></script>
+    <script type="module" src="/src/user-profile.ts"></script>
+  </head>
+  <body>
+    <header>
+      <h1>Blazing Travels</h1>
+      <p>12 days in Italy</p>
+      <p>
+        Hello,
+        <drop-down align="right">
+          Blaze
+          <user-panel
+            slot="menu"
+            avatar="/data/avatars/Blaze Pasquale.png">
+            <span slot="name">Blaze Pasquale</span>
+          </user-panel>
+        </drop-down>
+      </p>
+    </header>
+    <main class="page">
+      <user-profile path="/profile/blaze"></user-profile>
+    </main>
+  </body>
+</html>

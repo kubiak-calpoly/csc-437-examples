@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express";
+import cors from "cors";
 import * as path from "path";
 import { connect } from "./mongoConnect";
 import profiles from "./profiles";
@@ -11,24 +12,25 @@ const port = process.env.PORT || 3000;
 const frontend = require.resolve("lit-frontend");
 const dist = path.resolve(frontend, "..", "..");
 
-console.log("Serving lit-frontend from ", dist);
+console.log("Serving lit-frontend from", dist);
 
 app.use(express.static(dist));
+app.use(cors());
+app.use(express.json());
 
 connect("blazing");
 
-app.get("/profile/:userid", (req: Request, res: Response) => {
-  const { userid } = req.params;
+app.get(
+  "/api/profile/:userid",
+  (req: Request, res: Response) => {
+    const { userid } = req.params;
 
-  profiles
-    .get(userid)
-    .then((profile) =>
-      res
-        .set("Content-Type", "text/html")
-        .send(pageTemplate({ body: profileView(profile) }))
-    )
-    .catch((err) => res.status(404).end());
-});
+    profiles
+      .get(userid)
+      .then((profile) => res.json(profile))
+      .catch((err) => res.status(404).end());
+  }
+);
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
