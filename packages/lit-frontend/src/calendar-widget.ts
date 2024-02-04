@@ -66,7 +66,6 @@ export class CalendarWidget extends LitElement {
           <input
             type="radio"
             name="cal"
-            @change=${this._handleSelection}
             value="${format(ymd)}" />
         </label>
       `;
@@ -74,8 +73,10 @@ export class CalendarWidget extends LitElement {
 
     return html` <section>
       <fieldset
-        @change="${(event: InputEvent) =>
-          this._handleChange(event.target?.value)}">
+        @change="${(event: InputEvent) => {
+          const target = event.target as HTMLInputElement;
+          this._handleChange(target.value);
+        }}">
         <h6>Su</h6>
         <h6>Mo</h6>
         <h6>Tu</h6>

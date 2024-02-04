@@ -1,7 +1,7 @@
 {
   "name": "lit-frontend",
   "version": "0.0.0",
-  "main": "app/index.html",
+  "main": "dist/app/index.html",
   "scripts": {
     "dev": "npx vite",
     "check": "npx tsc",

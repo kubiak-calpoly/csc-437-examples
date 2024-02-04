@@ -22,13 +22,17 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 var import_express = __toESM(require("express"));
+var path = __toESM(require("path"));
 var import_mongoConnect = require("./mongoConnect");
 var import_profiles = __toESM(require("./profiles"));
 var import_profileView = __toESM(require("./views/profileView"));
 var import_pageTemplate = __toESM(require("./templates/pageTemplate"));
 const app = (0, import_express.default)();
 const port = process.env.PORT || 3e3;
-app.use(import_express.default.static("public"));
+const frontend = require.resolve("lit-frontend");
+const dist = path.resolve(frontend, "..", "..");
+console.log("Serving lit-frontend from ", dist);
+app.use(import_express.default.static(dist));
 (0, import_mongoConnect.connect)("blazing");
 app.get("/profile/:userid", (req, res) => {
   const { userid } = req.params;

@@ -16,7 +16,7 @@ export class EntourageTable extends LitElement {
   render() {
     const rows = this.json?.people || [];
 
-    const renderRow = (row) => {
+    const renderRow = (row: any) => {
       const {
         avatar,
         name = "** NO NAME **",
@@ -43,9 +43,7 @@ export class EntourageTable extends LitElement {
     };
 
     return html` <table>
-      <tbody>
-        ${rows.map(renderRow)}
-      </tbody>
+      <tbody> ${rows.map(renderRow)} </tbody>
     </table>`;
   }
 

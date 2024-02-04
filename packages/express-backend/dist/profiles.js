@@ -33,31 +33,15 @@ __export(profiles_exports, {
 module.exports = __toCommonJS(profiles_exports);
 var import_profile = __toESM(require("./models/mongo/profile"));
 function index() {
-  return new Promise((resolve, reject) => {
-    import_profile.default.find().then((index2) => resolve(index2));
-  });
+  return import_profile.default.find();
 }
 function get(userid) {
-  return new Promise((resolve, reject) => {
-    import_profile.default.find({ userid }).then((found) => {
-      if (found && found.length)
-        resolve(found[0].toObject());
-      else
-        reject(`Profile not found {userid: ${userid}}`);
-    });
+  return import_profile.default.find({ userid }).then((list) => list[0]).catch((err) => {
+    throw `${userid} Not Found`;
   });
 }
 function create(profile) {
-  return new Promise((resolve, reject) => {
-    const p = new import_profile.default(profile);
-    p.save().then((created) => {
-      if (created)
-        resolve(created.toObject());
-      else
-        reject(
-          `Profile not created: ${JSON.stringify(profile)}`
-        );
-    });
-  });
+  const p = new import_profile.default(profile);
+  return p.save();
 }
 var profiles_default = { index, get, create };

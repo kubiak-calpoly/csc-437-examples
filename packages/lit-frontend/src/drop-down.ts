@@ -75,8 +75,8 @@ export class DropDownElement extends LitElement {
   `;
 
   _handleChange(ev: InputEvent) {
-    const target = ev.target;
-    this._toggle(target?.checked);
+    const target = ev.target as HTMLInputElement;
+    this._toggle(target.checked);
   }
 
   _toggle(open: boolean) {

@@ -2,7 +2,7 @@ import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("drop-down")
-class DropDownElement extends LitElement {
+export class DropDownElement extends LitElement {
   @property({ reflect: true, type: Boolean })
   open: boolean = false;
 
@@ -12,8 +12,7 @@ class DropDownElement extends LitElement {
         type="checkbox"
         id="is-shown"
         @change=${this._handleChange}
-        .checked=${this.open}
-      />
+        .checked=${this.open} />
       <label for="is-shown">
         <slot>Menu</slot>
       </label>
@@ -66,17 +65,17 @@ class DropDownElement extends LitElement {
   `;
 
   _handleChange(ev: InputEvent) {
-    const target = ev.target;
-    this._toggle(target?.checked);
+    const target = ev.target as HTMLInputElement;
+    this._toggle(target.checked);
   }
 
-  _toggle(open) {
+  _toggle(open: boolean) {
     this.open = open;
     this._toggleClickAway(open);
   }
 
-  _toggleClickAway(open) {
-    const clickawayHandler = (ev) => {
+  _toggleClickAway(open: boolean) {
+    const clickawayHandler = (ev: Event) => {
       if (!ev.composedPath().includes(this)) {
         this._toggle(false);
       } else {

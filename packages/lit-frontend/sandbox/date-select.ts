@@ -2,7 +2,7 @@ import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("date-select")
-class DateSelectElement extends LitElement {
+export class DateSelectElement extends LitElement {
   @property({ attribute: "start-date", type: Date })
   startDate: string = Date.now().toString();
 
@@ -38,16 +38,16 @@ class DateSelectElement extends LitElement {
           <input
             type="radio"
             name="cal"
-            value="${format(ymd)}"
-          />
+            value="${format(ymd)}" />
         </label>
       `;
     };
 
     return html` <fieldset
-        @change="${(event: InputEvent) =>
-          this._handleChange(event.target?.value)}"
-      >
+        @change="${(event: InputEvent) => {
+          const target = event.target as HTMLInputElement;
+          this._handleChange(target.value);
+        }}">
         <h6>Su</h6>
         <h6>Mo</h6>
         <h6>Tu</h6>

@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express";
+import * as path from "path";
 import { connect } from "./mongoConnect";
 import profiles from "./profiles";
 import profileView from "./views/profileView";
@@ -7,7 +8,12 @@ import pageTemplate from "./templates/pageTemplate";
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(express.static("public"));
+const frontend = require.resolve("lit-frontend");
+const dist = path.resolve(frontend, "..", "..");
+
+console.log("Serving lit-frontend from ", dist);
+
+app.use(express.static(dist));
 
 connect("blazing");
 
