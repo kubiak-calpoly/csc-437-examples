@@ -44,4 +44,16 @@ function create(profile) {
   const p = new import_profile.default(profile);
   return p.save();
 }
-var profiles_default = { index, get, create };
+function update(userid, profile) {
+  return new Promise((resolve, reject) => {
+    import_profile.default.findOneAndUpdate({ userid }, profile, {
+      new: true
+    }).then((profile2) => {
+      if (profile2)
+        resolve(profile2);
+      else
+        reject("Failed to update profile");
+    });
+  });
+}
+var profiles_default = { index, get, create, update };

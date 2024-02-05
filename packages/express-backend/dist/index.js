@@ -23,23 +23,30 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 ));
 var import_express = __toESM(require("express"));
 var import_cors = __toESM(require("cors"));
-var path = __toESM(require("path"));
 var import_mongoConnect = require("./mongoConnect");
 var import_profiles = __toESM(require("./profiles"));
 const app = (0, import_express.default)();
 const port = process.env.PORT || 3e3;
-const frontend = require.resolve("lit-frontend");
-const dist = path.resolve(frontend, "..", "..");
-console.log("Serving lit-frontend from", dist);
-app.use(import_express.default.static(dist));
 app.use((0, import_cors.default)());
 app.use(import_express.default.json());
 (0, import_mongoConnect.connect)("blazing");
+app.post("/api/profiles", (req, res) => {
+  const newProfile = req.body;
+  import_profiles.default.create(newProfile).then((profile) => res.status(201).send(profile)).catch((err) => res.status(500).send(err));
+});
 app.get(
-  "/api/profile/:userid",
+  "/api/profiles/:userid",
   (req, res) => {
     const { userid } = req.params;
     import_profiles.default.get(userid).then((profile) => res.json(profile)).catch((err) => res.status(404).end());
+  }
+);
+app.put(
+  "/api/profiles/:userid",
+  (req, res) => {
+    const { userid } = req.params;
+    const newProfile = req.body;
+    import_profiles.default.update(userid, newProfile).then((profile) => res.json(profile)).catch((err) => res.status(404).end());
   }
 );
 app.listen(port, () => {
