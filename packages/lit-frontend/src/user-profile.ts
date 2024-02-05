@@ -195,7 +195,7 @@ export class UserProfileEditElement extends UserProfileElement {
   }
 
   static styles = [
-    UserProfileElement.styles,
+    ...UserProfileElement.styles,
     css`
       form {
         display: contents;
@@ -223,6 +223,10 @@ export class UserProfileEditElement extends UserProfileElement {
 
     console.log("Submitting Form", json);
 
+    this._putData(json);
+  }
+
+  _putData(json: Profile) {
     fetch(serverPath(this.path), {
       method: "PUT",
       headers: {
