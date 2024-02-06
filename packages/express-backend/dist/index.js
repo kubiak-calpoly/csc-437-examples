@@ -27,9 +27,10 @@ var import_mongoConnect = require("./mongoConnect");
 var import_profiles = __toESM(require("./profiles"));
 const app = (0, import_express.default)();
 const port = process.env.PORT || 3e3;
+app.use(import_express.default.json({ limit: "500kb" }));
 app.use((0, import_cors.default)());
-app.use(import_express.default.json());
 (0, import_mongoConnect.connect)("blazing");
+app.options("*", (0, import_cors.default)());
 app.post("/api/profiles", (req, res) => {
   const newProfile = req.body;
   import_profiles.default.create(newProfile).then((profile) => res.status(201).send(profile)).catch((err) => res.status(500).send(err));

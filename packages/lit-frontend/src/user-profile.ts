@@ -35,38 +35,20 @@ export class UserProfileElement extends LitElement {
   }
 
   render() {
-    const profile =
-      this.profile ||
-      ({
-        userid: "youruserid",
-        name: "Your Name",
-        city: "Hometown, USA",
-        airports: ["ABC", "XYZ"]
-      } as Profile);
-
     const {
       userid,
       name,
       nickname,
       city,
-      airports,
-      avatar,
-      color
-    } = profile;
+      airports = []
+    } = (this.profile || {}) as Profile;
 
-    const avatarImg = avatar
-      ? html`<img src="${avatar}" />`
-      : (nickname || name).slice(0, 1);
-    const colorStyle = color
-      ? `--avatar-backgroundColor: ${color}`
-      : "";
     const renderAirport = (s: string) => html`<dd>${s}</dd>`;
 
     return html`
       <section>
-        <div class="avatar" style=${colorStyle}>
-          ${avatarImg}
-        </div>
+        ${this._renderAvatar()}
+
         <h1>${name}</h1>
         <dl>
           <dt>Username</dt>
@@ -80,6 +62,21 @@ export class UserProfileElement extends LitElement {
         </dl>
       </section>
     `;
+  }
+
+  _renderAvatar() {
+    const { name, nickname, avatar, color } = (this.profile ||
+      {}) as Profile;
+    const avatarImg = avatar
+      ? html`<img id="avatarImg" src="${avatar}" />`
+      : (nickname || name || " ").slice(0, 1);
+    const colorStyle = color
+      ? `--avatar-backgroundColor: ${color}`
+      : "";
+
+    return html` <div class="avatar" style=${colorStyle}>
+      ${avatarImg}
+    </div>`;
   }
 
   static styles = [
@@ -158,34 +155,44 @@ export class UserProfileElement extends LitElement {
 @customElement("user-profile-edit")
 export class UserProfileEditElement extends UserProfileElement {
   render() {
-    const profile =
-      this.profile ||
-      ({
-        userid: "youruserid",
-        name: "Your Name",
-        city: "Hometown, USA",
-        airports: ["ABC", "XYZ"]
-      } as Profile);
+    const profile = (this.profile || {}) as Profile;
+    const {
+      userid,
+      name,
+      nickname,
+      city,
+      airports = []
+    } = profile;
 
-    const { userid, name, nickname, city, airports } = profile;
+    console.log("Rendering form", this.profile);
 
     return html`
       <section>
         <form @submit=${this._handleSubmit}>
           <dl>
             <dt>Username</dt>
-            <dd><input name="userid" value=${userid} /></dd>
+            <dd><input name="userid" .value=${userid} /></dd>
+            <dt>Avatar</dt>
+            <dd
+              ><input
+                name="avatar"
+                type="file"
+                @change=${this._handleAvatarSelected}
+            /></dd>
+            <dd>${this._renderAvatar()}</dd>
             <dt>Name</dt>
-            <dd><input name="name" value=${name} /></dd>
+            <dd><input name="name" .value=${name} /></dd>
             <dt>Nickname</dt>
-            <dd><input name="nickname" value=${nickname} /></dd>
+            <dd
+              ><input name="nickname" .value=${nickname}
+            /></dd>
             <dt>Home City</dt>
-            <dd><input name="city" value=${city} /></dd>
+            <dd><input name="city" .value=${city} /></dd>
             <dt>Airports</dt>
             <dd
               ><input
                 name="airports"
-                value=${airports.join(", ")}
+                .value=${airports.join(", ")}
             /></dd>
           </dl>
           <button type="submit">Submit</button>
@@ -204,21 +211,48 @@ export class UserProfileEditElement extends UserProfileElement {
         grid-column: value;
         width: 10em;
       }
+      input {
+        font: inherit;
+      }
     `
   ];
+
+  _handleAvatarSelected(ev: Event) {
+    const target = ev.target as HTMLInputElement;
+    const selectedFile = (target.files as FileList)[0];
+    const reader: Promise<string> = new Promise(
+      (resolve, reject) => {
+        const fr = new FileReader();
+        fr.onload = () => resolve(fr.result as string);
+        fr.onerror = (err) => reject(err);
+        fr.readAsDataURL(selectedFile);
+      }
+    );
+
+    reader.then((result: string) => {
+      this.profile = {
+        ...(this.profile as Profile),
+        avatar: result
+      };
+    });
+  }
 
   _handleSubmit(ev: Event) {
     ev.preventDefault(); // prevent browser from submitting form data itself
 
+    const avatar = this.profile?.avatar;
     const target = ev.target as HTMLFormElement;
     const formdata = new FormData(target);
-    const entries = Array.from(formdata.entries())
+    let entries = Array.from(formdata.entries())
       .map(([k, v]) => (v === "" ? [k] : [k, v]))
       .map(([k, v]) =>
         k === "airports"
           ? [k, (v as string).split(",").map((s) => s.trim())]
           : [k, v]
       );
+
+    if (avatar) entries.push(["avatar", avatar]);
+
     const json = Object.fromEntries(entries);
 
     console.log("Submitting Form", json);

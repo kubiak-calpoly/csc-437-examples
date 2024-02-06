@@ -7,10 +7,12 @@ import profiles from "./profiles";
 const app = express();
 const port = process.env.PORT || 3000;
 
+app.use(express.json({ limit: "500kb" }));
 app.use(cors());
-app.use(express.json());
 
 connect("blazing");
+
+app.options("*", cors());
 
 app.post("/api/profiles", (req: Request, res: Response) => {
   const newProfile = req.body;
