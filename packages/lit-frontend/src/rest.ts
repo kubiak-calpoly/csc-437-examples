@@ -8,7 +8,13 @@ export class FormDataRequest {
   json: Object;
 
   constructor(formData: FormData) {
+    console.log(
+      "FormData entries: ",
+      Array.from(formData.entries())
+    );
+
     this.json = Object.fromEntries(formData);
+    console.log("FormData as JSON: ", this.json);
   }
 
   post(endpoint: string) {
