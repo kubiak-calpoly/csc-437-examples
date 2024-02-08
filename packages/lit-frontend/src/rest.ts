@@ -1,19 +1,22 @@
-const API_ROOT = "http://localhost:3000/api";
+const SERVER_ROOT = "http://localhost:3000";
+const API_PATH = "/api";
 
-export function serverPath(path: string) {
-  return `${API_ROOT}${path}`;
+export function serverPath(
+  path: string,
+  absolute: boolean = false
+) {
+  return `${SERVER_ROOT}${absolute ? "" : API_PATH}${path}`;
 }
 
-export class FormDataRequest {
+export class JSONRequest {
   json: Object;
 
   constructor(json: Object) {
     this.json = json;
-    console.log("FormData as JSON: ", this.json);
   }
 
-  post(endpoint: string) {
-    return fetch(serverPath(endpoint), {
+  post(endpoint: string, absolute = false) {
+    return fetch(serverPath(endpoint, absolute), {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -30,5 +33,11 @@ export class FormDataRequest {
       },
       body: JSON.stringify(this.json)
     });
+  }
+}
+
+export class FormDataRequest extends JSONRequest {
+  constructor(formData: FormData) {
+    super(Object.fromEntries(formData));
   }
 }

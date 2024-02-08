@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import * as path from "path";
 import cors from "cors";
 import { connect } from "./mongoConnect";
-import { Profile } from "./models/profile";
+import { loginUser, registerUser } from "./auth";
 import apiRouter from "./routes/api";
 
 const app = express();
@@ -19,6 +19,9 @@ app.use(express.json({ limit: "500kb" }));
 app.use(cors());
 
 app.options("*", cors());
+
+app.post("/login", loginUser);
+app.post("/signup", registerUser);
 
 app.use("/api", apiRouter);
 

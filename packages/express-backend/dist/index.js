@@ -25,6 +25,7 @@ var import_express = __toESM(require("express"));
 var path = __toESM(require("path"));
 var import_cors = __toESM(require("cors"));
 var import_mongoConnect = require("./mongoConnect");
+var import_auth = require("./auth");
 var import_api = __toESM(require("./routes/api"));
 const app = (0, import_express.default)();
 const port = process.env.PORT || 3e3;
@@ -36,6 +37,8 @@ app.use(import_express.default.static(dist));
 app.use(import_express.default.json({ limit: "500kb" }));
 app.use((0, import_cors.default)());
 app.options("*", (0, import_cors.default)());
+app.post("/login", import_auth.loginUser);
+app.post("/signup", import_auth.registerUser);
 app.use("/api", import_api.default);
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);

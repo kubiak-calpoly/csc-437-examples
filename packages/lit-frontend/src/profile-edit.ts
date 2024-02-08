@@ -1,15 +1,5 @@
-import {
-  // css,
-  html,
-  LitElement
-} from "lit";
-import {
-  customElement,
-  property
-  // state
-} from "lit/decorators.js";
-// import { serverPath } from "./rest";
-// import { Profile } from "./models/profile";
+import { html, LitElement } from "lit";
+import { customElement, property } from "lit/decorators.js";
 import { FormDataRequest } from "./rest";
 
 @customElement("profile-edit")
