@@ -95,7 +95,7 @@ export class UserPanelElement extends LitElement {
 
   _selectFontSize(ev: InputEvent) {
     const target = ev.target as PresetButtonsElement;
-    const body = document.body;
+    const body = document.rootElement;
 
     console.log("Selecting Font Size", ev);
 
@@ -103,7 +103,7 @@ export class UserPanelElement extends LitElement {
       const fontSize = target.value
         ? target.value.toString() + "px"
         : "initial";
-      body.style.fontSize = fontSize;
+      body?.style.fontSize = fontSize;
     }
   }
 }

@@ -7,13 +7,8 @@ export function serverPath(path: string) {
 export class FormDataRequest {
   json: Object;
 
-  constructor(formData: FormData) {
-    console.log(
-      "FormData entries: ",
-      Array.from(formData.entries())
-    );
-
-    this.json = Object.fromEntries(formData);
+  constructor(json: Object) {
+    this.json = json;
     console.log("FormData as JSON: ", this.json);
   }
 

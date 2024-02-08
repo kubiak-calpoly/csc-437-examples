@@ -12,7 +12,10 @@ export class InputArrayElement extends LitElement {
   render() {
     const renderOne = (s: string, i: number) =>
       html`
-        <input name=${[this.name, i].join(".")} .value=${s} />
+        <input
+          @change=${(ev: Event) => this._handleChange(ev, i)}
+          name=${[this.name, i].join(".")}
+          .value=${s} />
         <button
           class="remove"
           @click=${() => this._removeInput(i)}>
@@ -48,6 +51,18 @@ export class InputArrayElement extends LitElement {
     }
   `;
 
+  _handleChange(ev: Event, i: number) {
+    const target = ev.target as HTMLInputElement;
+    const value = target.value;
+    const composedEvent = new Event(ev.type, {
+      bubbles: true,
+      composed: true
+    });
+
+    this.value[i] = value;
+    this.dispatchEvent(composedEvent);
+  }
+
   _addInput() {
     this.value = this.value.concat([""]);
   }
@@ -55,6 +70,5 @@ export class InputArrayElement extends LitElement {
   _removeInput(i: number) {
     this.value.splice(i, 1);
     this.requestUpdate();
-    console.log("After removed", this.value);
   }
 }

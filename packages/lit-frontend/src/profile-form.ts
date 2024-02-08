@@ -42,12 +42,20 @@ export class ProfileFormlement extends LitElement {
       airports = [],
       avatar
     } = (this.profile || {}) as Profile;
+    const dob = "1991-08-06";
+    const color = "#663399";
 
     return html`
-      <form @submit=${this._handleSubmit}>
+      <form
+        @submit=${this._handleSubmit}
+        @change=${this._handleChange}>
         <label>
           <span>Username</span>
           <input name="userid" value=${userid} />
+        </label>
+        <label>
+          <span>Avatar</span>
+          <input name="avatar" value=${avatar} />
         </label>
         <label>
           <span>Name</span>
@@ -67,9 +75,12 @@ export class ProfileFormlement extends LitElement {
           </input-array>
         </label>
         <label>
-          <span>Avatar</span>
-          <input name="avatar" value=${avatar} />
+          <span>Color</span>
+          <input type="color" name="color" value=${color} />
         </label>
+        <label>
+          <span>Birthdate</span>
+          <input name="dob" type="date" value=${dob} />
         <button type="submit">Submit</button>
       </form>
     `;
@@ -108,11 +119,21 @@ export class ProfileFormlement extends LitElement {
       });
   }
 
+  _handleChange(event: InputEvent) {
+    const target = event.target as HTMLInputElement;
+    const name = target.name;
+    const value = target.value;
+    let profile = this.profile;
+
+    console.log("Changed", name, value);
+    (profile as any)[name] = value;
+
+    this.profile = profile;
+  }
+
   _handleSubmit(event: SubmitEvent) {
     event.preventDefault();
-    const form = event.target as HTMLFormElement;
-    const data = new FormData(form);
-    const request = new FormDataRequest(data);
+    const request = new FormDataRequest(this.profile || {});
 
     request
       .put(this.path)
