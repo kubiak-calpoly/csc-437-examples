@@ -5,6 +5,10 @@ var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
 var __copyProps = (to, from, except, desc) => {
   if (from && typeof from === "object" || typeof from === "function") {
     for (let key of __getOwnPropNames(from))
@@ -21,22 +25,26 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
   mod
 ));
-var import_express = __toESM(require("express"));
-var path = __toESM(require("path"));
-var import_cors = __toESM(require("cors"));
-var import_mongoConnect = require("./mongoConnect");
-var import_api = __toESM(require("./routes/api"));
-const app = (0, import_express.default)();
-const port = process.env.PORT || 3e3;
-const frontend = require.resolve("lit-frontend");
-const dist = path.resolve(frontend, "..", "..");
-console.log("Serving lit-frontend from", dist);
-(0, import_mongoConnect.connect)("blazing");
-app.use(import_express.default.static(dist));
-app.use(import_express.default.json({ limit: "500kb" }));
-app.use((0, import_cors.default)());
-app.options("*", (0, import_cors.default)());
-app.use("/api", import_api.default);
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var profiles_exports = {};
+__export(profiles_exports, {
+  default: () => profiles_default
 });
+module.exports = __toCommonJS(profiles_exports);
+var import_express = __toESM(require("express"));
+var import_profiles = __toESM(require("../services/profiles"));
+const router = import_express.default.Router();
+router.post("/", (req, res) => {
+  const newProfile = req.body;
+  import_profiles.default.create(newProfile).then((profile) => res.status(201).send(profile)).catch((err) => res.status(500).send(err));
+});
+router.get("/:userid", (req, res) => {
+  const { userid } = req.params;
+  import_profiles.default.get(userid).then((profile) => res.json(profile)).catch((err) => res.status(404).end());
+});
+router.put("/:userid", (req, res) => {
+  const { userid } = req.params;
+  const newProfile = req.body;
+  import_profiles.default.update(userid, newProfile).then((profile) => res.json(profile)).catch((err) => res.status(404).end());
+});
+var profiles_default = router;
