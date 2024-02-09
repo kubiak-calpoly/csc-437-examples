@@ -1,7 +1,6 @@
 import { connect } from "./services";
 import { Profile } from "./models/Profile";
 import profiles from "./services/profiles";
-import credentials from "./services/credentials";
 
 let test_profiles: Array<Profile> = [
   {
@@ -35,15 +34,8 @@ let test_profiles: Array<Profile> = [
 
 connect("blazing");
 
-Promise.all(test_profiles.map(profiles.create))
-  .then((docs) =>
-    docs.forEach((doc) =>
-      console.log("Profile created:", JSON.stringify(doc))
-    )
+Promise.all(test_profiles.map(profiles.create)).then((docs) =>
+  docs.forEach((doc) =>
+    console.log("Profile created:", JSON.stringify(doc))
   )
-  .catch((err) => console.log("Errors loading test profiles"));
-
-credentials
-  .create("blaze", "blaze")
-  .then((name) => console.log("Credentials created", name))
-  .catch((err) => console.log("Error creading credentials"));
+);

@@ -1,30 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link
-      rel="preconnect"
-      href="https://fonts.googleapis.com" />
-    <link
-      rel="preconnect"
-      href="https://fonts.gstatic.com"
-      crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,200;0,400;0,700;1,700&family=Merriweather:wght@400;700&display=swap"
-      rel="stylesheet" />
-    <link rel="stylesheet" href="/styles/tokens.css" />
-    <link rel="stylesheet" href="/styles/page.css" />
-    <link rel="stylesheet" href="/styles/profile.css" />
-  </head>
-  <body>
-    <%~ include("./partials/header.eta", {name: it.name || "New Profile"}) %>
-    <section class="profile">
-      <% if ( it.$new || it.$edit ) { %>
-      <%~ include("./forms/profile", it ) %>
-      <% } else { %>}
-      <%~ include("./partials/profile", it ) %>
-      <% } %>
-    </section>
-  </body>
-</html>
-
+<section class="profile">
+  <% if ( it.edit ){ %>
+  <form>
+  <% } %>
+  <dl>
+    <dt>Name</dt>
+    <dd>
+      <%= it.name %>
+    </dd>
+    <dt>Nickname</dt>
+    <dd>
+      <%= it.nickname || ""%>
+    </dd>
+    <dt>Home city</dt>
+    <dd>
+      <%= it.home %>
+    </dd>
+    <dt>Home airport(s)</dt>
+    <% it.airports.forEach((a) => { %>
+    <dd>
+      <%= a %>
+    </dd>
+    <% }) %>
+    <dt>Color</dt>
+    <dd>
+      <%= it.color %>
+    </dd>
+    <dt>Avatar</dt>
+    <dd>
+      <%= it.avatar %>
+    </dd>
+  </dl>
+  <% if ( it.edit ){ %>
+  </form>
+  <% } %>
+</section>

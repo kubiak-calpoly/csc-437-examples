@@ -1,0 +1,32 @@
+main.page {
+  display: grid;
+  padding: var(--size-spacing-small) var(--size-spacing-medium);
+  gap: var(--size-spacing-xlarge);
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto 1fr;
+  grid-template-areas:
+    "calendar  itinerary"
+    "entourage itinerary"
+    "empty     itinerary";
+}
+
+calendar-widget {
+  grid-area: calendar;
+  align-self: start;
+}
+
+.itinerary {
+  display: grid;
+  grid-area: itinerary;
+  align-self: start;
+  grid-template-columns:
+    [start] min-content [primary] 1fr var(--size-icon-large)
+    1fr [end];
+  gap: 0 var(--size-spacing-medium);
+  align-items: baseline;
+}
+
+entourage-table {
+  grid-area: entourage;
+  align-self: end;
+}

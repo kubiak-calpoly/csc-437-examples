@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>CSS Layout</title>
+<script type="importmap">
+{ "imports": {"@cre.ative/kram-11ty/runtime":"../../modules/@cre.ative/kram-11ty/runtime.mjs","@cre.ative/kram-11ty/styles":"../../modules/@cre.ative/kram-11ty/styles.css"} }
+</script>
+<link rel="stylesheet" href="../../modules/@cre.ative/kram-11ty/styles.css">
+<script type="module">
+import {init, register} from "@cre.ative/kram-11ty/runtime";
+init({});
+import("./scenes.html.js")
+          .then((mod) => register(mod, "scenes.html.js", "html", (resource, container) => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(resource.default, 'text/html');
+            const body = doc.body;
+            const scenes = Object.fromEntries(
+              Array.prototype.map.call(body.children, (node) => [
+              node && node.dataset.scene, node ])
+              .filter(([num]) => Boolean(num)));
+            return function render (n, container) {
+              const scene = scenes[n]
+              if( scene ) {
+                for( let child = scene.firstElementChild; child; child = scene.firstElementChild ) {
+                  if ( child.tagName === 'SCRIPT' ) {
+                    const text = child.firstChild
+                    scene.removeChild(child)
+                    child = document.createElement('script')
+                    child.appendChild(text)
+                  } 
+                  container.appendChild(child) 
+                }
+              } 
+            }
+          }))
+import("./styles.css.js")
+          .then((mod) => register(mod, "styles.css.js", "css", (resource, container) => {
+          let sheet = document.createElement("style");
+          sheet.innerHTML = resource.default;
+          container.appendChild(sheet);
+        }))
+</script>
+</head>
+<body>
+<kram-main>
+<h1 slot="title">CSS Layout</h1>
+<kram-toc slot="nav"><ol>
+<li data-idref="scene-1">CSS Layout</li>
+<li data-idref="scene-2">Controlling the size of blocks</li>
+<li data-idref="scene-3">Intrinsic Sizing</li>
+<li data-idref="scene-4">Margins and Padding</li>
+<li data-idref="scene-5">Box Model</li>
+<li data-idref="scene-6">The box-sizing property</li>
+<li data-idref="scene-7">Flex Layouts</li>
+<li data-idref="scene-8">Grid Layouts</li>
+<li data-idref="scene-9">Dealing with Overflow</li>
+<li data-idref="scene-10">Scrolling</li>
+<li data-idref="scene-11">Locating Content Out-of-Flow</li>
+<li data-idref="scene-12">Absolute Positioning</li>
+</ol></kram-toc>
+<kram-flow><kram-scene 
+        scene="1" 
+        language="null" 
+        norender><h1 slot="title">CSS Layout</h1>
+</kram-scene>
+<kram-scene 
+        scene="2" 
+        language="html" 
+        ><kram-code slot="scenecode" data-language="html"><pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>boxed-text<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Paragraphs are by default full width.<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span><br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>narrow-box boxed-text<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>This box is narrow.<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span><br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>narrow-box boxed-text<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><br>  If we add more content to a narrow box, that content will wrap<br>  to as many lines as it needs, making the box taller.<br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span><br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>narrow-box two-line-box boxed-text<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><br>  If we constrain the height of the box, the content will<br>  overflow.<br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span></code></pre></kram-code><h2>Controlling the size of blocks</h2>
+
+<p>Let&rsquo;s draw make the box around our blocks visible. We can define the
+class <code data-mark-around="`">boxed-text</code> to do that:</p>
+
+<kram-code data-language="css"><pre class="language-css"><code class="language-css"><span class="token selector">.boxed-text</span> <span class="token punctuation">{</span><br>  <span class="token property">border</span><span class="token punctuation">:</span> 1px solid lightCoral<span class="token punctuation">;</span><br><span class="token punctuation">}</span></code></pre></kram-code>
+<p>Our box extends to the full width of the page, because that is the
+default layout for block elements. To change the width of the box, we
+can use the <code data-mark-around="`">width</code> property:</p>
+
+<kram-code data-language="css"><pre class="language-css"><code class="language-css"><span class="token selector">.narrow-box</span> <span class="token punctuation">{</span><br>  <span class="token property">width</span><span class="token punctuation">:</span> 15em<span class="token punctuation">;</span><br><span class="token punctuation">}</span></code></pre></kram-code>
+<p>We can also control the height of the box, using the <code data-mark-around="`">height</code> property:</p>
+
+<kram-code data-language="css"><pre class="language-css"><code class="language-css"><span class="token selector">.two-line-box</span> <span class="token punctuation">{</span><br>  <span class="token property">height</span><span class="token punctuation">:</span> 2.5em<span class="token punctuation">;</span><br><span class="token punctuation">}</span></code></pre></kram-code></kram-scene>
+<kram-scene 
+        scene="3" 
+        language="html" 
+        ><kram-code slot="scenecode" data-language="html"><pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>boxed-text narrow-box<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Too little text.<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span><br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>boxed-text hug-box<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>This box hugs content.<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span><br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>boxed-text squeeze-box<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><br>  This box is as narrow as it can be.<br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span><br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>boxed-text min-box<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><br>  This box is not too narrow because it has a minimum width.<br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span><br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>boxed-text min-box<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><br>  This box has a minimum width, but if there are<br>  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>em</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>non-breaking<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>phrases that cannot be broken<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>em</span><span class="token punctuation">></span></span><br>  , CSS will make room for them.<br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span></code></pre></kram-code><h2>Intrinsic Sizing</h2>
+
+<p>In the previous section, we looked at the box model, and how setting the
+<code data-mark-around="`">width</code> on a box forces the text within the box to wrap. But there are
+also times when we want the box to <em data-mark-around="_">hug</em> the contents.</p>
+
+<kram-code data-language="css"><pre class="language-css"><code class="language-css"><span class="token selector">.hug-box</span> <span class="token punctuation">{</span><br>  <span class="token property">width</span><span class="token punctuation">:</span> max-content<span class="token punctuation">;</span><br><span class="token punctuation">}</span><br><br><span class="token selector">.squeeze-box</span> <span class="token punctuation">{</span><br>  <span class="token property">width</span><span class="token punctuation">:</span> min-content<span class="token punctuation">;</span><br><span class="token punctuation">}</span></code></pre></kram-code>
+<kram-code data-language="css"><pre class="language-css"><code class="language-css"><span class="token selector">.min-box</span> <span class="token punctuation">{</span><br>  <span class="token property">min-width</span><span class="token punctuation">:</span> 8em<span class="token punctuation">;</span><br>  <span class="token property">width</span><span class="token punctuation">:</span> min-content<span class="token punctuation">;</span><br><span class="token punctuation">}</span><br><br><span class="token selector">.non-breaking</span> <span class="token punctuation">{</span><br>  <span class="token property">white-space</span><span class="token punctuation">:</span> nowrap<span class="token punctuation">;</span><br><span class="token punctuation">}</span></code></pre></kram-code></kram-scene>
+<kram-scene 
+        scene="4" 
+        language="html" 
+        ><kram-code slot="scenecode" data-language="html"><pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>section</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>boxed-section<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><br>  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>boxed-text<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><br>    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>em</span><span class="token punctuation">></span></span>Metamorphosis<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>em</span><span class="token punctuation">></span></span><br>    by Franz Kafka<br>  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span><br><br>  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>boxed-text with-margins<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><br>    One morning, when Gregor Samsa woke from troubled dreams, he<br>    found himself transformed in his bed into a horrible vermin.<br>    He lay on his armour-like back, and if he lifted his head a<br>    little he could see his brown belly, slightly domed and<br>    divided by arches into stiff sections. The bedding was<br>    hardly able to cover it and seemed ready to slide off any<br>    moment. His many legs, pitifully thin compared with the size<br>    of the rest of him, waved about helplessly as he looked.<br>  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span><br>  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>boxed-text with-padding<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><br>    “What’s happened to me?” he thought. It wasn’t a dream. His<br>    room, a proper human room although a little too small, lay<br>    peacefully between its four familiar walls. A collection of<br>    textile samples lay spread out on the table—Samsa was a<br>    travelling salesman—and above it there hung a picture that<br>    he had recently cut out of an illustrated magazine and<br>    housed in a nice, gilded frame. It showed a lady fitted out<br>    with a fur hat and fur boa who sat upright, raising a heavy<br>    fur muff that covered the whole of her lower arm towards the<br>    viewer.<br>  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span><br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>section</span><span class="token punctuation">></span></span></code></pre></kram-code><h2>Margins and Padding</h2>
+
+<kram-code data-language="css"><pre class="language-css"><code class="language-css"><span class="token selector">.boxed-section</span> <span class="token punctuation">{</span><br>  <span class="token property">width</span><span class="token punctuation">:</span> 25em<span class="token punctuation">;</span><br>  <span class="token property">border</span><span class="token punctuation">:</span> 1px solid plum<span class="token punctuation">;</span><br><span class="token punctuation">}</span><br><br><span class="token selector">.with-margins</span> <span class="token punctuation">{</span><br>  <span class="token property">margin</span><span class="token punctuation">:</span> 2em<span class="token punctuation">;</span><br><span class="token punctuation">}</span><br><br><span class="token selector">.with-padding</span> <span class="token punctuation">{</span><br>  <span class="token property">padding</span><span class="token punctuation">:</span> 2em<span class="token punctuation">;</span><br><span class="token punctuation">}</span></code></pre></kram-code></kram-scene>
+<kram-scene 
+        scene="5" 
+        language="html" 
+        ><kram-code slot="scenecode" data-language="html"><pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>section</span><span class="token punctuation">></span></span><br>  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>content-box<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Here is our content.<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span><br>  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../_files/Box Model.svg<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span><br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>section</span><span class="token punctuation">></span></span></code></pre></kram-code><h2>Box Model</h2>
+
+<p>In the previous section, we used <code data-mark-around="`">padding</code> to make space inside an element&rsquo;s border,
+and <code data-mark-around="`">margin</code> to make space outside.
+We are now ready to look at the CSS <em data-mark-around="_">box model</em>, and how the overall
+<code data-mark-around="`">width</code> and <code data-mark-around="`">height</code> of an element are computed.</p>
+
+<kram-code data-language="css"><pre class="language-css"><code class="language-css"><span class="token selector">.content-box</span> <span class="token punctuation">{</span><br>  <span class="token property">box-sizing</span><span class="token punctuation">:</span> content-box<span class="token punctuation">;</span> <span class="token comment">/* (default) */</span><br>  <span class="token property">width</span><span class="token punctuation">:</span> 200px<span class="token punctuation">;</span><br>  <span class="token property">height</span><span class="token punctuation">:</span> 50px<span class="token punctuation">;</span><br>  <span class="token property">padding</span><span class="token punctuation">:</span> 2rem<span class="token punctuation">;</span><br>  <span class="token property">background</span><span class="token punctuation">:</span> lightCoral<span class="token punctuation">;</span><br>  <span class="token property">border</span><span class="token punctuation">:</span> 0.5rem dashed plum<span class="token punctuation">;</span><br>  <span class="token property">margin</span><span class="token punctuation">:</span> 2rem<span class="token punctuation">;</span><br><span class="token punctuation">}</span></code></pre></kram-code>
+<p>For any element presented, the CSS box model defines 4 different boxes.
+The innermost box is the <em data-mark-around="_">content box</em>.
+This is where any content inside the element is placed.
+In this example, we have a <code data-mark-around="`">&lt;p&gt;</code> element which contains some text.</p>
+
+<p>The next box is the <em data-mark-around="_">padding box</em>, which contains the content box
+as well as any <code data-mark-around="`">padding</code> from the CSS applied to the element.
+In this example, we have <code data-mark-around="`">2.0rem</code> of padding on all sides.</p>
+
+<p>Next is the <em data-mark-around="_">border box</em>, which contains the padding box
+as well as any <code data-mark-around="`">border</code> from the CSS applied to the element.
+In this example, we have a transparent border which is <code data-mark-around="`">0.5rem</code> wide
+on all sides.
+Note that even though the border is transparent, it still contributes
+to the overall height and width calculations for the box.</p>
+
+<p>When we are laying out content on a web page, and arranging boxes next to each
+other, it is usually the border box that we&rsquo;re concerned with.
+This is because the border box is the maximum visual extent of the element.
+All of an element&rsquo;s content, as well as its border is contained in the border box.</p>
+
+<p>Though the border box is the visual extent of the element, for historical
+reasons, CSS uses the <code data-mark-around="`">width</code> and <code data-mark-around="`">height</code> properties to determine the
+size of the content box.
+We will see in the next section how we can instead specify the dimensions of the
+border box, and have CSS compute the limits of the content box.</p>
+
+<p>If a <code data-mark-around="`">background</code> has been applied to the element, it will also be contained by the border box.
+If the element has a background and a border, the background will extend all the way to the
+outside edge of the border box.
+This can be observed by applying a transparent border, as in our example.</p>
+
+<p>The final box in the box model lies outside the element, and serves to
+separate it from adjacent or enclosing boxes.
+This is the <em data-mark-around="_">margin box</em> which contains the border box as well as any <code data-mark-around="`">margin</code>
+applied around the element.</p>
+</kram-scene>
+<kram-scene 
+        scene="6" 
+        language="html" 
+        ><kram-code slot="scenecode" data-language="html"><pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>content-box<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><br>  This content box has a width of 200px. We've put a box with a<br>  border around it.<br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span><br><br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>border-box<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><br>  This border box has a width 200px. We've put the content<br>  inside.<br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span></code></pre></kram-code><h2>The <code data-mark-around="`">box-sizing</code> property</h2>
+
+<kram-code data-language="css"><pre class="language-css"><code class="language-css"><span class="token selector">.border-box</span> <span class="token punctuation">{</span><br>  <span class="token property">box-sizing</span><span class="token punctuation">:</span> border-box<span class="token punctuation">;</span><br>  <span class="token property">width</span><span class="token punctuation">:</span> 200px<span class="token punctuation">;</span><br>  <span class="token property">height</span><span class="token punctuation">:</span> auto<span class="token punctuation">;</span><br>  <span class="token property">padding</span><span class="token punctuation">:</span> 2rem<span class="token punctuation">;</span><br>  <span class="token property">background</span><span class="token punctuation">:</span> azure<span class="token punctuation">;</span><br>  <span class="token property">border</span><span class="token punctuation">:</span> 0.5rem dashed plum<span class="token punctuation">;</span><br>  <span class="token property">margin</span><span class="token punctuation">:</span> 2rem 4.5rem<span class="token punctuation">;</span><br><span class="token punctuation">}</span></code></pre></kram-code>
+<p>We&rsquo;ve seen that by default, the <code data-mark-around="`">width</code> property refers to the width of the element&rsquo;s
+<em data-mark-around="_">content box</em>, exclusive of the padding and border. Sometimes this is what
+you want, but at other times, we want to make this box fit into a larger
+layout, and it would be easier for us to specify the overall width of
+the box, including padding and borders. In fact, before CSS was
+standardized, that is exactly how some browsers (notably Internet
+Explorer) interpreted <code data-mark-around="`">width</code>. This was called <em data-mark-around="_">Quirks mode</em>.</p>
+
+<p>When CSS standardized the definition of the <code data-mark-around="`">width</code> property, it
+would&rsquo;ve been very difficult to convert the large amounts of CSS that
+were written assuming <em data-mark-around="_">Quirks mode</em>&rsquo;s box model. So another property,
+<code data-mark-around="`">box-sizing</code> was added to provide support for three box models:
+<code data-mark-around="`">content-box</code> (the default), <code data-mark-around="`">border-box</code> (the Quirks mode one), and
+<code data-mark-around="`">padding-box</code> (which considers everything up to the inside edge the border
+to contribute to the width).</p>
+
+<p>Even though the default is <code data-mark-around="`">content-box</code>, many developers still prefer
+<code data-mark-around="`">border-box</code>, and end up &ldquo;resetting&rdquo; the default <code data-mark-around="`">box-sizing</code> to
+<code data-mark-around="`">border-box</code>. In the following discussion, we will assume this reset has
+been applied to the CSS.</p>
+
+<kram-code data-language="css"><pre class="language-css"><code class="language-css"><span class="token selector">*</span> <span class="token punctuation">{</span><br>  <span class="token comment">/* reset the box model to use border-box */</span><br>  <span class="token property">box-sizing</span><span class="token punctuation">:</span> border-box<span class="token punctuation">;</span><br><span class="token punctuation">}</span></code></pre></kram-code>
+<p>In the instances where we actually intend to size the content box (or the padding box for
+that matter), we will explicitly set the <code data-mark-around="`">box-sizing</code> property.</p>
+</kram-scene>
+<kram-scene 
+        scene="7" 
+        language="null" 
+        norender><h2>Flex Layouts</h2>
+</kram-scene>
+<kram-scene 
+        scene="8" 
+        language="null" 
+        norender><h2>Grid Layouts</h2>
+</kram-scene>
+<kram-scene 
+        scene="9" 
+        language="null" 
+        norender><h2>Dealing with Overflow</h2>
+
+<p>When designing layouts, we should always consider the content that is
+being presented. In rare cases, the content is static. We know what it
+is and it will never change. But frequently the same layout is used to
+contain different content at different times. For example, the same
+layout may be used to present all the articles on a news site.</p>
+
+<p>Designers often work with placeholder text when working with content
+that is unknown or subject to change. But we also need to anticipate
+what will happen when some unusual text occurs.</p>
+
+<p>We&rsquo;ve seen that within block elements,
+content is laid out as lines of text
+which may wrap to the next line.
+The default CSS of <code data-mark-around="`">width: auto;</code>, which allows lines to be
+as wide as possible,
+this strategy is usually sufficient to avoid horizontal overflow.</p>
+
+<p>To avoid vertical overflow, the CSS default is again the simplest approach.
+With CSS of <code data-mark-around="`">height: auto;</code>, boxes will grow in height to accommodate
+all of the content.
+Of course, this may force each enclosing box to get taller,
+ultimately increasing the size of the page as it is presented on the screen.</p>
+
+<p>For this reason, traditional web layouts have a fixed width,
+but scroll vertically.
+For web pages that are primarily focused on presenting content,
+avoiding overflow in this way is often the best layout strategy.
+Our first strategy for managing overflow is to avoid overflow.</p>
+</kram-scene>
+<kram-scene 
+        scene="10" 
+        language="null" 
+        norender><h2>Scrolling</h2>
+</kram-scene>
+<kram-scene 
+        scene="11" 
+        language="null" 
+        norender><h2>Locating Content Out-of-Flow</h2>
+</kram-scene>
+<kram-scene 
+        scene="12" 
+        language="null" 
+        norender><h2>Absolute Positioning</h2>
+</kram-scene></kram-flow>
+</kram-main>
+</body>
+</html>
