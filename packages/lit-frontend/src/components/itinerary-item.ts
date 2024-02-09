@@ -1,6 +1,7 @@
 import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
+@customElement("itinerary-item")
 class ItineraryItemElement extends LitElement {
   @property({ attribute: "start-date" })
   startDate: string = "1970-01-01";
