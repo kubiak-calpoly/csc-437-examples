@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Style and Layout with CSS</title>
+<script type="importmap">
+{ "imports": {"@cre.ative/kram-11ty/runtime":"../../modules/@cre.ative/kram-11ty/runtime.mjs","@cre.ative/kram-11ty/styles":"../../modules/@cre.ative/kram-11ty/styles.css"} }
+</script>
+<link rel="stylesheet" href="../../modules/@cre.ative/kram-11ty/styles.css">
+<script type="module">
+import {init, register} from "@cre.ative/kram-11ty/runtime";
+init({});
+
+</script>
+</head>
+<body>
+<kram-main>
+<h1 slot="title">Style and Layout with CSS</h1>
+<kram-toc slot="nav"><ol>
+<li data-idref="scene-1">Module 2. Style and Layout with CSS</li>
+</ol></kram-toc>
+<kram-flow><kram-scene 
+        scene="1" 
+        language="null" 
+        norender><h1 slot="title">Module 2. Style and Layout with CSS</h1>
+
+<p>In this chapter:</p>
+
+<ul><li><p><a href="./props">Style Properties</a></p>
+</li>
+
+<li><p><a href="./rules">Mapping CSS to HTML with Rules</a></p>
+</li>
+
+<li><p>Typography</p>
+</li>
+
+<li><p>Color</p>
+</li>
+
+<li><p>Images and Composition</p>
+</li>
+
+<li><p><a href="./layout">Layout</a></p>
+</li>
+
+<li><p>Advanced Rules</p>
+</li>
+
+<li><p>Generated Content</p>
+</li>
+
+<li><p>Common &ldquo;Reset&rdquo; Rules</p>
+</li>
+</ul>
+</kram-scene></kram-flow>
+</kram-main>
+</body>
+</html>
