@@ -1,47 +1,18 @@
 import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-@customElement("calendar-widget")
-export class CalendarWidget extends LitElement {
+@customElement("date-select")
+class DateSelectElement extends LitElement {
   @property({ attribute: "start-date", type: Date })
   startDate: string = Date.now().toString();
 
   @property({ attribute: "end-date", type: Date })
   endDate: string = Date.now().toString();
 
-  _handleChange(value: string | null) {
-    const selectionEvent = new CustomEvent(
-      "calendar-widget:select",
-      {
-        bubbles: true,
-        detail: { date: value ? new Date(value) : value }
-      }
-    );
-
-    this.dispatchEvent(selectionEvent);
-  }
-
-  _handleClear() {
-    const current = this.shadowRoot?.querySelector(
-      "input:checked"
-    ) as HTMLInputElement;
-    if (current) {
-      current.checked = false;
-    }
-
-    const clearEvent = new CustomEvent(
-      "calendar-widget:clear",
-      { bubbles: true }
-    );
-
-    this.dispatchEvent(clearEvent);
-  }
-
   render() {
     const start = new Date(this.startDate);
     const end = new Date(this.endDate);
     const dates = datesInRange(start, end);
-    console.log(`dates In Range ${start}, ${end}`, dates);
 
     const renderDate = (d: Date) => {
       const ymd = {
@@ -67,15 +38,13 @@ export class CalendarWidget extends LitElement {
           <input
             type="radio"
             name="cal"
-            @change=${this._handleSelection}
             value="${format(ymd)}"
           />
         </label>
       `;
     };
 
-    return html` <section>
-      <fieldset
+    return html` <fieldset
         @change="${(event: InputEvent) =>
           this._handleChange(event.target?.value)}"
       >
@@ -90,8 +59,7 @@ export class CalendarWidget extends LitElement {
       </fieldset>
       <button id="clear" @click="${() => this._handleClear()}">
         Clear Selection
-      </button>
-    </section>`;
+      </button>`;
   }
 
   static styles = css`
@@ -150,11 +118,38 @@ export class CalendarWidget extends LitElement {
       margin: 0 auto;
     }
   `;
+
+  _handleChange(value: string | null) {
+    const selectionEvent = new CustomEvent(
+      "date-select:change",
+      {
+        bubbles: true,
+        detail: { date: value ? new Date(value) : value }
+      }
+    );
+
+    this.dispatchEvent(selectionEvent);
+  }
+
+  _handleClear() {
+    const current = this.shadowRoot?.querySelector(
+      "input:checked"
+    ) as HTMLInputElement;
+    if (current) {
+      current.checked = false;
+    }
+
+    const clearEvent = new CustomEvent("date-select:clear", {
+      bubbles: true
+    });
+
+    this.dispatchEvent(clearEvent);
+  }
 }
 
 function datesInRange(start: Date, end?: Date) {
   const endTime = end ? end.getTime() : start.getTime();
-  let result = [];
+  let result: Array<Date> = [];
   let i = new Date(start);
 
   while (i.getTime() <= endTime) {
