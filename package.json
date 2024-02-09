@@ -4,6 +4,11 @@
   "description": "Code examples for CSC 437 — Dynamic Web Development",
   "main": "index.js",
   "scripts": {
+    "build:docs": "npx @11ty/eleventy",
+    "docs": "npm run build:docs && npm run start:docs",
+    "start:docs": "npx @11ty/eleventy --serve",
+    "start:proto": "npm -w proto start",
+    "start:lit-frontend": "npm -w lit-frontend run dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -21,5 +26,17 @@
   "homepage": "https://github.com/kubiak-calpoly/csc-437-examples#readme",
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "devDependencies": {
+    "@11ty/eleventy": "^2.0.1",
+    "@11ty/eleventy-plugin-syntaxhighlight": "^5.0.0",
+    "@11ty/eleventy-plugin-vite": "^4.0.0",
+    "@cre.ative/kram": "^1.6.0",
+    "@cre.ative/kram-11ty": "^1.6.4",
+    "@cre.ative/kram-typescript": "^1.6.0",
+    "lit": "^3.1.1"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3"
+  }
 }

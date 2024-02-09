@@ -1,7 +1,7 @@
 {
   "name": "proto",
   "version": "1.0.0",
-  "description": "HTML/",
+  "description": "HTML/CSS Prototype of Blazing Travels",
   "main": "public/index.html",
   "scripts": {
     "start": "http-server",
@@ -14,7 +14,7 @@
   ],
   "author": "kubiak@calpoly.edu",
   "license": "BSD-3-Clause",
-  "dependencies": {
+  "devDependencies": {
     "http-server": "^14.1.1"
   }
 }

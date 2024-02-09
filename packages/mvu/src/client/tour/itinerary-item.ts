@@ -38,7 +38,10 @@ export class ItineraryItem extends LitElement {
       <details
         id="details"
         name="itin"
+<<<<<<< HEAD
         class="${this.itemClass}"
+=======
+>>>>>>> main
         ${open}
         @toggle="${(event: ToggleEvent) =>
           this.handleToggle(event.newState === "open")}">
@@ -76,6 +79,13 @@ export class ItineraryItem extends LitElement {
         padding: var(--size-spacing-medium);
         display: contents;
       }
+<<<<<<< HEAD
+=======
+      details.destination > summary,
+      details.destination > ::slotted(*) {
+        grid-column: header;
+      }
+>>>>>>> main
       ::slotted(ul) {
         list-style: none;
         padding: 0;
@@ -83,6 +93,7 @@ export class ItineraryItem extends LitElement {
       }
       summary {
         position: relative;
+<<<<<<< HEAD
         list-style: none;
         grid-column: header / end;
       }
@@ -93,13 +104,28 @@ export class ItineraryItem extends LitElement {
       }
       .transportation summary {
         grid-column: info / end;
+=======
+        padding-bottom: var(--size-spacing-large);
+        padding-left: calc(
+          var(--size-icon-large) + var(--size-spacing-medium)
+        );
+        list-style: none;
+        grid-column: header / end;
+        min-height: calc(
+          var(--size-icon-large) + var(--size-spacing-large)
+        );
+>>>>>>> main
       }
       details > summary::before {
         content: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg" fill="rgb(42 143 42)"><path d="m624 300h-48v336h-134.88l158.88 317.64 158.88-317.64h-134.88zm-24 546.36-81.121-162.36h162.24z"/></svg>');
         position: absolute;
         height: 2rem;
         width: 2rem;
+<<<<<<< HEAD
         top: 0;
+=======
+        bottom: 0;
+>>>>>>> main
         right: 0;
         color: var(--color-accent);
         transform: rotate(0);

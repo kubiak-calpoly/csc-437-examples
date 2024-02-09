@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -28,3 +29,41 @@
   </body>
 </html>
 
+=======
+<section class="profile">
+  <% if ( it.edit ){ %>
+  <form>
+  <% } %>
+  <dl>
+    <dt>Name</dt>
+    <dd>
+      <%= it.name %>
+    </dd>
+    <dt>Nickname</dt>
+    <dd>
+      <%= it.nickname || ""%>
+    </dd>
+    <dt>Home city</dt>
+    <dd>
+      <%= it.home %>
+    </dd>
+    <dt>Home airport(s)</dt>
+    <% it.airports.forEach((a) => { %>
+    <dd>
+      <%= a %>
+    </dd>
+    <% }) %>
+    <dt>Color</dt>
+    <dd>
+      <%= it.color %>
+    </dd>
+    <dt>Avatar</dt>
+    <dd>
+      <%= it.avatar %>
+    </dd>
+  </dl>
+  <% if ( it.edit ){ %>
+  </form>
+  <% } %>
+</section>
+>>>>>>> main
