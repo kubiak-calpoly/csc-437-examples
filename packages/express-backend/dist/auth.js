@@ -33,8 +33,8 @@ __export(auth_exports, {
   registerUser: () => registerUser
 });
 module.exports = __toCommonJS(auth_exports);
-var import_bcrypt = __toESM(require("bcrypt"));
 var import_jsonwebtoken = __toESM(require("jsonwebtoken"));
+var import_credentials = __toESM(require("./services/credentials"));
 function generateAccessToken(username) {
   return new Promise((resolve, reject) => {
     import_jsonwebtoken.default.sign(
@@ -42,58 +42,38 @@ function generateAccessToken(username) {
       process.env.TOKEN_SECRET,
       { expiresIn: "1d" },
       (error, token) => {
-        if (error) {
+        if (error)
           reject(error);
-        } else {
+        else
           resolve(token);
-        }
       }
     );
   });
 }
-const creds = [];
 function registerUser(req, res) {
   const { username, pwd } = req.body;
   if (!username || !pwd) {
     res.status(400).send("Bad request: Invalid input data.");
-  } else if (creds.find((c) => c.username === username)) {
-    res.status(409).send("Username already taken");
   } else {
-    import_bcrypt.default.genSalt(10).then((salt) => import_bcrypt.default.hash(pwd, salt)).then((hashedPassword) => {
-      generateAccessToken(username).then((token) => {
-        console.log("Token:", token);
-        res.status(201).send({ token });
-        creds.push({ username, hashedPassword });
-      });
+    import_credentials.default.create(username, pwd).then((creds) => generateAccessToken(creds.username)).then((token) => {
+      res.status(201).send({ token });
     });
   }
 }
 function loginUser(req, res) {
   const { username, pwd } = req.body;
-  const retrievedUser = creds.find(
-    (c) => c.username === username
-  );
-  if (!retrievedUser) {
-    res.status(401).send("Unauthorized");
+  if (!username || !pwd) {
+    res.status(400).send("Bad request: Invalid input data.");
   } else {
-    import_bcrypt.default.compare(pwd, retrievedUser.hashedPassword).then((matched) => {
-      if (matched) {
-        generateAccessToken(username).then((token) => {
-          res.status(200).send({ token });
-        });
-      } else {
-        res.status(401).send("Unauthorized");
-      }
-    }).catch(() => {
-      res.status(401).send("Unauthorized");
-    });
+    import_credentials.default.verify(username, pwd).then(
+      (goodCreds) => generateAccessToken(goodCreds.username)
+    ).then((token) => res.status(200).send({ token })).catch((error) => res.status(401).send("Unauthorized"));
   }
 }
 function authenticateUser(req, res, next) {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
   if (!token) {
-    console.log("No token received", req.url);
     res.status(401).end();
   } else {
     import_jsonwebtoken.default.verify(
@@ -103,7 +83,6 @@ function authenticateUser(req, res, next) {
         if (decoded) {
           next();
         } else {
-          console.log("JWT error:", error);
           res.status(401).end();
         }
       }

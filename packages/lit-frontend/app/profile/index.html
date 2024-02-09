@@ -22,27 +22,9 @@
     <script type="module" src="/src/profile-form.ts"></script>
     <script type="module" src="/src/input-array.ts"></script>
     <script type="module" src="/src/auth-required.ts"></script>
+    <script type="module" src="/src/profile-page.ts"></script>
   </head>
   <body>
-    <auth-required>
-      <header>
-        <h1>Blazing Travels</h1>
-        <p>12 days in Italy</p>
-        <p>
-          Hello,
-          <drop-down align="right">
-            Blaze
-            <user-panel
-              slot="menu"
-              avatar="/data/avatars/Blaze Pasquale.png">
-              <span slot="name">Blaze Pasquale</span>
-            </user-panel>
-          </drop-down>
-        </p>
-      </header>
-      <main class="page">
-        <profile-form path="/profiles/blaze"> </profile-form>
-      </main>
-    </auth-required>
+    <profile-page> </profile-page>
   </body>
 </html>

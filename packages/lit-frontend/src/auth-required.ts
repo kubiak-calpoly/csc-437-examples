@@ -1,20 +1,31 @@
 import { css, html, LitElement } from "lit";
 import { customElement, state } from "lit/decorators.js";
-import { FormDataRequest } from "./rest";
+import { provide } from "@lit/context";
+import {
+  authContext,
+  AuthenticatedUser,
+  FormDataRequest
+} from "./rest";
 
 @customElement("auth-required")
 export class AuthRequiredElement extends LitElement {
-  @state()
-  token?: string;
-
   @state()
   loginStatus: number = 0;
 
   @state()
   registerStatus: number = 0;
 
+  @provide({ context: authContext })
+  @state()
+  authenticatedUser: AuthenticatedUser =
+    new AuthenticatedUser();
+
+  isAuthenticated() {
+    return this.authenticatedUser.authenticated;
+  }
+
   firstUpdated() {
-    this._toggleDialog(!this.token);
+    this._toggleDialog(!this.isAuthenticated());
   }
 
   render() {
@@ -62,10 +73,8 @@ export class AuthRequiredElement extends LitElement {
       </dialog>
     `;
 
-    return html`
-      ${this.token ? "" : dialog}
-      <slot class="not-authorized"></slot>
-    `;
+    return html` ${this.isAuthenticated() ? "" : dialog}
+      <slot></slot>`;
   }
 
   static styles = css`
@@ -113,8 +122,12 @@ export class AuthRequiredElement extends LitElement {
       })
       .then((json) => {
         if (json) {
-          this.token = json.token;
+          console.log("Authentication:", json.token);
+          this.authenticatedUser = new AuthenticatedUser(
+            json.token
+          );
           this._toggleDialog(false);
+          this.requestUpdate();
         }
       });
   }

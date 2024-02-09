@@ -1,5 +1,5 @@
-import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import credentials from "./services/credentials";
 
 function generateAccessToken(username: string) {
   return new Promise((resolve, reject) => {
@@ -8,65 +8,41 @@ function generateAccessToken(username: string) {
       process.env.TOKEN_SECRET,
       { expiresIn: "1d" },
       (error, token) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(token);
-        }
+        if (error) reject(error);
+        else resolve(token);
       }
     );
   });
 }
-
-// Storing the credentials in core, meaning all users must re-register after restarting
-const creds = [];
 
 export function registerUser(req, res) {
   const { username, pwd } = req.body; // from form
 
   if (!username || !pwd) {
     res.status(400).send("Bad request: Invalid input data.");
-  } else if (creds.find((c) => c.username === username)) {
-    res.status(409).send("Username already taken");
   } else {
-    bcrypt
-      .genSalt(10)
-      .then((salt) => bcrypt.hash(pwd, salt))
-      .then((hashedPassword) => {
-        generateAccessToken(username).then((token) => {
-          console.log("Token:", token);
-          res.status(201).send({ token: token });
-          creds.push({ username, hashedPassword });
-        });
+    credentials
+      .create(username, pwd)
+      .then((creds) => generateAccessToken(creds.username))
+      .then((token) => {
+        res.status(201).send({ token: token });
       });
   }
 }
 
 export function loginUser(req, res) {
   const { username, pwd } = req.body; // from form
-  const retrievedUser = creds.find(
-    (c) => c.username === username
-  );
 
-  if (!retrievedUser) {
-    // invalid username
-    res.status(401).send("Unauthorized");
+  if (!username || !pwd) {
+    res.status(400).send("Bad request: Invalid input data.");
   } else {
-    bcrypt
-      .compare(pwd, retrievedUser.hashedPassword)
-      .then((matched) => {
-        if (matched) {
-          generateAccessToken(username).then((token) => {
-            res.status(200).send({ token: token });
-          });
-        } else {
-          // invalid password
-          res.status(401).send("Unauthorized");
-        }
-      })
-      .catch(() => {
-        res.status(401).send("Unauthorized");
-      });
+    credentials
+      .verify(username, pwd)
+      .then((goodCreds: Credentials) =>
+        generateAccessToken(goodCreds.username)
+      )
+      .then((token) => res.status(200).send({ token: token }))
+      .catch((error) => res.status(401).send("Unauthorized"));
   }
 }
 
@@ -76,7 +52,6 @@ export function authenticateUser(req, res, next) {
   const token = authHeader && authHeader.split(" ")[1];
 
   if (!token) {
-    console.log("No token received", req.url);
     res.status(401).end();
   } else {
     jwt.verify(
@@ -86,7 +61,6 @@ export function authenticateUser(req, res, next) {
         if (decoded) {
           next();
         } else {
-          console.log("JWT error:", error);
           res.status(401).end();
         }
       }

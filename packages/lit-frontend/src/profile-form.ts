@@ -4,7 +4,12 @@ import {
   property,
   state
 } from "lit/decorators.js";
-import { serverPath, FormDataRequest } from "./rest";
+import { consume } from "@lit/context";
+import {
+  AuthenticatedUser,
+  authContext,
+  JSONRequest
+} from "./rest";
 import { Profile } from "./models/profile";
 
 @customElement("profile-form")
@@ -14,6 +19,10 @@ export class ProfileFormlement extends LitElement {
 
   @state()
   profile?: Profile;
+
+  @consume({ context: authContext, subscribe: true })
+  @property({ attribute: false })
+  authenticatedUser?: AuthenticatedUser;
 
   connectedCallback() {
     if (this.path) {
@@ -31,6 +40,14 @@ export class ProfileFormlement extends LitElement {
       this._getData(newValue);
     }
     super.attributeChangedCallback(name, oldValue, newValue);
+  }
+
+  updated(changedProperties) {
+    console.log("updated Profile Form", changedProperties);
+    if (changedProperties.get("authenticatedUser")) {
+      this._getData(this.path);
+    }
+    return true;
   }
 
   render() {
@@ -107,7 +124,11 @@ export class ProfileFormlement extends LitElement {
   `;
 
   _getData(path: string) {
-    fetch(serverPath(path))
+    const request = new JSONRequest();
+
+    request
+      .authenticate(this.authenticatedUser)
+      .get(path)
       .then((response) => {
         if (response.status === 200) {
           return response.json();
@@ -133,7 +154,7 @@ export class ProfileFormlement extends LitElement {
 
   _handleSubmit(event: SubmitEvent) {
     event.preventDefault();
-    const request = new FormDataRequest(this.profile || {});
+    const request = new JSONRequest(this.profile);
 
     request
       .put(this.path)
