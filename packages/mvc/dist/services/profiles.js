@@ -54,8 +54,6 @@ function create(profile) {
         reject(
           `Profile not created: ${JSON.stringify(profile)}`
         );
-    }).catch((error) => {
-      reject(`Profile failed validation: ${error}`);
     });
   });
 }

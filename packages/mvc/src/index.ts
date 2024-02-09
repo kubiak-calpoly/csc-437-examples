@@ -5,7 +5,6 @@ import { Profile } from "./models/Profile";
 import tours from "./services/tours";
 import profiles from "./services/profiles";
 import { connect } from "./services";
-import api from "./api";
 
 const app = express();
 const eta = new Eta({
@@ -27,8 +26,6 @@ const port = process.env.PORT || 3000;
 
 connect("blazing");
 
-app.use("/api", api);
-
 app.get("/hello/:name", (req: Request, res: Response) => {
   const { name } = req.params;
   res.send(eta.render("./hello", { name }));
@@ -41,22 +38,13 @@ app.get("/tour/:id", (req: Request, res: Response) => {
     .then((data: Tour) => res.send(eta.render("./tour", data)));
 });
 
-app.get("/profile/new", (_: Request, res: Response) => {
-  res.send(eta.render("./profile", { $new: true }));
-});
-
-app.get("/profile/show/:id", (req: Request, res: Response) => {
+app.get("/profile/:id", (req: Request, res: Response) => {
   const { id } = req.params;
-  profiles.get(id).then((data: Profile) => {
+  const { edit } = req.query;
+  profiles.get(id).then((pr: Profile) => {
+    const data = { edit, ...pr };
     console.log("Data for /profile: ", JSON.stringify(data));
     res.send(eta.render("./profile", data));
-  });
-});
-
-app.get("/profile/edit/:id", (req: Request, res: Response) => {
-  const { id } = req.params;
-  profiles.get(id).then((old: Profile) => {
-    res.send(eta.render("./profile", { $edit: true, ...old }));
   });
 });
 
