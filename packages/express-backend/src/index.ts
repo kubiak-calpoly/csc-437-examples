@@ -8,13 +8,22 @@ import apiRouter from "./routes/api";
 const app = express();
 const port = process.env.PORT || 3000;
 
-const frontend = require.resolve("lit-frontend");
-const dist = path.resolve(frontend, "..", "..");
-console.log("Serving lit-frontend from", dist);
+let dist;
+
+try {
+  const frontend = require.resolve("lit-frontend");
+  dist = path.resolve(frontend, "..", "..");
+  console.log("Serving lit-frontend from", dist);
+} catch (error: any) {
+  console.log(
+    "Cannot find static assets in lit-frontend",
+    error.code
+  );
+}
 
 connect("blazing");
 
-app.use(express.static(dist));
+if (dist) app.use(express.static(dist));
 app.use(express.json({ limit: "500kb" }));
 app.use(cors());
 

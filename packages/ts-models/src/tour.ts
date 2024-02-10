@@ -1,6 +1,5 @@
-import moment, { Moment } from "moment";
+import { Moment } from "moment";
 import { Point } from "./geo";
-import { Profile } from "./profile";
 import { Entourage } from "./entourage";
 
 export interface Tour {

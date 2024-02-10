@@ -175,4 +175,10 @@ export class AuthRequiredElement extends LitElement {
       }
     }
   }
+
+  _signOut() {
+    this.user = APIUser.deauthenticate(this.user);
+    this._toggleDialog(!this.isAuthenticated());
+    document.location.reload();
+  }
 }

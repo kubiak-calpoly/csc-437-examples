@@ -10,7 +10,7 @@ import { authContext } from "./auth-required";
 import { Profile } from "ts-models";
 import "./drop-down";
 import "./user-panel";
-import resetCSS from "../../styles/reset.css?inline";
+import resetCSS from "/src/styles/reset.css?inline";
 
 @customElement("blazing-header")
 export class BlazingHeaderElement extends LitElement {
@@ -116,6 +116,6 @@ export class BlazingHeaderElement extends LitElement {
 
   _signOut() {
     console.log("Signout");
-    APIUser.deauthenticate(this.user);
+    this.user.signOut();
   }
 }

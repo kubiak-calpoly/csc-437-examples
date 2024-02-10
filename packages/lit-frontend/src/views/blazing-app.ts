@@ -7,8 +7,8 @@ import "../components/calendar-widget";
 import "../components/entourage-table";
 import "../components/itinerary-item";
 import "../components/user-panel";
-import resetCSS from "../../styles/reset.css?inline";
-import pageCSS from "../../styles/page.css?inline";
+import resetCSS from "/src/styles/reset.css?inline";
+import pageCSS from "/src/styles/page.css?inline";
 
 @customElement("blazing-app")
 export class BlazingAppElement extends LitElement {

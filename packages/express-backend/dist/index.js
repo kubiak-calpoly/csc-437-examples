@@ -29,11 +29,20 @@ var import_auth = require("./auth");
 var import_api = __toESM(require("./routes/api"));
 const app = (0, import_express.default)();
 const port = process.env.PORT || 3e3;
-const frontend = require.resolve("lit-frontend");
-const dist = path.resolve(frontend, "..", "..");
-console.log("Serving lit-frontend from", dist);
+let dist;
+try {
+  const frontend = require.resolve("lit-frontend");
+  dist = path.resolve(frontend, "..", "..");
+  console.log("Serving lit-frontend from", dist);
+} catch (error) {
+  console.log(
+    "Cannot find static assets in lit-frontend",
+    error.code
+  );
+}
 (0, import_mongoConnect.connect)("blazing");
-app.use(import_express.default.static(dist));
+if (dist)
+  app.use(import_express.default.static(dist));
 app.use(import_express.default.json({ limit: "500kb" }));
 app.use((0, import_cors.default)());
 app.options("*", (0, import_cors.default)());

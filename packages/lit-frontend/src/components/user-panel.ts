@@ -3,7 +3,7 @@ import { customElement, property } from "lit/decorators.js";
 import "./toggle-switch";
 import { ToggleSwitchElement } from "./toggle-switch";
 import "./preset-buttons";
-import resetCSS from "../../styles/reset.css?inline";
+import resetCSS from "/src/styles/reset.css?inline";
 
 @customElement("user-panel")
 export class UserPanelElement extends LitElement {

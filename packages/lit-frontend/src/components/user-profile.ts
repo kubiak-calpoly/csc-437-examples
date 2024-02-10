@@ -4,7 +4,7 @@ import {
   property,
   state
 } from "lit/decorators.js";
-import { serverPath } from "./rest";
+import { APIRequest, JSONRequest } from "../rest";
 import { Profile } from "ts-models";
 
 @customElement("user-profile")
@@ -139,7 +139,10 @@ export class UserProfileElement extends LitElement {
   ];
 
   _fetchData(path: string) {
-    fetch(serverPath(path))
+    const request = new APIRequest();
+
+    request
+      .get(path)
       .then((response) => {
         if (response.status === 200) {
           return response.json();
@@ -261,13 +264,10 @@ export class UserProfileEditElement extends UserProfileElement {
   }
 
   _putData(json: Profile) {
-    fetch(serverPath(this.path), {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(json)
-    })
+    const request = new JSONRequest(json);
+
+    request
+      .put(this.path)
       .then((response) => {
         if (response.status === 200) {
           return response.json();
