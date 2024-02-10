@@ -1,4 +1,4 @@
-import { css, html, LitElement } from "lit";
+import { css, html, LitElement, unsafeCSS } from "lit";
 import {
   customElement,
   property,
@@ -8,6 +8,7 @@ import { consume } from "@lit/context";
 import { APIUser, APIRequest } from "../rest";
 import { authContext } from "./auth-required";
 import { Profile } from "ts-models";
+import resetCSS from "../../styles/reset.css?inline";
 
 @customElement("blazing-header")
 export class BlazingHeaderElement extends LitElement {
@@ -24,7 +25,10 @@ export class BlazingHeaderElement extends LitElement {
   render() {
     const { avatar, name, nickname, userid, color } =
       this.profile || {};
-    const shortname = nickname || (name && name.split(" ")[0]);
+    const shortname =
+      nickname ||
+      (name && name.split(" ")[0]) ||
+      this.user.username;
 
     return html`
       <header>
@@ -46,29 +50,32 @@ export class BlazingHeaderElement extends LitElement {
     `;
   }
 
-  static styles = css`
-    header {
-      grid-area: header;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: baseline;
-      justify-content: space-between;
-      padding: var(--size-spacing-medium);
-      gap: 0 var(--size-spacing-xlarge);
-      background-color: var(--color-background-header);
-      color: var(--color-text-inverted);
-    }
-    header * + :last-child {
-      flex-grow: 1;
-      text-align: right;
-    }
-    header h1 {
-      white-space: nowrap;
-    }
-    header a {
-      color: var(--color-link-inverted);
-    }
-  `;
+  static styles = [
+    unsafeCSS(resetCSS),
+    css`
+      header {
+        grid-area: header;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        justify-content: space-between;
+        padding: var(--size-spacing-medium);
+        gap: 0 var(--size-spacing-xlarge);
+        background-color: var(--color-background-header);
+        color: var(--color-text-inverted);
+      }
+      header * + :last-child {
+        flex-grow: 1;
+        text-align: right;
+      }
+      header h1 {
+        white-space: nowrap;
+      }
+      header a {
+        color: var(--color-link-inverted);
+      }
+    `
+  ];
 
   updated(changedProperties: Map<string, any>) {
     console.log(
