@@ -4,6 +4,6 @@ export interface Profile {
   nickname?: string;
   city: string;
   airports: string[];
-  avatar?: string;
   color?: string;
+  avatar?: string;
 }

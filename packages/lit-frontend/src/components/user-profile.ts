@@ -5,7 +5,7 @@ import {
   state
 } from "lit/decorators.js";
 import { serverPath } from "./rest";
-import { Profile } from "./models/profile";
+import { Profile } from "ts-models";
 
 @customElement("user-profile")
 export class UserProfileElement extends LitElement {

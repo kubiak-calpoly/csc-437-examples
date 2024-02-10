@@ -5,7 +5,7 @@ import {
   state
 } from "lit/decorators.js";
 import { Entourage } from "./models/entourage";
-import { Profile } from "./models/profile";
+import { Profile } from "ts-profile";
 
 @customElement("entourage-table")
 export class EntourageTable extends LitElement {

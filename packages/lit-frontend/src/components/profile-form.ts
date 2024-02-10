@@ -9,8 +9,8 @@ import {
   AuthenticatedUser,
   authContext,
   JSONRequest
-} from "./rest";
-import { Profile } from "./models/profile";
+} from "../rest";
+import { Profile } from "ts-models";
 
 @customElement("profile-form")
 export class ProfileFormlement extends LitElement {

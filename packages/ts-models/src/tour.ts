@@ -1,6 +1,7 @@
 import moment, { Moment } from "moment";
-import { Point } from "./Geo";
-import { Profile } from "./Profile";
+import { Point } from "./geo";
+import { Profile } from "./profile";
+import { Entourage } from "./entourage";
 
 export interface Tour {
   id: string;
@@ -9,7 +10,7 @@ export interface Tour {
   transportation: Array<Transportation>;
   startDate: Date;
   endDate: Date;
-  entourage: Array<Traveler>;
+  entourage: Entourage;
 }
 
 export interface Destination {
@@ -65,10 +66,4 @@ export interface Segment {
 export interface Endpoint {
   station: string;
   time: Moment;
-}
-
-export interface Traveler {
-  profile: Profile;
-  outbound: Transportation | undefined;
-  inbound: Transportation | undefined;
 }
