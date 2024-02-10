@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+import { Document } from "mongoose";
+>>>>>>> main
 import { Profile } from "../models/Profile";
 import profileModel from "./mongo/profile";
 
@@ -13,6 +17,7 @@ export function get(id: String): Promise<Profile> {
 export function create(profile: Profile): Promise<Profile> {
   return new Promise<Profile>((resolve, reject) => {
     const p = new profileModel(profile);
+<<<<<<< HEAD
     p.save()
       .then((created) => {
         if (created) resolve(created.toObject());
@@ -24,6 +29,15 @@ export function create(profile: Profile): Promise<Profile> {
       .catch((error) => {
         reject(`Profile failed validation: ${error}`);
       });
+=======
+    p.save().then((created) => {
+      if (created) resolve(created.toObject());
+      else
+        reject(
+          `Profile not created: ${JSON.stringify(profile)}`
+        );
+    });
+>>>>>>> main
   });
 }
 

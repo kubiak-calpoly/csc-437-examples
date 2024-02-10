@@ -1,7 +1,11 @@
 {
   "version": 3,
   "sources": ["../../src/models/Profile.ts"],
+<<<<<<< HEAD
   "sourcesContent": ["export interface Profile {\n  id: string;\n  name: string;\n  nickname?: string;\n  home: string;\n  airports: Array<String>;\n  avatar?: string;\n  color?: string;\n}\n"],
+=======
+  "sourcesContent": ["export interface Profile {\n  id: string;\n  name: string;\n  nickname: string | undefined;\n  home: string;\n  airports: Array<String>;\n  avatar: string | undefined;\n  color: string | undefined;\n}\n"],
+>>>>>>> main
   "mappings": ";;;;;;;;;;;;;;AAAA;AAAA;",
   "names": []
 }

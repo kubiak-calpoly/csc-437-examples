@@ -5,11 +5,14 @@ import { Profile } from "./models/Profile";
 import tours from "./services/tours";
 import profiles from "./services/profiles";
 import { connect } from "./services";
+<<<<<<< HEAD
 import {
   basicAuth,
   authenticatedUser
 } from "./auth/basic-auth";
 import api from "./api";
+=======
+>>>>>>> main
 
 const app = express();
 const eta = new Eta({
@@ -31,11 +34,34 @@ const port = process.env.PORT || 3000;
 
 connect("blazing");
 
+<<<<<<< HEAD
 app.use("/api", api);
 
 app.get("/hello/:name", (req: Request, res: Response) => {
   const { name } = req.params;
   res.send(eta.render("./hello", { name }));
+=======
+app.get("/hello/:name", (req: Request, res: Response) => {
+  const { name } = req.params;
+  res.send(eta.render("./hello", { name }));
+});
+
+app.get("/tour/:id", (req: Request, res: Response) => {
+  const { id } = req.params;
+  tours
+    .get(id)
+    .then((data: Tour) => res.send(eta.render("./tour", data)));
+});
+
+app.get("/profile/:id", (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { edit } = req.query;
+  profiles.get(id).then((pr: Profile) => {
+    const data = { edit, ...pr };
+    console.log("Data for /profile: ", JSON.stringify(data));
+    res.send(eta.render("./profile", data));
+  });
+>>>>>>> main
 });
 
 app.get("/tour/:id", (req: Request, res: Response) => {
