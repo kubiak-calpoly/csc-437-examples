@@ -19,7 +19,10 @@ export class AuthRequiredElement extends LitElement {
 
   @provide({ context: authContext })
   @state()
-  user: APIUser = new APIUser();
+  user: APIUser =
+    AuthenticatedUser.authenticateFromLocalStorage(() =>
+      this._signOut()
+    );
 
   isAuthenticated() {
     return this.user.authenticated;
@@ -128,7 +131,8 @@ export class AuthRequiredElement extends LitElement {
         if (json) {
           console.log("Authentication:", json.token);
           this.user = AuthenticatedUser.authenticate(
-            json.token
+            json.token,
+            () => this._signOut()
           );
           this._toggleDialog(false);
           this.requestUpdate();

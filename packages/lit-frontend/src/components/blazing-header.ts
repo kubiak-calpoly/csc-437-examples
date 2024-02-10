@@ -8,13 +8,12 @@ import { consume } from "@lit/context";
 import { APIUser, APIRequest } from "../rest";
 import { authContext } from "./auth-required";
 import { Profile } from "ts-models";
+import "./drop-down";
+import "./user-panel";
 import resetCSS from "../../styles/reset.css?inline";
 
 @customElement("blazing-header")
 export class BlazingHeaderElement extends LitElement {
-  @property()
-  path: string = "";
-
   @state()
   profile?: Profile;
 
@@ -43,6 +42,9 @@ export class BlazingHeaderElement extends LitElement {
               color=${color}
               userid=${userid}>
               <span slot="name">${name}</span>
+              <button slot="logout" @click=${this._signOut}>
+                Log out...
+              </button>
             </user-panel>
           </drop-down>
         </p>
@@ -71,8 +73,13 @@ export class BlazingHeaderElement extends LitElement {
       header h1 {
         white-space: nowrap;
       }
-      header a {
+      header a[href] {
         color: var(--color-link-inverted);
+      }
+      [slot="logout"] a {
+        color: var(--color-accent);
+        cursor: pointer;
+        font-weight: var(--font-weight-bold);
       }
     `
   ];
@@ -82,8 +89,10 @@ export class BlazingHeaderElement extends LitElement {
       "Profile Data has been updated",
       changedProperties
     );
-    if (changedProperties.get("user")) {
-      this._getData(this.path);
+    if (changedProperties.has("user")) {
+      console.log("New user", this.user);
+      const { username } = this.user;
+      this._getData(`/profiles/${username}`);
     }
     return true;
   }
@@ -100,7 +109,13 @@ export class BlazingHeaderElement extends LitElement {
         return null;
       })
       .then((json: unknown) => {
+        console.log("Profile:", json);
         this.profile = json as Profile;
       });
+  }
+
+  _signOut() {
+    console.log("Signout");
+    APIUser.deauthenticate(this.user);
   }
 }

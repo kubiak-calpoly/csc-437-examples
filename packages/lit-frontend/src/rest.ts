@@ -4,15 +4,28 @@ const TOKEN_KEY = "JWT_AUTH_TOKEN";
 
 export class APIUser {
   authenticated = false;
-  username = "anonymous";
+  username = "fellow_traveler";
+  signOut = () => {};
 
   static _theUser = new APIUser();
+
+  static deauthenticate(user: APIUser) {
+    const anon = new APIUser();
+
+    console.log("Deauthenticating", user, APIUser._theUser);
+    if (user === APIUser._theUser) {
+      localStorage.removeItem(TOKEN_KEY);
+      APIUser._theUser = anon;
+    }
+
+    return anon;
+  }
 }
 
 export class AuthenticatedUser extends APIUser {
   token: string | undefined;
 
-  constructor(token: string) {
+  constructor(token: string, signOut: () => void) {
     super();
     const base64Url = token.split(".")[1];
     const base64 = base64Url
@@ -36,21 +49,23 @@ export class AuthenticatedUser extends APIUser {
     this.token = token;
     this.authenticated = true;
     this.username = jsonPayload.username;
+    this.signOut = signOut;
   }
 
-  static authenticate(token: string) {
-    APIUser._theUser = new AuthenticatedUser(token);
+  static authenticate(token: string, signOut: () => void) {
+    APIUser._theUser = new AuthenticatedUser(token, signOut);
     localStorage.setItem(TOKEN_KEY, token);
     return APIUser._theUser;
   }
 
-  static authenticateFromLocalStorage() {
+  static authenticateFromLocalStorage(signOut: () => void) {
     const priorToken = localStorage.getItem(TOKEN_KEY);
-    if (priorToken) AuthenticatedUser.authenticate(priorToken);
+
+    return priorToken
+      ? AuthenticatedUser.authenticate(priorToken, signOut)
+      : APIUser._theUser;
   }
 }
-
-AuthenticatedUser.authenticateFromLocalStorage();
 
 export class JSONRequest {
   json: Object | undefined;

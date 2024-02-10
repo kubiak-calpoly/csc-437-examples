@@ -18,7 +18,10 @@ router.get("/:userid", (req: Request, res: Response) => {
 
   profiles
     .get(userid)
-    .then((profile: Profile) => res.json(profile))
+    .then((profile: Profile | undefined) => {
+      if (!profile) throw "Not found";
+      else res.json(profile);
+    })
     .catch((err) => res.status(404).end());
 });
 
