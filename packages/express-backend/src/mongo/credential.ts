@@ -1,6 +1,5 @@
 import { Schema, Model, Document, model } from "mongoose";
-import { Credential } from "../credential";
-import { Profile } from "../profile";
+import { Credential } from "ts-models";
 
 const credentialSchema = new Schema<Credential>(
   {

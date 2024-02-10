@@ -2,11 +2,9 @@ import { css, html, LitElement, unsafeCSS } from "lit";
 import { customElement } from "lit/decorators.js";
 import "../components/auth-required";
 import "../components/blazing-header";
-import "../components/drop-down";
 import "../components/calendar-widget";
 import "../components/entourage-table";
 import "../components/itinerary-item";
-import "../components/user-panel";
 import resetCSS from "/src/styles/reset.css?inline";
 import pageCSS from "/src/styles/page.css?inline";
 
@@ -74,7 +72,7 @@ export class BlazingAppElement extends LitElement {
                 <span slot="terminus"> SFO </span>
               </itinerary-transportation>
             </section>
-            <entourage-table src="/data/entourage.json">
+            <entourage-table path="/entourages/65c7c324a837ff7c15b669e2">
             </entourage-table>
           </tour-view>
         </main>

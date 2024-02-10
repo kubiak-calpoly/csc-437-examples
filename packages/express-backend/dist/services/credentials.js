@@ -35,7 +35,7 @@ __export(credentials_exports, {
 });
 module.exports = __toCommonJS(credentials_exports);
 var import_bcryptjs = __toESM(require("bcryptjs"));
-var import_credential = __toESM(require("../models/mongo/credential"));
+var import_credential = __toESM(require("../mongo/credential"));
 function verify(username, password) {
   return new Promise((resolve, reject) => {
     import_credential.default.find({ username }).then((found) => {

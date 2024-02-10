@@ -4,12 +4,13 @@ import {
   property,
   state
 } from "lit/decorators.js";
+import { APIRequest } from "../rest";
 import { Entourage, Profile } from "ts-models";
 
 @customElement("entourage-table")
 export class EntourageTable extends LitElement {
   @property()
-  src: string = "";
+  path: string = "";
 
   @state()
   entourage?: Entourage;
@@ -91,8 +92,8 @@ export class EntourageTable extends LitElement {
   `;
 
   connectedCallback() {
-    if (this.src) {
-      this._fetchData(this.src);
+    if (this.path) {
+      this._getData(this.path);
     }
     super.connectedCallback();
   }
@@ -104,26 +105,30 @@ export class EntourageTable extends LitElement {
   ) {
     const rows = this.shadowRoot?.getElementById("rows");
 
-    if (name === "src") {
+    if (name === "path") {
       if (rows && oldValue) {
         rows.replaceChildren();
       }
       if (newValue) {
-        this._fetchData(newValue);
+        this._getData(newValue);
       }
     }
     super.attributeChangedCallback(name, oldValue, newValue);
   }
 
-  _fetchData(src: string) {
-    fetch(src)
-      .then((response) => {
+  _getData(path: string) {
+    const request = new APIRequest();
+
+    request
+      .get(path)
+      .then((response: Response) => {
         if (response.status === 200) {
           return response.json();
         }
         return null;
       })
       .then((json: unknown) => {
+        console.log("Entourage:", json);
         this.entourage = json as Entourage;
       });
   }

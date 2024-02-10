@@ -26,34 +26,34 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-var profiles_exports = {};
-__export(profiles_exports, {
-  default: () => profiles_default
+var entourage_exports = {};
+__export(entourage_exports, {
+  default: () => entourage_default
 });
-module.exports = __toCommonJS(profiles_exports);
-var import_profile = __toESM(require("../mongo/profile"));
+module.exports = __toCommonJS(entourage_exports);
+var import_entourage = __toESM(require("../mongo/entourage"));
 function index() {
-  return import_profile.default.find();
+  return import_entourage.default.find();
 }
 function get(userid) {
-  return import_profile.default.find({ userid }).then((list) => list[0]).catch((err) => {
+  return import_entourage.default.find({ userid }).then((list) => list[0]).catch((err) => {
     throw `${userid} Not Found`;
   });
 }
-function create(profile) {
-  const p = new import_profile.default(profile);
+function create(ent) {
+  const p = new import_entourage.default(ent);
   return p.save();
 }
-function update(userid, profile) {
+function update(userid, ent) {
   return new Promise((resolve, reject) => {
-    import_profile.default.findOneAndUpdate({ userid }, profile, {
+    import_entourage.default.findOneAndUpdate({ userid }, ent, {
       new: true
-    }).then((profile2) => {
-      if (profile2)
-        resolve(profile2);
+    }).then((ent2) => {
+      if (ent2)
+        resolve(ent2);
       else
-        reject("Failed to update profile");
+        reject("Failed to update Entourage");
     });
   });
 }
-var profiles_default = { index, get, create, update };
+var entourage_default = { index, get, create, update };

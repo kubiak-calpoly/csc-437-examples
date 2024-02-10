@@ -26,11 +26,11 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-var profiles_exports = {};
-__export(profiles_exports, {
-  default: () => profiles_default
+var profiles_copy_exports = {};
+__export(profiles_copy_exports, {
+  default: () => profiles_copy_default
 });
-module.exports = __toCommonJS(profiles_exports);
+module.exports = __toCommonJS(profiles_copy_exports);
 var import_profile = __toESM(require("../mongo/profile"));
 function index() {
   return import_profile.default.find();
@@ -56,4 +56,4 @@ function update(userid, profile) {
     });
   });
 }
-var profiles_default = { index, get, create, update };
+var profiles_copy_default = { index, get, create, update };

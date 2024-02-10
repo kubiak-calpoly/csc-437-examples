@@ -26,34 +26,30 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-var profiles_exports = {};
-__export(profiles_exports, {
-  default: () => profiles_default
+var entourages_exports = {};
+__export(entourages_exports, {
+  default: () => entourages_default
 });
-module.exports = __toCommonJS(profiles_exports);
-var import_profile = __toESM(require("../mongo/profile"));
-function index() {
-  return import_profile.default.find();
-}
-function get(userid) {
-  return import_profile.default.find({ userid }).then((list) => list[0]).catch((err) => {
-    throw `${userid} Not Found`;
-  });
-}
-function create(profile) {
-  const p = new import_profile.default(profile);
-  return p.save();
-}
-function update(userid, profile) {
-  return new Promise((resolve, reject) => {
-    import_profile.default.findOneAndUpdate({ userid }, profile, {
-      new: true
-    }).then((profile2) => {
-      if (profile2)
-        resolve(profile2);
-      else
-        reject("Failed to update profile");
-    });
-  });
-}
-var profiles_default = { index, get, create, update };
+module.exports = __toCommonJS(entourages_exports);
+var import_express = __toESM(require("express"));
+var import_entourages = __toESM(require("../services/entourages"));
+const router = import_express.default.Router();
+router.post("/", (req, res) => {
+  const newEntourage = req.body;
+  import_entourages.default.create(newEntourage).then((profile) => res.status(201).send(profile)).catch((err) => res.status(500).send(err));
+});
+router.get("/:id", (req, res) => {
+  const { id } = req.params;
+  import_entourages.default.get(id).then((profile) => {
+    if (!profile)
+      throw "Not found";
+    else
+      res.json(profile);
+  }).catch((err) => res.status(404).end());
+});
+router.put("/:userid", (req, res) => {
+  const { userid } = req.params;
+  const newEntourage = req.body;
+  import_entourages.default.update(userid, newEntourage).then((profile) => res.json(profile)).catch((err) => res.status(404).end());
+});
+var entourages_default = router;
