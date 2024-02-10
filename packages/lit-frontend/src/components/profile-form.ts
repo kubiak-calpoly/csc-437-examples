@@ -5,11 +5,8 @@ import {
   state
 } from "lit/decorators.js";
 import { consume } from "@lit/context";
-import {
-  AuthenticatedUser,
-  authContext,
-  JSONRequest
-} from "../rest";
+import { APIUser, APIRequest, JSONRequest } from "../rest";
+import { authContext } from "./auth-required";
 import { Profile } from "ts-models";
 
 @customElement("profile-form")
@@ -22,7 +19,7 @@ export class ProfileFormlement extends LitElement {
 
   @consume({ context: authContext, subscribe: true })
   @property({ attribute: false })
-  authenticatedUser?: AuthenticatedUser;
+  user?: APIUser;
 
   connectedCallback() {
     if (this.path) {
@@ -42,7 +39,7 @@ export class ProfileFormlement extends LitElement {
     super.attributeChangedCallback(name, oldValue, newValue);
   }
 
-  updated(changedProperties) {
+  updated(changedProperties: Map<string, any>) {
     console.log("updated Profile Form", changedProperties);
     if (changedProperties.get("authenticatedUser")) {
       this._getData(this.path);
@@ -124,12 +121,11 @@ export class ProfileFormlement extends LitElement {
   `;
 
   _getData(path: string) {
-    const request = new JSONRequest();
+    const request = new APIRequest();
 
     request
-      .authenticate(this.authenticatedUser)
       .get(path)
-      .then((response) => {
+      .then((response: Response) => {
         if (response.status === 200) {
           return response.json();
         }

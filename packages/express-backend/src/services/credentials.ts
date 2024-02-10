@@ -15,14 +15,19 @@ export function verify(
       })
       .then((credsOnFile) => {
         if (credsOnFile)
-          return bcrypt.compare(
+          bcrypt.compare(
             password,
-            credsOnFile.hashedPassword
+            credsOnFile.hashedPassword,
+            (_, result) => {
+              console.log(
+                "Verified",
+                result,
+                credsOnFile.username
+              );
+              if (result) resolve(credsOnFile.username);
+              else reject("Invalid username or password");
+            }
           );
-        else reject("Invalid username or password");
-      })
-      .then((matched) => {
-        if (matched) resolve(username);
         else reject("Invalid username or password");
       });
   });

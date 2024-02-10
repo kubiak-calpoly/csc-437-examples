@@ -1,13 +1,11 @@
 import { css, html, LitElement } from "lit";
 import { customElement, state } from "lit/decorators.js";
-import { createContext, provide } from "@lit/context";
-import {
+import { provide } from "@lit/context";
+import {m
   APIUser,
   AuthenticatedUser,
   FormDataRequest
-} from "../rest";
-
-export let authContext = createContext<APIUser>(Symbol("auth"));
+} from "./rest";
 
 @customElement("auth-required")
 export class AuthRequiredElement extends LitElement {
@@ -19,10 +17,10 @@ export class AuthRequiredElement extends LitElement {
 
   @provide({ context: authContext })
   @state()
-  user: APIUser = new APIUser();
+  user: new APIUser();
 
   isAuthenticated() {
-    return this.user.authenticated;
+    return this.authenticatedUser.authenticated;
   }
 
   firstUpdated() {
@@ -30,8 +28,6 @@ export class AuthRequiredElement extends LitElement {
   }
 
   render() {
-    //console.log("Rendering auth-required", this.user);
-
     const dialog = html`
       <dialog>
         <form
@@ -76,7 +72,7 @@ export class AuthRequiredElement extends LitElement {
       </dialog>
     `;
 
-    return html`${this.isAuthenticated() ? "" : dialog}
+    return html` ${this.isAuthenticated() ? "" : dialog}
       <slot></slot>`;
   }
 
@@ -115,8 +111,7 @@ export class AuthRequiredElement extends LitElement {
     const request = new FormDataRequest(data);
 
     request
-      .base()
-      .post("/login")
+      .post("/login", true)
       .then((res) => {
         if (res.status === 200) {
           return res.json();
@@ -127,7 +122,7 @@ export class AuthRequiredElement extends LitElement {
       .then((json) => {
         if (json) {
           console.log("Authentication:", json.token);
-          this.user = AuthenticatedUser.authenticate(
+          this.authenticatedUser = new AuthenticatedUser(
             json.token
           );
           this._toggleDialog(false);
@@ -143,8 +138,7 @@ export class AuthRequiredElement extends LitElement {
     const request = new FormDataRequest(data);
 
     request
-      .base()
-      .post("/signup")
+      .post("/signup", true)
       .then((res) => {
         if (res.status === 200) {
           return res.json();
