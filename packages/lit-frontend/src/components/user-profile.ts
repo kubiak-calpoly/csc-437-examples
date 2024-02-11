@@ -1,4 +1,4 @@
-import { css, html, LitElement } from "lit";
+import { css, html, LitElement, unsafeCSS } from "lit";
 import {
   customElement,
   property,
@@ -6,6 +6,8 @@ import {
 } from "lit/decorators.js";
 import { APIRequest, JSONRequest } from "../rest";
 import { Profile } from "ts-models";
+import resetCSS from "/src/styles/reset.css?inline";
+import pageCSS from "/src/styles/page.css?inline";
 
 @customElement("user-profile")
 export class UserProfileElement extends LitElement {
@@ -48,7 +50,7 @@ export class UserProfileElement extends LitElement {
     return html`
       <section>
         ${this._renderAvatar()}
-
+        <a href="./${userid}/edit">Edit</a>
         <h1>${name}</h1>
         <dl>
           <dt>Username</dt>
@@ -80,21 +82,22 @@ export class UserProfileElement extends LitElement {
   }
 
   static styles = [
+    unsafeCSS(resetCSS),
+    unsafeCSS(pageCSS),
     css`
       :host {
         --avatar-backgroundColor: var(--color-accent);
         --avatar-size: 100px;
         padding: var(--size-spacing-medium);
       }
-      * {
-        margin: 0;
-        box-sizing: border-box;
-      }
       section {
         display: grid;
         grid-template-columns: [key] 1fr [value] 2fr [end];
         gap: var(--size-spacing-xlarge);
         align-items: end;
+      }
+      h1 {
+        grid-column: value;
       }
       dl {
         display: grid;
@@ -114,6 +117,7 @@ export class UserProfileElement extends LitElement {
       }
       .avatar {
         grid-column: key;
+        grid-row: auto/span 2;
         justify-self: end;
         position: relative;
         width: var(--avatar-size);
@@ -174,7 +178,9 @@ export class UserProfileEditElement extends UserProfileElement {
         <form @submit=${this._handleSubmit}>
           <dl>
             <dt>Username</dt>
-            <dd><input name="userid" .value=${userid} /></dd>
+            <dd
+              ><input name="userid" disabled .value=${userid}
+            /></dd>
             <dt>Avatar</dt>
             <dd
               ><input
@@ -278,6 +284,7 @@ export class UserProfileEditElement extends UserProfileElement {
         if (json) {
           console.log("PUT request successful:", json);
           this.profile = json as Profile;
+          window.history.back();
         }
       })
       .catch((err) =>

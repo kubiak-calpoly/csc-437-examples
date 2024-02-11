@@ -12,8 +12,16 @@ import "../components/itinerary-item";
 import resetCSS from "/src/styles/reset.css?inline";
 import pageCSS from "/src/styles/page.css?inline";
 
+type TourLocation = Location & {
+  params: { tour: string };
+  searchParams: Map<string, string>;
+};
+
 @customElement("tour-page")
 export class TourPageElement extends LitElement {
+  @property({ attribute: false })
+  location?: TourLocation;
+
   @property({ attribute: "tour-id" })
   tourId?: string;
 
@@ -21,6 +29,10 @@ export class TourPageElement extends LitElement {
   tour?: Tour;
 
   connectedCallback() {
+    if (!this.tourId && this.location) {
+      // running under the router
+      this.tourId = this.location.params.tour;
+    }
     if (this.tourId) {
       this._getData(`/tours/${this.tourId}`);
     }
@@ -212,8 +224,13 @@ export class TourPageElement extends LitElement {
       .then((json: unknown) => {
         console.log("Tour:", json);
         // fix all the dates, sigh
-        json.startDate = new Date(json.startDate);
-        json.endDate = new Date(json.endDate);
+        let dates = json as {
+          startDate: string;
+          endDate: string;
+        };
+        let tour = json as Tour;
+        tour.startDate = new Date(dates.startDate);
+        tour.endDate = new Date(dates.endDate);
         this.tour = json as Tour;
       });
   }

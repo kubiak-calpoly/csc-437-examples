@@ -21,6 +21,7 @@ export class EntourageTable extends LitElement {
 
     const renderRow = (row: Profile) => {
       const {
+        userid,
         avatar,
         name = "** NO NAME **",
         nickname,
@@ -40,7 +41,9 @@ export class EntourageTable extends LitElement {
               ${avatarImg}
             </span>
           </td>
-          <td class="name">${name}</td>
+          <td class="name">
+            <a href="./profile/${userid}">${name}</a>
+          </td>
         </tr>
       `;
     };
@@ -89,6 +92,10 @@ export class EntourageTable extends LitElement {
       width: 100%;
       font-family: var(--font-family-display);
       color: var(--color-accent);
+    }
+    a[href] {
+      font: inherit;
+      color: inherit;
     }
     img {
       width: 100%;

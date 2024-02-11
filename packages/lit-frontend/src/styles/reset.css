@@ -4,6 +4,9 @@
 }
 body {
   line-height: 1.5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 img {
   max-width: 100%;

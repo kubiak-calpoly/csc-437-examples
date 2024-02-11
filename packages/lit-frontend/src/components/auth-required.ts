@@ -84,6 +84,9 @@ export class AuthRequiredElement extends LitElement {
   }
 
   static styles = css`
+    :host {
+      display: contents;
+    }
     dialog {
       display: flex;
       gap: 4rem;

@@ -1,8 +1,10 @@
-import { html, LitElement, unsafeCSS } from "lit";
+import { css, html, LitElement, unsafeCSS } from "lit";
 import { customElement, state } from "lit/decorators.js";
+import { Router } from "@vaadin/router";
 import "../components/auth-required";
 import "../components/blazing-header";
 import "./tour-page";
+import "./profile-page";
 import resetCSS from "/src/styles/reset.css?inline";
 
 @customElement("blazing-app")
@@ -10,26 +12,43 @@ export class BlazingAppElement extends LitElement {
   @state()
   tourId?: string;
 
-  connectedCallback() {
-    super.connectedCallback();
-    // path should be ["", "app", id]
-    const url = new URL(document.location.toString());
-    const path = url.pathname.split("/");
-    // path should be ["", "app", id]
-    let id =
-      path[2] || url.searchParams.get("tour") || undefined;
-    console.log("Tour path:", path, id);
-    this.tourId = id;
+  firstUpdated() {
+    const router = new Router(
+      this.shadowRoot?.querySelector("#outlet")
+    );
+    router.setRoutes([
+      {
+        path: "/app/profile/:userid/:edit(edit)",
+        component: "profile-page"
+      },
+      {
+        path: "/app/profile/:userid",
+        component: "profile-page"
+      },
+      { path: "/app/:tour([0-9a-f]+)", component: "tour-page" },
+      { path: "/app", component: "tour-page" },
+      { path: "(.*)", redirect: "/app" }
+    ]);
   }
 
   render() {
     return html`
       <auth-required>
         <blazing-header></blazing-header>
-        <tour-page tour-id=${this.tourId}> </tour-page>
+        <div id="outlet"></div>
       </auth-required>
     `;
   }
 
-  static styles = [unsafeCSS(resetCSS)];
+  static styles = [
+    unsafeCSS(resetCSS),
+    css`
+      :host {
+        display: contents;
+      }
+      #outlet {
+        display: contents;
+      }
+    `
+  ];
 }
