@@ -26,19 +26,32 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-var api_exports = {};
-__export(api_exports, {
-  default: () => api_default
+var tours_exports = {};
+__export(tours_exports, {
+  default: () => tours_default
 });
-module.exports = __toCommonJS(api_exports);
+module.exports = __toCommonJS(tours_exports);
 var import_express = __toESM(require("express"));
-var import_auth = require("../auth");
-var import_entourages = __toESM(require("./entourages"));
-var import_profiles = __toESM(require("./profiles"));
-var import_tours = __toESM(require("./tours"));
+var import_tours = __toESM(require("../services/tours"));
 const router = import_express.default.Router();
-router.use(import_auth.authenticateUser);
-router.use("/entourages", import_entourages.default);
-router.use("/profiles", import_profiles.default);
-router.use("/tours", import_tours.default);
-var api_default = router;
+router.post("/", (req, res) => {
+  const newTour = req.body;
+  import_tours.default.create(newTour).then((tour) => res.status(201).send(tour)).catch((err) => res.status(500).send(err));
+});
+router.get("/:id", (req, res) => {
+  const { id } = req.params;
+  import_tours.default.get(id).then((tour) => {
+    if (!tour)
+      throw "Not found";
+    else
+      res.json(tour);
+  }).catch(
+    (err) => res.status(404).end(`Tour ${id} not found.`)
+  );
+});
+router.put("/:id", (req, res) => {
+  const { userid } = req.params;
+  const newTour = req.body;
+  import_tours.default.update(userid, newTour).then((tour) => res.json(tour)).catch((err) => res.status(404).end());
+});
+var tours_default = router;

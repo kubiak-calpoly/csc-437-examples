@@ -26,19 +26,36 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-var api_exports = {};
-__export(api_exports, {
-  default: () => api_default
+var tours_exports = {};
+__export(tours_exports, {
+  default: () => tours_default
 });
-module.exports = __toCommonJS(api_exports);
-var import_express = __toESM(require("express"));
-var import_auth = require("../auth");
-var import_entourages = __toESM(require("./entourages"));
-var import_profiles = __toESM(require("./profiles"));
-var import_tours = __toESM(require("./tours"));
-const router = import_express.default.Router();
-router.use(import_auth.authenticateUser);
-router.use("/entourages", import_entourages.default);
-router.use("/profiles", import_profiles.default);
-router.use("/tours", import_tours.default);
-var api_default = router;
+module.exports = __toCommonJS(tours_exports);
+var import_tour = __toESM(require("../mongo/tour"));
+function index() {
+  return import_tour.default.find();
+}
+function get(id) {
+  return import_tour.default.findById(id).then((doc) => {
+    return doc;
+  }).catch((err) => {
+    throw `${id} Not Found`;
+  });
+}
+function create(profile) {
+  const p = new import_tour.default(profile);
+  return p.save();
+}
+function update(id, tour) {
+  return new Promise((resolve, reject) => {
+    import_tour.default.findByIdAndUpdate(id, tour, {
+      new: true
+    }).then((doc) => {
+      if (doc)
+        resolve(doc);
+      else
+        reject("Failed to update tour");
+    });
+  });
+}
+var tours_default = { index, get, create, update };

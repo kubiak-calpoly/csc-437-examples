@@ -23,6 +23,7 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 ));
 var import_express = __toESM(require("express"));
 var path = __toESM(require("path"));
+var import_promises = __toESM(require("node:fs/promises"));
 var import_cors = __toESM(require("cors"));
 var import_mongoConnect = require("./mongoConnect");
 var import_auth = require("./auth");
@@ -49,6 +50,18 @@ app.options("*", (0, import_cors.default)());
 app.post("/login", import_auth.loginUser);
 app.post("/signup", import_auth.registerUser);
 app.use("/api", import_api.default);
+app.use("/app/:id", (req, res) => {
+  const { id } = req.params;
+  console.log("SPA route /app/:id(*)", id);
+  if (!dist) {
+    res.status(404).send("Not found; frontend module not loaded");
+  } else {
+    const indexHtml = path.resolve(dist, "app", "index.html");
+    import_promises.default.readFile(indexHtml, { encoding: "utf8" }).then(
+      (html) => res.send(html)
+    );
+  }
+});
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });

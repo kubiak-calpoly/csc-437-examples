@@ -3,7 +3,6 @@ import { Point } from "./geo";
 import { Entourage } from "./entourage";
 
 export interface Tour {
-  id: string;
   name: string;
   destinations: Array<Destination>;
   transportation: Array<Transportation>;
@@ -17,7 +16,6 @@ export interface Destination {
   link: string;
   startDate: Date;
   endDate: Date;
-  icon: string | undefined;
   location: Point;
   featuredImage: string | undefined;
   accommodations: Array<Accommodation>;
@@ -47,9 +45,10 @@ type ExcursionType =
 
 export interface Transportation {
   type: TransportationType;
-  routing: Array<string>;
+  provider?: string;
+  routing: string[];
   startDate: Date;
-  endDate: Date | undefined;
+  endDate?: Date;
   segments: Array<Segment>;
 }
 

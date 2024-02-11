@@ -16,13 +16,13 @@ var __copyProps = (to, from, except, desc) => {
   return to;
 };
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-var entourage_exports = {};
-__export(entourage_exports, {
-  default: () => entourage_default
+var entourage_copy_exports = {};
+__export(entourage_copy_exports, {
+  default: () => entourage_copy_default
 });
-module.exports = __toCommonJS(entourage_exports);
+module.exports = __toCommonJS(entourage_copy_exports);
 var import_mongoose = require("mongoose");
-const entourageSchema = new import_mongoose.Schema(
+const profileSchema = new import_mongoose.Schema(
   {
     name: {
       type: String,
@@ -32,8 +32,8 @@ const entourageSchema = new import_mongoose.Schema(
   },
   { collection: "entourage_collection" }
 );
-const entourageModel = (0, import_mongoose.model)(
+const profileModel = (0, import_mongoose.model)(
   "Entourage",
-  entourageSchema
+  profileSchema
 );
-var entourage_default = entourageModel;
+var entourage_copy_default = profileModel;

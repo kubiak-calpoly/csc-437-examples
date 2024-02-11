@@ -1,7 +1,7 @@
 import { Schema, Model, Document, model } from "mongoose";
 import { Entourage } from "ts-models";
 
-const profileSchema = new Schema<Entourage>(
+const entourageSchema = new Schema<Entourage>(
   {
     name: {
       type: String,
@@ -12,9 +12,9 @@ const profileSchema = new Schema<Entourage>(
   { collection: "entourage_collection" }
 );
 
-const profileModel = model<Entourage>(
+const entourageModel = model<Entourage>(
   "Entourage",
-  profileSchema
+  entourageSchema
 );
 
-export default profileModel;
+export default entourageModel;

@@ -16,7 +16,8 @@ export class EntourageTable extends LitElement {
   entourage?: Entourage;
 
   render() {
-    const rows = this.entourage?.people || [];
+    const { name, people } = this.entourage || {};
+    const rows = people || [];
 
     const renderRow = (row: Profile) => {
       const {
@@ -44,9 +45,12 @@ export class EntourageTable extends LitElement {
       `;
     };
 
-    return html`<table>
-      <tbody>${rows.map(renderRow)}</tbody>
-    </table>`;
+    return html`<section>
+      <h3>${name || "Entourage"}</h3>
+      <table>
+        <tbody>${rows.map(renderRow)}</tbody>
+      </table>
+    </section>`;
   }
 
   static styles = css`
@@ -103,15 +107,8 @@ export class EntourageTable extends LitElement {
     oldValue: string,
     newValue: string
   ) {
-    const rows = this.shadowRoot?.getElementById("rows");
-
-    if (name === "path") {
-      if (rows && oldValue) {
-        rows.replaceChildren();
-      }
-      if (newValue) {
-        this._getData(newValue);
-      }
+    if (name === "path" && newValue && newValue !== oldValue) {
+      this._getData(newValue);
     }
     super.attributeChangedCallback(name, oldValue, newValue);
   }

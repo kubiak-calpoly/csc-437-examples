@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import * as path from "path";
+import fs from "node:fs/promises";
 import cors from "cors";
 import { connect } from "./mongoConnect";
 import { loginUser, registerUser } from "./auth";
@@ -8,7 +9,7 @@ import apiRouter from "./routes/api";
 const app = express();
 const port = process.env.PORT || 3000;
 
-let dist;
+let dist: string | undefined;
 
 try {
   const frontend = require.resolve("lit-frontend");
@@ -33,6 +34,23 @@ app.post("/login", loginUser);
 app.post("/signup", registerUser);
 
 app.use("/api", apiRouter);
+
+// SPA routes ignore parameters when locating index.html
+app.use("/app/:id", (req, res) => {
+  const { id } = req.params;
+
+  console.log("SPA route /app/:id(*)", id);
+  if (!dist) {
+    res
+      .status(404)
+      .send("Not found; frontend module not loaded");
+  } else {
+    const indexHtml = path.resolve(dist, "app", "index.html");
+    fs.readFile(indexHtml, { encoding: "utf8" }).then((html) =>
+      res.send(html)
+    );
+  }
+});
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
