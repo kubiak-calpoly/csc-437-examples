@@ -1,0 +1,8 @@
+{
+  "name": "Tres Amigos",
+  "people": [
+    { "$oid": "65c01d5a36b8a975615012dc" },
+    { "$oid": "65c7c17fa837ff7c15b669d9" },
+    { "$oid": "65c7c19aa837ff7c15b669db" }
+  ]
+}

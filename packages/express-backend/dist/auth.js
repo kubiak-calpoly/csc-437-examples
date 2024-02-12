@@ -36,6 +36,7 @@ module.exports = __toCommonJS(auth_exports);
 var import_jsonwebtoken = __toESM(require("jsonwebtoken"));
 var import_credentials = __toESM(require("./services/credentials"));
 function generateAccessToken(username) {
+  console.log("Generating token for", username);
   return new Promise((resolve, reject) => {
     import_jsonwebtoken.default.sign(
       { username },
@@ -65,9 +66,7 @@ function loginUser(req, res) {
   if (!username || !pwd) {
     res.status(400).send("Bad request: Invalid input data.");
   } else {
-    import_credentials.default.verify(username, pwd).then(
-      (goodCreds) => generateAccessToken(goodCreds.username)
-    ).then((token) => res.status(200).send({ token })).catch((error) => res.status(401).send("Unauthorized"));
+    import_credentials.default.verify(username, pwd).then((goodUser) => generateAccessToken(goodUser)).then((token) => res.status(200).send({ token })).catch((error) => res.status(401).send("Unauthorized"));
   }
 }
 function authenticateUser(req, res, next) {
@@ -81,6 +80,7 @@ function authenticateUser(req, res, next) {
       process.env.TOKEN_SECRET,
       (error, decoded) => {
         if (decoded) {
+          console.log("Decoded token", decoded);
           next();
         } else {
           res.status(401).end();

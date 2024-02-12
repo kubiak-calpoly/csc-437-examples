@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../src/models/Geo.ts"],
+  "sourcesContent": ["export interface Point {\n  lat: number;\n  lon: number;\n}\n\nexport interface Region {\n  path: Array<Point>;\n}\n"],
+  "mappings": ";;;;;;;;;;;;;;AAAA;AAAA;",
+  "names": []
+}

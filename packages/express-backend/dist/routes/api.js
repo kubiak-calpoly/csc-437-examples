@@ -32,9 +32,13 @@ __export(api_exports, {
 });
 module.exports = __toCommonJS(api_exports);
 var import_express = __toESM(require("express"));
-var import_profiles = __toESM(require("./profiles"));
 var import_auth = require("../auth");
+var import_entourages = __toESM(require("./entourages"));
+var import_profiles = __toESM(require("./profiles"));
+var import_tours = __toESM(require("./tours"));
 const router = import_express.default.Router();
 router.use(import_auth.authenticateUser);
+router.use("/entourages", import_entourages.default);
 router.use("/profiles", import_profiles.default);
+router.use("/tours", import_tours.default);
 var api_default = router;

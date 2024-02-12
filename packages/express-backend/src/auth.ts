@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import credentials from "./services/credentials";
 
 function generateAccessToken(username: string) {
+  console.log("Generating token for", username);
   return new Promise((resolve, reject) => {
     jwt.sign(
       { username: username },
@@ -38,9 +39,7 @@ export function loginUser(req, res) {
   } else {
     credentials
       .verify(username, pwd)
-      .then((goodCreds: Credentials) =>
-        generateAccessToken(goodCreds.username)
-      )
+      .then((goodUser: string) => generateAccessToken(goodUser))
       .then((token) => res.status(200).send({ token: token }))
       .catch((error) => res.status(401).send("Unauthorized"));
   }
@@ -59,6 +58,7 @@ export function authenticateUser(req, res, next) {
       process.env.TOKEN_SECRET,
       (error, decoded) => {
         if (decoded) {
+          console.log("Decoded token", decoded);
           next();
         } else {
           res.status(401).end();

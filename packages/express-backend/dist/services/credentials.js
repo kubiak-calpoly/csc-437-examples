@@ -35,7 +35,7 @@ __export(credentials_exports, {
 });
 module.exports = __toCommonJS(credentials_exports);
 var import_bcryptjs = __toESM(require("bcryptjs"));
-var import_credential = __toESM(require("../models/mongo/credential"));
+var import_credential = __toESM(require("../mongo/credential"));
 function verify(username, password) {
   return new Promise((resolve, reject) => {
     import_credential.default.find({ username }).then((found) => {
@@ -45,15 +45,21 @@ function verify(username, password) {
         reject("Invalid username or password");
     }).then((credsOnFile) => {
       if (credsOnFile)
-        return import_bcryptjs.default.compare(
+        import_bcryptjs.default.compare(
           password,
-          credsOnFile.hashedPassword
+          credsOnFile.hashedPassword,
+          (_, result) => {
+            console.log(
+              "Verified",
+              result,
+              credsOnFile.username
+            );
+            if (result)
+              resolve(credsOnFile.username);
+            else
+              reject("Invalid username or password");
+          }
         );
-      else
-        reject("Invalid username or password");
-    }).then((matched) => {
-      if (matched)
-        resolve(username);
       else
         reject("Invalid username or password");
     });

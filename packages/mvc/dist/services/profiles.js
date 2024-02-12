@@ -54,6 +54,11 @@ function create(profile) {
         reject(
           `Profile not created: ${JSON.stringify(profile)}`
         );
+<<<<<<< HEAD
+    }).catch((error) => {
+      reject(`Profile failed validation: ${error}`);
+=======
+>>>>>>> main
     });
   });
 }

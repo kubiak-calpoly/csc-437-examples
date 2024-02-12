@@ -40,7 +40,12 @@ router.post("/", (req, res) => {
 });
 router.get("/:userid", (req, res) => {
   const { userid } = req.params;
-  import_profiles.default.get(userid).then((profile) => res.json(profile)).catch((err) => res.status(404).end());
+  import_profiles.default.get(userid).then((profile) => {
+    if (!profile)
+      throw "Not found";
+    else
+      res.json(profile);
+  }).catch((err) => res.status(404).end());
 });
 router.put("/:userid", (req, res) => {
   const { userid } = req.params;

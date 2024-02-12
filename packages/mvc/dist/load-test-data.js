@@ -23,6 +23,10 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 ));
 var import_services = require("./services");
 var import_profiles = __toESM(require("./services/profiles"));
+<<<<<<< HEAD
+var import_credentials = __toESM(require("./services/credentials"));
+=======
+>>>>>>> main
 let test_profiles = [
   {
     id: "blaze",
@@ -57,5 +61,10 @@ Promise.all(test_profiles.map(import_profiles.default.create)).then(
   (docs) => docs.forEach(
     (doc) => console.log("Profile created:", JSON.stringify(doc))
   )
+<<<<<<< HEAD
+).catch((err) => console.log("Errors loading test profiles"));
+import_credentials.default.create("blaze", "blaze").then((name) => console.log("Credentials created", name)).catch((err) => console.log("Error creading credentials"));
+=======
 );
+>>>>>>> main
 //# sourceMappingURL=load-test-data.js.map

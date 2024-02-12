@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../src/models/Tour.ts"],
+  "sourcesContent": ["import { Point } from \"./Geo\";\nimport { Profile } from \"./Profile\";\n\nexport interface Tour {\n  id: string;\n  name: string;\n  destinations: Array<Destination>;\n  transportation: Array<Transportation>;\n  startDate: Date;\n  endDate: Date;\n  entourage: Array<Profile>;\n}\n\nexport interface Destination {\n  name: string;\n  location: Point;\n  featuredImage: string | undefined;\n  nights: number;\n}\n\nexport interface Accommodation {\n  name: string;\n  link: string | undefined;\n  nights: number;\n}\n\nexport interface Excursion {\n  name: string;\n  link: string | undefined;\n  type: ExcursionType;\n}\n\ntype ExcursionType =\n  | \"boat\"\n  | \"bus\"\n  | \"metro\"\n  | \"train\"\n  | \"walking\"\n  | \"tour\"\n  | undefined;\n\nexport interface Transportation {\n  type: TransportationType;\n  routing: Array<string>;\n  startDate: Date;\n  endDate: Date | undefined;\n  segments: Array<Segment>;\n}\n\nexport type TransportationType =\n  | \"air\"\n  | \"rail\"\n  | \"ship\"\n  | \"bus\";\n\nexport interface Segment {\n  name: string;\n  provider: string | undefined;\n  departure: Endpoint;\n  arrival: Endpoint;\n}\n\nexport interface Endpoint {\n  station: string;\n  time: Date;\n  tzOffset: number;\n}\n"],
+  "mappings": ";;;;;;;;;;;;;;AAAA;AAAA;",
+  "names": []
+}

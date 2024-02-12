@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../src/client/shared/blazing-header.ts"],
+  "sourcesContent": ["import { html, css, LitElement } from \"lit\";\nimport { customElement, property } from \"lit/decorators.js\";\nimport { reset, elements } from \"../shared/css-base\";\n\n@customElement(\"blazing-header\")\nexport class BlazingHeader extends LitElement {\n  @property()\n  title: string = \"A site for travelers\";\n\n  render() {\n    return html`\n      <header>\n        <h1>Blazing Travels</h1>\n        <p>${this.title}</p>\n      </header>\n    `;\n  }\n\n  static styles = [\n    reset,\n    elements,\n    css`\n      header {\n        display: flex;\n        flex-wrap: wrap;\n        align-items: baseline;\n        justify-content: space-between;\n        padding: var(--size-spacing-medium);\n        background-color: var(--color-background-header);\n        color: var(--color-text-inverted);\n      }\n      header a {\n        color: var(--color-link-inverted);\n      }\n    `\n  ];\n}\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA,iBAAsC;AACtC,wBAAwC;AACxC,sBAAgC;AAGzB,IAAM,gBAAN,cAA4B,sBAAW;AAAA,EAAvC;AAAA;AAEL,iBAAgB;AAAA;AAAA,EAEhB,SAAS;AACP,WAAO;AAAA;AAAA;AAAA,aAGE,KAAK,KAAK;AAAA;AAAA;AAAA,EAGrB;AAoBF;AA/Ba,cAaJ,SAAS;AAAA,EACd;AAAA,EACA;AAAA,EACA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAcF;AA5BA;AAAA,MADC,4BAAS;AAAA,GADC,cAEX;AAFW,gBAAN;AAAA,MADN,iCAAc,gBAAgB;AAAA,GAClB;",
+  "names": []
+}

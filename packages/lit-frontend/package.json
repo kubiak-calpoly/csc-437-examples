@@ -2,18 +2,17 @@
   "name": "lit-frontend",
   "version": "0.0.0",
   "main": "dist/app/index.html",
+  "type": "module",
   "scripts": {
     "dev": "npx vite",
-    "check": "npx tsc",
     "build": "npx tsc && npx vite build",
     "preview": "npx vite preview"
   },
   "dependencies": {
-    "@lit/context": "^1.1.0",
-    "lit": "^3.1.0"
+    "lit": "^3.1.0",
+    "ts-models": "0.0.0"
   },
   "devDependencies": {
-    "@rollup/rollup-darwin-arm64": "^4.9.6",
     "typescript": "^5.2.2",
     "vite": "^5.0.8"
   }

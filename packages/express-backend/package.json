@@ -36,6 +36,7 @@
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
     "lit-frontend": "0.0.0",
-    "mongoose": "^8.1.1"
+    "mongoose": "^8.1.1",
+    "ts-models": "0.0.0"
   }
 }
