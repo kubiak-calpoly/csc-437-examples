@@ -7,7 +7,7 @@ import {
   FormDataRequest
 } from "../rest";
 
-export let authContext = createContext<APIUser>(Symbol("auth"));
+export let authContext = createContext<APIUser>("auth");
 
 @customElement("auth-required")
 export class AuthRequiredElement extends LitElement {

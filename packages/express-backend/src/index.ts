@@ -10,9 +10,10 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 let dist: string | undefined;
+let frontend: string | undefined;
 
 try {
-  const frontend = require.resolve("lit-frontend");
+  frontend = require.resolve("lit-frontend");
   dist = path.resolve(frontend, "..", "..");
   console.log("Serving lit-frontend from", dist);
 } catch (error: any) {
@@ -36,19 +37,19 @@ app.post("/signup", registerUser);
 app.use("/api", apiRouter);
 
 // SPA routes ignore parameters when locating index.html
-app.use("/app/:id", (req, res) => {
-  const { id } = req.params;
+app.use("/:spa(app)", (req, res) => {
+  const { spa } = req.params;
 
-  console.log("SPA route /app/:id(*)", id);
   if (!dist) {
     res
       .status(404)
       .send("Not found; frontend module not loaded");
   } else {
-    const indexHtml = path.resolve(dist, "app", "index.html");
+    const indexHtml = path.resolve(dist, spa, "index.html");
     fs.readFile(indexHtml, { encoding: "utf8" }).then((html) =>
       res.send(html)
     );
+    console.log("Sent SPA from", indexHtml);
   }
 });
 

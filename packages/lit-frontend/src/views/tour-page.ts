@@ -31,7 +31,11 @@ export class TourPageElement extends LitElement {
   connectedCallback() {
     if (!this.tourId && this.location) {
       // running under the router
-      this.tourId = this.location.params.tour;
+      const url = new URL(this.location.toString());
+      this.tourId =
+        this.location.params.tour ||
+        url.searchParams.get("tour") ||
+        undefined;
     }
     if (this.tourId) {
       this._getData(`/tours/${this.tourId}`);

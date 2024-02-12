@@ -2,13 +2,13 @@
   "name": "lit-frontend",
   "version": "0.0.0",
   "main": "dist/app/index.html",
+  "type": "module",
   "scripts": {
     "dev": "npx vite",
     "build": "npx tsc && npx vite build",
     "preview": "npx vite preview"
   },
   "dependencies": {
-    "@vaadin/router": "^1.7.5",
     "lit": "^3.1.0",
     "ts-models": "0.0.0"
   },

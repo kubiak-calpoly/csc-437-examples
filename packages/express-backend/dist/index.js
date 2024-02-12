@@ -31,8 +31,9 @@ var import_api = __toESM(require("./routes/api"));
 const app = (0, import_express.default)();
 const port = process.env.PORT || 3e3;
 let dist;
+let frontend;
 try {
-  const frontend = require.resolve("lit-frontend");
+  frontend = require.resolve("lit-frontend");
   dist = path.resolve(frontend, "..", "..");
   console.log("Serving lit-frontend from", dist);
 } catch (error) {
@@ -50,16 +51,16 @@ app.options("*", (0, import_cors.default)());
 app.post("/login", import_auth.loginUser);
 app.post("/signup", import_auth.registerUser);
 app.use("/api", import_api.default);
-app.use("/app/:id", (req, res) => {
-  const { id } = req.params;
-  console.log("SPA route /app/:id(*)", id);
+app.use("/:spa(app)", (req, res) => {
+  const { spa } = req.params;
   if (!dist) {
     res.status(404).send("Not found; frontend module not loaded");
   } else {
-    const indexHtml = path.resolve(dist, "app", "index.html");
+    const indexHtml = path.resolve(dist, spa, "index.html");
     import_promises.default.readFile(indexHtml, { encoding: "utf8" }).then(
       (html) => res.send(html)
     );
+    console.log("Sent SPA from", indexHtml);
   }
 });
 app.listen(port, () => {
