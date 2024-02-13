@@ -1,0 +1,68 @@
+:root {
+  --size-icon-small: 1em;
+  --size-icon-medium: 2em;
+  --size-icon-large: 4rem;
+
+  --size-spacing-small: 0.25rem;
+  --size-spacing-medium: 0.5rem;
+  --size-spacing-large: 1rem;
+  --size-spacing-xlarge: 2rem;
+
+  --size-corner-small: 2px;
+  --size-corner-medium: var(--size-spacing-small);
+  --size-corner-large: var(--size-spacing-medium);
+
+  --size-type-small: 0.75rem;
+  --size-type-body: 1rem;
+  --size-type-mlarge: 1.25rem;
+  --size-type-large: 1.5rem;
+  --size-type-xlarge: 2rem;
+  --size-type-xxlarge: 2.5rem;
+
+  --color-brand: rgb(42 143 42);
+  --color-accent: var(--color-brand);
+  --color-accent-inverted: rgb(255 208 0);
+  --color-background-control: #ccc;
+  --color-background-header: var(--color-brand);
+  --color-background-page: rgb(238 237 231);
+  --color-background-card: white;
+  --color-border-control: var(--color-accent);
+  --color-foreground-control: #fff;
+  --color-link-inverted: var(--color-accent-inverted);
+  --color-link: var(--color-accent);
+  --color-shadow-dropdown: rgb(51 51 51 / 50%);
+  --color-text: rgb(51 51 51);
+  --color-text-control: var(--color-text);
+  --color-text-heading: var(--color-accent);
+  --color-text-inverted: rgb(255 255 255);
+  --color-text-control-inverted: rgb(255 255 255);
+
+  --font-family-body: Merriweather, Baskerville, Cambria,
+    "Noto Serif", "Bitstream Charter", serif;
+  --font-family-display: Kanit, "Trebuchet MS", Calibri, Roboto,
+    "Segoe UI", Ubuntu, sans-serif;
+
+  --font-line-height-body: 1.5;
+  --font-line-height-display: 1.125;
+
+  --font-weight-normal: 400;
+  --font-weight-light: 200;
+  --font-weight-bold: 700;
+
+  --line-weight-superfine: 0.5px;
+  --line-weight-fine: 1px;
+  --line-weight-medium: 2px;
+  --line-weight-heavy: 4px;
+
+  --shadow-dropdown: 0 2px 2px var(--color-shadow-dropdown);
+  --time-transition-control: 300ms;
+}
+
+body.dark-mode {
+  --color-background-page: rgb(3, 69, 2);
+  --color-text: rgb(240, 240, 223);
+  --color-background-card: black;
+  --color-accent: var(--color-accent-inverted);
+  --color-text-control: rgb(51 51 51);
+  --color-text-control-inverted: var(--color-background-page);
+}
