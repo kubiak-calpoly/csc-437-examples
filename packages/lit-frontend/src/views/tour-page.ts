@@ -1,4 +1,10 @@
-import { css, html, LitElement, unsafeCSS } from "lit";
+import {
+  css,
+  html,
+  LitElement,
+  TemplateResult,
+  unsafeCSS
+} from "lit";
 import {
   customElement,
   property,
@@ -58,7 +64,7 @@ export class TourPageElement extends LitElement {
     super.attributeChangedCallback(name, oldValue, newValue);
   }
 
-  render() {
+  render(): TemplateResult {
     const {
       endDate,
       destinations = [],
