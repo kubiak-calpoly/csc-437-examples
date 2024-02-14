@@ -6,60 +6,39 @@ import "../components/blazing-header";
 import "./tour-page";
 import "./profile-page";
 import resetCSS from "/src/styles/reset.css?inline";
-import { App, Update } from "../mvu";
-import { Tour, Profile } from "ts-models";
-import { APIUser, AuthenticatedUser } from "../rest";
+import { APIUser } from "../rest";
+import { Message, start } from "../app";
+import { BlazingModel } from "../model";
 
-interface BlazingModel {
-  tour?: Tour;
-  user: {
-    profile?: Profile;
-    authUser: APIUser;
-  };
-}
+function view(model: BlazingModel) {
+  const { user } = model;
 
-interface UserLoggedIn {
-  user: AuthenticatedUser;
-}
-
-interface TourSelected {
-  tourId: string;
-}
-
-interface ProfileSelected {
-  userid: string;
-}
-
-type Message = UserLoggedIn | TourSelected | ProfileSelected;
-
-@customElement("blazing-app")
-export class BlazingAppElement
-  extends LitElement
-  implements App<BlazingModel, Message>
-{
-  @state()
-  model: BlazingModel = { user: { authUser: new APIUser() } };
-
-  view = (model: BlazingModel) => {
-    const { user } = model;
-
-    return html`
-      <auth-required></auth-required>
+  return html`
+    <auth-required>
       <blazing-header .from=${user?.profile}></blazing-header>
       <div id="outlet"></div>
-    `;
-  };
+    </auth-required>
+  `;
+}
 
-  updater = (model: BlazingModel, msg: Message) => {
-    const result = model;
+function update(model: BlazingModel, msg: Message) {
+  const next = model;
+  console.log("Updating with message", msg);
 
-    switch (typeof msg) {
-    }
+  return next;
+}
 
-    return result;
-  };
+@customElement("blazing-app")
+export class BlazingAppElement extends LitElement {
+  app = start(this, view, update, {
+    user: { authUser: new APIUser() }
+  });
 
-  firstUpdated() {
+  @state()
+  model: BlazingModel = this.app.model;
+
+  firstUpdated(changedProperties: Map<string, unknown>) {
+    super.firstUpdated(changedProperties);
     const router = new Router(
       this.shadowRoot?.querySelector("#outlet")
     );
@@ -79,7 +58,7 @@ export class BlazingAppElement
   }
 
   render() {
-    return this.view(this.model);
+    return this.app.view(this.model);
   }
 
   static styles = [

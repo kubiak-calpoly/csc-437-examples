@@ -26,7 +26,7 @@ type TourLocation = Location & {
 @customElement("tour-page")
 export class TourPageElement extends LitElement {
   @property({ attribute: false })
-  location?: TourLocation;
+  location: Object | undefined;
 
   @property({ attribute: "tour-id" })
   tourId?: string;
@@ -37,11 +37,7 @@ export class TourPageElement extends LitElement {
   connectedCallback() {
     if (!this.tourId && this.location) {
       // running under the router
-      const url = new URL(this.location.toString());
-      this.tourId =
-        this.location.params.tour ||
-        url.searchParams.get("tour") ||
-        undefined;
+      this.tourId = (this.location as TourLocation).params.tour;
     }
     if (this.tourId) {
       this._getData(`/tours/${this.tourId}`);
@@ -232,16 +228,18 @@ export class TourPageElement extends LitElement {
         return null;
       })
       .then((json: unknown) => {
-        console.log("Tour:", json);
-        // fix all the dates, sigh
-        let dates = json as {
-          startDate: string;
-          endDate: string;
-        };
-        let tour = json as Tour;
-        tour.startDate = new Date(dates.startDate);
-        tour.endDate = new Date(dates.endDate);
-        this.tour = json as Tour;
+        if (json) {
+          console.log("Tour:", json);
+          // fix all the dates, sigh
+          let dates = json as {
+            startDate: string;
+            endDate: string;
+          };
+          let tour = json as Tour;
+          tour.startDate = new Date(dates.startDate);
+          tour.endDate = new Date(dates.endDate);
+          this.tour = json as Tour;
+        }
       });
   }
 }
