@@ -1,6 +1,9 @@
-import { App, Element, Update, View } from "./mvu.ts";
+import { App, Element, Msg, Update, View } from "./mvu.ts";
 import { BlazingModel } from "./model";
 import { AuthenticatedUser } from "./rest";
+import { createContext } from "@lit/context";
+
+export let modelContext = createContext<BlazingModel>("model");
 
 export class BlazingApp implements App<BlazingModel, Message> {
   model: BlazingModel;
@@ -19,17 +22,24 @@ export class BlazingApp implements App<BlazingModel, Message> {
     this.update = update;
     this.setModel = setter;
   }
+
+  receive(msg: Message) {
+    this.update(this.model, msg).then((next) => {
+      this.setModel((this.model = next));
+    });
+  }
 }
 
-interface UserLoggedIn {
+export interface UserLoggedIn extends Msg<"UserLoggedIn"> {
   user: AuthenticatedUser;
 }
 
-interface TourSelected {
+export interface TourSelected extends Msg<"TourSelected"> {
   tourId: string;
 }
 
-interface ProfileSelected {
+export interface ProfileSelected
+  extends Msg<"ProfileSelected"> {
   userid: string;
 }
 
@@ -45,6 +55,7 @@ export function start(
   init: BlazingModel
 ) {
   const setter = (next: BlazingModel) => {
+    console.log("Model updated:", next);
     element.model = next;
   };
 

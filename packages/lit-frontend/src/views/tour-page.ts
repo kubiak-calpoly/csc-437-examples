@@ -10,8 +10,10 @@ import {
   property,
   state
 } from "lit/decorators.js";
+import { consume } from "@lit/context";
 import { Tour, Destination, Transportation } from "ts-models";
-import { APIRequest } from "../rest";
+import { BlazingModel } from "../model";
+import { TourSelected, modelContext } from "../app";
 import "../components/calendar-widget";
 import "../components/entourage-table";
 import "../components/itinerary-item";
@@ -28,19 +30,30 @@ export class TourPageElement extends LitElement {
   @property({ attribute: false })
   location: Object | undefined;
 
-  @property({ attribute: "tour-id" })
-  tourId?: string;
+  @consume({ context: modelContext, subscribe: true })
+  @property({ attribute: false })
+  model: BlazingModel | undefined;
 
   @state()
-  tour?: Tour;
+  tour: Tour | undefined;
 
   connectedCallback() {
-    if (!this.tourId && this.location) {
+    if (this.location) {
       // running under the router
-      this.tourId = (this.location as TourLocation).params.tour;
-    }
-    if (this.tourId) {
-      this._getData(`/tours/${this.tourId}`);
+      const tourId = (this.location as TourLocation).params
+        .tour;
+      console.log("TOur Page:", tourId);
+      const msg: TourSelected = {
+        type: "TourSelected",
+        tourId: tourId
+      };
+      const ev = new CustomEvent("mvu:message", {
+        bubbles: true,
+        composed: true,
+        detail: msg
+      });
+      this.dispatchEvent(ev);
+      // this._getData(`/tours/${this.tourId}`);
     }
     super.connectedCallback();
   }
@@ -50,14 +63,23 @@ export class TourPageElement extends LitElement {
     oldValue: string,
     newValue: string
   ) {
+    console.log("attributeChanged:", name, newValue);
     if (
       name === "tour-id" &&
       newValue &&
       newValue !== oldValue
     ) {
-      this._getData(`/tours/${newValue}`);
+      // this._getData(`/tours/${newValue}`);
     }
     super.attributeChangedCallback(name, oldValue, newValue);
+  }
+
+  updated(changedProperties: Map<string, any>) {
+    console.log("updated Tour Page", changedProperties);
+    if (changedProperties.has("model")) {
+      this.tour = this.model?.tour;
+    }
+    return true;
   }
 
   render(): TemplateResult {
@@ -215,31 +237,4 @@ export class TourPageElement extends LitElement {
       }
     `
   ];
-
-  _getData(path: string) {
-    const request = new APIRequest();
-
-    request
-      .get(path)
-      .then((response: Response) => {
-        if (response.status === 200) {
-          return response.json();
-        }
-        return null;
-      })
-      .then((json: unknown) => {
-        if (json) {
-          console.log("Tour:", json);
-          // fix all the dates, sigh
-          let dates = json as {
-            startDate: string;
-            endDate: string;
-          };
-          let tour = json as Tour;
-          tour.startDate = new Date(dates.startDate);
-          tour.endDate = new Date(dates.endDate);
-          this.tour = json as Tour;
-        }
-      });
-  }
 }

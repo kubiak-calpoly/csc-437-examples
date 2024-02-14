@@ -1,5 +1,6 @@
 import { css, html, LitElement, unsafeCSS } from "lit";
 import { customElement, state } from "lit/decorators.js";
+import { provide } from "@lit/context";
 import { Router } from "@vaadin/router";
 import "../components/auth-required";
 import "../components/blazing-header";
@@ -7,8 +8,9 @@ import "./tour-page";
 import "./profile-page";
 import resetCSS from "/src/styles/reset.css?inline";
 import { APIUser } from "../rest";
-import { Message, start } from "../app";
+import { Message, modelContext, start } from "../app";
 import { BlazingModel } from "../model";
+import { update } from "../update";
 
 function view(model: BlazingModel) {
   const { user } = model;
@@ -21,21 +23,27 @@ function view(model: BlazingModel) {
   `;
 }
 
-function update(model: BlazingModel, msg: Message) {
-  const next = model;
-  console.log("Updating with message", msg);
-
-  return next;
-}
-
 @customElement("blazing-app")
 export class BlazingAppElement extends LitElement {
   app = start(this, view, update, {
     user: { authUser: new APIUser() }
   });
 
+  @provide({ context: modelContext })
   @state()
   model: BlazingModel = this.app.model;
+
+  constructor() {
+    super();
+    (this as HTMLElement).addEventListener(
+      "mvu:message",
+      (ev: Event) => {
+        const msg = (ev as CustomEvent).detail as Message;
+        console.log("Got message: ", msg);
+        this.app.receive(msg);
+      }
+    );
+  }
 
   firstUpdated(changedProperties: Map<string, unknown>) {
     super.firstUpdated(changedProperties);
