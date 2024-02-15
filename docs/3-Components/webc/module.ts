@@ -140,8 +140,7 @@ class DropdownElementV1 extends LitElement {
           <li>Command 2</li>
           <li>Command 3</li>
         </ul>
-        <slot> </slot
-      ></slot>
+      </slot>
     `;
   }
 
