@@ -1,15 +1,14 @@
 import { APIRequest } from "./rest";
-import { Message, TourSelected } from "./app";
-import { BlazingModel } from "./model";
+import * as App from "./app";
 import { Tour } from "ts-models";
 
-export function update(model: BlazingModel, msg: Message) {
+export function update(model: App.Model, msg: App.Message) {
   console.log("Updating with message", msg);
 
-  return new Promise<BlazingModel>((resolve, reject) => {
+  return new Promise<App.Model>((resolve, reject) => {
     switch (msg.type) {
       case "TourSelected": {
-        const { tourId } = msg as TourSelected;
+        const { tourId } = msg as App.TourSelected;
 
         console.log("Time to load the tour", tourId);
         const request = new APIRequest();
@@ -25,7 +24,7 @@ export function update(model: BlazingModel, msg: Message) {
           .then((json: unknown) => {
             if (json) {
               console.log("Tour:", json);
-              // fix all the dates, sigh
+              // convert dates in json to Date objects
               let dates = json as {
                 startDate: string;
                 endDate: string;

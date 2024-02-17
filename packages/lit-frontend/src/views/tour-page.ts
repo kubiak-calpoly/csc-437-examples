@@ -12,8 +12,7 @@ import {
 } from "lit/decorators.js";
 import { consume } from "@lit/context";
 import { Tour, Destination, Transportation } from "ts-models";
-import { BlazingModel } from "../model";
-import { TourSelected, modelContext } from "../app";
+import * as App from "../app";
 import "../components/calendar-widget";
 import "../components/entourage-table";
 import "../components/itinerary-item";
@@ -30,9 +29,9 @@ export class TourPageElement extends LitElement {
   @property({ attribute: false })
   location: Object | undefined;
 
-  @consume({ context: modelContext, subscribe: true })
+  @consume({ context: App.context, subscribe: true })
   @property({ attribute: false })
-  model: BlazingModel | undefined;
+  model: App.Model | undefined;
 
   @state()
   tour: Tour | undefined;
@@ -42,8 +41,8 @@ export class TourPageElement extends LitElement {
       // running under the router
       const tourId = (this.location as TourLocation).params
         .tour;
-      console.log("TOur Page:", tourId);
-      const msg: TourSelected = {
+      console.log("Tour Page:", tourId);
+      const msg: App.TourSelected = {
         type: "TourSelected",
         tourId: tourId
       };
@@ -74,10 +73,11 @@ export class TourPageElement extends LitElement {
     super.attributeChangedCallback(name, oldValue, newValue);
   }
 
-  updated(changedProperties: Map<string, any>) {
-    console.log("updated Tour Page", changedProperties);
-    if (changedProperties.has("model")) {
+  updated(changes: Map<string, any>) {
+    console.log("Tour Page received changes", changes);
+    if (changes.has("model")) {
       this.tour = this.model?.tour;
+      console.log("Tour:", this.tour);
     }
     return true;
   }

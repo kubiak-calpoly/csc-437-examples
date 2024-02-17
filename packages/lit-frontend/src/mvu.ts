@@ -6,12 +6,44 @@ export type Update<M, Msg> = (
   message: Msg
 ) => Promise<M>;
 export type Element<M> = LitElement & { model: M };
-export interface Msg<t> {
+
+export interface MsgType<t extends string> {
   type: t;
 }
 
 export interface App<M, Msg> {
   readonly model: M;
-  view: View<M>;
-  update: Update<M, Msg>;
+  updateFn: Update<M, Msg>;
+}
+
+export class MVUApp<M, Msg>
+  extends LitElement
+  implements App<M, Msg>
+{
+  model: M;
+
+  updateFn: Update<M, Msg>;
+
+  constructor(update: Update<M, Msg>, init: M) {
+    super();
+    this.model = init;
+    this.updateFn = update;
+    (this as HTMLElement).addEventListener(
+      "mvu:message",
+      (ev: Event) => {
+        const msg = (ev as CustomEvent).detail as Msg;
+        console.log("Got message: ", msg);
+        this.receive(msg);
+      }
+    );
+  }
+
+  receive(msg: Msg) {
+    if (this.model) {
+      this.updateFn(this.model, msg).then((next) => {
+        this.model = next;
+        console.log("Model updated to", next);
+      });
+    }
+  }
 }

@@ -1,45 +1,33 @@
-import { App, Element, Msg, Update, View } from "./mvu.ts";
-import { BlazingModel } from "./model";
-import { AuthenticatedUser } from "./rest";
-import { createContext } from "@lit/context";
+import { createContext, provide } from "@lit/context";
+import { state } from "lit/decorators.js";
+import { MVUApp, MsgType, Update } from "./mvu";
+import { AuthenticatedUser, APIUser } from "./rest";
+import { Tour, Profile } from "ts-models";
 
-export let modelContext = createContext<BlazingModel>("model");
-
-export class BlazingApp implements App<BlazingModel, Message> {
-  model: BlazingModel;
-  view: View<BlazingModel>;
-  update: Update<BlazingModel, Message>;
-  setModel: (next: BlazingModel) => void;
-
-  constructor(
-    model: BlazingModel,
-    view: View<BlazingModel>,
-    update: Update<BlazingModel, Message>,
-    setter: (next: BlazingModel) => void
-  ) {
-    this.model = model;
-    this.view = view;
-    this.update = update;
-    this.setModel = setter;
-  }
-
-  receive(msg: Message) {
-    this.update(this.model, msg).then((next) => {
-      this.setModel((this.model = next));
-    });
-  }
+export interface Model {
+  tour?: Tour;
+  user: {
+    profile?: Profile;
+    authUser: APIUser;
+  };
 }
 
-export interface UserLoggedIn extends Msg<"UserLoggedIn"> {
+export const context = createContext<Model>("BlazingModel");
+
+export const init: Model = {
+  user: { authUser: new APIUser() }
+};
+
+export interface UserLoggedIn extends MsgType<"UserLoggedIn"> {
   user: AuthenticatedUser;
 }
 
-export interface TourSelected extends Msg<"TourSelected"> {
+export interface TourSelected extends MsgType<"TourSelected"> {
   tourId: string;
 }
 
 export interface ProfileSelected
-  extends Msg<"ProfileSelected"> {
+  extends MsgType<"ProfileSelected"> {
   userid: string;
 }
 
@@ -48,18 +36,13 @@ export type Message =
   | TourSelected
   | ProfileSelected;
 
-export function start(
-  element: Element<BlazingModel>,
-  view: View<BlazingModel>,
-  update: Update<BlazingModel, Message>,
-  init: BlazingModel
-) {
-  const setter = (next: BlazingModel) => {
-    console.log("Model updated:", next);
-    element.model = next;
-  };
+export class Main extends MVUApp<Model, Message> {
+  @provide({ context })
+  @state()
+  model: Model;
 
-  const app = new BlazingApp(init, view, update, setter);
-
-  return app;
+  constructor(update: Update<Model, Message>) {
+    super(update, init);
+    this.model = init;
+  }
 }

@@ -84,7 +84,7 @@ export class BlazingHeaderElement extends LitElement {
     `
   ];
 
-  updated(changedProperties: Map<string, any>) {
+  updated(changedProperties: Map<string, unknown>) {
     console.log(
       "Profile Data has been updated",
       changedProperties
