@@ -1,39 +1,17 @@
 import { css, html, LitElement, unsafeCSS } from "lit";
-import {
-  customElement,
-  property,
-  state
-} from "lit/decorators.js";
-import { APIRequest, JSONRequest } from "../rest";
+import { customElement, property } from "lit/decorators.js";
 import { Profile } from "ts-models";
+import * as App from "../app";
 import resetCSS from "/src/styles/reset.css?inline";
 import pageCSS from "/src/styles/page.css?inline";
 
 @customElement("user-profile")
 export class UserProfileElement extends LitElement {
   @property()
-  path: string = "";
+  using?: Profile;
 
-  @state()
-  profile?: Profile;
-
-  connectedCallback() {
-    if (this.path) {
-      this._fetchData(this.path);
-    }
-    super.connectedCallback();
-  }
-
-  attributeChangedCallback(
-    name: string,
-    oldValue: string,
-    newValue: string
-  ) {
-    console.log("attributeChanged", oldValue, newValue);
-    if (name === "path" && oldValue !== newValue && oldValue) {
-      this._fetchData(newValue);
-    }
-    super.attributeChangedCallback(name, oldValue, newValue);
+  get profile() {
+    return this.using || ({} as Profile);
   }
 
   render() {
@@ -43,7 +21,7 @@ export class UserProfileElement extends LitElement {
       nickname,
       city,
       airports = []
-    } = (this.profile || {}) as Profile;
+    } = this.profile;
 
     const renderAirport = (s: string) => html`<dd>${s}</dd>`;
 
@@ -141,22 +119,6 @@ export class UserProfileElement extends LitElement {
       }
     `
   ];
-
-  _fetchData(path: string) {
-    const request = new APIRequest();
-
-    request
-      .get(path)
-      .then((response) => {
-        if (response.status === 200) {
-          return response.json();
-        }
-        return null;
-      })
-      .then((json: unknown) => {
-        this.profile = json as Profile;
-      });
-  }
 }
 
 @customElement("user-profile-edit")
@@ -238,57 +200,48 @@ export class UserProfileEditElement extends UserProfileElement {
       }
     );
 
-    reader.then((result: string) => {
-      this.profile = {
-        ...(this.profile as Profile),
-        avatar: result
+    reader
+      .then
+      //     (result: string) => {
+      //       this.profile = {
+      //   ...(this.profile as Profile),
+      //   avatar: result
+      // };
+      ();
+  }
+
+  _handleSubmit(event: Event) {
+    event.preventDefault(); // prevent browser from submitting form data itself
+
+    if (this.profile) {
+      // const avatar = this.profile?.avatar;
+      const target = event.target as HTMLFormElement;
+      const formdata = new FormData(target);
+      let entries = Array.from(formdata.entries())
+        .map(([k, v]) => (v === "" ? [k] : [k, v]))
+        .map(([k, v]) =>
+          k === "airports"
+            ? [k, (v as string).split(",").map((s) => s.trim())]
+            : [k, v]
+        );
+
+      // if (avatar) entries.push(["avatar", avatar]);
+
+      const json = Object.fromEntries(entries);
+
+      console.log("Submitting Form", json);
+
+      const msg: App.ProfileSaved = {
+        type: "ProfileSaved",
+        userid: this.profile?.userid,
+        profile: json as Profile
       };
-    });
-  }
-
-  _handleSubmit(ev: Event) {
-    ev.preventDefault(); // prevent browser from submitting form data itself
-
-    const avatar = this.profile?.avatar;
-    const target = ev.target as HTMLFormElement;
-    const formdata = new FormData(target);
-    let entries = Array.from(formdata.entries())
-      .map(([k, v]) => (v === "" ? [k] : [k, v]))
-      .map(([k, v]) =>
-        k === "airports"
-          ? [k, (v as string).split(",").map((s) => s.trim())]
-          : [k, v]
-      );
-
-    if (avatar) entries.push(["avatar", avatar]);
-
-    const json = Object.fromEntries(entries);
-
-    console.log("Submitting Form", json);
-
-    this._putData(json);
-  }
-
-  _putData(json: Profile) {
-    const request = new JSONRequest(json);
-
-    request
-      .put(this.path)
-      .then((response) => {
-        if (response.status === 200) {
-          return response.json();
-        }
-        return null;
-      })
-      .then((json: unknown) => {
-        if (json) {
-          console.log("PUT request successful:", json);
-          this.profile = json as Profile;
-          window.history.back();
-        }
-      })
-      .catch((err) =>
-        console.log("Failed to POST form data", err)
-      );
+      const ev = new CustomEvent("mvu:message", {
+        bubbles: true,
+        composed: true,
+        detail: msg
+      });
+      this.dispatchEvent(ev);
+    }
   }
 }

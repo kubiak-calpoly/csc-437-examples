@@ -1,22 +1,32 @@
 import { LitElement, TemplateResult } from "lit";
 
 export type View<M> = (model: M) => TemplateResult;
-export type Update<M, Msg> = (
+
+type ModelMap<M> = (model: M) => M;
+type UpdateResult<M> = M | Promise<ModelMap<M>>;
+
+export type Update<M, Msg extends TypedMessage> = (
   model: M,
   message: Msg
-) => Promise<M>;
+) => UpdateResult<M>;
+
 export type Element<M> = LitElement & { model: M };
 
-export interface MsgType<t extends string> {
+export interface TypedMessage {
+  type: string;
+}
+
+export interface MsgType<t extends string>
+  extends TypedMessage {
   type: t;
 }
 
-export interface App<M, Msg> {
+export interface App<M, Msg extends TypedMessage> {
   readonly model: M;
   updateFn: Update<M, Msg>;
 }
 
-export class MVUApp<M, Msg>
+export class MVUApp<M, Msg extends TypedMessage>
   extends LitElement
   implements App<M, Msg>
 {
@@ -40,10 +50,62 @@ export class MVUApp<M, Msg>
 
   receive(msg: Msg) {
     if (this.model) {
-      this.updateFn(this.model, msg).then((next) => {
-        this.model = next;
-        console.log("Model updated to", next);
-      });
+      const next = this.updateFn(this.model, msg);
+      const promise = next as Promise<ModelMap<M>>;
+
+      if (typeof promise?.then === "function") {
+        // result is a promise
+        promise.then((mapFn: ModelMap<M>) => {
+          const next = mapFn(this.model);
+          this.model = next;
+        });
+      } else {
+        this.model = next as M;
+      }
     }
   }
+}
+
+type DirectHandler<M, Msg> = (msg: Msg, model: M) => M;
+
+type IndirectHandler<M, Msg> = (
+  msg: Msg
+) => Promise<ModelMap<M>>;
+
+type Handler<M, Msg> =
+  | DirectHandler<M, Msg>
+  | IndirectHandler<M, Msg>;
+
+export class Dispatch<M, Msg extends TypedMessage> {
+  _handlers: Map<string, Handler<M, Msg>> = new Map();
+
+  constructor() {
+    this.update = this._update.bind(this);
+  }
+
+  addMessage(type: string, handler: Handler<M, Msg>) {
+    console.log("Message added for dispatch:", type);
+    this._handlers.set(type, handler);
+  }
+
+  update: Update<M, Msg>; // bound function
+
+  _update(model: M, msg: Msg) {
+    const { type } = msg as TypedMessage;
+    const handler = this._handlers.get(type);
+
+    return handler ? handler(msg, model) : model;
+  }
+}
+
+export type Assignments<M> = {
+  [Property in keyof M]+?: unknown;
+};
+
+export function updateProps<M>(props: Assignments<M>) {
+  return (m: M) => Object.assign({}, m, props);
+}
+
+export function noUpdate<M>(m: M) {
+  return m;
 }

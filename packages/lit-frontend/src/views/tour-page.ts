@@ -27,7 +27,7 @@ type TourLocation = Location & {
 @customElement("tour-page")
 export class TourPageElement extends LitElement {
   @property({ attribute: false })
-  location: Object | undefined;
+  location?: TourLocation;
 
   @consume({ context: App.context, subscribe: true })
   @property({ attribute: false })
@@ -38,9 +38,26 @@ export class TourPageElement extends LitElement {
 
   connectedCallback() {
     if (this.location) {
-      // running under the router
-      const tourId = (this.location as TourLocation).params
-        .tour;
+      this.locationChanged();
+    }
+    super.connectedCallback();
+  }
+
+  updated(changes: Map<string, any>) {
+    console.log("Tour Page received changes", changes);
+    if (changes.has("model")) {
+      this.tour = this.model?.tour;
+      console.log("Tour:", this.tour);
+    }
+    if (changes.has("location")) {
+      this.locationChanged();
+    }
+    return true;
+  }
+
+  locationChanged() {
+    if (this.location) {
+      const tourId = this.location.params.tour;
       console.log("Tour Page:", tourId);
       const msg: App.TourSelected = {
         type: "TourSelected",
@@ -52,34 +69,7 @@ export class TourPageElement extends LitElement {
         detail: msg
       });
       this.dispatchEvent(ev);
-      // this._getData(`/tours/${this.tourId}`);
     }
-    super.connectedCallback();
-  }
-
-  attributeChangedCallback(
-    name: string,
-    oldValue: string,
-    newValue: string
-  ) {
-    console.log("attributeChanged:", name, newValue);
-    if (
-      name === "tour-id" &&
-      newValue &&
-      newValue !== oldValue
-    ) {
-      // this._getData(`/tours/${newValue}`);
-    }
-    super.attributeChangedCallback(name, oldValue, newValue);
-  }
-
-  updated(changes: Map<string, any>) {
-    console.log("Tour Page received changes", changes);
-    if (changes.has("model")) {
-      this.tour = this.model?.tour;
-      console.log("Tour:", this.tour);
-    }
-    return true;
   }
 
   render(): TemplateResult {

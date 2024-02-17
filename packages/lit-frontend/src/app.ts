@@ -1,21 +1,20 @@
 import { createContext, provide } from "@lit/context";
 import { state } from "lit/decorators.js";
-import { MVUApp, MsgType, Update } from "./mvu";
+import * as MVU from "./mvu";
+import { Dispatch, MVUApp, MsgType, Update } from "./mvu";
 import { AuthenticatedUser, APIUser } from "./rest";
 import { Tour, Profile } from "ts-models";
 
 export interface Model {
   tour?: Tour;
-  user: {
-    profile?: Profile;
-    authUser: APIUser;
-  };
+  user: APIUser;
+  profile?: Profile;
 }
 
 export const context = createContext<Model>("BlazingModel");
 
 export const init: Model = {
-  user: { authUser: new APIUser() }
+  user: new APIUser()
 };
 
 export interface UserLoggedIn extends MsgType<"UserLoggedIn"> {
@@ -31,10 +30,16 @@ export interface ProfileSelected
   userid: string;
 }
 
+export interface ProfileSaved extends MsgType<"ProfileSaved"> {
+  userid: string;
+  profile: Profile;
+}
+
 export type Message =
   | UserLoggedIn
   | TourSelected
-  | ProfileSelected;
+  | ProfileSelected
+  | ProfileSaved;
 
 export class Main extends MVUApp<Model, Message> {
   @provide({ context })
@@ -46,3 +51,11 @@ export class Main extends MVUApp<Model, Message> {
     this.model = init;
   }
 }
+
+export const createDispatch = () =>
+  new Dispatch<Model, Message>();
+
+export type Assignments = MVU.Assignments<Model>;
+
+export const updateProps = MVU.updateProps<Model>;
+export const noUpdate = MVU.noUpdate<Model>;

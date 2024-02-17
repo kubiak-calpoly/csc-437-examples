@@ -2,7 +2,7 @@ import { css, html, unsafeCSS } from "lit";
 import { customElement } from "lit/decorators.js";
 // MVU app
 import * as App from "../app";
-import { update } from "../update";
+import update from "../update";
 // components
 import "../components/auth-required";
 import "../components/vaadin-router";

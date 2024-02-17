@@ -1,48 +1,83 @@
-import { APIRequest } from "./rest";
+import { APIRequest, JSONRequest } from "./rest";
 import * as App from "./app";
-import { Tour } from "ts-models";
+import { Tour, Profile } from "ts-models";
 
-export function update(model: App.Model, msg: App.Message) {
-  console.log("Updating with message", msg);
+const dispatch = App.createDispatch();
 
-  return new Promise<App.Model>((resolve, reject) => {
-    switch (msg.type) {
-      case "TourSelected": {
-        const { tourId } = msg as App.TourSelected;
+export default dispatch.update;
 
-        console.log("Time to load the tour", tourId);
-        const request = new APIRequest();
+dispatch.addMessage("TourSelected", (msg: App.Message) => {
+  const { tourId } = msg as App.TourSelected;
+  console.log("Handling TourSelected Message", msg);
 
-        request
-          .get(`/tours/${tourId}`)
-          .then((response: Response) => {
-            if (response.status === 200) {
-              return response.json();
-            }
-            return undefined;
-          })
-          .then((json: unknown) => {
-            if (json) {
-              console.log("Tour:", json);
-              // convert dates in json to Date objects
-              let dates = json as {
-                startDate: string;
-                endDate: string;
-              };
-              let tour = json as Tour;
-              tour.startDate = new Date(dates.startDate);
-              tour.endDate = new Date(dates.endDate);
-              return json as Tour;
-            }
-          })
-          .then((tour: Tour | undefined) => {
-            if (tour) {
-              resolve({ ...model, tour });
-            } else {
-              reject();
-            }
-          });
+  return new APIRequest()
+    .get(`/tours/${tourId}`)
+    .then((response: Response) => {
+      if (response.status === 200) {
+        return response.json();
       }
-    }
-  });
-}
+      return undefined;
+    })
+    .then((json: unknown) => {
+      if (json) {
+        console.log("Tour:", json);
+        // convert dates in json to Date objects
+        let dates = json as {
+          startDate: string;
+          endDate: string;
+        };
+        let tour = json as Tour;
+        tour.startDate = new Date(dates.startDate);
+        tour.endDate = new Date(dates.endDate);
+        return json as Tour;
+      }
+    })
+    .then((tour: Tour | undefined) =>
+      tour ? App.updateProps({ tour }) : App.noUpdate
+    );
+});
+
+dispatch.addMessage("ProfileSelected", (msg: App.Message) => {
+  const { userid } = msg as App.ProfileSelected;
+
+  return new APIRequest()
+    .get(`/profiles/${userid}`)
+    .then((response: Response) => {
+      if (response.status === 200) {
+        return response.json();
+      }
+      return undefined;
+    })
+    .then((json: unknown) => {
+      if (json) {
+        console.log("Profile:", json);
+        return json as Profile;
+      }
+    })
+    .then((profile: Profile | undefined) =>
+      profile ? App.updateProps({ profile }) : App.noUpdate
+    );
+});
+
+dispatch.addMessage("ProfileSaved", (msg: App.Message) => {
+  const { userid, profile } = msg as App.ProfileSaved;
+
+  return new JSONRequest(profile)
+    .put(`/profiles/${userid}`)
+    .then((response: Response) => {
+      if (response.status === 200) {
+        return response.json();
+      }
+      return undefined;
+    })
+    .then((json: unknown) => {
+      if (json) {
+        console.log("Profile:", json);
+        json as Profile;
+      }
+      return undefined;
+    })
+    .then((profile: Profile | undefined) =>
+      profile ? App.updateProps({ profile }) : App.noUpdate
+    );
+});
