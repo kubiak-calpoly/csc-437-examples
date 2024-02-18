@@ -36,7 +36,12 @@ function index() {
   return import_tour.default.find();
 }
 function get(id) {
-  return import_tour.default.findById(id).then((doc) => {
+  return import_tour.default.findById(id).populate({
+    path: "entourage",
+    populate: {
+      path: "people"
+    }
+  }).then((doc) => {
     return doc;
   }).catch((err) => {
     throw `${id} Not Found`;

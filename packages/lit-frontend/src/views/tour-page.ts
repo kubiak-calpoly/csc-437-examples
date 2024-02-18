@@ -1,11 +1,7 @@
-import { css, html, LitElement, unsafeCSS } from "lit";
-import {
-  customElement,
-  property,
-  state
-} from "lit/decorators.js";
-import { Tour, Destination, Transportation } from "ts-models";
-import { APIRequest } from "../rest";
+import { css, html, TemplateResult, unsafeCSS } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { Destination, Transportation } from "ts-models";
+import * as App from "../app";
 import "../components/calendar-widget";
 import "../components/entourage-table";
 import "../components/itinerary-item";
@@ -18,29 +14,19 @@ type TourLocation = Location & {
 };
 
 @customElement("tour-page")
-export class TourPageElement extends LitElement {
+export class TourPageElement extends App.View {
   @property({ attribute: false })
   location?: TourLocation;
 
-  @property({ attribute: "tour-id" })
-  tourId?: string;
+  @property({ attribute: "tour-id", reflect: true })
+  get tourId() {
+    return this.location?.params.tour;
+  }
 
-  @state()
-  tour?: Tour;
-
-  connectedCallback() {
-    if (!this.tourId && this.location) {
-      // running under the router
-      const url = new URL(this.location.toString());
-      this.tourId =
-        this.location.params.tour ||
-        url.searchParams.get("tour") ||
-        undefined;
-    }
-    if (this.tourId) {
-      this._getData(`/tours/${this.tourId}`);
-    }
-    super.connectedCallback();
+  @property()
+  get tour() {
+    this.getFromModel("tour");
+    return this._model?.tour;
   }
 
   attributeChangedCallback(
@@ -50,15 +36,19 @@ export class TourPageElement extends LitElement {
   ) {
     if (
       name === "tour-id" &&
-      newValue &&
-      newValue !== oldValue
+      oldValue !== newValue &&
+      newValue
     ) {
-      this._getData(`/tours/${newValue}`);
+      console.log("Tour Page:", newValue);
+      this.dispatchMessage({
+        type: "TourSelected",
+        tourId: newValue
+      });
     }
     super.attributeChangedCallback(name, oldValue, newValue);
   }
 
-  render() {
+  render(): TemplateResult {
     const {
       endDate,
       destinations = [],
@@ -165,8 +155,7 @@ export class TourPageElement extends LitElement {
           })}
         </section>
 
-        <entourage-table path="/entourages/${entourage}">
-        </entourage-table>
+        <entourage-table .using=${entourage}> </entourage-table>
       </main>
     `;
   }
@@ -213,29 +202,4 @@ export class TourPageElement extends LitElement {
       }
     `
   ];
-
-  _getData(path: string) {
-    const request = new APIRequest();
-
-    request
-      .get(path)
-      .then((response: Response) => {
-        if (response.status === 200) {
-          return response.json();
-        }
-        return null;
-      })
-      .then((json: unknown) => {
-        console.log("Tour:", json);
-        // fix all the dates, sigh
-        let dates = json as {
-          startDate: string;
-          endDate: string;
-        };
-        let tour = json as Tour;
-        tour.startDate = new Date(dates.startDate);
-        tour.endDate = new Date(dates.endDate);
-        this.tour = json as Tour;
-      });
-  }
 }
