@@ -14,13 +14,23 @@ function index(): Promise<Tour[]> {
 }
 
 function get(id: String): Promise<Tour> {
-  return TourModel.findById(id)
-    .then((doc: unknown) => {
-      return doc as Tour;
-    })
-    .catch((err) => {
-      throw `${id} Not Found`;
-    });
+  return (
+    TourModel.findById(id)
+      // when you fetch a single tour,
+      // the entourage is populated
+      .populate({
+        path: "entourage",
+        populate: {
+          path: "people"
+        }
+      })
+      .then((doc: unknown) => {
+        return doc as Tour;
+      })
+      .catch((err) => {
+        throw `${id} Not Found`;
+      })
+  );
 }
 
 function create(profile: Tour): Promise<Tour> {

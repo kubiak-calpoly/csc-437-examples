@@ -179,8 +179,7 @@ export class TourPageElement extends LitElement {
           })}
         </section>
 
-        <entourage-table path="/entourages/${entourage}">
-        </entourage-table>
+        <entourage-table .using=${entourage}> </entourage-table>
       </main>
     `;
   }

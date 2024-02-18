@@ -7,7 +7,7 @@ import pageCSS from "/src/styles/page.css?inline";
 
 @customElement("user-profile")
 export class UserProfileElement extends LitElement {
-  @property()
+  @property({ attribute: false })
   using?: Profile;
 
   get profile() {

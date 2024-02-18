@@ -1,22 +1,21 @@
 import { css, html, LitElement } from "lit";
-import {
-  customElement,
-  property,
-  state
-} from "lit/decorators.js";
-import { APIRequest } from "../rest";
+import { customElement, property } from "lit/decorators.js";
 import { Entourage, Profile } from "ts-models";
 
 @customElement("entourage-table")
 export class EntourageTable extends LitElement {
+  @property({ attribute: false })
+  using?: Entourage;
+
+  get entourage() {
+    return this.using || ({} as Entourage);
+  }
+
   @property()
   path: string = "";
 
-  @state()
-  entourage?: Entourage;
-
   render() {
-    const { name, people } = this.entourage || {};
+    const { name, people } = this.entourage;
     const rows = people || [];
 
     const renderRow = (row: Profile) => {
@@ -101,39 +100,4 @@ export class EntourageTable extends LitElement {
       width: 100%;
     }
   `;
-
-  connectedCallback() {
-    if (this.path) {
-      this._getData(this.path);
-    }
-    super.connectedCallback();
-  }
-
-  attributeChangedCallback(
-    name: string,
-    oldValue: string,
-    newValue: string
-  ) {
-    if (name === "path" && newValue && newValue !== oldValue) {
-      this._getData(newValue);
-    }
-    super.attributeChangedCallback(name, oldValue, newValue);
-  }
-
-  _getData(path: string) {
-    const request = new APIRequest();
-
-    request
-      .get(path)
-      .then((response: Response) => {
-        if (response.status === 200) {
-          return response.json();
-        }
-        return null;
-      })
-      .then((json: unknown) => {
-        console.log("Entourage:", json);
-        this.entourage = json as Entourage;
-      });
-  }
 }
