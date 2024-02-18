@@ -1,11 +1,5 @@
-import { css, html, LitElement, unsafeCSS } from "lit";
-import {
-  customElement,
-  property,
-  state
-} from "lit/decorators.js";
-import { consume } from "@lit/context";
-import { Profile } from "ts-models";
+import { css, html, unsafeCSS } from "lit";
+import { customElement, property } from "lit/decorators.js";
 import * as App from "../app";
 import "../components/user-profile";
 import resetCSS from "/src/styles/reset.css?inline";
@@ -17,58 +11,42 @@ type ProfileLocation = Location & {
 };
 
 @customElement("profile-page")
-export class ProfilePageElement extends LitElement {
+export class ProfilePageElement extends App.View {
   @property({ attribute: false })
   location?: ProfileLocation;
 
-  @property()
-  userid?: string;
-
-  @property()
-  edit = false;
-
-  @consume({ context: App.context, subscribe: true })
-  @property({ attribute: false })
-  model: App.Model | undefined;
-
-  @state()
-  profile: Profile | undefined;
-
-  connectedCallback() {
-    if (this.location) {
-      this.locationChanged();
-    }
-    super.connectedCallback();
+  @property({ reflect: true })
+  get userid() {
+    return this.location?.params.userid;
   }
 
-  updated(changes: Map<string, any>) {
-    console.log("Tour Page received changes", changes);
-    if (changes.has("model")) {
-      this.profile = this.model?.profile;
-      console.log("Profile:", this.profile);
-    }
-    if (changes.has("location")) {
-      this.locationChanged();
-    }
-    return true;
+  @property({ reflect: true })
+  get edit() {
+    return this.location?.params.edit;
   }
 
-  locationChanged() {
-    if (this.location) {
-      this.userid = this.location.params.userid;
-      this.edit = this.location.params.edit === "edit";
-      console.log("Profile Page:", this.userid, this.edit);
-      const msg: App.ProfileSelected = {
+  @property()
+  get profile() {
+    return this.getFromModel("profile");
+  }
+
+  attributeChangedCallback(
+    name: string,
+    oldValue: string,
+    newValue: string
+  ) {
+    if (
+      name === "userid" &&
+      oldValue !== newValue &&
+      newValue
+    ) {
+      console.log("Profile Page:", newValue);
+      this.dispatchMessage({
         type: "ProfileSelected",
-        userid: this.userid
-      };
-      const ev = new CustomEvent("mvu:message", {
-        bubbles: true,
-        composed: true,
-        detail: msg
+        userid: newValue
       });
-      this.dispatchEvent(ev);
     }
+    super.attributeChangedCallback(name, oldValue, newValue);
   }
 
   render() {

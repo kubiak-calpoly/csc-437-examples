@@ -1,17 +1,6 @@
-import {
-  css,
-  html,
-  LitElement,
-  TemplateResult,
-  unsafeCSS
-} from "lit";
-import {
-  customElement,
-  property,
-  state
-} from "lit/decorators.js";
-import { consume } from "@lit/context";
-import { Tour, Destination, Transportation } from "ts-models";
+import { css, html, TemplateResult, unsafeCSS } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { Destination, Transportation } from "ts-models";
 import * as App from "../app";
 import "../components/calendar-widget";
 import "../components/entourage-table";
@@ -25,51 +14,38 @@ type TourLocation = Location & {
 };
 
 @customElement("tour-page")
-export class TourPageElement extends LitElement {
+export class TourPageElement extends App.View {
   @property({ attribute: false })
   location?: TourLocation;
 
-  @consume({ context: App.context, subscribe: true })
-  @property({ attribute: false })
-  model: App.Model | undefined;
-
-  @state()
-  tour: Tour | undefined;
-
-  connectedCallback() {
-    if (this.location) {
-      this.locationChanged();
-    }
-    super.connectedCallback();
+  @property({ attribute: "tour-id", reflect: true })
+  get tourId() {
+    return this.location?.params.tour;
   }
 
-  updated(changes: Map<string, any>) {
-    console.log("Tour Page received changes", changes);
-    if (changes.has("model")) {
-      this.tour = this.model?.tour;
-      console.log("Tour:", this.tour);
-    }
-    if (changes.has("location")) {
-      this.locationChanged();
-    }
-    return true;
+  @property()
+  get tour() {
+    this.getFromModel("tour");
+    return this._model?.tour;
   }
 
-  locationChanged() {
-    if (this.location) {
-      const tourId = this.location.params.tour;
-      console.log("Tour Page:", tourId);
-      const msg: App.TourSelected = {
+  attributeChangedCallback(
+    name: string,
+    oldValue: string,
+    newValue: string
+  ) {
+    if (
+      name === "tour-id" &&
+      oldValue !== newValue &&
+      newValue
+    ) {
+      console.log("Tour Page:", newValue);
+      this.dispatchMessage({
         type: "TourSelected",
-        tourId: tourId
-      };
-      const ev = new CustomEvent("mvu:message", {
-        bubbles: true,
-        composed: true,
-        detail: msg
+        tourId: newValue
       });
-      this.dispatchEvent(ev);
     }
+    super.attributeChangedCallback(name, oldValue, newValue);
   }
 
   render(): TemplateResult {

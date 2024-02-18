@@ -1,6 +1,4 @@
-import { LitElement, TemplateResult } from "lit";
-
-export type View<M> = (model: M) => TemplateResult;
+import { LitElement } from "lit";
 
 type ModelMap<M> = (model: M) => M;
 type UpdateResult<M> = M | Promise<ModelMap<M>>;
@@ -22,11 +20,11 @@ export interface MsgType<t extends string>
 }
 
 export interface App<M, Msg extends TypedMessage> {
-  readonly model: M;
+  model: M;
   updateFn: Update<M, Msg>;
 }
 
-export class MVUApp<M, Msg extends TypedMessage>
+export class Main<M, Msg extends TypedMessage>
   extends LitElement
   implements App<M, Msg>
 {
@@ -63,6 +61,17 @@ export class MVUApp<M, Msg extends TypedMessage>
         this.model = next as M;
       }
     }
+  }
+}
+
+export class View<Msg> extends LitElement {
+  dispatchMessage(msg: Msg, target: HTMLElement = this) {
+    const ev = new CustomEvent("mvu:message", {
+      bubbles: true,
+      composed: true,
+      detail: msg
+    });
+    target.dispatchEvent(ev);
   }
 }
 
