@@ -1,7 +1,7 @@
 import { consume, createContext, provide } from "@lit/context";
 import { property, state } from "lit/decorators.js";
 import * as MVU from "./mvu";
-import { Dispatch, MsgType, Update } from "./mvu";
+import { MsgType } from "./mvu";
 import { AuthenticatedUser, APIUser } from "./rest";
 import { Tour, Profile } from "ts-models";
 
@@ -41,22 +41,15 @@ export type Message =
   | ProfileSelected
   | ProfileSaved;
 
-export const createDispatch = () =>
-  new Dispatch<Model, Message>();
-
-export type Assignments = MVU.Assignments<Model>;
-
-export const updateProps = MVU.updateProps<Model>;
-export const noUpdate = MVU.noUpdate<Model>;
-
 export class Main extends MVU.Main<Model, Message> {
   @provide({ context })
   @state()
-  model: Model;
+  get model() {
+    return this._model;
+  }
 
-  constructor(update: Update<Model, Message>) {
+  constructor(update: MVU.Update<Model, Message>) {
     super(update, init);
-    this.model = init;
   }
 }
 
@@ -65,9 +58,15 @@ export class View extends MVU.View<Message> {
   @property({ attribute: false })
   _model: Model | undefined;
 
-  getFromModel(path: keyof Model) {
+  getFromModel<T>(key: keyof Model) {
     if (this._model) {
-      return this._model[path];
+      return this._model[key] as T;
     }
   }
 }
+
+export const createDispatch = () =>
+  new MVU.Dispatch<Model, Message>();
+
+export const updateProps = MVU.updateProps<Model>;
+export const noUpdate = MVU.noUpdate<Model>;

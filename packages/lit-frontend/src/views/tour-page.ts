@@ -1,6 +1,6 @@
 import { css, html, TemplateResult, unsafeCSS } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { Destination, Transportation } from "ts-models";
+import { Tour, Destination, Transportation } from "ts-models";
 import * as App from "../app";
 import "../components/calendar-widget";
 import "../components/entourage-table";
@@ -25,8 +25,7 @@ export class TourPageElement extends App.View {
 
   @property()
   get tour() {
-    this.getFromModel("tour");
-    return this._model?.tour;
+    return this.getFromModel<Tour>("tour");
   }
 
   attributeChangedCallback(

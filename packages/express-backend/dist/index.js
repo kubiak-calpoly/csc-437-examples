@@ -28,39 +28,34 @@ var import_cors = __toESM(require("cors"));
 var import_mongoConnect = require("./mongoConnect");
 var import_auth = require("./auth");
 var import_api = __toESM(require("./routes/api"));
+(0, import_mongoConnect.connect)("blazing");
 const app = (0, import_express.default)();
 const port = process.env.PORT || 3e3;
+const frontend = "lit-frontend";
 let dist;
-let frontend;
+let indexHtml;
 try {
-  frontend = require.resolve("lit-frontend");
-  dist = path.resolve(frontend, "..", "..");
-  console.log("Serving lit-frontend from", dist);
+  indexHtml = require.resolve(frontend);
+  dist = path.dirname(indexHtml);
+  console.log(`Serving ${frontend} from`, dist);
 } catch (error) {
-  console.log(
-    "Cannot find static assets in lit-frontend",
-    error.code
-  );
+  console.log(`Not serving ${frontend}:`, error.code);
 }
-(0, import_mongoConnect.connect)("blazing");
 if (dist)
-  app.use(import_express.default.static(dist));
+  app.use(import_express.default.static(dist.toString()));
 app.use(import_express.default.json({ limit: "500kb" }));
 app.use((0, import_cors.default)());
 app.options("*", (0, import_cors.default)());
 app.post("/login", import_auth.loginUser);
 app.post("/signup", import_auth.registerUser);
 app.use("/api", import_api.default);
-app.use("/:spa(app)", (req, res) => {
-  const { spa } = req.params;
-  if (!dist) {
-    res.status(404).send("Not found; frontend module not loaded");
+app.use("/app", (req, res) => {
+  if (!indexHtml) {
+    res.status(404).send(`Not found; ${frontend} not available`);
   } else {
-    const indexHtml = path.resolve(dist, spa, "index.html");
     import_promises.default.readFile(indexHtml, { encoding: "utf8" }).then(
       (html) => res.send(html)
     );
-    console.log("Sent SPA from", indexHtml);
   }
 });
 app.listen(port, () => {

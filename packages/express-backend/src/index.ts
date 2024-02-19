@@ -1,31 +1,31 @@
 import express, { Request, Response } from "express";
 import * as path from "path";
+import { PathLike } from "node:fs";
 import fs from "node:fs/promises";
 import cors from "cors";
 import { connect } from "./mongoConnect";
 import { loginUser, registerUser } from "./auth";
 import apiRouter from "./routes/api";
 
+connect("blazing");
+
 const app = express();
 const port = process.env.PORT || 3000;
 
-let dist: string | undefined;
-let frontend: string | undefined;
+const frontend = "lit-frontend";
+let dist: PathLike | undefined;
+let indexHtml: PathLike | undefined;
 
 try {
-  frontend = require.resolve("lit-frontend");
-  dist = path.resolve(frontend, "..", "..");
-  console.log("Serving lit-frontend from", dist);
+  indexHtml = require.resolve(frontend);
+  dist = path.dirname(indexHtml);
+  console.log(`Serving ${frontend} from`, dist);
 } catch (error: any) {
-  console.log(
-    "Cannot find static assets in lit-frontend",
-    error.code
-  );
+  console.log(`Not serving ${frontend}:`, error.code);
 }
 
-connect("blazing");
+if (dist) app.use(express.static(dist.toString()));
 
-if (dist) app.use(express.static(dist));
 app.use(express.json({ limit: "500kb" }));
 app.use(cors());
 
@@ -36,20 +36,16 @@ app.post("/signup", registerUser);
 
 app.use("/api", apiRouter);
 
-// SPA routes ignore parameters when locating index.html
-app.use("/:spa(app)", (req, res) => {
-  const { spa } = req.params;
-
-  if (!dist) {
+// SPA route; always returns index.html
+app.use("/app", (req, res) => {
+  if (!indexHtml) {
     res
       .status(404)
-      .send("Not found; frontend module not loaded");
+      .send(`Not found; ${frontend} not available`);
   } else {
-    const indexHtml = path.resolve(dist, spa, "index.html");
     fs.readFile(indexHtml, { encoding: "utf8" }).then((html) =>
       res.send(html)
     );
-    console.log("Sent SPA from", indexHtml);
   }
 });
 

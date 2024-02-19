@@ -3,12 +3,10 @@ import * as App from "./app";
 import { Tour, Profile } from "ts-models";
 
 const dispatch = App.createDispatch();
-
 export default dispatch.update;
 
 dispatch.addMessage("TourSelected", (msg: App.Message) => {
   const { tourId } = msg as App.TourSelected;
-  console.log("Handling TourSelected Message", msg);
 
   return new APIRequest()
     .get(`/tours/${tourId}`)

@@ -10,17 +10,14 @@ export type Update<M, Msg extends TypedMessage> = (
 
 export type Element<M> = LitElement & { model: M };
 
-export interface TypedMessage {
-  type: string;
-}
-
-export interface MsgType<t extends string>
-  extends TypedMessage {
+export interface MsgType<t extends string> {
   type: t;
 }
 
+type TypedMessage = MsgType<string>;
+
 export interface App<M, Msg extends TypedMessage> {
-  model: M;
+  _model: M;
   updateFn: Update<M, Msg>;
 }
 
@@ -28,13 +25,13 @@ export class Main<M, Msg extends TypedMessage>
   extends LitElement
   implements App<M, Msg>
 {
-  model: M;
+  _model: M;
 
   updateFn: Update<M, Msg>;
 
   constructor(update: Update<M, Msg>, init: M) {
     super();
-    this.model = init;
+    this._model = init;
     this.updateFn = update;
     (this as HTMLElement).addEventListener(
       "mvu:message",
@@ -47,24 +44,24 @@ export class Main<M, Msg extends TypedMessage>
   }
 
   receive(msg: Msg) {
-    if (this.model) {
-      const next = this.updateFn(this.model, msg);
+    if (this._model) {
+      const next = this.updateFn(this._model, msg);
       const promise = next as Promise<ModelMap<M>>;
 
       if (typeof promise?.then === "function") {
         // result is a promise
         promise.then((mapFn: ModelMap<M>) => {
-          const next = mapFn(this.model);
-          this.model = next;
+          const next = mapFn(this._model);
+          this._model = next;
         });
       } else {
-        this.model = next as M;
+        this._model = next as M;
       }
     }
   }
 }
 
-export class View<Msg> extends LitElement {
+export class View<Msg extends TypedMessage> extends LitElement {
   dispatchMessage(msg: Msg, target: HTMLElement = this) {
     const ev = new CustomEvent("mvu:message", {
       bubbles: true,
@@ -112,7 +109,7 @@ export type Assignments<M> = {
 };
 
 export function updateProps<M>(props: Assignments<M>) {
-  return (m: M) => Object.assign({}, m, props);
+  return (m: M) => Object.assign({}, m, props) as M;
 }
 
 export function noUpdate<M>(m: M) {
