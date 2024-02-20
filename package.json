@@ -7,7 +7,7 @@
     "build:docs": "npx @11ty/eleventy",
     "build:frontend": "npm run -w lit-frontend build",
     "docs": "npm run build:docs && npm run start:docs",
-    "deploy": "npm run build:frontend && npm run start:backend",
+    "start": "npm run build:frontend && npm run start:backend",
     "start:docs": "npx @11ty/eleventy --serve",
     "start:proto": "npm -w proto start",
     "start:frontend": "npm -w lit-frontend run dev",

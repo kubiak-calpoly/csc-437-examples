@@ -16,9 +16,12 @@ const frontend = "lit-frontend";
 let dist: PathLike | undefined;
 let indexHtml: PathLike | undefined;
 
+dist = path.resolve(__dirname, "..", "..", "frontend", "dist");
+indexHtml = path.resolve(dist, "index.html");
+
 try {
-  indexHtml = require.resolve(frontend);
-  dist = path.dirname(indexHtml);
+  // indexHtml = require.resolve(frontend);
+  // dist = path.dirname(indexHtml.toString());
   console.log(`Serving ${frontend} from`, dist);
 } catch (error: any) {
   console.log(`Not serving ${frontend}:`, error.code);
