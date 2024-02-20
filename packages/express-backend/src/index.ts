@@ -13,7 +13,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 const frontend = "lit-frontend";
-let cwd = __dirname;
+let cwd = process.cwd();
 let dist: PathLike | undefined;
 let indexHtml: PathLike | undefined;
 
@@ -38,6 +38,16 @@ app.post("/login", loginUser);
 app.post("/signup", registerUser);
 
 app.use("/api", apiRouter);
+
+app.use("/stats", (req, res) => {
+  res.send(
+    `<h1>App is Up!</h1>
+      <dl><dt>Working Directory</dt><dd>${cwd}</dd>
+      <dt>Frontend dist</dt><dd>${dist}</dd>
+      <dt>HTML served</dt><dd>${indexHtml}</dd></dl>
+    `
+  );
+});
 
 // SPA route; always returns index.html
 app.use("/app", (req, res) => {
