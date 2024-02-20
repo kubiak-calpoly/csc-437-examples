@@ -40,7 +40,7 @@ try {
   dist = path.dirname(indexHtml.toString());
   console.log(`Serving ${frontend} from`, dist);
 } catch (error) {
-  dist = path.resolve(cwd, "..", "..", "frontend", "dist");
+  dist = path.resolve(cwd, "..", frontend, "dist");
   indexHtml = path.resolve(dist, "index.html");
   console.log(`Not serving ${frontend}:`, error.code);
 }

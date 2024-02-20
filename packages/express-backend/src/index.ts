@@ -20,12 +20,13 @@ let indexHtml: PathLike | undefined;
 try {
   indexHtml = require.resolve(frontend);
   dist = path.dirname(indexHtml.toString());
-  console.log(`Serving ${frontend} from`, dist);
 } catch (error: any) {
-  dist = path.resolve(cwd, "..", "..", "frontend", "dist");
+  console.log(`Could not resolve ${frontend}:`, error.code);
+  dist = path.resolve(cwd, "..", frontend, "dist");
   indexHtml = path.resolve(dist, "index.html");
-  console.log(`Not serving ${frontend}:`, error.code);
 }
+
+console.log(`Serving ${frontend} from`, dist);
 
 if (dist) app.use(express.static(dist.toString()));
 
