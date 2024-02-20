@@ -13,17 +13,17 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 const frontend = "lit-frontend";
+let cwd = __dirname;
 let dist: PathLike | undefined;
 let indexHtml: PathLike | undefined;
 
-dist = path.resolve(__dirname, "..", "..", "frontend", "dist");
-indexHtml = path.resolve(dist, "index.html");
-
 try {
-  // indexHtml = require.resolve(frontend);
-  // dist = path.dirname(indexHtml.toString());
+  indexHtml = require.resolve(frontend);
+  dist = path.dirname(indexHtml.toString());
   console.log(`Serving ${frontend} from`, dist);
 } catch (error: any) {
+  dist = path.resolve(cwd, "..", "..", "frontend", "dist");
+  indexHtml = path.resolve(dist, "index.html");
   console.log(`Not serving ${frontend}:`, error.code);
 }
 
@@ -32,7 +32,7 @@ if (dist) app.use(express.static(dist.toString()));
 app.use(express.json({ limit: "500kb" }));
 app.use(cors());
 
-app.options("*", cors());
+// app.options("*", cors());
 
 app.post("/login", loginUser);
 app.post("/signup", registerUser);
@@ -44,7 +44,9 @@ app.use("/app", (req, res) => {
   if (!indexHtml) {
     res
       .status(404)
-      .send(`Not found; ${frontend} not available`);
+      .send(
+        `Not found; ${frontend} not available, running in ${cwd}`
+      );
   } else {
     fs.readFile(indexHtml, { encoding: "utf8" }).then((html) =>
       res.send(html)
