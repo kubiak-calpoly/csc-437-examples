@@ -32,26 +32,39 @@ var import_api = __toESM(require("./routes/api"));
 const app = (0, import_express.default)();
 const port = process.env.PORT || 3e3;
 const frontend = "lit-frontend";
+let cwd = process.cwd();
 let dist;
 let indexHtml;
 try {
   indexHtml = require.resolve(frontend);
-  dist = path.dirname(indexHtml);
+  dist = path.dirname(indexHtml.toString());
   console.log(`Serving ${frontend} from`, dist);
 } catch (error) {
+  dist = path.resolve(cwd, "..", frontend, "dist");
+  indexHtml = path.resolve(dist, "index.html");
   console.log(`Not serving ${frontend}:`, error.code);
 }
 if (dist)
   app.use(import_express.default.static(dist.toString()));
 app.use(import_express.default.json({ limit: "500kb" }));
 app.use((0, import_cors.default)());
-app.options("*", (0, import_cors.default)());
 app.post("/login", import_auth.loginUser);
 app.post("/signup", import_auth.registerUser);
 app.use("/api", import_api.default);
+app.use("/stats", (req, res) => {
+  res.send(
+    `<h1>App is Up!</h1>
+      <dl><dt>Working Directory</dt><dd>${cwd}</dd>
+      <dt>Frontend dist</dt><dd>${dist}</dd>
+      <dt>HTML served</dt><dd>${indexHtml}</dd></dl>
+    `
+  );
+});
 app.use("/app", (req, res) => {
   if (!indexHtml) {
-    res.status(404).send(`Not found; ${frontend} not available`);
+    res.status(404).send(
+      `Not found; ${frontend} not available, running in ${cwd}`
+    );
   } else {
     import_promises.default.readFile(indexHtml, { encoding: "utf8" }).then(
       (html) => res.send(html)
