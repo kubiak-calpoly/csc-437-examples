@@ -68,15 +68,6 @@ export class View extends MVU.View<Message> {
       return this._model[key] as T;
     }
   }
-
-  updated(changes: Map<string, any>) {
-    console.log("View received changes", changes);
-    if (changes.has("_model")) {
-      console.log("Model:", this._model);
-      this.requestUpdate();
-    }
-    return true;
-  }
 }
 
 export const createDispatch = () =>
