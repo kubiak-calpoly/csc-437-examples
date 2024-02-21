@@ -17,22 +17,28 @@ export interface MsgType<t extends string> {
 type TypedMessage = MsgType<string>;
 
 export interface App<M, Msg extends TypedMessage> {
-  _model: M;
+  model: M;
   updateFn: Update<M, Msg>;
 }
 
-export class Main<M, Msg extends TypedMessage>
-  extends LitElement
-  implements App<M, Msg>
-{
-  _model: M;
-
+export class Main<
+  M,
+  Msg extends TypedMessage
+> extends LitElement {
   updateFn: Update<M, Msg>;
 
-  constructor(update: Update<M, Msg>, init: M) {
+  getModel: () => M;
+  setModel: (next: M) => void;
+
+  constructor(
+    update: Update<M, Msg>,
+    getModel: () => M,
+    setModel: (next: M) => void
+  ) {
     super();
-    this._model = init;
     this.updateFn = update;
+    this.getModel = getModel;
+    this.setModel = setModel;
     (this as HTMLElement).addEventListener(
       "mvu:message",
       (ev: Event) => {
@@ -44,19 +50,19 @@ export class Main<M, Msg extends TypedMessage>
   }
 
   receive(msg: Msg) {
-    if (this._model) {
-      const next = this.updateFn(this._model, msg);
-      const promise = next as Promise<ModelMap<M>>;
+    const next = this.updateFn(this.getModel(), msg);
+    const promise = next as Promise<ModelMap<M>>;
 
-      if (typeof promise?.then === "function") {
-        // result is a promise
-        promise.then((mapFn: ModelMap<M>) => {
-          const next = mapFn(this._model);
-          this._model = next;
-        });
-      } else {
-        this._model = next as M;
-      }
+    if (typeof promise?.then === "function") {
+      // result is a promise
+      promise.then((mapFn: ModelMap<M>) => {
+        const next = mapFn(this.getModel());
+        console.log("Updating model in Promise:", next);
+        this.setModel(next);
+      });
+    } else {
+      console.log("Updating model:", next);
+      this.setModel(next as M);
     }
   }
 }

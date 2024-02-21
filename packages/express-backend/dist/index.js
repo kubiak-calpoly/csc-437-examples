@@ -38,12 +38,12 @@ let indexHtml;
 try {
   indexHtml = require.resolve(frontend);
   dist = path.dirname(indexHtml.toString());
-  console.log(`Serving ${frontend} from`, dist);
 } catch (error) {
+  console.log(`Could not resolve ${frontend}:`, error.code);
   dist = path.resolve(cwd, "..", frontend, "dist");
   indexHtml = path.resolve(dist, "index.html");
-  console.log(`Not serving ${frontend}:`, error.code);
 }
+console.log(`Serving ${frontend} from`, dist);
 if (dist)
   app.use(import_express.default.static(dist.toString()));
 app.use(import_express.default.json({ limit: "500kb" }));

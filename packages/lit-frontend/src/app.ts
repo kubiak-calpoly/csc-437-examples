@@ -41,15 +41,20 @@ export type Message =
   | ProfileSelected
   | ProfileSaved;
 
-export class Main extends MVU.Main<Model, Message> {
+export class Main
+  extends MVU.Main<Model, Message>
+  implements MVU.App<Model, Message>
+{
   @provide({ context })
   @state()
-  get model() {
-    return this._model;
-  }
+  model = init;
 
   constructor(update: MVU.Update<Model, Message>) {
-    super(update, init);
+    super(
+      update,
+      () => this.model,
+      (next: Model) => (this.model = next)
+    );
   }
 }
 
