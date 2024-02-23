@@ -24,7 +24,6 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 var import_express = __toESM(require("express"));
 var path = __toESM(require("path"));
 var import_promises = __toESM(require("node:fs/promises"));
-var import_cors = __toESM(require("cors"));
 var import_mongoConnect = require("./mongoConnect");
 var import_auth = require("./auth");
 var import_api = __toESM(require("./routes/api"));
@@ -47,7 +46,6 @@ console.log(`Serving ${frontend} from`, dist);
 if (dist)
   app.use(import_express.default.static(dist.toString()));
 app.use(import_express.default.json({ limit: "500kb" }));
-app.use((0, import_cors.default)());
 app.post("/login", import_auth.loginUser);
 app.post("/signup", import_auth.registerUser);
 app.use("/api", import_api.default);
