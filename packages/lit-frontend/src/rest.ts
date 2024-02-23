@@ -1,4 +1,4 @@
-const SERVER_ROOT = "http://localhost:3000";
+const SERVER_ROOT = window.location.origin;
 const API_PATH = "/api";
 const TOKEN_KEY = "JWT_AUTH_TOKEN";
 
