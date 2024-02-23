@@ -31,8 +31,8 @@ console.log(`Serving ${frontend} from`, dist);
 if (dist) app.use(express.static(dist.toString()));
 
 app.use(express.json({ limit: "500kb" }));
-app.use(cors());
 
+// app.use(cors());
 // app.options("*", cors());
 
 app.post("/login", loginUser);
