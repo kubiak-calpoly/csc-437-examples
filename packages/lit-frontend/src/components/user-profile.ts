@@ -1,18 +1,25 @@
-import { css, html, LitElement, unsafeCSS } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { css, html, unsafeCSS } from "lit";
+import {
+  customElement,
+  property,
+  state
+} from "lit/decorators.js";
 import { Profile } from "ts-models";
 import * as App from "../app";
 import resetCSS from "/src/styles/reset.css?inline";
 import pageCSS from "/src/styles/page.css?inline";
 
 @customElement("user-profile")
-export class UserProfileElement extends LitElement {
+export class UserProfileElement extends App.View {
   @property({ attribute: false })
   using?: Profile;
 
   get profile() {
     return this.using || ({} as Profile);
   }
+
+  @state()
+  avatar = this.profile.avatar;
 
   render() {
     const {
@@ -45,10 +52,10 @@ export class UserProfileElement extends LitElement {
   }
 
   _renderAvatar() {
-    const { name, nickname, avatar, color } = (this.profile ||
+    const { name, nickname, color } = (this.profile ||
       {}) as Profile;
-    const avatarImg = avatar
-      ? html`<img id="avatarImg" src="${avatar}" />`
+    const avatarImg = this.avatar
+      ? html`<img id="avatarImg" src="${this.avatar}" />`
       : (nickname || name || " ").slice(0, 1);
     const colorStyle = color
       ? `--avatar-backgroundColor: ${color}`
@@ -191,6 +198,7 @@ export class UserProfileEditElement extends UserProfileElement {
   _handleAvatarSelected(ev: Event) {
     const target = ev.target as HTMLInputElement;
     const selectedFile = (target.files as FileList)[0];
+
     const reader: Promise<string> = new Promise(
       (resolve, reject) => {
         const fr = new FileReader();
@@ -200,21 +208,13 @@ export class UserProfileEditElement extends UserProfileElement {
       }
     );
 
-    reader
-      .then
-      //     (result: string) => {
-      //       this.profile = {
-      //   ...(this.profile as Profile),
-      //   avatar: result
-      // };
-      ();
+    reader.then((result: string) => (this.avatar = result));
   }
 
   _handleSubmit(event: Event) {
     event.preventDefault(); // prevent browser from submitting form data itself
 
     if (this.profile) {
-      // const avatar = this.profile?.avatar;
       const target = event.target as HTMLFormElement;
       const formdata = new FormData(target);
       let entries = Array.from(formdata.entries())
@@ -225,23 +225,17 @@ export class UserProfileEditElement extends UserProfileElement {
             : [k, v]
         );
 
-      // if (avatar) entries.push(["avatar", avatar]);
+      if (this.avatar) entries.push(["avatar", this.avatar]);
 
       const json = Object.fromEntries(entries);
 
       console.log("Submitting Form", json);
 
-      const msg: App.ProfileSaved = {
+      this.dispatchMessage({
         type: "ProfileSaved",
         userid: this.profile?.userid,
         profile: json as Profile
-      };
-      const ev = new CustomEvent("mvu:message", {
-        bubbles: true,
-        composed: true,
-        detail: msg
       });
-      this.dispatchEvent(ev);
     }
   }
 }
