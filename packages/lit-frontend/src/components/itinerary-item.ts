@@ -1,5 +1,6 @@
 import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { formatDate } from "../utils/dates";
 
 @customElement("itinerary-item")
 class ItineraryItemElement extends LitElement {
@@ -20,9 +21,6 @@ class ItineraryItemElement extends LitElement {
 
   render() {
     const item = this.renderItem();
-    const link = this.href
-      ? html`<a class="itemLink" href="{href}">${item}</a>`
-      : item;
 
     return html`
       <span id="dates">
@@ -35,7 +33,7 @@ class ItineraryItemElement extends LitElement {
             </time>`
           : null}
       </span>
-      ${link}
+      ${item}
     `;
   }
 
@@ -191,7 +189,9 @@ export class ItineraryDestinationElement extends ItineraryItemElement {
   renderItem() {
     const content = html`<slot></slot>`;
     const link = this.href
-      ? html`<a class=:itemLink" href="{href}">${content}</a>`
+      ? html`<a class="itemLink" href="${this.href}"
+          >${content}</a
+        >`
       : content;
     const style = this.imgSrc
       ? `background-image: url(${this.imgSrc})`
@@ -232,27 +232,4 @@ export class ItineraryTransportationElement extends ItineraryItemElement {
       </h3>
     </section>`;
   }
-}
-
-const months = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec"
-];
-
-function formatDate(datestring: string) {
-  const dt = new Date(datestring);
-  const m = months[dt.getUTCMonth()];
-  const d = dt.getUTCDate();
-
-  return `${d} ${m}`;
 }

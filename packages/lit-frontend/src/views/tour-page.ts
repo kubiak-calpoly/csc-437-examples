@@ -1,6 +1,7 @@
 import { css, html, TemplateResult, unsafeCSS } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { Tour, Destination, Transportation } from "ts-models";
+import { formatDate } from "../utils/dates";
 import * as App from "../app";
 import "../components/calendar-widget";
 import "../components/entourage-table";
@@ -57,38 +58,17 @@ export class TourPageElement extends App.View {
       startDate
     } = this.tour || {};
 
-    const months = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec"
-    ];
-
-    const formatDate = (date: Date | undefined) => {
-      const dt = date || new Date();
-      const m = months[dt.getUTCMonth()];
-      const d = dt.getUTCDate();
-
-      return `${d} ${m}`;
-    };
-
-    const renderDestination = (dest: Destination) => {
-      const { startDate, endDate, link, name, featuredImage } =
-        dest;
+    const renderDestination = (
+      dest: Destination,
+      i: number
+    ) => {
+      const { startDate, endDate, name, featuredImage } = dest;
       return html`
         <itinerary-destination
           start-date=${startDate}
           end-date=${endDate}
           img-src=${featuredImage}
-          href=${link}>
+          href="/app/${this.tourId}/destination/${i}">
           ${name}
         </itinerary-destination>
       `;
@@ -145,7 +125,7 @@ export class TourPageElement extends App.View {
               i === 0
                 ? renderTransportation(transportation[i])
                 : "";
-            const dthis = renderDestination(d);
+            const dthis = renderDestination(d, i);
             const tnext = renderTransportation(
               transportation[i + 1]
             );

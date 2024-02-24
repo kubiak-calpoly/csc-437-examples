@@ -1,6 +1,7 @@
 import { APIRequest, JSONRequest } from "./rest";
 import * as App from "./app";
-import { Tour, Profile } from "ts-models";
+import { convertStartEndDates } from "./utils/dates";
+import { Tour, Profile, Destination } from "ts-models";
 
 const dispatch = App.createDispatch();
 export default dispatch.update;
@@ -19,15 +20,11 @@ dispatch.addMessage("TourSelected", (msg: App.Message) => {
     .then((json: unknown) => {
       if (json) {
         console.log("Tour:", json);
-        // convert dates in json to Date objects
-        let dates = json as {
-          startDate: string;
-          endDate: string;
-        };
-        let tour = json as Tour;
-        tour.startDate = new Date(dates.startDate);
-        tour.endDate = new Date(dates.endDate);
-        return json as Tour;
+        let tour: Tour = convertStartEndDates<Tour>(json);
+        tour.destinations = tour.destinations.map(
+          convertStartEndDates<Destination>
+        );
+        return tour;
       }
     })
     .then((tour: Tour | undefined) =>
