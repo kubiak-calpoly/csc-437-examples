@@ -6,6 +6,7 @@ import * as App from "../app";
 import "../components/calendar-widget";
 import "../components/entourage-table";
 import "../components/itinerary-item";
+import "../components/map-viewer";
 import resetCSS from "/src/styles/reset.css?inline";
 import pageCSS from "/src/styles/page.css?inline";
 
@@ -103,6 +104,31 @@ export class TourPageElement extends App.View {
       `;
     };
 
+    const places = [
+      {
+        name: "Venice",
+        feature: { lat: 45.4397, lon: 12.3319 }
+      },
+      {
+        name: "Florence",
+        feature: {
+          lat: 43.7714,
+          lon: 11.2542
+        }
+      },
+      {
+        name: "Rome",
+        feature: {
+          lat: 41.8931,
+          lon: 12.4828
+        }
+      }
+    ];
+    // this.tour?.destinations.map((d: Destination) => ({
+    //   name: d.name,
+    //   feature: d.location
+    // })) || [];
+
     return html`
       <main class="page">
         <header>
@@ -118,6 +144,8 @@ export class TourPageElement extends App.View {
           start-date=${startDate}
           end-date=${endDate}>
         </calendar-widget>
+
+        <map-viewer .places=${places}></map-viewer>
 
         <section class="itinerary">
           ${destinations.map((d, i) => {
@@ -150,10 +178,11 @@ export class TourPageElement extends App.View {
         gap: var(--size-spacing-xlarge);
 
         grid-template-columns: min-content 1fr;
-        grid-template-rows: auto auto auto 1fr;
+        grid-template-rows: auto auto auto auto 1fr;
         grid-template-areas:
-          "header     itinerary"
+          "header    itinerary"
           "calendar  itinerary"
+          "map       itinerary"
           "entourage itinerary"
           "empty     itinerary";
       }
@@ -165,6 +194,10 @@ export class TourPageElement extends App.View {
       calendar-widget {
         grid-area: calendar;
         align-self: start;
+      }
+
+      map-viewer {
+        grid-area: map;
       }
 
       .itinerary {
