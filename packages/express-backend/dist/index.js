@@ -26,6 +26,7 @@ var path = __toESM(require("path"));
 var import_promises = __toESM(require("node:fs/promises"));
 var import_mongoConnect = require("./mongoConnect");
 var import_auth = require("./auth");
+var import_azure = require("./azure");
 var import_api = __toESM(require("./routes/api"));
 (0, import_mongoConnect.connect)("blazing");
 const app = (0, import_express.default)();
@@ -45,9 +46,12 @@ try {
 console.log(`Serving ${frontend} from`, dist);
 if (dist)
   app.use(import_express.default.static(dist.toString()));
+app.use(import_express.default.raw({ type: "image/*", limit: "32Mb" }));
 app.use(import_express.default.json({ limit: "500kb" }));
 app.post("/login", import_auth.loginUser);
 app.post("/signup", import_auth.registerUser);
+app.post("/upload", import_azure.uploadBlob);
+app.get("/data/:blob", import_azure.downloadBlob);
 app.use("/api", import_api.default);
 app.use("/stats", (req, res) => {
   res.send(

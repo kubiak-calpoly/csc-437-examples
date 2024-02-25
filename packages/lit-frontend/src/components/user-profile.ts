@@ -19,7 +19,7 @@ export class UserProfileElement extends App.View {
   }
 
   @state()
-  avatar = this.profile.avatar;
+  newAvatar?: string;
 
   render() {
     const {
@@ -35,7 +35,7 @@ export class UserProfileElement extends App.View {
     return html`
       <section>
         ${this._renderAvatar()}
-        <a href="./${userid}/edit">Edit</a>
+        <a href="?edit=t">Edit</a>
         <h1>${name}</h1>
         <dl>
           <dt>Username</dt>
@@ -52,10 +52,11 @@ export class UserProfileElement extends App.View {
   }
 
   _renderAvatar() {
-    const { name, nickname, color } = (this.profile ||
+    const { avatar, name, nickname, color } = (this.profile ||
       {}) as Profile;
-    const avatarImg = this.avatar
-      ? html`<img id="avatarImg" src="${this.avatar}" />`
+    const url = this.newAvatar || avatar;
+    const avatarImg = url
+      ? html`<img id="avatarImg" src="${url}" />`
       : (nickname || name || " ").slice(0, 1);
     const colorStyle = color
       ? `--avatar-backgroundColor: ${color}`
@@ -208,7 +209,7 @@ export class UserProfileEditElement extends UserProfileElement {
       }
     );
 
-    reader.then((result: string) => (this.avatar = result));
+    reader.then((url: string) => (this.newAvatar = url));
   }
 
   _handleSubmit(event: Event) {
@@ -225,7 +226,8 @@ export class UserProfileEditElement extends UserProfileElement {
             : [k, v]
         );
 
-      if (this.avatar) entries.push(["avatar", this.avatar]);
+      if (this.newAvatar)
+        entries.push(["avatar", this.newAvatar]);
 
       const json = Object.fromEntries(entries);
 

@@ -6,8 +6,7 @@ import resetCSS from "/src/styles/reset.css?inline";
 import pageCSS from "/src/styles/page.css?inline";
 
 type ProfileLocation = Location & {
-  params: { userid: string; edit: string };
-  searchParams: Map<string, string>;
+  params: { userid: string };
 };
 
 @customElement("profile-page")
@@ -21,8 +20,13 @@ export class ProfilePageElement extends App.View {
   }
 
   @property({ reflect: true })
-  get edit() {
-    return this.location?.params.edit;
+  get edit(): boolean {
+    if (this.location) {
+      const params = new URL(document.location.toString())
+        .searchParams;
+      return params.has("edit");
+    }
+    return false;
   }
 
   @property()

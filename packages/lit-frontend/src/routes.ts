@@ -4,10 +4,6 @@ import "./views/destination-page";
 
 export default [
   {
-    path: "/app/profile/:userid/:edit(edit)",
-    component: "profile-page"
-  },
-  {
     path: "/app/profile/:userid",
     component: "profile-page"
   },

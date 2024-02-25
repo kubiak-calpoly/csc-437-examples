@@ -68,7 +68,7 @@ export class TourPageElement extends App.View {
           start-date=${startDate}
           end-date=${endDate}
           img-src=${featuredImage}
-          href="/app/${this.tourId}/destination/${i}">
+          href="./${this.tourId}/destination/${i}">
           ${name}
         </itinerary-destination>
       `;

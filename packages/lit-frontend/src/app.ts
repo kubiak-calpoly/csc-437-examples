@@ -3,7 +3,7 @@ import { property, state } from "lit/decorators.js";
 import * as MVU from "./mvu";
 import { MsgType } from "./mvu";
 import { AuthenticatedUser, APIUser } from "./rest";
-import { Tour, Profile } from "ts-models";
+import { Destination, Tour, Profile } from "ts-models";
 
 export interface Model {
   tour?: Tour;
@@ -35,11 +35,19 @@ export interface ProfileSaved extends MsgType<"ProfileSaved"> {
   profile: Profile;
 }
 
+export interface DestinationSaved
+  extends MsgType<"DestinationSaved"> {
+  tourId: string;
+  destId: number;
+  destination: Destination;
+}
+
 export type Message =
   | UserLoggedIn
   | TourSelected
   | ProfileSelected
-  | ProfileSaved;
+  | ProfileSaved
+  | DestinationSaved;
 
 export class Main
   extends MVU.Main<Model, Message>
