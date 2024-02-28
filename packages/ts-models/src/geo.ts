@@ -48,16 +48,21 @@ export function bboxOfFeatures(
   features: Feature[],
   padding: number = 0.125
 ) {
-  const featurePts = (f: Feature) => {
-    if ("lat" in f && "lon" in f) {
-      return [f];
-    }
-    if ("path" in f) {
-      return bboxOfPoints(f.path); // unpadded
-    }
+  const featurePts = (ft: Feature) => {
+    if ("lat" in ft && "lon" in ft) return [ft];
+    if ("path" in ft) return bboxOfPoints(ft.path); // unpadded
     return [];
   };
 
   const points = features.map(featurePts).flat();
   return bboxOfPoints(points, padding);
+}
+
+export function featureLngLat(ft: Feature) {
+  if ("lat" in ft && "lon" in ft) return [ft.lon, ft.lat];
+  if ("path" in ft) {
+    const [pt0, pt1] = bboxOfFeatures(ft.path);
+    return [(pt0.lon + pt1.lon) / 2, (pt0.lat + pt1.lat) / 2];
+  }
+  return [0, 0];
 }

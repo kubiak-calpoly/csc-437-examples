@@ -4,9 +4,19 @@ import {
   property,
   state
 } from "lit/decorators.js";
-import mapboxgl, { Map, LngLatBoundsLike } from "mapbox-gl";
+import {
+  Map,
+  Marker,
+  //Popup,
+  LngLatLike,
+  LngLatBoundsLike
+} from "mapbox-gl";
 import mapboxStyles from "/src/styles/mapbox-gl.css?inline";
-import { Place, bboxOfFeatures } from "ts-models";
+import {
+  Place,
+  bboxOfFeatures,
+  featureLngLat
+} from "ts-models";
 
 @customElement("map-viewer")
 export class MapViewerElement extends LitElement {
@@ -39,17 +49,27 @@ export class MapViewerElement extends LitElement {
         pt.lat
       ]) as LngLatBoundsLike;
 
-      this.map = new mapboxgl.Map({
+      this.map = new Map({
         accessToken: this.accessToken,
         container: mapElement,
         style: "mapbox://styles/mapbox/streets-v12", // style URL
         bounds: bbox
       });
+
+      this.places.forEach((p) => {
+        const m = new Marker().setLngLat(
+          featureLngLat(p.feature) as LngLatLike
+        );
+        // .setHTML(`<h6>${p.name}</h6>`);
+        m.addTo(this.map as Map);
+      });
     }
   }
 
   render() {
-    return html`<div id="map"></div>`;
+    return html`
+      <div id="map"></div>
+    `;
   }
 
   static styles = [

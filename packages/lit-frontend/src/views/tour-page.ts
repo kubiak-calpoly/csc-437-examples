@@ -81,14 +81,16 @@ export class TourPageElement extends App.View {
       const terminus = route[count - 1];
       const via =
         count > 2
-          ? html`<span slot="via"
-              >${route.slice(1, -1).join(", ")}</span
-            >`
+          ? html`
+              <span slot="via">
+                ${route.slice(1, -1).join(", ")}
+              </span>
+            `
           : null;
 
       return html`
-        <span slot="origin"> ${origin} </span>
-        <span slot="terminus"> ${terminus} </span>
+        <span slot="origin">${origin}</span>
+        <span slot="terminus">${terminus}</span>
         ${via}
       `;
     };
@@ -104,30 +106,11 @@ export class TourPageElement extends App.View {
       `;
     };
 
-    const places = [
-      {
-        name: "Venice",
-        feature: { lat: 45.4397, lon: 12.3319 }
-      },
-      {
-        name: "Florence",
-        feature: {
-          lat: 43.7714,
-          lon: 11.2542
-        }
-      },
-      {
-        name: "Rome",
-        feature: {
-          lat: 41.8931,
-          lon: 12.4828
-        }
-      }
-    ];
-    // this.tour?.destinations.map((d: Destination) => ({
-    //   name: d.name,
-    //   feature: d.location
-    // })) || [];
+    const places =
+      this.tour?.destinations.map((d: Destination) => ({
+        name: d.name,
+        feature: d.location
+      })) || [];
 
     return html`
       <main class="page">
@@ -142,8 +125,7 @@ export class TourPageElement extends App.View {
 
         <calendar-widget
           start-date=${startDate}
-          end-date=${endDate}>
-        </calendar-widget>
+          end-date=${endDate}></calendar-widget>
 
         <map-viewer .places=${places}></map-viewer>
 
@@ -158,11 +140,13 @@ export class TourPageElement extends App.View {
               transportation[i + 1]
             );
 
-            return html`${t0}${dthis}${tnext}`;
+            return html`
+              ${t0}${dthis}${tnext}
+            `;
           })}
         </section>
 
-        <entourage-table .using=${entourage}> </entourage-table>
+        <entourage-table .using=${entourage}></entourage-table>
       </main>
     `;
   }
