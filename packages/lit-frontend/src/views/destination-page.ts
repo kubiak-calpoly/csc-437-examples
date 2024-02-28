@@ -4,7 +4,7 @@ import {
   property,
   state
 } from "lit/decorators.js";
-import { Tour, Destination } from "ts-models";
+import { Tour, Destination, Point } from "ts-models";
 import { formatDate } from "../utils/dates";
 import * as App from "../app";
 import resetCSS from "/src/styles/reset.css?inline";
@@ -78,33 +78,100 @@ export class DestinationPageElement extends App.View {
   }
 
   render() {
-    const { name, link, startDate, endDate, featuredImage } =
-      this.destination as Destination;
+    const {
+      name,
+      link,
+      startDate,
+      endDate,
+      location,
+      featuredImage
+    } = this.destination as Destination;
     const tourName = this.tour?.name;
     const imageUrl = this.image || featuredImage;
+
+    const formatPoint = (loc: Point) => {
+      if (!loc) {
+        return "(Unknown Location)";
+      }
+      const latabs = Math.abs(loc.lat);
+      const latsign = loc.lat < 0 ? -1 : 1;
+      const lonabs = Math.abs(loc.lon);
+      const lonsign = loc.lon < 0 ? -1 : 1;
+
+      return `
+        ( ${latabs}${latsign ? "N" : "S"},
+        ${lonabs}${lonsign ? "E" : "W"} )
+      `;
+    };
 
     console.log("Destination:", this.destination);
 
     const renderDisplayOrForm = () => {
       if (this.edit) {
-        return html`<form @submit=${this._handleSubmit}>
-          <dl>
-            <dt>Destination Name</dt>
-            <dd><input name="name" .value=${name} /></dd>
-            <dt>Featured Image</dt>
-            <dd
-              ><input
-                type="file"
-                @change=${this._handleFileSelected}
-            /></dd>
-            <dd>
-              <img src=${imageUrl} />
-            </dd>
-          </dl>
-          <button type="submit">Submit</button>
-        </form>`;
+        const { lat, lon } = location || {};
+
+        return html`
+          <form @submit=${this._handleSubmit}>
+            <dl>
+              <dt>Destination Name</dt>
+              <dd><input name="name" .value=${name} /></dd>
+              <dt>Dates</dt>
+              <dd>
+                <input name="endDate" value=${startDate} />
+                to
+                <input name="startDate" value=${endDate} />
+              </dd>
+              <dt>Coordinates</dt>
+              <dd>
+                (
+                <input
+                  type="number"
+                  min="0"
+                  max="90"
+                  name="latabs"
+                  step="0.0001"
+                  value=${Math.abs(lat)} />
+                <select name="latsign">
+                  <option value="1" ?selected=${lat >= 0}>
+                    N
+                  </option>
+                  <option value="-1" ?selected=${lat < 0}>
+                    S
+                  </option>
+                </select>
+                ,
+                <input
+                  type="number"
+                  min="0"
+                  max="180"
+                  name="lonabs"
+                  step="0.0001"
+                  value=${Math.abs(lon)} />
+                <select name="lonsign">
+                  <option value="1" ?selected=${lon >= 0}>
+                    E
+                  </option>
+                  <option value="-1" ?selected=${lon < 0}>
+                    W
+                  </option>
+                </select>
+              </dd>
+              <dt>Featured Image</dt>
+              <dd>
+                <input
+                  type="file"
+                  @change=${this._handleFileSelected} />
+              </dd>
+              <dd>
+                <img src=${imageUrl} />
+              </dd>
+            </dl>
+            <button type="submit">Submit</button>
+          </form>
+        `;
       } else {
-        return html` <header>
+        return html`
+          <header>
             <a class="breadcrumb" href="/app/${this.tourId}">
               ${tourName}
             </a>
@@ -114,16 +181,18 @@ export class DestinationPageElement extends App.View {
               ${formatDate(endDate)}
               ${endDate && endDate.getFullYear()}
             </p>
+            <p>${formatPoint(location)}</p>
             <a href="?edit=t">Edit</a>
           </header>
           <a href=${link}>
             <img src=${imageUrl} />
-          </a>`;
+          </a>
+        `;
       }
     };
 
     return html`
-      <main class="page"> ${renderDisplayOrForm()} </main>
+      <main class="page">${renderDisplayOrForm()}</main>
     `;
   }
 
@@ -139,16 +208,34 @@ export class DestinationPageElement extends App.View {
     if (this.destination && this.tourId) {
       const target = event.target as HTMLFormElement;
       const formdata = new FormData(target);
-      let entries = Array.from(formdata.entries()).map(
-        ([k, v]) => (v === "" ? [k] : [k, v])
-      );
+      let extract: { [key: string]: number } = {};
+      let entries = Array.from(formdata.entries())
+        .map(([k, v]) => (v === "" ? [k] : [k, v]))
+        .map(([k, v]) => {
+          const key = k.toString();
+          if (
+            ["latabs", "latsign", "lonabs", "latabs"].indexOf(
+              key
+            ) >= 0
+          ) {
+            extract[key] = parseFloat(v as string);
+            return [];
+          } else return [k, v];
+        })
+        .filter((tuple) => tuple.length > 0);
+      const location: Point = {
+        lat: extract.latabs * extract.latsign,
+        lon: extract.lonabs * extract.lonsign
+      };
 
       entries.push([
         "featuredImage",
         this.image || this.destination.featuredImage || ""
       ]);
 
-      const json = Object.fromEntries(entries);
+      const json = Object.assign(Object.fromEntries(entries), {
+        location
+      });
 
       console.log("Submitting Form", json);
 
@@ -177,7 +264,7 @@ export class DestinationPageElement extends App.View {
     reader.then((buffer: ArrayBuffer) => {
       const { name, size, type } = selectedFile;
       const query = new URLSearchParams({ filename: name });
-      const url = new URL("/upload", document.location.origin);
+      const url = new URL("/images", document.location.origin);
       url.search = query.toString();
 
       console.log("Uploading file:", selectedFile);

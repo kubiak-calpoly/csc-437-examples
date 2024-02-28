@@ -33,7 +33,7 @@ export function uploadBlob(req: Request, res: Response) {
     .uploadStream(stream)
     .then((blobResponse: BlobUploadCommonResponse) => {
       res.status(201).send({
-        url: `/data/${blobname}`,
+        url: `/images/${blobname}`,
         md5: blobResponse.contentMD5
       });
     })

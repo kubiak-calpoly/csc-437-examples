@@ -39,8 +39,8 @@ app.use(express.json({ limit: "500kb" }));
 
 app.post("/login", loginUser);
 app.post("/signup", registerUser);
-app.post("/upload", uploadBlob);
-app.get("/data/:blob", downloadBlob);
+app.post("/images", uploadBlob);
+app.get("/images/:blob", downloadBlob);
 
 app.use("/api", apiRouter);
 

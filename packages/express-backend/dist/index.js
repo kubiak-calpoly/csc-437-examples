@@ -50,8 +50,8 @@ app.use(import_express.default.raw({ type: "image/*", limit: "32Mb" }));
 app.use(import_express.default.json({ limit: "500kb" }));
 app.post("/login", import_auth.loginUser);
 app.post("/signup", import_auth.registerUser);
-app.post("/upload", import_azure.uploadBlob);
-app.get("/data/:blob", import_azure.downloadBlob);
+app.post("/images", import_azure.uploadBlob);
+app.get("/images/:blob", import_azure.downloadBlob);
 app.use("/api", import_api.default);
 app.use("/stats", (req, res) => {
   res.send(

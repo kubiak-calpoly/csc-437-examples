@@ -42,7 +42,7 @@ function uploadBlob(req, res) {
   const stream = import_node_stream.Readable.from(req.body);
   blockBlobClient.uploadStream(stream).then((blobResponse) => {
     res.status(201).send({
-      url: `/data/${blobname}`,
+      url: `/images/${blobname}`,
       md5: blobResponse.contentMD5
     });
   }).catch((error) => {
