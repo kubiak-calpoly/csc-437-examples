@@ -1,7 +1,7 @@
 import { APIRequest, JSONRequest } from "./rest";
 import * as App from "./app";
 import { convertStartEndDates } from "./utils/dates";
-import { Tour, Profile, Destination } from "ts-models";
+import { Tour, Profile, Destination, Route } from "ts-models";
 
 const dispatch = App.createDispatch();
 export default dispatch.update;
@@ -92,7 +92,7 @@ dispatch.addMessage("DestinationSaved", (msg: App.Message) => {
     .then((json: unknown) => {
       if (json) {
         console.log("Destination:", destination);
-        json as Destination;
+        return json as Destination;
       }
       return undefined;
     })
@@ -111,4 +111,27 @@ dispatch.addMessage("DestinationSaved", (msg: App.Message) => {
         return App.noUpdate;
       }
     });
+});
+
+dispatch.addMessage("RouteRequested", (msg: App.Message) => {
+  const { points } = msg as App.RouteRequested;
+  const coordinates = points
+    .map((pt) => `${pt.lon},${pt.lat}`)
+    .join(";");
+
+  console.log("Requesting route for points:", coordinates);
+
+  return new APIRequest()
+    .get(`/directions?pts=${coordinates}`)
+    .then((response: Response) => {
+      if (response.status === 200) return response.json();
+      else return undefined;
+    })
+    .then((json: unknown) => {
+      if (json) return json as Route;
+      else return undefined;
+    })
+    .then((route: Route | undefined) =>
+      route ? App.updateProps({ route }) : App.noUpdate
+    );
 });

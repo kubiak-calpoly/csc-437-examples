@@ -4,16 +4,16 @@ import {
   property,
   state
 } from "lit/decorators.js";
-import {
-  Map,
+import mapboxgl, {
+  MapboxOptions,
   Marker,
-  //Popup,
   LngLatLike,
   LngLatBoundsLike
 } from "mapbox-gl";
 import mapboxStyles from "/src/styles/mapbox-gl.css?inline";
 import {
   Place,
+  Route,
   bboxOfFeatures,
   featureLngLat
 } from "ts-models";
@@ -26,7 +26,8 @@ export class MapViewerElement extends LitElement {
   @property({ attribute: false })
   places: Place[] = [];
 
-  map?: Map;
+  @property({ attribute: false })
+  route?: Route;
 
   constructor() {
     super();
@@ -35,34 +36,26 @@ export class MapViewerElement extends LitElement {
       "pk.eyJ1Ijoia3ViaWFrLWNhbHBvbHkiLCJhIjoiY2x0MjBvZGd2MTQxYjJrbXJ2ZzFhZWgxMSJ9.zdBsMVeJtBL4WtDLBWrUmg";
   }
 
-  updated() {
+  updated(changes: Map<string, any>) {
     const mapElement = this.shadowRoot?.querySelector(
       "#map"
     ) as HTMLElement;
 
-    console.log("Mapping places:", this.places);
-
-    if (mapElement && this.places.length > 0) {
-      const features = this.places.map((p) => p.feature);
-      const bbox = bboxOfFeatures(features).map((pt) => [
-        pt.lon,
-        pt.lat
-      ]) as LngLatBoundsLike;
-
-      this.map = new Map({
+    if (
+      changes.has("places") &&
+      mapElement &&
+      this.places.length > 0
+    ) {
+      console.log("Mapping places:", this.places);
+      let map = createMap(this.places, {
         accessToken: this.accessToken,
         container: mapElement,
-        style: "mapbox://styles/mapbox/streets-v12", // style URL
-        bounds: bbox
+        style: "mapbox://styles/mapbox/streets-v12" // style URL
       });
 
-      this.places.forEach((p) => {
-        const m = new Marker().setLngLat(
-          featureLngLat(p.feature) as LngLatLike
-        );
-        // .setHTML(`<h6>${p.name}</h6>`);
-        m.addTo(this.map as Map);
-      });
+      markPlaces(map, this.places);
+
+      if (this.route) markRoute(map, this.route);
     }
   }
 
@@ -76,4 +69,52 @@ export class MapViewerElement extends LitElement {
     unsafeCSS(mapboxStyles),
     css`#map { aspect-ratio: 3/4`
   ];
+}
+
+function createMap(places: Place[], options: MapboxOptions) {
+  const features = places.map((p) => p.feature);
+  const bbox = bboxOfFeatures(features).map((pt) => [
+    pt.lon,
+    pt.lat
+  ]) as LngLatBoundsLike;
+
+  return new mapboxgl.Map({ bounds: bbox, ...options });
+}
+
+function markPlaces(map: mapboxgl.Map, places: Place[]) {
+  places.forEach((p) => {
+    const m = new Marker().setLngLat(
+      featureLngLat(p.feature) as LngLatLike
+    );
+    m.addTo(map);
+  });
+}
+
+function markRoute(map: mapboxgl.Map, route: Route) {
+  const { geometry } = route;
+  console.log("Route Geometry is:", geometry);
+
+  map.on("load", () => {
+    map.addSource("route", {
+      type: "geojson",
+      data: {
+        type: "Feature",
+        properties: {},
+        geometry
+      }
+    });
+    map.addLayer({
+      id: "route",
+      type: "line",
+      source: "route",
+      layout: {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      paint: {
+        "line-color": "#888",
+        "line-width": 8
+      }
+    });
+  });
 }

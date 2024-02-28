@@ -1,3 +1,5 @@
+import { LineString } from "geojson";
+
 export interface Point {
   lat: number;
   lon: number;
@@ -12,6 +14,19 @@ type Feature = Point | Region;
 export interface Place {
   name: string;
   feature: Feature;
+}
+
+export interface Route {
+  distance: number;
+  duration: number;
+  legs: RouteLeg[];
+  geometry: LineString;
+}
+
+export interface RouteLeg {
+  distance: number;
+  duration: number;
+  summary: string;
 }
 
 export function bboxOfPoints(

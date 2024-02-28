@@ -129,7 +129,7 @@ export class DestinationPageElement extends App.View {
                   min="0"
                   max="90"
                   name="latabs"
-                  step="0.0001"
+                  step="any"
                   value=${Math.abs(lat)} />
                 <select name="latsign">
                   <option value="1" ?selected=${lat >= 0}>
@@ -145,7 +145,7 @@ export class DestinationPageElement extends App.View {
                   min="0"
                   max="180"
                   name="lonabs"
-                  step="0.0001"
+                  step="any"
                   value=${Math.abs(lon)} />
                 <select name="lonsign">
                   <option value="1" ?selected=${lon >= 0}>
@@ -214,7 +214,7 @@ export class DestinationPageElement extends App.View {
         .map(([k, v]) => {
           const key = k.toString();
           if (
-            ["latabs", "latsign", "lonabs", "latabs"].indexOf(
+            ["latabs", "latsign", "lonabs", "lonsign"].indexOf(
               key
             ) >= 0
           ) {

@@ -9,6 +9,7 @@
     "preview": "npx vite preview"
   },
   "dependencies": {
+    "@vaadin/router": "^1.7.5",
     "lit": "^3.1.0",
     "mapbox-gl": "^3.1.2",
     "ts-models": "0.0.0"

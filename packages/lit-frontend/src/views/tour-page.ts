@@ -30,6 +30,11 @@ export class TourPageElement extends App.View {
     return this.getFromModel<Tour>("tour");
   }
 
+  @property()
+  get route() {
+    return this.getFromModel<Tour>("route");
+  }
+
   attributeChangedCallback(
     name: string,
     oldValue: string,
@@ -47,6 +52,17 @@ export class TourPageElement extends App.View {
       });
     }
     super.attributeChangedCallback(name, oldValue, newValue);
+  }
+
+  updated(changes: Map<string, any>) {
+    console.log("Tour page updatged:", changes);
+
+    if (changes.has("_model") && this.tour && !this.route) {
+      this.dispatchMessage({
+        type: "RouteRequested",
+        points: this.tour.destinations.map((d) => d.location)
+      });
+    }
   }
 
   render(): TemplateResult {
@@ -127,7 +143,9 @@ export class TourPageElement extends App.View {
           start-date=${startDate}
           end-date=${endDate}></calendar-widget>
 
-        <map-viewer .places=${places}></map-viewer>
+        <map-viewer
+          .places=${places}
+          .route=${this.route}></map-viewer>
 
         <section class="itinerary">
           ${destinations.map((d, i) => {
