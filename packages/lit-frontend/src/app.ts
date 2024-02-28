@@ -3,12 +3,19 @@ import { property, state } from "lit/decorators.js";
 import * as MVU from "./mvu";
 import { MsgType } from "./mvu";
 import { AuthenticatedUser, APIUser } from "./rest";
-import { Destination, Tour, Profile } from "ts-models";
+import {
+  Destination,
+  Tour,
+  Profile,
+  Point,
+  Route
+} from "ts-models";
 
 export interface Model {
   tour?: Tour;
   user: APIUser;
   profile?: Profile;
+  route?: Route;
 }
 
 export const context = createContext<Model>("BlazingModel");
@@ -42,12 +49,18 @@ export interface DestinationSaved
   destination: Destination;
 }
 
+export interface RouteRequested
+  extends MsgType<"RouteRequested"> {
+  points: Point[];
+}
+
 export type Message =
-  | UserLoggedIn
-  | TourSelected
+  | DestinationSaved
   | ProfileSelected
   | ProfileSaved
-  | DestinationSaved;
+  | RouteRequested
+  | TourSelected
+  | UserLoggedIn;
 
 export class Main
   extends MVU.Main<Model, Message>

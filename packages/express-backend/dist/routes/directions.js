@@ -26,21 +26,22 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-var api_exports = {};
-__export(api_exports, {
-  default: () => api_default
+var directions_exports = {};
+__export(directions_exports, {
+  default: () => directions_default
 });
-module.exports = __toCommonJS(api_exports);
+module.exports = __toCommonJS(directions_exports);
 var import_express = __toESM(require("express"));
-var import_auth = require("../auth");
-var import_entourages = __toESM(require("./entourages"));
-var import_profiles = __toESM(require("./profiles"));
-var import_tours = __toESM(require("./tours"));
-var import_directions = __toESM(require("./directions"));
+var import_mapbox = require("../services/mapbox");
 const router = import_express.default.Router();
-router.use(import_auth.authenticateUser);
-router.use("/entourages", import_entourages.default);
-router.use("/profiles", import_profiles.default);
-router.use("/tours", import_tours.default);
-router.use("/directions", import_directions.default);
-var api_default = router;
+router.get("/", (req, res) => {
+  const { pts } = req.query;
+  const points = pts.split(";").map((pair) => pair.split(",").map((n) => parseFloat(n)));
+  (0, import_mapbox.getDirections)(points).then((route) => {
+    if (!route)
+      throw "Not found";
+    else
+      res.json(route);
+  }).catch((error) => res.status(500).send(error));
+});
+var directions_default = router;

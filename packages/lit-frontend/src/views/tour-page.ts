@@ -6,6 +6,7 @@ import * as App from "../app";
 import "../components/calendar-widget";
 import "../components/entourage-table";
 import "../components/itinerary-item";
+import "../components/map-viewer";
 import resetCSS from "/src/styles/reset.css?inline";
 import pageCSS from "/src/styles/page.css?inline";
 
@@ -29,6 +30,11 @@ export class TourPageElement extends App.View {
     return this.getFromModel<Tour>("tour");
   }
 
+  @property()
+  get route() {
+    return this.getFromModel<Tour>("route");
+  }
+
   attributeChangedCallback(
     name: string,
     oldValue: string,
@@ -46,6 +52,17 @@ export class TourPageElement extends App.View {
       });
     }
     super.attributeChangedCallback(name, oldValue, newValue);
+  }
+
+  updated(changes: Map<string, any>) {
+    console.log("Tour page updatged:", changes);
+
+    if (changes.has("_model") && this.tour && !this.route) {
+      this.dispatchMessage({
+        type: "RouteRequested",
+        points: this.tour.destinations.map((d) => d.location)
+      });
+    }
   }
 
   render(): TemplateResult {
@@ -80,14 +97,16 @@ export class TourPageElement extends App.View {
       const terminus = route[count - 1];
       const via =
         count > 2
-          ? html`<span slot="via"
-              >${route.slice(1, -1).join(", ")}</span
-            >`
+          ? html`
+              <span slot="via">
+                ${route.slice(1, -1).join(", ")}
+              </span>
+            `
           : null;
 
       return html`
-        <span slot="origin"> ${origin} </span>
-        <span slot="terminus"> ${terminus} </span>
+        <span slot="origin">${origin}</span>
+        <span slot="terminus">${terminus}</span>
         ${via}
       `;
     };
@@ -103,6 +122,12 @@ export class TourPageElement extends App.View {
       `;
     };
 
+    const places =
+      this.tour?.destinations.map((d: Destination) => ({
+        name: d.name,
+        feature: d.location
+      })) || [];
+
     return html`
       <main class="page">
         <header>
@@ -116,8 +141,11 @@ export class TourPageElement extends App.View {
 
         <calendar-widget
           start-date=${startDate}
-          end-date=${endDate}>
-        </calendar-widget>
+          end-date=${endDate}></calendar-widget>
+
+        <map-viewer
+          .places=${places}
+          .route=${this.route}></map-viewer>
 
         <section class="itinerary">
           ${destinations.map((d, i) => {
@@ -130,11 +158,13 @@ export class TourPageElement extends App.View {
               transportation[i + 1]
             );
 
-            return html`${t0}${dthis}${tnext}`;
+            return html`
+              ${t0}${dthis}${tnext}
+            `;
           })}
         </section>
 
-        <entourage-table .using=${entourage}> </entourage-table>
+        <entourage-table .using=${entourage}></entourage-table>
       </main>
     `;
   }
@@ -150,10 +180,11 @@ export class TourPageElement extends App.View {
         gap: var(--size-spacing-xlarge);
 
         grid-template-columns: min-content 1fr;
-        grid-template-rows: auto auto auto 1fr;
+        grid-template-rows: auto auto auto auto 1fr;
         grid-template-areas:
-          "header     itinerary"
+          "header    itinerary"
           "calendar  itinerary"
+          "map       itinerary"
           "entourage itinerary"
           "empty     itinerary";
       }
@@ -165,6 +196,10 @@ export class TourPageElement extends App.View {
       calendar-widget {
         grid-area: calendar;
         align-self: start;
+      }
+
+      map-viewer {
+        grid-area: map;
       }
 
       .itinerary {
