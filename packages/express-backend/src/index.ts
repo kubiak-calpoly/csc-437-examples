@@ -5,6 +5,7 @@ import fs from "node:fs/promises";
 import cors from "cors";
 import { connect } from "./mongoConnect";
 import { loginUser, registerUser } from "./auth";
+import { uploadBlob, downloadBlob } from "./azure";
 import apiRouter from "./routes/api";
 
 connect("blazing");
@@ -30,6 +31,7 @@ console.log(`Serving ${frontend} from`, dist);
 
 if (dist) app.use(express.static(dist.toString()));
 
+app.use(express.raw({ type: "image/*", limit: "32Mb" }));
 app.use(express.json({ limit: "500kb" }));
 
 // app.use(cors());
@@ -37,6 +39,8 @@ app.use(express.json({ limit: "500kb" }));
 
 app.post("/login", loginUser);
 app.post("/signup", registerUser);
+app.post("/images", uploadBlob);
+app.get("/images/:blob", downloadBlob);
 
 app.use("/api", apiRouter);
 

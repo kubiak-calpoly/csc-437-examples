@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "npx vite",
-    "build": "npx tsc && npx vite build",
+    "build": "npx tsc && npx vite build --minify false",
     "preview": "npx vite preview"
   },
   "dependencies": {

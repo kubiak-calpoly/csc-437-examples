@@ -50,8 +50,20 @@ router.get("/:id", (req, res) => {
   );
 });
 router.put("/:id", (req, res) => {
-  const { userid } = req.params;
+  const { id } = req.params;
   const newTour = req.body;
-  import_tours.default.update(userid, newTour).then((tour) => res.json(tour)).catch((err) => res.status(404).end());
+  import_tours.default.update(id, newTour).then((tour) => res.json(tour)).catch(() => res.status(404).end());
 });
+router.put(
+  "/:id/destinations/:n",
+  (req, res) => {
+    const { id, n } = req.params;
+    const newDest = req.body;
+    console.log(
+      `Updating Destination ${n} of tour ${id} with`,
+      newDest
+    );
+    import_tours.default.updateDestination(id, parseInt(n), newDest).then((dest) => res.json(dest)).catch(() => res.status(404).end());
+  }
+);
 var tours_default = router;

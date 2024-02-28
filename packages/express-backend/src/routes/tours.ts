@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import { Tour } from "ts-models";
+import { Tour, Destination } from "ts-models";
 import tours from "../services/tours";
 
 const router = express.Router();
@@ -28,13 +28,31 @@ router.get("/:id", (req: Request, res: Response) => {
 });
 
 router.put("/:id", (req: Request, res: Response) => {
-  const { userid } = req.params;
+  const { id } = req.params;
   const newTour = req.body;
 
   tours
-    .update(userid, newTour)
+    .update(id, newTour)
     .then((tour: Tour) => res.json(tour))
-    .catch((err) => res.status(404).end());
+    .catch(() => res.status(404).end());
 });
+
+router.put(
+  "/:id/destinations/:n",
+  (req: Request, res: Response) => {
+    const { id, n } = req.params;
+    const newDest = req.body;
+
+    console.log(
+      `Updating Destination ${n} of tour ${id} with`,
+      newDest
+    );
+
+    tours
+      .updateDestination(id, parseInt(n), newDest)
+      .then((dest: Destination) => res.json(dest))
+      .catch(() => res.status(404).end());
+  }
+);
 
 export default router;
