@@ -76,6 +76,13 @@ export class BlazingHeaderElement extends LitElement {
       header a[href] {
         color: var(--color-link-inverted);
       }
+      h1 {
+        font-size: var(--size-type-xxlarge);
+        font-style: oblique;
+        font-weight: var(--font-weight-bold);
+        font-family: var(--font-family-display);
+        line-height: var(--font-line-height-display);
+      }
       [slot="logout"] a {
         color: var(--color-accent);
         cursor: pointer;

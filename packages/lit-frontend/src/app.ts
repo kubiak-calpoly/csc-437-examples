@@ -8,7 +8,8 @@ import {
   Tour,
   Profile,
   Point,
-  Route
+  Route,
+  ChatMessage
 } from "ts-models";
 
 export interface Model {
@@ -54,7 +55,13 @@ export interface RouteRequested
   points: Point[];
 }
 
+export interface ChatMessageSent
+  extends MsgType<"ChatMessageSent"> {
+  message: ChatMessage;
+}
+
 export type Message =
+  | ChatMessageSent
   | DestinationSaved
   | ProfileSelected
   | ProfileSaved

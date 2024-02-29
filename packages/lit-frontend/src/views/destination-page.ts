@@ -48,10 +48,6 @@ export class DestinationPageElement extends App.View {
   get destination() {
     const tour = this.tour;
     const destinations = tour?.destinations || [];
-    console.log(
-      `Looking for destination ${this.destId} in`,
-      destinations
-    );
     return destinations[this.destId] || {};
   }
 

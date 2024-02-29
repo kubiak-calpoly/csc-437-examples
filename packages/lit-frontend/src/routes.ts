@@ -1,6 +1,7 @@
 import "./views/tour-page";
 import "./views/profile-page";
 import "./views/destination-page";
+import "./views/entourage-page";
 
 export default [
   {
@@ -10,6 +11,10 @@ export default [
   {
     path: "/app/:tour([0-9a-f]+)/destination/:dest([0-9]+)",
     component: "destination-page"
+  },
+  {
+    path: "/app/:tour([0-9a-f]+)/entourage",
+    component: "entourage-page"
   },
   { path: "/app/:tour([0-9a-f]+)", component: "tour-page" },
   { path: "/app", component: "tour-page" },

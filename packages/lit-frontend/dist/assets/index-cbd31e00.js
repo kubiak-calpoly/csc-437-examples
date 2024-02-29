@@ -945,9 +945,13 @@ class AuthenticatedUser extends APIUser {
     this.signOut = signOut;
   }
   static authenticate(token, signOut) {
-    APIUser._theUser = new AuthenticatedUser(token, signOut);
+    const authenticatedUser = new AuthenticatedUser(
+      token,
+      signOut
+    );
+    APIUser._theUser = authenticatedUser;
     localStorage.setItem(TOKEN_KEY, token);
-    return APIUser._theUser;
+    return authenticatedUser;
   }
   static authenticateFromLocalStorage(signOut) {
     const priorToken = localStorage.getItem(TOKEN_KEY);
@@ -1017,15 +1021,15 @@ class APIRequest extends JSONRequest {
     super(void 0);
   }
 }
-var __defProp$g = Object.defineProperty;
-var __getOwnPropDesc$g = Object.getOwnPropertyDescriptor;
-var __decorateClass$g = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$g(target, key) : target;
+var __defProp$h = Object.defineProperty;
+var __getOwnPropDesc$h = Object.getOwnPropertyDescriptor;
+var __decorateClass$h = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$h(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
   if (kind && result)
-    __defProp$g(target, key, result);
+    __defProp$h(target, key, result);
   return result;
 };
 const context = n2("BlazingModel");
@@ -1042,7 +1046,7 @@ class Main2 extends Main$1 {
     this.model = init;
   }
 }
-__decorateClass$g([
+__decorateClass$h([
   e2({ context }),
   r()
 ], Main2.prototype, "model", 2);
@@ -1053,7 +1057,7 @@ class View2 extends View$1 {
     }
   }
 }
-__decorateClass$g([
+__decorateClass$h([
   c({ context, subscribe: true }),
   n$1({ attribute: false })
 ], View2.prototype, "_model", 2);
@@ -1087,15 +1091,15 @@ function convertStartEndDates(obj) {
   result.endDate = new Date(datestrings.endDate);
   return result;
 }
-var __defProp$f = Object.defineProperty;
-var __getOwnPropDesc$f = Object.getOwnPropertyDescriptor;
-var __decorateClass$f = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$f(target, key) : target;
+var __defProp$g = Object.defineProperty;
+var __getOwnPropDesc$g = Object.getOwnPropertyDescriptor;
+var __decorateClass$g = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$g(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
   if (kind && result)
-    __defProp$f(target, key, result);
+    __defProp$g(target, key, result);
   return result;
 };
 let CalendarWidget = class extends s$3 {
@@ -1235,13 +1239,13 @@ CalendarWidget.styles = i$3`
       margin: 0 auto;
     }
   `;
-__decorateClass$f([
+__decorateClass$g([
   n$1({ attribute: "start-date", type: Date })
 ], CalendarWidget.prototype, "startDate", 2);
-__decorateClass$f([
+__decorateClass$g([
   n$1({ attribute: "end-date", type: Date })
 ], CalendarWidget.prototype, "endDate", 2);
-CalendarWidget = __decorateClass$f([
+CalendarWidget = __decorateClass$g([
   t("calendar-widget")
 ], CalendarWidget);
 function datesInRange(start, end) {
@@ -1254,28 +1258,27 @@ function datesInRange(start, end) {
   }
   return result;
 }
-var __defProp$e = Object.defineProperty;
-var __getOwnPropDesc$e = Object.getOwnPropertyDescriptor;
-var __decorateClass$e = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$e(target, key) : target;
+var __defProp$f = Object.defineProperty;
+var __getOwnPropDesc$f = Object.getOwnPropertyDescriptor;
+var __decorateClass$f = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$f(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
   if (kind && result)
-    __defProp$e(target, key, result);
+    __defProp$f(target, key, result);
   return result;
 };
 let EntourageTable = class extends s$3 {
-  constructor() {
-    super(...arguments);
-    this.path = "";
-  }
   get entourage() {
     return this.using || {};
   }
   render() {
     const { name, people } = this.entourage;
     const rows = people || [];
+    const link = this.href ? x`
+          <a href=${this.href}>Chat Now...</a>
+        ` : "";
     const renderRow = (row) => {
       const {
         userid,
@@ -1284,7 +1287,9 @@ let EntourageTable = class extends s$3 {
         nickname,
         color
       } = row;
-      const avatarImg = avatar ? x`<img src="${avatar}" />` : (nickname || name2).slice(0, 1);
+      const avatarImg = avatar ? x`
+            <img src="${avatar}" />
+          ` : (nickname || name2).slice(0, 1);
       const colorStyle = color ? `style="--color-avatar-bg: ${color}"` : "";
       return x`
         <tr>
@@ -1299,12 +1304,15 @@ let EntourageTable = class extends s$3 {
         </tr>
       `;
     };
-    return x`<section>
-      <h3>${name || "Entourage"}</h3>
-      <table>
-        <tbody>${rows.map(renderRow)}</tbody>
-      </table>
-    </section>`;
+    return x`
+      <section>
+        <h3>${name || "Entourage"}</h3>
+        ${link}
+        <table>
+          <tbody>${rows.map(renderRow)}</tbody>
+        </table>
+      </section>
+    `;
   }
 };
 EntourageTable.styles = i$3`
@@ -1352,24 +1360,24 @@ EntourageTable.styles = i$3`
       width: 100%;
     }
   `;
-__decorateClass$e([
+__decorateClass$f([
   n$1({ attribute: false })
 ], EntourageTable.prototype, "using", 2);
-__decorateClass$e([
+__decorateClass$f([
   n$1()
-], EntourageTable.prototype, "path", 2);
-EntourageTable = __decorateClass$e([
+], EntourageTable.prototype, "href", 2);
+EntourageTable = __decorateClass$f([
   t("entourage-table")
 ], EntourageTable);
-var __defProp$d = Object.defineProperty;
-var __getOwnPropDesc$d = Object.getOwnPropertyDescriptor;
-var __decorateClass$d = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$d(target, key) : target;
+var __defProp$e = Object.defineProperty;
+var __getOwnPropDesc$e = Object.getOwnPropertyDescriptor;
+var __decorateClass$e = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$e(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
   if (kind && result)
-    __defProp$d(target, key, result);
+    __defProp$e(target, key, result);
   return result;
 };
 let ItineraryItemElement = class extends s$3 {
@@ -1531,19 +1539,19 @@ ItineraryItemElement.styles = i$3`
       vertical-align: middle;
     }
   `;
-__decorateClass$d([
+__decorateClass$e([
   n$1({ attribute: "start-date" })
 ], ItineraryItemElement.prototype, "startDate", 2);
-__decorateClass$d([
+__decorateClass$e([
   n$1({ attribute: "end-date" })
 ], ItineraryItemElement.prototype, "endDate", 2);
-__decorateClass$d([
+__decorateClass$e([
   n$1()
 ], ItineraryItemElement.prototype, "href", 2);
-__decorateClass$d([
+__decorateClass$e([
   n$1({ reflect: true, type: Boolean })
 ], ItineraryItemElement.prototype, "hidden", 2);
-ItineraryItemElement = __decorateClass$d([
+ItineraryItemElement = __decorateClass$e([
   t("itinerary-item")
 ], ItineraryItemElement);
 let ItineraryDestinationElement = class extends ItineraryItemElement {
@@ -1558,10 +1566,10 @@ let ItineraryDestinationElement = class extends ItineraryItemElement {
     </section>`;
   }
 };
-__decorateClass$d([
+__decorateClass$e([
   n$1({ attribute: "img-src" })
 ], ItineraryDestinationElement.prototype, "imgSrc", 2);
-ItineraryDestinationElement = __decorateClass$d([
+ItineraryDestinationElement = __decorateClass$e([
   t("itinerary-destination")
 ], ItineraryDestinationElement);
 let ItineraryTransportationElement = class extends ItineraryItemElement {
@@ -1587,10 +1595,10 @@ let ItineraryTransportationElement = class extends ItineraryItemElement {
     </section>`;
   }
 };
-__decorateClass$d([
+__decorateClass$e([
   n$1()
 ], ItineraryTransportationElement.prototype, "type", 2);
-ItineraryTransportationElement = __decorateClass$d([
+ItineraryTransportationElement = __decorateClass$e([
   t("itinerary-transportation")
 ], ItineraryTransportationElement);
 var commonjsGlobal = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
@@ -30051,15 +30059,15 @@ function featureLngLat(ft) {
   }
   return [0, 0];
 }
-var __defProp$c = Object.defineProperty;
-var __getOwnPropDesc$c = Object.getOwnPropertyDescriptor;
-var __decorateClass$c = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$c(target, key) : target;
+var __defProp$d = Object.defineProperty;
+var __getOwnPropDesc$d = Object.getOwnPropertyDescriptor;
+var __decorateClass$d = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$d(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
   if (kind && result)
-    __defProp$c(target, key, result);
+    __defProp$d(target, key, result);
   return result;
 };
 let MapViewerElement = class extends s$3 {
@@ -30097,16 +30105,16 @@ MapViewerElement.styles = [
   r$5(mapboxStyles),
   i$3`#map { aspect-ratio: 3/4`
 ];
-__decorateClass$c([
+__decorateClass$d([
   r()
 ], MapViewerElement.prototype, "accessToken", 2);
-__decorateClass$c([
+__decorateClass$d([
   n$1({ attribute: false })
 ], MapViewerElement.prototype, "places", 2);
-__decorateClass$c([
+__decorateClass$d([
   n$1({ attribute: false })
 ], MapViewerElement.prototype, "route", 2);
-MapViewerElement = __decorateClass$c([
+MapViewerElement = __decorateClass$d([
   t("map-viewer")
 ], MapViewerElement);
 function createMap(places, options) {
@@ -30154,15 +30162,15 @@ function markRoute(map, route) {
 }
 const resetCSS = "* {\n  margin: 0;\n  box-sizing: border-box;\n}\nbody {\n  line-height: 1.5;\n  min-height: 100vh;\n  display: flex;\n  flex-direction: column;\n}\nimg {\n  max-width: 100%;\n}\n";
 const pageCSS = ".page {\n  font-family: var(--font-family-body);\n  background-color: var(--color-background-page);\n  color: var(--color-text);\n  display: flex;\n  flex-direction: column;\n  height: 100%;\n  flex-basis: 100%;\n  flex-grow: 1;\n  width: 100%;\n  padding: 2rem;\n}\n\nbody > section {\n  margin: var(--size-spacing-medium);\n}\nh1,\nh2,\nh3,\nh4,\nh5,\nh6,\ndt,\nsummary {\n  font-family: var(--font-family-display);\n  line-height: var(--font-line-height-display);\n}\nh1 {\n  font-size: var(--size-type-xxlarge);\n  font-style: oblique;\n  line-height: 1;\n  font-weight: var(--font-weight-bold);\n}\nh2 {\n  font-size: var(--size-type-xlarge);\n  font-weight: var(--font-weight-bold);\n}\nh3 {\n  font-size: var(--size-type-large);\n  font-weight: var(--font-weight-normal);\n  font-style: oblique;\n}\nh4 {\n  font-size: var(--size-type-mlarge);\n  font-weight: var(--font-weight-bold);\n}\nh5 {\n  font-size: var(--size-type-body);\n  font-weight: var(--font-weight-bold);\n}\nh6 {\n  font-size: var(--size-type-body);\n  font-weight: var(--font-weight-normal);\n  font-style: italic;\n}\ndt {\n  font-weight: var(--size-type-body);\n}\nh3,\na {\n  color: var(--color-accent);\n}\nsvg.outline-map {\n  fill: #ff0;\n}\nsvg.icon {\n  display: inline;\n  fill: currentColor;\n  height: var(--size-icon-large);\n  width: var(--size-icon-large);\n  vertical-align: middle;\n}\n";
-var __defProp$b = Object.defineProperty;
-var __getOwnPropDesc$b = Object.getOwnPropertyDescriptor;
-var __decorateClass$b = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$b(target, key) : target;
+var __defProp$c = Object.defineProperty;
+var __getOwnPropDesc$c = Object.getOwnPropertyDescriptor;
+var __decorateClass$c = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$c(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
   if (kind && result)
-    __defProp$b(target, key, result);
+    __defProp$c(target, key, result);
   return result;
 };
 let TourPageElement = class extends View2 {
@@ -30278,7 +30286,9 @@ let TourPageElement = class extends View2 {
     })}
         </section>
 
-        <entourage-table .using=${entourage}></entourage-table>
+        <entourage-table
+          .using=${entourage}
+          href="./${this.tourId}/entourage"></entourage-table>
       </main>
     `;
   }
@@ -30330,30 +30340,30 @@ TourPageElement.styles = [
       }
     `
 ];
-__decorateClass$b([
+__decorateClass$c([
   n$1({ attribute: false })
 ], TourPageElement.prototype, "location", 2);
-__decorateClass$b([
+__decorateClass$c([
   n$1({ attribute: "tour-id", reflect: true })
 ], TourPageElement.prototype, "tourId", 1);
-__decorateClass$b([
+__decorateClass$c([
   n$1()
 ], TourPageElement.prototype, "tour", 1);
-__decorateClass$b([
+__decorateClass$c([
   n$1()
 ], TourPageElement.prototype, "route", 1);
-TourPageElement = __decorateClass$b([
+TourPageElement = __decorateClass$c([
   t("tour-page")
 ], TourPageElement);
-var __defProp$a = Object.defineProperty;
-var __getOwnPropDesc$a = Object.getOwnPropertyDescriptor;
-var __decorateClass$a = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$a(target, key) : target;
+var __defProp$b = Object.defineProperty;
+var __getOwnPropDesc$b = Object.getOwnPropertyDescriptor;
+var __decorateClass$b = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$b(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
   if (kind && result)
-    __defProp$a(target, key, result);
+    __defProp$b(target, key, result);
   return result;
 };
 let UserProfileElement = class extends View2 {
@@ -30457,13 +30467,13 @@ UserProfileElement.styles = [
       }
     `
 ];
-__decorateClass$a([
+__decorateClass$b([
   n$1({ attribute: false })
 ], UserProfileElement.prototype, "using", 2);
-__decorateClass$a([
+__decorateClass$b([
   r()
 ], UserProfileElement.prototype, "newAvatar", 2);
-UserProfileElement = __decorateClass$a([
+UserProfileElement = __decorateClass$b([
   t("user-profile")
 ], UserProfileElement);
 let UserProfileEditElement = class extends UserProfileElement {
@@ -30562,18 +30572,18 @@ UserProfileEditElement.styles = [
       }
     `
 ];
-UserProfileEditElement = __decorateClass$a([
+UserProfileEditElement = __decorateClass$b([
   t("user-profile-edit")
 ], UserProfileEditElement);
-var __defProp$9 = Object.defineProperty;
-var __getOwnPropDesc$9 = Object.getOwnPropertyDescriptor;
-var __decorateClass$9 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$9(target, key) : target;
+var __defProp$a = Object.defineProperty;
+var __getOwnPropDesc$a = Object.getOwnPropertyDescriptor;
+var __decorateClass$a = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$a(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
   if (kind && result)
-    __defProp$9(target, key, result);
+    __defProp$a(target, key, result);
   return result;
 };
 let ProfilePageElement = class extends View2 {
@@ -30624,30 +30634,30 @@ ProfilePageElement.styles = [
       }
     `
 ];
-__decorateClass$9([
+__decorateClass$a([
   n$1({ attribute: false })
 ], ProfilePageElement.prototype, "location", 2);
-__decorateClass$9([
+__decorateClass$a([
   n$1({ reflect: true })
 ], ProfilePageElement.prototype, "userid", 1);
-__decorateClass$9([
+__decorateClass$a([
   n$1({ reflect: true })
 ], ProfilePageElement.prototype, "edit", 1);
-__decorateClass$9([
+__decorateClass$a([
   n$1()
 ], ProfilePageElement.prototype, "profile", 1);
-ProfilePageElement = __decorateClass$9([
+ProfilePageElement = __decorateClass$a([
   t("profile-page")
 ], ProfilePageElement);
-var __defProp$8 = Object.defineProperty;
-var __getOwnPropDesc$8 = Object.getOwnPropertyDescriptor;
-var __decorateClass$8 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$8(target, key) : target;
+var __defProp$9 = Object.defineProperty;
+var __getOwnPropDesc$9 = Object.getOwnPropertyDescriptor;
+var __decorateClass$9 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$9(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
   if (kind && result)
-    __defProp$8(target, key, result);
+    __defProp$9(target, key, result);
   return result;
 };
 let DestinationPageElement = class extends View2 {
@@ -30679,10 +30689,6 @@ let DestinationPageElement = class extends View2 {
   get destination() {
     const tour = this.tour;
     const destinations = (tour == null ? void 0 : tour.destinations) || [];
-    console.log(
-      `Looking for destination ${this.destId} in`,
-      destinations
-    );
     return destinations[this.destId] || {};
   }
   attributeChangedCallback(name, oldValue, newValue) {
@@ -30890,30 +30896,146 @@ DestinationPageElement.styles = [
   r$5(pageCSS),
   i$3``
 ];
-__decorateClass$8([
+__decorateClass$9([
   n$1({ attribute: false })
 ], DestinationPageElement.prototype, "location", 2);
-__decorateClass$8([
+__decorateClass$9([
   n$1({ attribute: "tour-id", reflect: true })
 ], DestinationPageElement.prototype, "tourId", 1);
-__decorateClass$8([
+__decorateClass$9([
   n$1({ attribute: "dest-id", reflect: true })
 ], DestinationPageElement.prototype, "destId", 1);
-__decorateClass$8([
+__decorateClass$9([
   n$1({ reflect: true })
 ], DestinationPageElement.prototype, "edit", 1);
-__decorateClass$8([
+__decorateClass$9([
   n$1()
 ], DestinationPageElement.prototype, "tour", 1);
-__decorateClass$8([
+__decorateClass$9([
   n$1()
 ], DestinationPageElement.prototype, "destination", 1);
-__decorateClass$8([
+__decorateClass$9([
   r()
 ], DestinationPageElement.prototype, "image", 2);
-DestinationPageElement = __decorateClass$8([
+DestinationPageElement = __decorateClass$9([
   t("destination-page")
 ], DestinationPageElement);
+var __defProp$8 = Object.defineProperty;
+var __getOwnPropDesc$8 = Object.getOwnPropertyDescriptor;
+var __decorateClass$8 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$8(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result)
+    __defProp$8(target, key, result);
+  return result;
+};
+let EntouragePageElement = class extends View2 {
+  get tourId() {
+    var _a2;
+    return (_a2 = this.location) == null ? void 0 : _a2.params.tour;
+  }
+  get tour() {
+    return this.getFromModel("tour");
+  }
+  get username() {
+    var _a2;
+    return (_a2 = this.getFromModel("user")) == null ? void 0 : _a2.username;
+  }
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === "tour-id" && oldValue !== newValue && newValue) {
+      console.log("Tour Page:", newValue);
+      this.dispatchMessage({
+        type: "TourSelected",
+        tourId: newValue
+      });
+    }
+    super.attributeChangedCallback(name, oldValue, newValue);
+  }
+  render() {
+    var _a2;
+    const { entourage } = this.tour || {};
+    const tourName = (_a2 = this.tour) == null ? void 0 : _a2.name;
+    if (entourage) {
+      return x`
+        <main class="page">
+          <aside>
+            <a class="breadcrumb" href="/app/${this.tourId}">
+              ${tourName}
+            </a>
+            <entourage-table
+              .using=${entourage}></entourage-table>
+          </aside>
+          <section class="chat">
+            <form @submit=${this._handleSubmit}>
+              <input
+                name="text"
+                placeholder="Type a message..." />
+              <button type="submit">Send</button>
+            </form>
+          </section>
+        </main>
+      `;
+    } else {
+      return x``;
+    }
+  }
+  _handleSubmit(event) {
+    event.preventDefault();
+    if (this.tourId) {
+      const target = event.target;
+      const formdata = new FormData(target);
+      const entries = Array.from(formdata.entries());
+      const json = Object.assign(
+        {
+          username: this.username,
+          tourId: this.tourId
+        },
+        Object.fromEntries(entries)
+      );
+      this.dispatchMessage({
+        type: "ChatMessageSent",
+        message: json
+      });
+    }
+  }
+};
+EntouragePageElement.styles = [
+  r$5(resetCSS),
+  r$5(pageCSS),
+  i$3`
+      :host {
+        display: contents;
+      }
+      main.page {
+        display: grid;
+        grid-template-columns: fit-content 1fr;
+        grid-template-areas: "aside chat";
+      }
+      aside {
+        grid-area: aside;
+      }
+      .chat {
+        grid-area: chat;
+      }
+    `
+];
+__decorateClass$8([
+  n$1({ attribute: false })
+], EntouragePageElement.prototype, "location", 2);
+__decorateClass$8([
+  n$1({ attribute: "tour-id", reflect: true })
+], EntouragePageElement.prototype, "tourId", 1);
+__decorateClass$8([
+  n$1()
+], EntouragePageElement.prototype, "tour", 1);
+__decorateClass$8([
+  n$1()
+], EntouragePageElement.prototype, "username", 1);
+EntouragePageElement = __decorateClass$8([
+  t("entourage-page")
+], EntouragePageElement);
 const routes = [
   {
     path: "/app/profile/:userid",
@@ -30923,12 +31045,23 @@ const routes = [
     path: "/app/:tour([0-9a-f]+)/destination/:dest([0-9]+)",
     component: "destination-page"
   },
+  {
+    path: "/app/:tour([0-9a-f]+)/entourage",
+    component: "entourage-page"
+  },
   { path: "/app/:tour([0-9a-f]+)", component: "tour-page" },
   { path: "/app", component: "tour-page" },
   { path: "(.*)", redirect: "/app" }
 ];
 const dispatch = createDispatch();
 const update = dispatch.update;
+dispatch.addMessage(
+  "UserLoggedIn",
+  (msg, model) => {
+    const { user } = msg;
+    return updateProps({ user })(model);
+  }
+);
 dispatch.addMessage("TourSelected", (msg) => {
   const { tourId } = msg;
   return new APIRequest().get(`/tours/${tourId}`).then((response) => {
@@ -31054,6 +31187,11 @@ let AuthRequiredElement = class extends s$3 {
   }
   firstUpdated() {
     this._toggleDialog(!this.isAuthenticated());
+    if (this.isAuthenticated()) {
+      this._dispatchUserLoggedIn(
+        this.user
+      );
+    }
   }
   render() {
     const dialog = x`
@@ -31071,9 +31209,9 @@ let AuthRequiredElement = class extends s$3 {
             <input type="password" name="pwd" />
           </label>
           <button type="submit">Sign in</button>
-          <p
-            >${this.loginStatus ? `Login failed: ${this.loginStatus}` : ""}</p
-          >
+          <p>
+            ${this.loginStatus ? `Login failed: ${this.loginStatus}` : ""}
+          </p>
         </form>
         <form
           @submit=${this._handleRegister}
@@ -31088,15 +31226,17 @@ let AuthRequiredElement = class extends s$3 {
             <input type="password" name="pwd" />
           </label>
           <button type="submit">Register</button>
-          <p
-            >${this.registerStatus ? `Signup failed: ${this.registerStatus}` : ""}</p
-          >
+          <p>
+            ${this.registerStatus ? `Signup failed: ${this.registerStatus}` : ""}
+          </p>
           <p></p>
         </form>
       </dialog>
     `;
-    return x`${this.isAuthenticated() ? "" : dialog}
-      <slot></slot>`;
+    return x`
+      ${this.isAuthenticated() ? "" : dialog}
+      <slot></slot>
+    `;
   }
   _handleLogin(event) {
     event.preventDefault();
@@ -31112,14 +31252,27 @@ let AuthRequiredElement = class extends s$3 {
     }).then((json) => {
       if (json) {
         console.log("Authentication:", json.token);
-        this.user = AuthenticatedUser.authenticate(
+        const authenticatedUser = AuthenticatedUser.authenticate(
           json.token,
           () => this._signOut()
         );
+        this.user = authenticatedUser;
         this._toggleDialog(false);
+        this._dispatchUserLoggedIn(authenticatedUser);
         this.requestUpdate();
       }
     });
+  }
+  _dispatchUserLoggedIn(user) {
+    const userLoggedIn = new CustomEvent("mvu:message", {
+      bubbles: true,
+      composed: true,
+      detail: {
+        type: "UserLoggedIn",
+        user
+      }
+    });
+    this.dispatchEvent(userLoggedIn);
   }
   _handleRegister(event) {
     event.preventDefault();
@@ -33498,6 +33651,13 @@ BlazingHeaderElement.styles = [
       }
       header a[href] {
         color: var(--color-link-inverted);
+      }
+      h1 {
+        font-size: var(--size-type-xxlarge);
+        font-style: oblique;
+        font-weight: var(--font-weight-bold);
+        font-family: var(--font-family-display);
+        line-height: var(--font-line-height-display);
       }
       [slot="logout"] a {
         color: var(--color-accent);

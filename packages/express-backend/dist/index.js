@@ -28,6 +28,7 @@ var import_mongoConnect = require("./mongoConnect");
 var import_auth = require("./auth");
 var import_azure = require("./azure");
 var import_api = __toESM(require("./routes/api"));
+var import_websockets = __toESM(require("./websockets"));
 (0, import_mongoConnect.connect)("blazing");
 const app = (0, import_express.default)();
 const port = process.env.PORT || 3e3;
@@ -73,6 +74,7 @@ app.use("/app", (req, res) => {
     );
   }
 });
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
+(0, import_websockets.default)(server);

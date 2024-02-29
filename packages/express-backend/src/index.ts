@@ -2,11 +2,11 @@ import express, { Request, Response } from "express";
 import * as path from "path";
 import { PathLike } from "node:fs";
 import fs from "node:fs/promises";
-import cors from "cors";
 import { connect } from "./mongoConnect";
 import { loginUser, registerUser } from "./auth";
 import { uploadBlob, downloadBlob } from "./azure";
 import apiRouter from "./routes/api";
+import websockets from "./websockets";
 
 connect("blazing");
 
@@ -33,9 +33,6 @@ if (dist) app.use(express.static(dist.toString()));
 
 app.use(express.raw({ type: "image/*", limit: "32Mb" }));
 app.use(express.json({ limit: "500kb" }));
-
-// app.use(cors());
-// app.options("*", cors());
 
 app.post("/login", loginUser);
 app.post("/signup", registerUser);
@@ -69,6 +66,8 @@ app.use("/app", (req, res) => {
   }
 });
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
+
+websockets(server);

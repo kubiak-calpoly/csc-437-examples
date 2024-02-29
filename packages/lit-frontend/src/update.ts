@@ -6,6 +6,15 @@ import { Tour, Profile, Destination, Route } from "ts-models";
 const dispatch = App.createDispatch();
 export default dispatch.update;
 
+dispatch.addMessage(
+  "UserLoggedIn",
+  (msg: App.Message, model: App.Model) => {
+    const { user } = msg as App.UserLoggedIn;
+
+    return App.updateProps({ user })(model);
+  }
+);
+
 dispatch.addMessage("TourSelected", (msg: App.Message) => {
   const { tourId } = msg as App.TourSelected;
 

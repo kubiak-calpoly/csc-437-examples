@@ -12,11 +12,17 @@ export class EntourageTable extends LitElement {
   }
 
   @property()
-  path: string = "";
+  href?: string;
 
   render() {
     const { name, people } = this.entourage;
     const rows = people || [];
+
+    const link = this.href
+      ? html`
+          <a href=${this.href}>Chat Now...</a>
+        `
+      : "";
 
     const renderRow = (row: Profile) => {
       const {
@@ -27,7 +33,9 @@ export class EntourageTable extends LitElement {
         color
       } = row;
       const avatarImg = avatar
-        ? html`<img src="${avatar}" />`
+        ? html`
+            <img src="${avatar}" />
+          `
         : (nickname || name).slice(0, 1);
       const colorStyle = color
         ? `style="--color-avatar-bg: ${color}"`
@@ -47,12 +55,15 @@ export class EntourageTable extends LitElement {
       `;
     };
 
-    return html`<section>
-      <h3>${name || "Entourage"}</h3>
-      <table>
-        <tbody>${rows.map(renderRow)}</tbody>
-      </table>
-    </section>`;
+    return html`
+      <section>
+        <h3>${name || "Entourage"}</h3>
+        ${link}
+        <table>
+          <tbody>${rows.map(renderRow)}</tbody>
+        </table>
+      </section>
+    `;
   }
 
   static styles = css`
