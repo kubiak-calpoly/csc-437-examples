@@ -1,10 +1,25 @@
 import { APIRequest, JSONRequest } from "./rest";
 import * as App from "./app";
 import { convertStartEndDates } from "./utils/dates";
-import { Tour, Profile, Destination, Route } from "ts-models";
+import {
+  ChatMessage,
+  Tour,
+  Profile,
+  Destination,
+  Route
+} from "ts-models";
 
 const dispatch = App.createDispatch();
 export default dispatch.update;
+
+dispatch.addMessage(
+  "UserLoggedIn",
+  (msg: App.Message, model: App.Model) => {
+    const { user } = msg as App.UserLoggedIn;
+
+    return App.updateProps({ user })(model);
+  }
+);
 
 dispatch.addMessage("TourSelected", (msg: App.Message) => {
   const { tourId } = msg as App.TourSelected;

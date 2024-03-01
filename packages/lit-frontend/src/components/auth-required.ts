@@ -30,6 +30,11 @@ export class AuthRequiredElement extends LitElement {
 
   firstUpdated() {
     this._toggleDialog(!this.isAuthenticated());
+    if (this.isAuthenticated()) {
+      this._dispatchUserLoggedIn(
+        this.user as AuthenticatedUser
+      );
+    }
   }
 
   render() {
@@ -50,11 +55,11 @@ export class AuthRequiredElement extends LitElement {
             <input type="password" name="pwd" />
           </label>
           <button type="submit">Sign in</button>
-          <p
-            >${this.loginStatus
+          <p>
+            ${this.loginStatus
               ? `Login failed: ${this.loginStatus}`
-              : ""}</p
-          >
+              : ""}
+          </p>
         </form>
         <form
           @submit=${this._handleRegister}
@@ -69,18 +74,20 @@ export class AuthRequiredElement extends LitElement {
             <input type="password" name="pwd" />
           </label>
           <button type="submit">Register</button>
-          <p
-            >${this.registerStatus
+          <p>
+            ${this.registerStatus
               ? `Signup failed: ${this.registerStatus}`
-              : ""}</p
-          >
+              : ""}
+          </p>
           <p></p>
         </form>
       </dialog>
     `;
 
-    return html`${this.isAuthenticated() ? "" : dialog}
-      <slot></slot>`;
+    return html`
+      ${this.isAuthenticated() ? "" : dialog}
+      <slot></slot>
+    `;
   }
 
   static styles = css`
@@ -133,14 +140,28 @@ export class AuthRequiredElement extends LitElement {
       .then((json) => {
         if (json) {
           console.log("Authentication:", json.token);
-          this.user = AuthenticatedUser.authenticate(
-            json.token,
-            () => this._signOut()
-          );
+          const authenticatedUser =
+            AuthenticatedUser.authenticate(json.token, () =>
+              this._signOut()
+            );
+          this.user = authenticatedUser;
           this._toggleDialog(false);
+          this._dispatchUserLoggedIn(authenticatedUser);
           this.requestUpdate();
         }
       });
+  }
+
+  _dispatchUserLoggedIn(user: AuthenticatedUser) {
+    const userLoggedIn = new CustomEvent("mvu:message", {
+      bubbles: true,
+      composed: true,
+      detail: {
+        type: "UserLoggedIn",
+        user
+      }
+    });
+    this.dispatchEvent(userLoggedIn);
   }
 
   _handleRegister(event: SubmitEvent) {

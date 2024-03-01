@@ -164,7 +164,9 @@ export class TourPageElement extends App.View {
           })}
         </section>
 
-        <entourage-table .using=${entourage}></entourage-table>
+        <entourage-table
+          .using=${entourage}
+          href="./${this.tourId}/entourage"></entourage-table>
       </main>
     `;
   }

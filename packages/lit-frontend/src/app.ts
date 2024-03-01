@@ -8,7 +8,8 @@ import {
   Tour,
   Profile,
   Point,
-  Route
+  Route,
+  ChatMessage
 } from "ts-models";
 
 export interface Model {
