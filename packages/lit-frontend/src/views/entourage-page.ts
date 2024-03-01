@@ -1,9 +1,9 @@
 import { css, html, unsafeCSS } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import * as App from "../app";
-import { APIUser } from "../rest";
-import { Tour, ChatMessage } from "ts-models";
+import { Tour } from "ts-models";
 import "../components/entourage-table";
+import "../components/chat-room";
 import resetCSS from "/src/styles/reset.css?inline";
 import pageCSS from "/src/styles/page.css?inline";
 
@@ -24,11 +24,6 @@ export class EntouragePageElement extends App.View {
   @property()
   get tour() {
     return this.getFromModel<Tour>("tour");
-  }
-
-  @property()
-  get username() {
-    return this.getFromModel<APIUser>("user")?.username;
   }
 
   attributeChangedCallback(
@@ -65,12 +60,7 @@ export class EntouragePageElement extends App.View {
               .using=${entourage}></entourage-table>
           </aside>
           <section class="chat">
-            <form @submit=${this._handleSubmit}>
-              <input
-                name="text"
-                placeholder="Type a message..." />
-              <button type="submit">Send</button>
-            </form>
+            <chat-room tour-id=${this.tourId}></chat-room>
           </section>
         </main>
       `;
@@ -99,26 +89,4 @@ export class EntouragePageElement extends App.View {
       }
     `
   ];
-
-  _handleSubmit(event: SubmitEvent) {
-    event.preventDefault();
-
-    if (this.tourId) {
-      const target = event.target as HTMLFormElement;
-      const formdata = new FormData(target);
-      const entries = Array.from(formdata.entries());
-      const json = Object.assign(
-        {
-          username: this.username,
-          tourId: this.tourId
-        },
-        Object.fromEntries(entries) as { text: string }
-      );
-
-      this.dispatchMessage({
-        type: "ChatMessageSent",
-        message: json as ChatMessage
-      });
-    }
-  }
 }

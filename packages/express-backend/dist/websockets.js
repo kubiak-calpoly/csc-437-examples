@@ -28,29 +28,37 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var websockets_exports = {};
 __export(websockets_exports, {
-  default: () => websockets_default
+  default: () => websockets
 });
 module.exports = __toCommonJS(websockets_exports);
 var import_ws = __toESM(require("ws"));
-var websockets_default = (expressServer) => {
+function websockets(expressServer) {
   const wss = new import_ws.default.Server({
     noServer: true,
     path: "/ws"
   });
+  const connections = [];
   expressServer.on(
     "upgrade",
     (request, socket, head) => {
+      const url = request.url || "";
+      const matches = url.match(/.*\?channel=(\w+)/);
+      const channel = matches ? matches[1] : "global";
+      console.log("Got an upgrade request on channel", channel);
       wss.handleUpgrade(request, socket, head, (websocket) => {
+        connections.push({ channel, client: websocket });
         wss.emit("connection", websocket, request);
       });
     }
   );
   wss.on("connection", (wsc) => {
     wsc.on("message", (message) => {
-      console.log("received: %s", message);
-      wsc.send(`Hello, you sent -> ${message}`);
+      const conn = connections.find((c) => c.client === wsc);
+      const { channel } = conn || {};
+      const clients = connections.filter((c) => c.channel === channel).map((c) => c.client);
+      console.log("received, echoing: %s", message, channel);
+      clients.forEach((wsc2) => wsc2.send(message.toString()));
     });
-    wsc.send("Hi there, I am a WebSocket server");
   });
   return wss;
-};
+}

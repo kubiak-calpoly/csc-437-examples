@@ -55,13 +55,7 @@ export interface RouteRequested
   points: Point[];
 }
 
-export interface ChatMessageSent
-  extends MsgType<"ChatMessageSent"> {
-  message: ChatMessage;
-}
-
 export type Message =
-  | ChatMessageSent
   | DestinationSaved
   | ProfileSelected
   | ProfileSaved
