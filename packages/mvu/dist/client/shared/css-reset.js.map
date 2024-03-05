@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../../../src/client/shared/css-reset.ts"],
-  "sourcesContent": ["import { css } from \"lit\";\n\nexport const reset = css`\n  *,\n  *::before,\n  *::after {\n    margin: 0;\n    box-sizing: border-box;\n  }\n`;\n"],
-  "mappings": ";;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA,iBAAoB;AAEb,MAAM,QAAQ;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;",
-  "names": []
-}

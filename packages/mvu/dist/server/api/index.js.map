@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../../../src/server/api/index.ts"],
-  "sourcesContent": ["import express, { Router } from \"express\";\nimport profiles from \"./profiles\";\nimport tours from \"./tours\";\n\nconst api = Router();\n\napi.use(express.json());\n\napi.use(\"/profiles\", profiles);\napi.use(\"/tours\", tours);\n\nexport default api;\n"],
-  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA,qBAAgC;AAChC,sBAAqB;AACrB,mBAAkB;AAElB,MAAM,UAAM,uBAAO;AAEnB,IAAI,IAAI,eAAAA,QAAQ,KAAK,CAAC;AAEtB,IAAI,IAAI,aAAa,gBAAAC,OAAQ;AAC7B,IAAI,IAAI,UAAU,aAAAC,OAAK;AAEvB,IAAO,cAAQ;",
-  "names": ["express", "profiles", "tours"]
-}
