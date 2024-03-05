@@ -20,6 +20,7 @@ class ExcursionCardElement extends LitElement {
     :host {
       border: var(--line-weight-fine) solid var(--color-accent);
       padding: var(--size-spacing-medium);
+      display: flex;
       height: 100%;
     }
     h3 {
@@ -35,6 +36,7 @@ class ExcursionCardElement extends LitElement {
       height: var(--size-icon-large);
       width: var(--size-icon-large);
       vertical-align: middle;
+      flex-shrink: 0;
     }
   `;
 }

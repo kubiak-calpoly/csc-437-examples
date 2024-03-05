@@ -30161,7 +30161,7 @@ function markRoute(map, route) {
   });
 }
 const resetCSS = "* {\n  margin: 0;\n  box-sizing: border-box;\n}\nbody {\n  line-height: 1.5;\n  min-height: 100vh;\n  display: flex;\n  flex-direction: column;\n}\nimg {\n  max-width: 100%;\n}\n";
-const pageCSS = ".page {\n  font-family: var(--font-family-body);\n  background-color: var(--color-background-page);\n  color: var(--color-text);\n  display: flex;\n  flex-direction: column;\n  height: 100%;\n  flex-basis: 100%;\n  flex-grow: 1;\n  width: 100%;\n  padding: 2rem;\n}\n\nbody > section {\n  margin: var(--size-spacing-medium);\n}\nh1,\nh2,\nh3,\nh4,\nh5,\nh6,\ndt,\nsummary {\n  font-family: var(--font-family-display);\n  line-height: var(--font-line-height-display);\n}\nh1 {\n  font-size: var(--size-type-xxlarge);\n  font-style: oblique;\n  line-height: 1;\n  font-weight: var(--font-weight-bold);\n}\nh2 {\n  font-size: var(--size-type-xlarge);\n  font-weight: var(--font-weight-bold);\n}\nh3 {\n  font-size: var(--size-type-large);\n  font-weight: var(--font-weight-normal);\n  font-style: oblique;\n}\nh4 {\n  font-size: var(--size-type-mlarge);\n  font-weight: var(--font-weight-bold);\n}\nh5 {\n  font-size: var(--size-type-body);\n  font-weight: var(--font-weight-bold);\n}\nh6 {\n  font-size: var(--size-type-body);\n  font-weight: var(--font-weight-normal);\n  font-style: italic;\n}\ndt {\n  font-weight: var(--size-type-body);\n}\nh3,\na {\n  color: var(--color-accent);\n}\nsvg.outline-map {\n  fill: #ff0;\n}\nsvg.icon {\n  display: inline;\n  fill: currentColor;\n  height: var(--size-icon-large);\n  width: var(--size-icon-large);\n  vertical-align: middle;\n}\n";
+const pageCSS = ".page {\n  font-family: var(--font-family-body);\n  background-color: var(--color-background-page);\n  color: var(--color-text);\n  display: flex;\n  flex-direction: column;\n  height: 100%;\n  flex-basis: 100%;\n  flex-grow: 1;\n  width: 100%;\n  padding: 2rem;\n  overflow: auto;\n}\n\nbody > section {\n  margin: var(--size-spacing-medium);\n}\nh1,\nh2,\nh3,\nh4,\nh5,\nh6,\ndt,\nsummary {\n  font-family: var(--font-family-display);\n  line-height: var(--font-line-height-display);\n}\nh1 {\n  font-size: var(--size-type-xxlarge);\n  font-style: oblique;\n  line-height: 1;\n  font-weight: var(--font-weight-bold);\n}\nh2 {\n  font-size: var(--size-type-xlarge);\n  font-weight: var(--font-weight-bold);\n}\nh3 {\n  font-size: var(--size-type-large);\n  font-weight: var(--font-weight-normal);\n  font-style: oblique;\n}\nh4 {\n  font-size: var(--size-type-mlarge);\n  font-weight: var(--font-weight-bold);\n}\nh5 {\n  font-size: var(--size-type-body);\n  font-weight: var(--font-weight-bold);\n}\nh6 {\n  font-size: var(--size-type-body);\n  font-weight: var(--font-weight-normal);\n  font-style: italic;\n}\ndt {\n  font-weight: var(--size-type-body);\n}\nh3,\na {\n  color: var(--color-accent);\n}\nsvg.outline-map {\n  fill: #ff0;\n}\nsvg.icon {\n  display: inline;\n  fill: currentColor;\n  height: var(--size-icon-large);\n  width: var(--size-icon-large);\n  vertical-align: middle;\n}\n";
 var __defProp$e = Object.defineProperty;
 var __getOwnPropDesc$e = Object.getOwnPropertyDescriptor;
 var __decorateClass$e = (decorators, target, key, kind) => {
@@ -30674,6 +30674,7 @@ ExcursionCardElement.styles = i$3`
     :host {
       border: var(--line-weight-fine) solid var(--color-accent);
       padding: var(--size-spacing-medium);
+      display: flex;
       height: 100%;
     }
     h3 {
@@ -30689,6 +30690,7 @@ ExcursionCardElement.styles = i$3`
       height: var(--size-icon-large);
       width: var(--size-icon-large);
       vertical-align: middle;
+      flex-shrink: 0;
     }
   `;
 __decorateClass$b([
@@ -30859,9 +30861,11 @@ let DestinationPageElement = class extends View2 {
           <ul class="excursions">
             ${excursions.map(
           (x$1) => x`
-                  <excursion-card type="${x$1.type}}">
-                    ${x$1.name}
-                  </excursion-card>
+                  <li>
+                    <excursion-card type="${x$1.type}}">
+                      ${x$1.name}
+                    </excursion-card>
+                  </li>
                 `
         )}
           </ul>
@@ -30954,10 +30958,19 @@ DestinationPageElement.styles = [
   r$5(pageCSS),
   i$3`
       .excursions {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
+        list-style: none;
         padding: 0;
+        display: flex;
+        flex-wrap: wrap;
         gap: var(--size-spacing-large);
+        padding: var(--size-spacing-large) 0;
+      }
+      .excursions > * {
+        width: fit-content;
+        flex-grow: 1;
+        @media screen and (min-width: 30rem) {
+          flex-basis: 0%;
+        }
       }
     `
 ];

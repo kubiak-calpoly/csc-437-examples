@@ -189,9 +189,11 @@ export class DestinationPageElement extends App.View {
             ${excursions.map(
               (x) =>
                 html`
-                  <excursion-card type="${x.type}}">
-                    ${x.name}
-                  </excursion-card>
+                  <li>
+                    <excursion-card type="${x.type}}">
+                      ${x.name}
+                    </excursion-card>
+                  </li>
                 `
             )}
           </ul>
@@ -209,10 +211,19 @@ export class DestinationPageElement extends App.View {
     unsafeCSS(pageCSS),
     css`
       .excursions {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
+        list-style: none;
         padding: 0;
+        display: flex;
+        flex-wrap: wrap;
         gap: var(--size-spacing-large);
+        padding: var(--size-spacing-large) 0;
+      }
+      .excursions > * {
+        width: fit-content;
+        flex-grow: 1;
+        @media screen and (min-width: 30rem) {
+          flex-basis: 0%;
+        }
       }
     `
   ];
