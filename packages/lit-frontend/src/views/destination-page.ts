@@ -9,6 +9,7 @@ import { formatDate } from "../utils/dates";
 import * as App from "../app";
 import resetCSS from "/src/styles/reset.css?inline";
 import pageCSS from "/src/styles/page.css?inline";
+import "../components/excursion-card";
 
 type DestLocation = Location & {
   params: { tour: string; dest: string };
@@ -80,7 +81,8 @@ export class DestinationPageElement extends App.View {
       startDate,
       endDate,
       location,
-      featuredImage
+      featuredImage,
+      excursions = []
     } = this.destination as Destination;
     const tourName = this.tour?.name;
     const imageUrl = this.image || featuredImage;
@@ -183,6 +185,16 @@ export class DestinationPageElement extends App.View {
           <a href=${link}>
             <img src=${imageUrl} />
           </a>
+          <ul class="excursions">
+            ${excursions.map(
+              (x) =>
+                html`
+                  <excursion-card type="${x.type}}">
+                    ${x.name}
+                  </excursion-card>
+                `
+            )}
+          </ul>
         `;
       }
     };
@@ -195,7 +207,14 @@ export class DestinationPageElement extends App.View {
   static styles = [
     unsafeCSS(resetCSS),
     unsafeCSS(pageCSS),
-    css``
+    css`
+      .excursions {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        padding: 0;
+        gap: var(--size-spacing-large);
+      }
+    `
   ];
 
   _handleSubmit(event: Event) {

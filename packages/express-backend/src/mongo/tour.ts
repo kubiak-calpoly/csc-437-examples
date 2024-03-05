@@ -31,6 +31,9 @@ const tourSchema = new Schema<Tour>(
         featuredImage: String,
         accommodations: [
           { name: String, link: String, nights: Number }
+        ],
+        excursions: [
+          { name: String, type: { type: String }, link: String }
         ]
       }
     ],

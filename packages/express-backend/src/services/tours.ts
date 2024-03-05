@@ -25,6 +25,7 @@ function get(id: String): Promise<Tour> {
         }
       })
       .then((doc: unknown) => {
+        console.log("Tour is:", JSON.stringify(doc as Object));
         return doc as Tour;
       })
       .catch((err) => {
