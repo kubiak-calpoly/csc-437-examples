@@ -182,7 +182,7 @@ export class DestinationPageElement extends App.View {
             <p>${formatPoint(location)}</p>
             <a href="?edit=t">Edit</a>
           </header>
-          <a href=${link}>
+          <a class="hero" href=${link}>
             <img src=${imageUrl} />
           </a>
           <ul class="excursions">
@@ -210,19 +210,53 @@ export class DestinationPageElement extends App.View {
     unsafeCSS(resetCSS),
     unsafeCSS(pageCSS),
     css`
-      .excursions {
+      .page {
+        --page-grids: 8;
+
+        display: grid;
+        grid-template-columns: repeat(var(--page-grids), 1fr);
+        gap: var(--size-spacing-medium);
+      }
+      .page > header {
+        grid-column: 1 / span 3;
+      }
+      .page > .hero {
+        grid-column: span min(5, var(--page-grids)) / -1;
+      }
+      .page > .excursions {
+        display: contents;
         list-style: none;
         padding: 0;
-        display: flex;
-        flex-wrap: wrap;
-        gap: var(--size-spacing-large);
-        padding: var(--size-spacing-large) 0;
       }
       .excursions > * {
-        width: fit-content;
-        flex-grow: 1;
-        @media screen and (min-width: 30rem) {
-          flex-basis: 0%;
+        grid-column: auto / span 2;
+      }
+      @media screen and (max-width: 50rem) {
+        .page {
+          --page-grids: 4;
+        }
+      }
+      @media screen and (max-width: 30rem) {
+        .page {
+          --page-grids: 2;
+        }
+      }
+      @media screen and (min-width: 75rem) and (max-width: 100rem) {
+        .page {
+          --page-grids: 12;
+        }
+        .page > .hero {
+          grid-column-start: span 8;
+          grid-row: auto / span 2;
+        }
+      }
+      @media screen and (min-width: 100rem) {
+        .page {
+          --page-grids: 16;
+        }
+        .page > .hero {
+          grid-column: 5 / span 8;
+          grid-row: auto / span 3;
         }
       }
     `

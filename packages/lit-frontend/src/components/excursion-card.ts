@@ -18,9 +18,10 @@ class ExcursionCardElement extends LitElement {
 
   static styles = css`
     :host {
+      display: flex;
+      flex-direction: column;
       border: var(--line-weight-fine) solid var(--color-accent);
       padding: var(--size-spacing-medium);
-      display: flex;
       height: 100%;
     }
     h3 {
