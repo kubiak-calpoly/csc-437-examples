@@ -34,9 +34,12 @@ export interface Excursion {
   type: ExcursionType;
 }
 
-type ExcursionType =
+export type ExcursionType =
+  | "air"
+  | "bike"
   | "boat"
   | "bus"
+  | "food"
   | "metro"
   | "train"
   | "walking"

@@ -52,6 +52,9 @@ const tourSchema = new import_mongoose.Schema(
         featuredImage: String,
         accommodations: [
           { name: String, link: String, nights: Number }
+        ],
+        excursions: [
+          { name: String, type: { type: String }, link: String }
         ]
       }
     ],

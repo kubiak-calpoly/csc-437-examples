@@ -42,6 +42,7 @@ function get(id) {
       path: "people"
     }
   }).then((doc) => {
+    console.log("Tour is:", JSON.stringify(doc));
     return doc;
   }).catch((err) => {
     throw `${id} Not Found`;

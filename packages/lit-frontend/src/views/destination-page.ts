@@ -9,6 +9,7 @@ import { formatDate } from "../utils/dates";
 import * as App from "../app";
 import resetCSS from "/src/styles/reset.css?inline";
 import pageCSS from "/src/styles/page.css?inline";
+import "../components/excursion-card";
 
 type DestLocation = Location & {
   params: { tour: string; dest: string };
@@ -80,7 +81,8 @@ export class DestinationPageElement extends App.View {
       startDate,
       endDate,
       location,
-      featuredImage
+      featuredImage,
+      excursions = []
     } = this.destination as Destination;
     const tourName = this.tour?.name;
     const imageUrl = this.image || featuredImage;
@@ -180,9 +182,21 @@ export class DestinationPageElement extends App.View {
             <p>${formatPoint(location)}</p>
             <a href="?edit=t">Edit</a>
           </header>
-          <a href=${link}>
+          <a class="hero" href=${link}>
             <img src=${imageUrl} />
           </a>
+          <ul class="excursions">
+            ${excursions.map(
+              (x) =>
+                html`
+                  <li>
+                    <excursion-card type="${x.type}}">
+                      ${x.name}
+                    </excursion-card>
+                  </li>
+                `
+            )}
+          </ul>
         `;
       }
     };
@@ -195,7 +209,57 @@ export class DestinationPageElement extends App.View {
   static styles = [
     unsafeCSS(resetCSS),
     unsafeCSS(pageCSS),
-    css``
+    css`
+      .page {
+        --page-grids: 8;
+
+        display: grid;
+        grid-template-columns: repeat(var(--page-grids), 1fr);
+        gap: var(--size-spacing-medium);
+      }
+      .page > header {
+        grid-column: 1 / span 3;
+      }
+      .page > .hero {
+        grid-column: span min(5, var(--page-grids)) / -1;
+      }
+      .page > .excursions {
+        display: contents;
+        list-style: none;
+        padding: 0;
+      }
+      .excursions > * {
+        grid-column: auto / span 2;
+      }
+      @media screen and (max-width: 50rem) {
+        .page {
+          --page-grids: 4;
+        }
+      }
+      @media screen and (max-width: 30rem) {
+        .page {
+          --page-grids: 2;
+        }
+      }
+      @media screen and (min-width: 75rem) and (max-width: 100rem) {
+        .page {
+          --page-grids: 12;
+        }
+        .page > .hero {
+          grid-column-start: span 8;
+          grid-row: auto / span 2;
+        }
+      }
+      @media screen and (min-width: 100rem) {
+        .page {
+          --page-grids: 16;
+        }
+        .page > .hero {
+          grid-column: 5 / span 8;
+          grid-row: auto / span 3;
+        }
+      }
+    `
   ];
 
   _handleSubmit(event: Event) {

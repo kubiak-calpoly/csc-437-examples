@@ -56,6 +56,44 @@
           "nights": 4,
           "link": "/features/italy/rome/la-piccola-maison"
         }
+      ],
+      "excursions": [
+        {
+          "name": "The Forum, Colosseum, and Palatine Hill",
+          "type": "walking"
+        },
+        {
+          "name": "Vatican Museums, Sistine Chapel, & St Peter's Basilica",
+          "type": "tour"
+        },
+        {
+          "name": "Pompeii, Amalfi Coast, and Positano",
+          "type": "bus"
+        },
+        {
+          "name": "Tuscany from Rome with Lunch and Wine Tasting",
+          "type": "train"
+        },
+        {
+          "name": "Cooking Class Piazza Navona",
+          "type": "food"
+        },
+        {
+          "name": "Capri Island Boat Tour",
+          "type": "boat"
+        },
+        {
+          "name": "E-Bike Tour of Appian Way",
+          "type": "bike"
+        },
+        {
+          "name": "Rome 3-Hour Bicycle Sightseeing Tour",
+          "type": "bike"
+        },
+        {
+          "name": "Fly to Sicily for the Day",
+          "type": "air"
+        }
       ]
     }
   ],

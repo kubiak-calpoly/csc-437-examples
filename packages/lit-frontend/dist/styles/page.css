@@ -9,6 +9,7 @@
   flex-grow: 1;
   width: 100%;
   padding: 2rem;
+  overflow: auto;
 }
 
 body > section {
