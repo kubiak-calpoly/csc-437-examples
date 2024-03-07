@@ -9,20 +9,32 @@ class ExcursionCardElement extends LitElement {
 
   render() {
     return html`
-      <svg class="icon">
-        <use href="/icons/transportation.svg#icon-train" />
-      </svg>
-      <h3><slot>Name of Excursion</slot></h3>
+      <div class="card">
+        <svg class="icon">
+          <use href="/icons/transportation.svg#icon-train" />
+        </svg>
+        <h3><slot>Name of Excursion</slot></h3>
+      </div>
     `;
   }
 
   static styles = css`
     :host {
+      display: block;
+      container: card / inline-size;
+      height: 100%;
+    }
+    .card {
       display: flex;
       flex-direction: column;
       border: var(--line-weight-fine) solid var(--color-accent);
       padding: var(--size-spacing-medium);
       height: 100%;
+    }
+    @container card (min-width: 15rem) {
+      .card {
+        flex-direction: row;
+      }
     }
     h3 {
       font-family: var(--font-family-display);
@@ -30,6 +42,7 @@ class ExcursionCardElement extends LitElement {
       font-size: var(--size-type-large);
       font-weight: var(--font-weight-normal);
       font-style: oblique;
+      margin: 0;
     }
     svg.icon {
       display: inline;

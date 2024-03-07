@@ -30663,20 +30663,31 @@ var __decorateClass$b = (decorators, target, key, kind) => {
 let ExcursionCardElement = class extends s$3 {
   render() {
     return x`
-      <svg class="icon">
-        <use href="/icons/transportation.svg#icon-train" />
-      </svg>
-      <h3><slot>Name of Excursion</slot></h3>
+      <div class="card">
+        <svg class="icon">
+          <use href="/icons/transportation.svg#icon-train" />
+        </svg>
+        <h3><slot>Name of Excursion</slot></h3>
+      </div>
     `;
   }
 };
 ExcursionCardElement.styles = i$3`
     :host {
+      container-type: size;
+      container-name: card;
+    }
+    .card {
       display: flex;
       flex-direction: column;
       border: var(--line-weight-fine) solid var(--color-accent);
       padding: var(--size-spacing-medium);
       height: 100%;
+    }
+    @container card (min-width: 15rem) {
+      .card {
+        flex-direction: row;
+      }
     }
     h3 {
       font-family: var(--font-family-display);
@@ -30684,6 +30695,7 @@ ExcursionCardElement.styles = i$3`
       font-size: var(--size-type-large);
       font-weight: var(--font-weight-normal);
       font-style: oblique;
+      margin: 0;
     }
     svg.icon {
       display: inline;
