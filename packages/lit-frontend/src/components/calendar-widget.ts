@@ -1,5 +1,6 @@
 import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { parseUTCDate } from "../utils/dates";
 
 @customElement("calendar-widget")
 export class CalendarWidget extends LitElement {
@@ -14,7 +15,8 @@ export class CalendarWidget extends LitElement {
       "calendar-widget:select",
       {
         bubbles: true,
-        detail: { date: value ? new Date(value) : value }
+        composed: true,
+        detail: { date: value ? parseUTCDate(value) : value }
       }
     );
 
@@ -31,7 +33,7 @@ export class CalendarWidget extends LitElement {
 
     const clearEvent = new CustomEvent(
       "calendar-widget:clear",
-      { bubbles: true }
+      { bubbles: true, composed: true }
     );
 
     this.dispatchEvent(clearEvent);
@@ -62,7 +64,7 @@ export class CalendarWidget extends LitElement {
 
       return html`
         <label style="grid-column: ${ymd.day + 1}">
-          ${ymd.d}
+          <span>${ymd.d}</span>
           <input
             type="radio"
             name="cal"
@@ -71,25 +73,29 @@ export class CalendarWidget extends LitElement {
       `;
     };
 
-    return html` <section>
-      <fieldset
-        @change="${(event: InputEvent) => {
-          const target = event.target as HTMLInputElement;
-          this._handleChange(target.value);
-        }}">
-        <h6>Su</h6>
-        <h6>Mo</h6>
-        <h6>Tu</h6>
-        <h6>We</h6>
-        <h6>Th</h6>
-        <h6>Fr</h6>
-        <h6>Sa</h6>
-        ${dates.map(renderDate)}
-      </fieldset>
-      <button id="clear" @click="${() => this._handleClear()}">
-        Clear Selection
-      </button>
-    </section>`;
+    return html`
+      <section>
+        <fieldset
+          @change="${(event: InputEvent) => {
+            const target = event.target as HTMLInputElement;
+            this._handleChange(target.value);
+          }}">
+          <h6>Su</h6>
+          <h6>Mo</h6>
+          <h6>Tu</h6>
+          <h6>We</h6>
+          <h6>Th</h6>
+          <h6>Fr</h6>
+          <h6>Sa</h6>
+          ${dates.map(renderDate)}
+        </fieldset>
+        <button
+          id="clear"
+          @click="${() => this._handleClear()}">
+          Clear Selection
+        </button>
+      </section>
+    `;
   }
 
   static styles = css`

@@ -107,7 +107,9 @@ dispatch.addMessage("DestinationSaved", (msg: App.Message) => {
     .then((json: unknown) => {
       if (json) {
         console.log("Destination:", destination);
-        return json as Destination;
+        return convertStartEndDates<Destination>(
+          json
+        ) as Destination;
       }
       return undefined;
     })

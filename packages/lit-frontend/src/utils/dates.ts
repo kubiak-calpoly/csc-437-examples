@@ -33,12 +33,21 @@ interface DateRange {
   endDate: Date;
 }
 
+export function parseUTCDate(s: string) {
+  const date = new Date(Date.parse(s));
+  const d = date.getUTCDate();
+  const m = date.getUTCMonth();
+  const y = date.getUTCFullYear();
+
+  return new Date(Date.UTC(y, m, d));
+}
+
 export function convertStartEndDates<T extends DateRange>(
   obj: unknown
 ) {
   const datestrings = obj as DateStringRange;
   let result = obj as T;
-  result.startDate = new Date(datestrings.startDate);
-  result.endDate = new Date(datestrings.endDate);
+  result.startDate = parseUTCDate(datestrings.startDate);
+  result.endDate = parseUTCDate(datestrings.endDate);
   return result;
 }
