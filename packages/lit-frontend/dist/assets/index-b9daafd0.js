@@ -2260,9 +2260,9 @@ let DestinationPageElement = class extends View2 {
               <dd><input name="name" .value=${name} /></dd>
               <dt>Dates</dt>
               <dd>
-                <input name="endDate" value=${startDate} />
+                <input name="startDate" value=${startDate} />
                 to
-                <input name="startDate" value=${endDate} />
+                <input name="endDate" value=${endDate} />
               </dd>
               <dt>Coordinates</dt>
               <dd>
@@ -2325,7 +2325,7 @@ let DestinationPageElement = class extends View2 {
             <p>
               from ${formatDate(startDate)} to
               ${formatDate(endDate)}
-              ${endDate && endDate.getFullYear()}
+              ${endDate && endDate.getUTCFullYear()}
             </p>
             <p>${formatPoint(location)}</p>
             <a href="?edit=t">Edit</a>
@@ -2774,7 +2774,9 @@ dispatch.addMessage("DestinationSaved", (msg) => {
   }).then((json) => {
     if (json) {
       console.log("Destination:", destination);
-      return json;
+      return convertStartEndDates(
+        json
+      );
     }
     return void 0;
   }).then((dest) => {

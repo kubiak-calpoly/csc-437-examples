@@ -115,9 +115,9 @@ export class DestinationPageElement extends App.View {
               <dd><input name="name" .value=${name} /></dd>
               <dt>Dates</dt>
               <dd>
-                <input name="endDate" value=${startDate} />
+                <input name="startDate" value=${startDate} />
                 to
-                <input name="startDate" value=${endDate} />
+                <input name="endDate" value=${endDate} />
               </dd>
               <dt>Coordinates</dt>
               <dd>
@@ -180,7 +180,7 @@ export class DestinationPageElement extends App.View {
             <p>
               from ${formatDate(startDate)} to
               ${formatDate(endDate)}
-              ${endDate && endDate.getFullYear()}
+              ${endDate && endDate.getUTCFullYear()}
             </p>
             <p>${formatPoint(location)}</p>
             <a href="?edit=t">Edit</a>
