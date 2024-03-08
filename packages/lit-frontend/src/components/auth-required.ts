@@ -41,7 +41,7 @@ export class AuthRequiredElement extends LitElement {
     //console.log("Rendering auth-required", this.user);
 
     const dialog = html`
-      <dialog>
+      <dialog ?open=${!this.isAuthenticated}>
         <form
           @submit=${this._handleLogin}
           @change=${() => (this.loginStatus = 0)}>
@@ -85,7 +85,7 @@ export class AuthRequiredElement extends LitElement {
     `;
 
     return html`
-      ${this.isAuthenticated() ? "" : dialog}
+      ${dialog}
       <slot></slot>
     `;
   }
@@ -94,7 +94,7 @@ export class AuthRequiredElement extends LitElement {
     :host {
       display: contents;
     }
-    dialog {
+    dialog[open] {
       display: flex;
       gap: 4rem;
     }

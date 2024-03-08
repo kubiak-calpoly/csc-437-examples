@@ -165,6 +165,9 @@ export class DestinationPageElement extends App.View {
               </dd>
             </dl>
             <button type="submit">Submit</button>
+            <a href=${window.location.pathname.split("?")[0]}>
+              Done
+            </a>
           </form>
         `;
       } else {

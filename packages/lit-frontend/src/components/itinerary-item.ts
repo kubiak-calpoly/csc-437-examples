@@ -28,9 +28,11 @@ class ItineraryItemElement extends LitElement {
           ${formatDate(this.startDate)}
         </time>
         ${this.endDate
-          ? html` <time datetime=${this.endDate}>
-              ${formatDate(this.endDate)}
-            </time>`
+          ? html`
+              <time datetime=${this.endDate}>
+                ${formatDate(this.endDate)}
+              </time>
+            `
           : null}
       </span>
       ${item}
@@ -39,7 +41,9 @@ class ItineraryItemElement extends LitElement {
 
   renderItem() {
     // subclasses may override
-    return html`<slot></slot>`;
+    return html`
+      <slot></slot>
+    `;
   }
 
   static styles = css`
@@ -125,9 +129,6 @@ class ItineraryItemElement extends LitElement {
       color: inherit;
       text-decoration: none;
     }
-    a.itemLink {
-      display: contents;
-    }
     svg.icon {
       display: inline;
       fill: currentColor;
@@ -147,10 +148,8 @@ class ItineraryItemElement extends LitElement {
         selectedDate < new Date(this.startDate) ||
         selectedDate > new Date(this.endDate || this.startDate);
       if (hidden) {
-        console.log("Hiding item", this);
         this.setAttribute("hidden", "hidden");
       } else {
-        console.log("Revealing item", this);
         this.removeAttribute("hidden");
       }
     };
@@ -187,19 +186,23 @@ export class ItineraryDestinationElement extends ItineraryItemElement {
   imgSrc?: string;
 
   renderItem() {
-    const content = html`<slot></slot>`;
+    const content = html`
+      <slot></slot>
+    `;
     const link = this.href
-      ? html`<a class="itemLink" href="${this.href}"
-          >${content}</a
-        >`
+      ? html`
+          <a class="itemLink" href="${this.href}">${content}</a>
+        `
       : content;
     const style = this.imgSrc
       ? `background-image: url(${this.imgSrc})`
       : "";
 
-    return html`<section class="destination" style=${style}>
-      <h3>${link}</h3>
-    </section>`;
+    return html`
+      <section class="destination" style=${style}>
+        <h3>${link}</h3>
+      </section>
+    `;
   }
 }
 
@@ -217,19 +220,21 @@ export class ItineraryTransportationElement extends ItineraryItemElement {
       ? icons[this.type]
       : "icon-default";
 
-    return html`<section class="transportation">
-      <h3 class="subgrid">
-        <span>
-          <slot name="origin">BGN</slot>
-        </span>
-        <svg class="icon">
-          <use href="/icons/transportation.svg#${iconId}" />
-        </svg>
-        <span>
-          <slot name="terminus">END</slot>
-          <slot name="via"></slot>
-        </span>
-      </h3>
-    </section>`;
+    return html`
+      <section class="transportation">
+        <h3 class="subgrid">
+          <span>
+            <slot name="origin">BGN</slot>
+          </span>
+          <svg class="icon">
+            <use href="/icons/transportation.svg#${iconId}" />
+          </svg>
+          <span>
+            <slot name="terminus">END</slot>
+            <slot name="via"></slot>
+          </span>
+        </h3>
+      </section>
+    `;
   }
 }

@@ -28,12 +28,10 @@ export class BlazingHeaderElement extends LitElement {
       nickname ||
       (name && name.split(" ")[0]) ||
       this.user.username;
-
-    return html`
-      <header>
-        <h1>Blazing Travels</h1>
-        <p>
-          Hello,
+    const authenticated = this.user.authenticated;
+    const welcome = authenticated
+      ? html`
+          <span>Hello,</span>
           <drop-down align="right">
             ${shortname}
             <user-panel
@@ -47,7 +45,13 @@ export class BlazingHeaderElement extends LitElement {
               </button>
             </user-panel>
           </drop-down>
-        </p>
+        `
+      : "Not logged in";
+
+    return html`
+      <header>
+        <h1>Blazing Travels</h1>
+        <p>${welcome}</p>
       </header>
     `;
   }
