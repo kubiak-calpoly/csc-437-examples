@@ -2,7 +2,9 @@ import { css, html, TemplateResult, unsafeCSS } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { Tour, Destination, Transportation } from "ts-models";
 import { formatDate } from "../utils/dates";
-import * as App from "../app";
+import { View } from "@calpoly/mustang";
+import { Model } from "../model";
+import { Message } from "../messages";
 import "../components/calendar-widget";
 import "../components/entourage-table";
 import "../components/itinerary-item";
@@ -15,7 +17,7 @@ type TourLocation = Location & {
 };
 
 @customElement("tour-page")
-export class TourPageElement extends App.View {
+export class TourPageElement extends View<Model, Message> {
   @property({ attribute: false })
   location?: TourLocation;
 

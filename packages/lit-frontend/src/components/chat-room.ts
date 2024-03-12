@@ -4,8 +4,9 @@ import {
   property,
   state
 } from "lit/decorators.js";
-import * as App from "../app";
-import { APIUser } from "../rest";
+import { APIUser, View } from "@calpoly/mustang";
+import { Model } from "../model";
+import { Message } from "../messages";
 import {
   Connection,
   createConnection,
@@ -16,7 +17,7 @@ import resetCSS from "/src/styles/reset.css?inline";
 import pageCSS from "/src/styles/page.css?inline";
 
 @customElement("chat-room")
-export class ChatRoomElement extends App.View {
+export class ChatRoomElement extends View<Model, Message> {
   get username() {
     return this.getFromModel<APIUser>("user")?.username;
   }

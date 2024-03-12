@@ -1,6 +1,6 @@
 import { html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { FormDataRequest } from "../rest";
+import { FormDataRequest } from "@calpoly/mustang";
 
 @customElement("profile-edit")
 export class ProfileEditElement extends LitElement {
@@ -8,7 +8,9 @@ export class ProfileEditElement extends LitElement {
   path: string = "";
 
   render() {
-    return html` <slot @submit=${this._handleSubmit}> </slot>`;
+    return html`
+      <slot @submit=${this._handleSubmit}></slot>
+    `;
   }
 
   _handleSubmit(event: SubmitEvent) {

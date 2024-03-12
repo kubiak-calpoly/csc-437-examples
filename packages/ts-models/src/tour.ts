@@ -1,4 +1,3 @@
-import { Moment } from "moment";
 import { Point } from "./geo";
 import { Entourage } from "./entourage";
 
@@ -66,5 +65,5 @@ export interface Segment {
 
 export interface Endpoint {
   station: string;
-  time: Moment;
+  time: Date;
 }

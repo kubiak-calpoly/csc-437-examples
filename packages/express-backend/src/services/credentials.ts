@@ -5,8 +5,8 @@ import { Credential } from "ts-models";
 export function verify(
   username: string,
   password: string
-): Promise<String> {
-  return new Promise<String>((resolve, reject) => {
+): Promise<string | undefined> {
+  return new Promise((resolve, reject) => {
     credentialModel
       .find({ username })
       .then((found) => {
@@ -19,11 +19,6 @@ export function verify(
             password,
             credsOnFile.hashedPassword,
             (_, result) => {
-              console.log(
-                "Verified",
-                result,
-                credsOnFile.username
-              );
               if (result) resolve(credsOnFile.username);
               else reject("Invalid username or password");
             }

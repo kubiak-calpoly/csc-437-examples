@@ -4,9 +4,11 @@ import {
   property,
   state
 } from "lit/decorators.js";
+import { View } from "@calpoly/mustang";
+import { Model } from "../model";
+import { Message } from "../messages";
 import { Tour, Destination, Point } from "ts-models";
 import { formatDate } from "../utils/dates";
-import * as App from "../app";
 import resetCSS from "/src/styles/reset.css?inline";
 import pageCSS from "/src/styles/page.css?inline";
 import "../components/excursion-card";
@@ -16,7 +18,10 @@ type DestLocation = Location & {
 };
 
 @customElement("destination-page")
-export class DestinationPageElement extends App.View {
+export class DestinationPageElement extends View<
+  Model,
+  Message
+> {
   @property({ attribute: false })
   location?: DestLocation;
 

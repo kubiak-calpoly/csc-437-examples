@@ -1,6 +1,8 @@
 import { css, html, unsafeCSS } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import * as App from "../app";
+import { View } from "@calpoly/mustang";
+import { Model } from "../model";
+import { Message } from "../messages";
 import { Tour } from "ts-models";
 import "../components/entourage-table";
 import "../components/chat-room";
@@ -12,7 +14,7 @@ type EntourageLocation = Location & {
 };
 
 @customElement("entourage-page")
-export class EntouragePageElement extends App.View {
+export class EntouragePageElement extends View<Model, Message> {
   @property({ attribute: false })
   location?: EntourageLocation;
 

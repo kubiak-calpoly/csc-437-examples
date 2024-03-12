@@ -1,6 +1,14 @@
-import { APIRequest, JSONRequest } from "./rest";
-import * as App from "./app";
+import {
+  APIRequest,
+  Dispatch,
+  JSONRequest,
+  updateProps,
+  noUpdate
+} from "@calpoly/mustang";
 import { convertStartEndDates } from "./utils/dates";
+import { Model } from "./model";
+import { Message } from "./messages";
+import * as Msg from "./messages";
 import {
   ChatMessage,
   Tour,
@@ -9,20 +17,21 @@ import {
   Route
 } from "ts-models";
 
-const dispatch = App.createDispatch();
+const dispatch = new Dispatch<Model, Message>();
+
 export default dispatch.update;
 
 dispatch.addMessage(
   "UserLoggedIn",
-  (msg: App.Message, model: App.Model) => {
-    const { user } = msg as App.UserLoggedIn;
+  (msg: Message, model: Model) => {
+    const { user } = msg as Msg.UserLoggedIn;
 
-    return App.updateProps({ user })(model);
+    return updateProps<Model>({ user })(model);
   }
 );
 
-dispatch.addMessage("TourSelected", (msg: App.Message) => {
-  const { tourId } = msg as App.TourSelected;
+dispatch.addMessage("TourSelected", (msg: Message) => {
+  const { tourId } = msg as Msg.TourSelected;
 
   return new APIRequest()
     .get(`/tours/${tourId}`)
@@ -43,12 +52,12 @@ dispatch.addMessage("TourSelected", (msg: App.Message) => {
       }
     })
     .then((tour: Tour | undefined) =>
-      tour ? App.updateProps({ tour }) : App.noUpdate
+      tour ? updateProps<Model>({ tour }) : noUpdate<Model>
     );
 });
 
-dispatch.addMessage("ProfileSelected", (msg: App.Message) => {
-  const { userid } = msg as App.ProfileSelected;
+dispatch.addMessage("ProfileSelected", (msg: Message) => {
+  const { userid } = msg as Msg.ProfileSelected;
 
   return new APIRequest()
     .get(`/profiles/${userid}`)
@@ -65,12 +74,14 @@ dispatch.addMessage("ProfileSelected", (msg: App.Message) => {
       }
     })
     .then((profile: Profile | undefined) =>
-      profile ? App.updateProps({ profile }) : App.noUpdate
+      profile
+        ? updateProps<Model>({ profile })
+        : noUpdate<Model>
     );
 });
 
-dispatch.addMessage("ProfileSaved", (msg: App.Message) => {
-  const { userid, profile } = msg as App.ProfileSaved;
+dispatch.addMessage("ProfileSaved", (msg: Message) => {
+  const { userid, profile } = msg as Msg.ProfileSaved;
 
   return new JSONRequest(profile)
     .put(`/profiles/${userid}`)
@@ -88,13 +99,15 @@ dispatch.addMessage("ProfileSaved", (msg: App.Message) => {
       return undefined;
     })
     .then((profile: Profile | undefined) =>
-      profile ? App.updateProps({ profile }) : App.noUpdate
+      profile
+        ? updateProps<Model>({ profile })
+        : noUpdate<Model>
     );
 });
 
-dispatch.addMessage("DestinationSaved", (msg: App.Message) => {
+dispatch.addMessage("DestinationSaved", (msg: Message) => {
   const { tourId, destId, destination } =
-    msg as App.DestinationSaved;
+    msg as Msg.DestinationSaved;
 
   return new JSONRequest(destination)
     .put(`/tours/${tourId}/destinations/${destId}`)
@@ -115,7 +128,7 @@ dispatch.addMessage("DestinationSaved", (msg: App.Message) => {
     })
     .then((dest: Destination | undefined) => {
       if (dest) {
-        return (model: App.Model) => {
+        return (model: Model) => {
           const tour = model.tour;
           const destinations = tour?.destinations.map((d, i) =>
             i === destId ? dest : d
@@ -125,13 +138,13 @@ dispatch.addMessage("DestinationSaved", (msg: App.Message) => {
           });
         };
       } else {
-        return App.noUpdate;
+        return noUpdate<Model>;
       }
     });
 });
 
-dispatch.addMessage("RouteRequested", (msg: App.Message) => {
-  const { points } = msg as App.RouteRequested;
+dispatch.addMessage("RouteRequested", (msg: Message) => {
+  const { points } = msg as Msg.RouteRequested;
   const coordinates = points
     .map((pt) => `${pt.lon},${pt.lat}`)
     .join(";");
@@ -149,6 +162,6 @@ dispatch.addMessage("RouteRequested", (msg: App.Message) => {
       else return undefined;
     })
     .then((route: Route | undefined) =>
-      route ? App.updateProps({ route }) : App.noUpdate
+      route ? updateProps<Model>({ route }) : noUpdate<Model>
     );
 });

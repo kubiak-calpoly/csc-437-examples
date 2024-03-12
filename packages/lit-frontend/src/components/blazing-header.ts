@@ -4,24 +4,43 @@ import {
   property,
   state
 } from "lit/decorators.js";
-import { consume } from "@lit/context";
-import { APIUser, APIRequest } from "../rest";
-import { authContext } from "./auth-required";
+import {
+  AuthContext,
+  APIUser,
+  APIRequest,
+  ContextObserver
+} from "@calpoly/mustang";
 import { Profile } from "ts-models";
 import "./drop-down";
 import "./user-panel";
 import resetCSS from "/src/styles/reset.css?inline";
 
-@customElement("blazing-header")
 export class BlazingHeaderElement extends LitElement {
   @state()
   profile?: Profile;
 
-  @consume({ context: authContext, subscribe: true })
   @property({ attribute: false })
-  user = new APIUser();
+  user: APIUser = new APIUser();
+
+  _authObserver = new ContextObserver<AuthContext>(
+    this,
+    "blazing:auth"
+  );
+
+  connectedCallback() {
+    super.connectedCallback();
+    console.log("Bl-Header connectedCallback", this);
+    this._authObserver.observe().then((obs) => {
+      obs.setEffect(({ user }) => {
+        console.log("Setting user as effect of change", user);
+        this.user = user;
+      });
+      console.log("Bl-Header setEffect", this.user);
+    });
+  }
 
   render() {
+    console.log("Rendering header:", this.user);
     const { avatar, name, nickname, userid, color } =
       this.profile || {};
     const shortname =

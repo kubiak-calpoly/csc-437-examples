@@ -11,5 +11,5 @@
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules"],
-  "lib": ["esnext", "cypress"]
+  "lib": ["esnext", "node", "cypress"]
 }

@@ -1,44 +1,93 @@
 import { css, html, LitElement } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { createContext, provide } from "@lit/context";
-import {
-  APIUser,
-  AuthenticatedUser,
-  FormDataRequest
-} from "../rest";
+import { jwtDecode } from "jwt-decode";
+import { ObservableElement } from "./observer";
 
-export let authContext = createContext<APIUser>("auth");
+const TOKEN_KEY = "mu:auth:jwt";
 
-@customElement("auth-required")
-export class AuthRequiredElement extends LitElement {
+export interface LoginCredential {
+  username: string;
+  pwd: string;
+}
+
+export class APIUser {
+  authenticated = false;
+  username = "anonymous";
+  signOut = () => {};
+
+  static deauthenticate(user: APIUser) {
+    const anon = new APIUser();
+    localStorage.removeItem(TOKEN_KEY);
+    return anon;
+  }
+}
+
+export class AuthenticatedUser extends APIUser {
+  token: string | undefined;
+
+  constructor(token: string, signOut: () => void) {
+    super();
+    const jsonPayload = jwtDecode(token) as LoginCredential;
+
+    console.log("Token payload", jsonPayload);
+    this.token = token;
+    this.authenticated = true;
+    this.username = jsonPayload.username;
+    this.signOut = signOut;
+  }
+
+  static authenticate(token: string, signOut: () => void) {
+    const authenticatedUser = new AuthenticatedUser(
+      token,
+      signOut
+    );
+    localStorage.setItem(TOKEN_KEY, token);
+    return authenticatedUser;
+  }
+
+  static authenticateFromLocalStorage(signOut: () => void) {
+    const priorToken = localStorage.getItem(TOKEN_KEY);
+
+    return priorToken
+      ? AuthenticatedUser.authenticate(priorToken, signOut)
+      : new APIUser();
+  }
+}
+
+export interface AuthContext {
+  user: APIUser;
+}
+
+export class Auth extends ObservableElement<AuthContext> {
   @state()
   loginStatus: number = 0;
 
   @state()
   registerStatus: number = 0;
 
-  @provide({ context: authContext })
-  @state()
-  user: APIUser =
-    AuthenticatedUser.authenticateFromLocalStorage(() =>
-      this._signOut()
-    );
+  get user() {
+    return this.subject.user;
+  }
 
   isAuthenticated() {
     return this.user.authenticated;
   }
 
+  constructor() {
+    super({
+      user: AuthenticatedUser.authenticateFromLocalStorage(() =>
+        this._signOut()
+      )
+    });
+  }
+
   firstUpdated() {
     this._toggleDialog(!this.isAuthenticated());
-    if (this.isAuthenticated()) {
-      this._dispatchUserLoggedIn(
-        this.user as AuthenticatedUser
-      );
-    }
   }
 
   render() {
-    //console.log("Rendering auth-required", this.user);
+    console.log("Rendering mu-auth", this.user);
 
     const dialog = html`
       <dialog ?open=${!this.isAuthenticated}>
@@ -125,11 +174,14 @@ export class AuthRequiredElement extends LitElement {
     event.preventDefault();
     const form = event.target as HTMLFormElement;
     const data = new FormData(form);
-    const request = new FormDataRequest(data);
+    const json = Object.fromEntries(data);
+    const root = window.location.origin;
 
-    request
-      .base()
-      .post("/login")
+    fetch(`${root}/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(json)
+    })
       .then((res) => {
         if (res.status === 200) {
           return res.json();
@@ -140,39 +192,29 @@ export class AuthRequiredElement extends LitElement {
       .then((json) => {
         if (json) {
           console.log("Authentication:", json.token);
-          const authenticatedUser =
-            AuthenticatedUser.authenticate(json.token, () =>
-              this._signOut()
-            );
-          this.user = authenticatedUser;
+          this.subject.user = AuthenticatedUser.authenticate(
+            json.token,
+            () => this._signOut()
+          );
+          console.log("Providing auth user:", this.user);
           this._toggleDialog(false);
-          this._dispatchUserLoggedIn(authenticatedUser);
           this.requestUpdate();
         }
       });
-  }
-
-  _dispatchUserLoggedIn(user: AuthenticatedUser) {
-    const userLoggedIn = new CustomEvent("mvu:message", {
-      bubbles: true,
-      composed: true,
-      detail: {
-        type: "UserLoggedIn",
-        user
-      }
-    });
-    this.dispatchEvent(userLoggedIn);
   }
 
   _handleRegister(event: SubmitEvent) {
     event.preventDefault();
     const form = event.target as HTMLFormElement;
     const data = new FormData(form);
-    const request = new FormDataRequest(data);
+    const json = Object.fromEntries(data);
+    const root = window.location.origin;
 
-    request
-      .base()
-      .post("/signup")
+    fetch(`${root}/signup`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(json)
+    })
       .then((res) => {
         if (res.status === 200) {
           return res.json();
@@ -201,7 +243,7 @@ export class AuthRequiredElement extends LitElement {
   }
 
   _signOut() {
-    this.user = APIUser.deauthenticate(this.user);
+    this.subject.user = APIUser.deauthenticate(this.user);
     this._toggleDialog(!this.isAuthenticated());
     document.location.reload();
   }

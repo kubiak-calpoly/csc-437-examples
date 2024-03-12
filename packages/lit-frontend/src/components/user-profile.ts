@@ -4,13 +4,15 @@ import {
   property,
   state
 } from "lit/decorators.js";
+import { View } from "@calpoly/mustang";
+import { Model } from "../model";
+import { Message } from "../messages";
 import { Profile } from "ts-models";
-import * as App from "../app";
 import resetCSS from "/src/styles/reset.css?inline";
 import pageCSS from "/src/styles/page.css?inline";
 
 @customElement("user-profile")
-export class UserProfileElement extends App.View {
+export class UserProfileElement extends View<Model, Message> {
   @property({ attribute: false })
   using?: Profile;
 
@@ -30,7 +32,10 @@ export class UserProfileElement extends App.View {
       airports = []
     } = this.profile;
 
-    const renderAirport = (s: string) => html`<dd>${s}</dd>`;
+    const renderAirport = (s: string) =>
+      html`
+        <dd>${s}</dd>
+      `;
 
     return html`
       <section>
@@ -56,15 +61,17 @@ export class UserProfileElement extends App.View {
       {}) as Profile;
     const url = this.newAvatar || avatar;
     const avatarImg = url
-      ? html`<img id="avatarImg" src="${url}" />`
+      ? html`
+          <img id="avatarImg" src="${url}" />
+        `
       : (nickname || name || " ").slice(0, 1);
     const colorStyle = color
       ? `--avatar-backgroundColor: ${color}`
       : "";
 
-    return html` <div class="avatar" style=${colorStyle}>
-      ${avatarImg}
-    </div>`;
+    return html`
+      <div class="avatar" style=${colorStyle}>${avatarImg}</div>
+    `;
   }
 
   static styles = [
@@ -148,31 +155,31 @@ export class UserProfileEditElement extends UserProfileElement {
         <form @submit=${this._handleSubmit}>
           <dl>
             <dt>Username</dt>
-            <dd
-              ><input name="userid" disabled .value=${userid}
-            /></dd>
+            <dd>
+              <input name="userid" disabled .value=${userid} />
+            </dd>
             <dt>Avatar</dt>
-            <dd
-              ><input
+            <dd>
+              <input
                 name="avatar"
                 type="file"
-                @change=${this._handleAvatarSelected}
-            /></dd>
+                @change=${this._handleAvatarSelected} />
+            </dd>
             <dd>${this._renderAvatar()}</dd>
             <dt>Name</dt>
             <dd><input name="name" .value=${name} /></dd>
             <dt>Nickname</dt>
-            <dd
-              ><input name="nickname" .value=${nickname}
-            /></dd>
+            <dd>
+              <input name="nickname" .value=${nickname} />
+            </dd>
             <dt>Home City</dt>
             <dd><input name="city" .value=${city} /></dd>
             <dt>Airports</dt>
-            <dd
-              ><input
+            <dd>
+              <input
                 name="airports"
-                .value=${airports.join(", ")}
-            /></dd>
+                .value=${airports.join(", ")} />
+            </dd>
           </dl>
           <button type="submit">Submit</button>
         </form>

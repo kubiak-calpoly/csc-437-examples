@@ -1,6 +1,8 @@
 import { css, html, unsafeCSS } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import * as App from "../app";
+import { View } from "@calpoly/mustang";
+import { Model } from "../model";
+import { Message } from "../messages";
 import "../components/user-profile";
 import resetCSS from "/src/styles/reset.css?inline";
 import pageCSS from "/src/styles/page.css?inline";
@@ -10,7 +12,7 @@ type ProfileLocation = Location & {
 };
 
 @customElement("profile-page")
-export class ProfilePageElement extends App.View {
+export class ProfilePageElement extends View<Model, Message> {
   @property({ attribute: false })
   location?: ProfileLocation;
 
@@ -58,12 +60,12 @@ export class ProfilePageElement extends App.View {
       <main class="page">
         ${this.edit
           ? html`
-              <user-profile-edit .using=${this.profile}>
-              </user-profile-edit>
+              <user-profile-edit
+                .using=${this.profile}></user-profile-edit>
             `
           : html`
-              <user-profile .using=${this.profile}>
-              </user-profile>
+              <user-profile
+                .using=${this.profile}></user-profile>
             `}
       </main>
     `;

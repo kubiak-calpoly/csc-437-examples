@@ -12,16 +12,18 @@
     <link
       href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,200;0,400;0,700;1,700&family=Merriweather:wght@400;700&display=swap"
       rel="stylesheet" />
-    <link
-      href="https://api.mapbox.com/mapbox-gl-js/v3.1.2/mapbox-gl.css"
-      rel="stylesheet" />
     <link rel="stylesheet" href="/styles/reset.css" />
     <link rel="stylesheet" href="/styles/tokens.css" />
-    <script
-      type="module"
-      src="/src/views/blazing-app.ts"></script>
+    <script type="module" src="/src/main.ts"></script>
   </head>
   <body>
-    <blazing-app></blazing-app>
+    <mu-store provides="blazing:store">
+      <mu-history provides="blazing:history">
+        <mu-auth provides="blazing:auth">
+          <blazing-header></blazing-header>
+          <mu-router></mu-router>
+        </mu-auth>
+      </mu-history>
+    </mu-store>
   </body>
 </html>

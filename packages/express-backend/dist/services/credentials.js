@@ -49,11 +49,6 @@ function verify(username, password) {
           password,
           credsOnFile.hashedPassword,
           (_, result) => {
-            console.log(
-              "Verified",
-              result,
-              credsOnFile.username
-            );
             if (result)
               resolve(credsOnFile.username);
             else
