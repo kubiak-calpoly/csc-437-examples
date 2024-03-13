@@ -5,38 +5,23 @@ import {
   Context,
   ContextProvider
 } from "@lit/context";
+import { ObservableElement } from "./observer";
 import { ModelMap, TypedMessage, Update } from "./update";
 
-export function getModelProvider<M>(el: HTMLElement) {
-  const provider = el.closest(
-    "[data-store-context]"
-  ) as ModelProvider<M>;
-
-  return provider;
-}
-
-export class ModelProvider<M> extends LitElement {
-  _context = createContext<M>("mu:Store");
-  _modelProvider:
-    | ContextProvider<Context<string, M>>
-    | undefined;
-
+export class ModelProvider<
+  M extends object
+> extends ObservableElement<M> {
   get model() {
-    return this._modelProvider?.value;
+    return this.subject;
   }
 
   constructor(init: M) {
-    super();
-    this.dataset.storeContext = "mu:Store";
-    this._modelProvider = new ContextProvider(this, {
-      context: this._context,
-      initialValue: init
-    });
+    super(init);
   }
 }
 
 export class Store<
-  M,
+  M extends object,
   Msg extends TypedMessage
 > extends ModelProvider<M> {
   updateFn: Update<M, Msg>;
