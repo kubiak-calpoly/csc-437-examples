@@ -19,7 +19,9 @@
   <body>
     <mu-store provides="blazing:store">
       <mu-history provides="blazing:history">
-        <mu-auth provides="blazing:auth">
+        <mu-auth
+          provides="blazing:auth"
+          logged-out-redirect="/login">
           <blazing-header></blazing-header>
           <mu-router></mu-router>
         </mu-auth>
