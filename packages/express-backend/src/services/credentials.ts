@@ -5,8 +5,8 @@ import { Credential } from "ts-models";
 export function verify(
   username: string,
   password: string
-): Promise<String> {
-  return new Promise<String>((resolve, reject) => {
+): Promise<string> {
+  return new Promise<string>((resolve, reject) => {
     credentialModel
       .find({ username })
       .then((found) => {
