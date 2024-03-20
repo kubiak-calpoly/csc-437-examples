@@ -1,6 +1,7 @@
 export * from "./auth";
 export * from "./define";
 export * from "./history";
+export * from "./message";
 export * from "./observer";
 export * from "./rest";
 export * from "./router";

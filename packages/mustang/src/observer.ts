@@ -1,114 +1,35 @@
-import { LitElement } from "lit";
+import { Provider, whenProviderReady } from "./context";
 
-const EVENT_PREFIX = "mu:observe";
-const OBSERVABLE_CHANGE_EVENT = `${EVENT_PREFIX}:change`;
-const OBSERVER_CONNECTION_EVENT = `${EVENT_PREFIX}:connect`;
-
-interface ObserverConnectionRequest<T extends object> {
-  accept: (
-    oe: ObservableElement<T>,
-    ok: ObserverConnectionAccepted
-  ) => void;
-  reject: (el: HTMLElement, error: string) => void;
-}
-
-interface ObserverConnectionAccepted {
-  attach: (listen: EventListener) => void;
-}
-
-function closestElement(
-  selector: string,
-  el: Element
-): Element | undefined {
-  return (
-    (el &&
-      el !== document.rootElement &&
-      (el.closest(selector) ||
-        (el.shadowRoot &&
-          closestElement(selector, el.shadowRoot.host)))) ||
-    undefined
-  );
-}
-
-function whenObservableFrom<T extends object>(
-  consumer: Element,
-  context: string
-) {
-  const selector = `[provides="${context}"]`;
-  const provider = closestElement(
-    selector,
-    consumer
-  ) as ObservableElement<T>;
-
-  return new Promise<ObservableElement<T>>(
-    (resolve, reject) => {
-      if (provider) {
-        const name = provider.localName;
-        customElements
-          .whenDefined(name)
-          .then(() => resolve(provider));
-      } else {
-        reject({
-          context,
-          reason: "No provider for this context"
-        });
-      }
-    }
-  );
-}
-
-export class ObservableElement<
-  T extends object
-> extends LitElement {
-  subject: T;
-
-  constructor(init: T) {
-    super();
-    const attach = (listen: EventListener) =>
-      this.attach(listen);
-    console.log("Constructing observable", this);
-    this.subject = createObservable<T>(init, this);
-  }
-
-  attach(observer: EventListener) {
-    this.addEventListener(OBSERVABLE_CHANGE_EVENT, observer);
-    return observer;
-  }
-
-  detach(observer: EventListener) {
-    this.removeEventListener(OBSERVABLE_CHANGE_EVENT, observer);
-  }
-}
-
-export class ContextObserver<T extends object> {
+export class Observer<T extends object> {
   _target: HTMLElement;
-  _context: string;
-  _observable?: ObservableElement<T>;
-  _observers: Observer<T>[] = [];
+  _contextLabel: string;
+  _provider?: Provider<T>;
+  _effects: Effect<T>[] = [];
 
-  constructor(target: HTMLElement, context: string) {
+  constructor(target: HTMLElement, contextLabel: string) {
     this._target = target;
-    this._context = context;
+    this._contextLabel = contextLabel;
   }
 
   observe() {
-    return new Promise<Observer<T>>((resolve, reject) => {
-      if (this._observable) {
-        const observer = new Observer<T>(this._observable);
-        this._observers.push(observer);
-        resolve(observer);
+    return new Promise<Effect<T>>((resolve, _) => {
+      if (this._provider) {
+        const effect = new Effect<T>(this._provider);
+        this._effects.push(effect);
+        resolve(effect);
       } else {
-        whenObservableFrom<T>(this._target, this._context).then(
-          (oe: ObservableElement<T>) => {
-            const observer = new Observer<T>(oe);
-            this._observable = oe;
-            this._observers.push(observer);
-            oe.attach((ev: Event) =>
-              this._handleChange(ev as CustomEvent)
-            );
-            resolve(observer);
-          }
-        );
+        whenProviderReady<T>(
+          this._target,
+          this._contextLabel
+        ).then((provider: Provider<T>) => {
+          const effect = new Effect<T>(provider);
+          this._provider = provider;
+          this._effects.push(effect);
+          provider.attach((ev: Event) =>
+            this._handleChange(ev as CustomEvent)
+          );
+          resolve(effect);
+        });
       }
     });
   }
@@ -117,94 +38,34 @@ export class ContextObserver<T extends object> {
     console.log(
       "Received change event for observers",
       ev,
-      this._observers
+      this._effects
     );
-    this._observers.forEach((obs) => obs.runEffect());
+    this._effects.forEach((obs) => obs.runEffect());
   }
 }
 
-type SubjectAccessor<T extends object> = (subject: T) => T;
-type SubjectEffect<T extends object> = (value: T) => void;
+export type EffectFn<T extends object> = (value: T) => void;
 
-export class Observer<T extends object> {
-  _observable: ObservableElement<T>;
-  _effectFn?: SubjectEffect<T>;
+export class Effect<T extends object> {
+  _provider: Provider<T>;
+  _effectFn?: EffectFn<T>;
 
-  constructor(observable: ObservableElement<T>) {
-    this._observable = observable;
+  constructor(observable: Provider<T>) {
+    this._provider = observable;
   }
 
-  get value() {
-    return this._observable.subject;
+  get context() {
+    return this._provider.context;
   }
 
-  setEffect(fn: SubjectEffect<T>) {
+  setEffect(fn: EffectFn<T>) {
     this._effectFn = fn;
     this.runEffect();
   }
 
   runEffect() {
     if (this._effectFn) {
-      this._effectFn(this.value);
+      this._effectFn(this.context);
     }
   }
-}
-
-export function createObservable<T extends object>(
-  root: T,
-  eventTarget: ObservableElement<T>
-) {
-  console.log("creating Observable:", JSON.stringify(root));
-
-  let proxy = new Proxy<T>(root, {
-    get: (target, prop: string, receiver) => {
-      if (prop === "then") {
-        return undefined;
-      }
-      const value = Reflect.get(target, prop, receiver);
-      console.log(
-        `Observable['${prop}'] => ${JSON.stringify(value)}`
-      );
-      return value;
-    },
-    set: (target, prop: string, newValue, receiver) => {
-      const oldValue = root[prop as keyof T];
-      console.log(
-        `Observable['${prop.toString()}'] <= ${JSON.stringify(
-          newValue
-        )}; was ${JSON.stringify(oldValue)}`
-      );
-      const didSet = Reflect.set(
-        target,
-        prop,
-        newValue,
-        receiver
-      );
-      if (didSet) {
-        let evt = new CustomEvent(OBSERVABLE_CHANGE_EVENT, {
-          bubbles: true,
-          cancelable: true,
-          composed: true
-        });
-        Object.assign(evt, {
-          property: prop,
-          oldValue,
-          value: newValue
-        });
-        eventTarget.dispatchEvent(evt);
-        console.log(
-          "dispatched event to target",
-          evt,
-          eventTarget
-        );
-      } else {
-        console.log(
-          `Observable['${prop}] was not set to ${newValue}`
-        );
-      }
-      return didSet;
-    }
-  });
-
-  return proxy;
 }

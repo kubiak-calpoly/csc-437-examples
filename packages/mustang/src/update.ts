@@ -1,8 +1,4 @@
-export interface MsgType<t extends string> {
-  type: t;
-}
-
-export type TypedMessage = MsgType<string>;
+import { TypedMessage } from "./message";
 
 export type ModelMap<M> = (model: M) => M;
 
@@ -37,8 +33,8 @@ export class Dispatch<M, Msg extends TypedMessage> {
   update: Update<M, Msg>; // bound function
 
   _update(model: M, msg: Msg) {
-    const { type } = msg as TypedMessage;
-    const handler = this._handlers.get(type);
+    const { __type__ } = msg as TypedMessage;
+    const handler = this._handlers.get(__type__);
 
     return handler ? handler(msg, model) : model;
   }
