@@ -1,10 +1,12 @@
 import { jwtDecode } from "jwt-decode";
-import { Provider } from "./context";
-import { Dispatch } from "./message";
+import { Context, Provider } from "./context";
+import { dispatcher } from "./message";
+import { Service } from "./service";
+import { MapFn, Update, noUpdate, replace } from "./update";
 
 const TOKEN_KEY = "mu:auth:jwt";
 
-export interface AuthContext {
+export interface AuthModel {
   user?: APIUser;
   token?: string;
 }
@@ -22,86 +24,38 @@ export type AuthMsg =
   | ["auth/signup", AuthRegister]
   | ["auth/signout"];
 
-export class AuthElement extends Provider<AuthContext> {
+export class AuthService extends Service<AuthMsg, AuthModel> {
   static EVENT_TYPE = "auth:message";
 
-  static dispatch(target: HTMLElement, ...msg: AuthMsg) {
-    target.dispatchEvent(
-      new Dispatch<AuthMsg>(msg, AuthElement.EVENT_TYPE)
-    );
+  constructor(context: Context<AuthModel>) {
+    super(update, context, AuthService.EVENT_TYPE);
   }
 
+  static dispatch = dispatcher(AuthService.EVENT_TYPE);
+}
+
+const update: Update<AuthMsg, AuthModel> = (message, apply) => {
+  switch (message[0]) {
+    case "auth/signin":
+      loginUser(message[1] as AuthAttempt).then(apply);
+      return;
+    case "auth/signup":
+      registerUser(message[1] as AuthRegister).then(apply);
+      return;
+    case "auth/signout":
+      apply(signOut());
+      return;
+    default:
+      const unhandled: never = message[0];
+      throw new Error(`Unhandled Auth message "${unhandled}"`);
+  }
+};
+
+export class AuthElement extends Provider<AuthModel> {
   constructor() {
     super({ user: new APIUser() });
-    this.addEventListener(
-      AuthElement.EVENT_TYPE,
-      (ev: Event) => {
-        const message = (ev as Dispatch<AuthMsg>).detail;
-        switch (message[0]) {
-          case "auth/signin":
-            return this._authUser(message[1] as AuthAttempt);
-          case "auth/signup":
-            return this._registerUser(
-              message[1] as AuthRegister
-            );
-          case "auth/signout":
-            return this._signOut();
-          default:
-            const unhandled: never = message[0];
-            throw new Error(
-              `Unhandled Auth message "${unhandled}"`
-            );
-        }
-      }
-    );
-  }
-
-  _signOut() {
-    //this.context.user = APIUser.deauthenticate(this.context.user);
-  }
-
-  _authUser(msg: AuthAttempt) {
-    const root = window.location.origin;
-
-    fetch(`${root}/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(msg)
-    })
-      .then((res) => {
-        if (res.status === 200) return res.json();
-        else return undefined;
-      })
-      .then((json) => {
-        if (json) {
-          console.log("Authentication:", json.token);
-          this.context.user = AuthenticatedUser.authenticate(
-            json.token,
-            () => this._signOut()
-          );
-          console.log(
-            "Providing auth user:",
-            this.context.user
-          );
-        }
-      });
-  }
-
-  _registerUser(msg: AuthRegister) {
-    const root = window.location.origin;
-
-    fetch(`${root}/signup`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(msg)
-    })
-      .then((res) => {
-        if (res.status === 200) return res.json();
-        else return undefined;
-      })
-      .then((json) => {
-        console.log("Registration:", json);
-      });
+    const service = new AuthService(this.context);
+    service.attach(this);
   }
 }
 
@@ -124,32 +78,78 @@ export class APIUser {
 
 export class AuthenticatedUser extends APIUser {
   token: string | undefined;
-  signOut = () => { };
 
-  constructor(token: string, signOut: () => void) {
+  constructor(token: string) {
     super();
     const jsonPayload = jwtDecode(token) as LoginCredential;
     console.log("Token payload", jsonPayload);
     this.token = token;
     this.authenticated = true;
     this.username = jsonPayload.username;
-    this.signOut = signOut;
   }
 
-  static authenticate(token: string, signOut: () => void) {
-    const authenticatedUser = new AuthenticatedUser(
-      token,
-      signOut
-    );
+  static authenticate(token: string) {
+    const authenticatedUser = new AuthenticatedUser(token);
     localStorage.setItem(TOKEN_KEY, token);
     return authenticatedUser;
   }
 
-  static authenticateFromLocalStorage(signOut: () => void) {
+  static authenticateFromLocalStorage() {
     const priorToken = localStorage.getItem(TOKEN_KEY);
 
     return priorToken
-      ? AuthenticatedUser.authenticate(priorToken, signOut)
+      ? AuthenticatedUser.authenticate(priorToken)
       : new APIUser();
   }
+}
+
+function loginUser(
+  msg: AuthAttempt
+): Promise<MapFn<AuthModel>> {
+  const root = window.location.origin;
+
+  return fetch(`${root}/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(msg)
+  })
+    .then((res) => {
+      if (res.status === 200) return res.json();
+      else return undefined;
+    })
+    .then((json) => {
+      if (json) {
+        console.log("Authentication:", json.token);
+        const user = AuthenticatedUser.authenticate(json.token);
+        const token = user ? (json.token as string) : "";
+        console.log("Providing auth user:", user);
+        return replace<AuthModel>({ user, token });
+      } else {
+        return noUpdate;
+      }
+    });
+}
+
+function registerUser(
+  msg: AuthRegister
+): Promise<MapFn<AuthModel>> {
+  const root = window.location.origin;
+
+  return fetch(`${root}/signup`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(msg)
+  })
+    .then((res) => {
+      if (res.status === 200) return res.json();
+      else return undefined;
+    })
+    .then((json) => {
+      console.log("Registration:", json);
+      return noUpdate;
+    });
+}
+
+function signOut() {
+  return replace<AuthModel>({ user: new APIUser(), token: "" });
 }

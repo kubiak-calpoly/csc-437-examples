@@ -1,7 +1,8 @@
 import {
   APIUser,
-  AuthContext,
   AuthElement,
+  AuthModel,
+  AuthService,
   LoginCredential,
   Observer
 } from "@calpoly/mustang";
@@ -9,7 +10,7 @@ import { LitElement, css, html } from "lit";
 import { state } from "lit/decorators.js";
 
 export class LoginPageElement extends LitElement {
-  _authContext = new Observer<AuthContext>(this, "blz:auth");
+  _authContext = new Observer<AuthModel>(this, "blz:auth");
 
   @state()
   loginStatus = 0;
@@ -117,7 +118,7 @@ export class LoginPageElement extends LitElement {
     const form = event.target as HTMLFormElement;
     const credentials = credentialsFromForm(form);
 
-    AuthElement.dispatch(this, "auth/signin", {
+    AuthService.dispatch(this, "auth/signin", {
       credentials
     });
   }
@@ -127,7 +128,7 @@ export class LoginPageElement extends LitElement {
     const form = event.target as HTMLFormElement;
     const credentials = credentialsFromForm(form);
 
-    AuthElement.dispatch(this, "auth/signup", {
+    AuthService.dispatch(this, "auth/signup", {
       credentials
     });
   }

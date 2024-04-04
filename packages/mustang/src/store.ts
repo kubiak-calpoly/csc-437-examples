@@ -1,10 +1,10 @@
-import { LitElement } from "lit";
 import {
-  createContext,
-  provide,
   Context,
-  ContextProvider
+  ContextProvider,
+  createContext,
+  provide
 } from "@lit/context";
+import { LitElement } from "lit";
 import { ObservableElement } from "./observer";
 import { ModelMap, TypedMessage, Update } from "./update";
 
@@ -46,21 +46,6 @@ export class Store<
   receive(msg: Msg) {
     if (this._modelProvider && this.model) {
       const next = this.updateFn(this.model, msg);
-      const promise = next as Promise<ModelMap<M>>;
-
-      if (typeof promise?.then === "function") {
-        // result is a promise
-        promise.then((mapFn: ModelMap<M>) => {
-          if (this.model && this._modelProvider) {
-            const next = mapFn(this.model);
-            console.log("Updating model in Promise:", next);
-            this._modelProvider.setValue(next);
-          }
-        });
-      } else {
-        console.log("Updating model:", next);
-        this._modelProvider.setValue(next as M);
-      }
     }
   }
 }

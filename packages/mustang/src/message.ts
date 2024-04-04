@@ -3,7 +3,7 @@ export type Message<
   T extends object | undefined
 > = [msg, T] | [msg];
 
-type BaseMessage = Message<string, object | undefined>;
+export type BaseMessage = Message<string, object | undefined>;
 
 export class Dispatch<
   Msg extends BaseMessage
@@ -15,4 +15,11 @@ export class Dispatch<
       detail: msg
     });
   }
+}
+
+export function dispatcher<Msg extends BaseMessage>(
+  eventType: string
+) {
+  return (target: HTMLElement, ...msg: Msg) =>
+    target.dispatchEvent(new Dispatch<Msg>(msg, eventType));
 }

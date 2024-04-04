@@ -1,15 +1,33 @@
 const EVENT_PREFIX = "mu:context";
 const CONTEXT_CHANGE_EVENT = `${EVENT_PREFIX}:change`;
 
-export class Provider<
-  T extends object
-> extends HTMLElement {
-  context: T;
+export class Context<T extends object> {
+  _proxy: T;
+
+  constructor(init: T, host: Provider<T>) {
+    this._proxy = createContext<T>(init, host);
+  }
+
+  get value() {
+    return this._proxy;
+  }
+
+  set value(next: T) {
+    Object.assign(this._proxy, next);
+  }
+
+  apply(mapFn: (t: T) => T) {
+    this.value = mapFn(this.value);
+  }
+}
+
+export class Provider<T extends object> extends HTMLElement {
+  readonly context: Context<T>;
 
   constructor(init: T) {
     super();
     console.log("Constructing context", this);
-    this.context = createContext<T>(init, this);
+    this.context = new Context<T>(init, this);
   }
 
   attach(observer: EventListener) {
@@ -25,7 +43,7 @@ export class Provider<
 export function createContext<T extends object>(
   root: T,
   eventTarget: Provider<T>
-) {
+): T {
   console.log("creating Context:", JSON.stringify(root));
 
   let proxy = new Proxy<T>(root, {
@@ -90,21 +108,19 @@ export function whenProviderReady<T extends object>(
     consumer
   ) as Provider<T>;
 
-  return new Promise<Provider<T>>(
-    (resolve, reject) => {
-      if (provider) {
-        const name = provider.localName;
-        customElements
-          .whenDefined(name)
-          .then(() => resolve(provider));
-      } else {
-        reject({
-          context,
-          reason: `No provider for this context "${contextLabel}:`
-        });
-      }
+  return new Promise<Provider<T>>((resolve, reject) => {
+    if (provider) {
+      const name = provider.localName;
+      customElements
+        .whenDefined(name)
+        .then(() => resolve(provider));
+    } else {
+      reject({
+        context,
+        reason: `No provider for this context "${contextLabel}:`
+      });
     }
-  );
+  });
 }
 
 function closestProvider(
