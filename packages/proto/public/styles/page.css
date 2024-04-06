@@ -1,38 +1,20 @@
 body {
-  font-family: var(--font-family-body);
-  background-color: var(--color-background-page);
+  font-family: Merriweather, Baskerville, Cambria, "Noto Serif",
+    "Bitstream Charter", serif;
+  background-color: rgb(238 237 231);
+  line-height: 1.5;
 }
-.page {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 100%;
-}
-.page > header {
-  flex-basis: min-content;
-}
-.page > section {
-  flex-basis: 100%;
-  overflow: auto;
-  margin: 0;
-  padding: var(--size-spacing-medium);
+a {
+  color: currentColor;
 }
 header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  padding: var(--size-spacing-medium);
-  gap: var(--size-spacing-xlarge);
-  background-color: var(--color-background-header);
-  color: var(--color-text-inverted);
+  background-color: rgb(42 143 42);
+  color: rgb(255 255 255);
 }
 header a {
-  color: var(--color-link-inverted);
+  color: rgb(255 208 0);
 }
-body > section {
-  margin: var(--size-spacing-medium);
-}
+a,
 h1,
 h2,
 h3,
@@ -41,51 +23,44 @@ h5,
 h6,
 dt,
 summary {
-  font-family: var(--font-family-display);
-  line-height: var(--font-line-height-display);
+  font-family: Kanit, "Trebuchet MS", Calibri, Roboto,
+    "Segoe UI", Ubuntu, sans-serif;
+  line-height: 1.125;
 }
 h1 {
-  font-size: var(--size-type-xxlarge);
+  font-size: 2.5rem;
   font-style: oblique;
   line-height: 1;
-  font-weight: var(--font-weight-bold);
+  font-weight: 700;
 }
 h2 {
-  font-size: var(--size-type-xlarge);
-  font-weight: var(--font-weight-bold);
+  font-size: 2rem;
+  font-weight: 700;
 }
 h3 {
-  font-size: var(--size-type-large);
-  font-weight: var(--font-weight-normal);
+  font-size: 1.5rem;
+  font-weight: 400;
   font-style: oblique;
 }
 h4 {
-  font-size: var(--size-type-mlarge);
-  font-weight: var(--font-weight-bold);
+  font-size: 1.25rem;
+  font-weight: 700;
 }
 h5 {
-  font-size: var(--size-type-body);
-  font-weight: var(--font-weight-bold);
+  font-size: 1rem;
+  font-weight: 700;
 }
 h6 {
-  font-size: var(--size-type-body);
-  font-weight: var(--font-weight-normal);
+  font-size: 1rem;
+  font-weight: 400;
   font-style: italic;
 }
 dt {
-  font-weight: var(--size-type-body);
+  font-weight: 1rem;
 }
-h3,
-a {
-  color: var(--color-accent);
+dt {
+  color: rgb(42 143 42);
 }
-svg.outline-map {
-  fill: #ff0;
-}
-svg.icon {
-  display: inline;
-  fill: currentColor;
-  height: var(--size-icon-large);
-  width: var(--size-icon-large);
-  vertical-align: middle;
+details {
+  border: 0.5px solid rgb(42 143 42);
 }
