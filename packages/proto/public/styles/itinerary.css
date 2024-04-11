@@ -1,11 +1,15 @@
 .itinerary {
   display: grid;
-  grid-template-columns: max-content 1fr;
-  gap: 0 var(--size-spacing-xlarge);
-  align-items: baseline;
+  grid-template-columns: [start] 1fr 1fr 1fr 1fr 1fr 1fr [end];
+  gap: var(--size-spacing-large);
 }
+
 .itinerary > dt {
   text-align: right;
+}
+
+.itinerary > dd {
+  grid-column: 2 / end;
 }
 
 .transportation {
@@ -24,8 +28,4 @@
 .transportation summary {
   font-size: var(--size-type-large);
   font-style: oblique;
-}
-
-.entourage {
-  display: none;
 }
