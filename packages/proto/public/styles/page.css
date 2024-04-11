@@ -18,11 +18,11 @@ body {
   padding: var(--size-spacing-medium); */
 }
 header {
-  /* display: flex;
-  flex-wrap: wrap;
+  display: flex;
   align-items: baseline;
   justify-content: space-between;
   padding: var(--size-spacing-medium);
+  /* flex-wrap: wrap;
   gap: var(--size-spacing-xlarge); */
   background-color: var(--color-background-header);
   color: var(--color-text-inverted);
