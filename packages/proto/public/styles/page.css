@@ -3,14 +3,33 @@ body {
   background-color: var(--color-background-page);
 }
 .page {
+  --page-grid-columns: 6;
   display: grid;
-  grid-template-columns: [start] 1fr 1fr 1fr 1fr [end];
+  grid-template-columns:
+    [start] repeat(var(--page-grid-columns), 1fr)
+    [end];
+  gap: var(--size-spacing-large);
+  align-items: baseline;
+  padding: var(--size-spacing-medium);
 }
 .page > header {
   grid-column: start / end;
 }
+.page > section {
+  grid-template-columns: subgrid;
+  display: grid;
+  grid-column-end: span 2;
+}
+.page > section > * {
+  grid-column-end: span 2;
+}
 .page > main {
-  grid-column-end: span 3;
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: start / span 4;
+}
+.page > main > * {
+  grid-column: start / span 4;
 }
 header {
   display: flex;
@@ -24,9 +43,6 @@ header {
 }
 header a {
   color: var(--color-link-inverted);
-}
-body > section {
-  margin: var(--size-spacing-medium);
 }
 h1,
 h2,

@@ -1,6 +1,6 @@
 .itinerary {
   display: grid;
-  grid-template-columns: [start] 1fr 1fr 1fr 1fr 1fr 1fr [end];
+  grid-template-columns: subgrid;
   gap: var(--size-spacing-large);
 }
 
