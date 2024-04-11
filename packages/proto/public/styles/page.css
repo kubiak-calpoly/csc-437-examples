@@ -3,19 +3,14 @@ body {
   background-color: var(--color-background-page);
 }
 .page {
-  /* display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 100%; */
+  display: grid;
+  grid-template-columns: [start] 1fr 1fr 1fr 1fr [end];
 }
 .page > header {
-  /* flex-basis: min-content; */
+  grid-column: start / end;
 }
-.page > section {
-  /* flex-basis: 100%;
-  overflow: auto;
-  margin: 0;
-  padding: var(--size-spacing-medium); */
+.page > section.itinerary {
+  grid-column-end: span 3;
 }
 header {
   display: flex;
