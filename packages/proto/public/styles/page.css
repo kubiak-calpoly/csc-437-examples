@@ -31,7 +31,7 @@ header a {
   color: var(--color-link-inverted);
 }
 body > section {
-  /* margin: var(--size-spacing-medium); */
+  margin: var(--size-spacing-medium);
 }
 h1,
 h2,
