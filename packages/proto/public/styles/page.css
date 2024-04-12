@@ -4,16 +4,18 @@ body {
 }
 .page {
   --page-grid-columns: 6;
+  --page-grid-gap: var(--size-spacing-large);
   display: grid;
   grid-template-columns:
     [start] repeat(var(--page-grid-columns), 1fr)
     [end];
-  gap: var(--size-spacing-large);
+  gap: var(--page-grid-gap);
   align-items: baseline;
-  padding: var(--size-spacing-medium);
+  padding: 0 calc(0.5 * var(--page-grid-gap));
 }
 .page > header {
   grid-column: start / end;
+  margin: 0 calc(-0.5 * var(--page-grid-gap));
 }
 .page > section {
   grid-template-columns: subgrid;
