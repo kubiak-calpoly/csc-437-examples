@@ -1,7 +1,6 @@
 .itinerary {
   display: grid;
   grid-template-columns: subgrid;
-  gap: var(--size-spacing-large);
 }
 
 .itinerary > dt {
@@ -9,16 +8,49 @@
 }
 
 .itinerary > dd {
+  display: grid;
   grid-column: 2 / end;
+  grid-template-columns: subgrid;
 }
 
-.transportation {
+.itinerary h3 {
+  grid-column: 1 / end;
   text-align: center;
-  /*
-  border-top: 2px solid #008000;
-  border-bottom: 2px solid #008000;
-  */
 }
+
+.itinerary h4 {
+  grid-column: 1 / end;
+}
+
+.transportation > details {
+  display: contents;
+}
+
+.transportation summary {
+  grid-column: 1 / end;
+}
+
+.transportation ol,
+.transportation ol > li {
+  display: contents;
+}
+
+.transportation dl {
+  display: contents;
+}
+
+.transportation dt {
+  grid-column-start: 1;
+}
+
+.transportation dt + dd {
+  grid-column-end: span 3;
+}
+
+.transportation dd + dd {
+  text-align: right;
+}
+
 .destination {
   background: white;
   padding: var(--size-spacing-large) var(--size-spacing-medium);
@@ -26,6 +58,5 @@
 }
 
 .transportation summary {
-  font-size: var(--size-type-large);
-  font-style: oblique;
+  font-size: var(--size-type-mlarge);
 }
