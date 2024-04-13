@@ -15,6 +15,38 @@
     <link rel="stylesheet" href="/styles/tokens.css" />
     <link rel="stylesheet" href="/styles/page.css" />
     <link rel="stylesheet" href="/styles/itinerary.css" />
+    <script>
+      const parser = new DOMParser();
+
+      function loadDestination(href, container) {
+        console.log("Loading Destination:", href, container);
+
+        fetch(href)
+          .then((response) => {
+            if (response.status !== 200) {
+              throw `Status: ${response.status}`;
+            }
+            return response.text();
+          })
+          .then((htmlString) => {
+            const doc = parser.parseFromString(
+              htmlString,
+              "text/html"
+            );
+
+            console.log("Destination Document:", doc);
+            const article = doc.body.firstChild;
+            container.replaceChildren(article);
+          })
+          .catch((error) => {
+            const message = document.createTextNode(
+              `Failed to fetch ${href}: ${error}`
+            );
+
+            container.append(message);
+          });
+      }
+    </script>
   </head>
   <body class="page">
     <header>
@@ -94,7 +126,12 @@
         </dt>
         <dd class="destination">
           <h3>
-            <a href="destination/venice.html">Venice</a>
+            <a
+              onclick="loadDestination(
+                  'destination/venice.html', 
+                  event.target.closest('dd'))">
+              Venice
+            </a>
           </h3>
         </dd>
 
@@ -128,7 +165,12 @@
         </dt>
         <dd class="destination">
           <h3>
-            <a href="destination/florence.html">Florence</a>
+            <a
+              onclick="loadDestination(
+                'destination/florence.html', 
+                event.target.closest('dd'))">
+              Florence
+            </a>
           </h3>
         </dd>
 
@@ -162,7 +204,12 @@
         </dt>
         <dd class="destination">
           <h3>
-            <a href="destination/rome.html">Rome</a>
+            <a
+              onclick="loadDestination(
+                'destination/rome.html', 
+                event.target.closest('dd'))">
+              Rome
+            </a>
           </h3>
         </dd>
 
@@ -228,7 +275,7 @@
       <ul>
         <li><a href="person.html">Blaze Pasquale</a></li>
         <li><a href="person.html">Isabel Nootin</a></li>
-        <li><a href="person.html">Pi Mondrian</a></li>
+        <li><a href="person.html">Pia Mondrian</a></li>
       </ul>
     </section>
   </body>
