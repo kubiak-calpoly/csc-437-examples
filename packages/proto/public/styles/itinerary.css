@@ -57,6 +57,10 @@
   border-radius: var(--size-radius-medium);
 }
 
+.destination article {
+  grid-column: 1 / end;
+}
+
 .transportation summary {
   font-size: var(--size-type-mlarge);
 }
