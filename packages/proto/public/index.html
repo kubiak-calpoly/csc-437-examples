@@ -17,22 +17,32 @@
     <link rel="stylesheet" href="/styles/itinerary.css" />
     <script type="module">
       import { loadHTML } from "/js/html-loader.js";
+      import { relayEvent } from "/js/relay-event.js";
 
       window.loadHTML = loadHTML;
+      window.relayEvent = relayEvent;
     </script>
     <script type="module">
-      const page = document.body;
-
-      page.addEventListener("change", (event) => {
-        const checked = event.target.checked;
+      function toggleDarkMode(page, checked) {
         page.classList.toggle("dark-mode", checked);
-      });
+      }
+
+      document.body.addEventListener("dark-mode", (event) =>
+        toggleDarkMode(
+          event.currentTarget,
+          event.detail.checked
+        )
+      );
     </script>
   </head>
   <body class="page">
     <header>
       <h1>Blazing Travels</h1>
-      <label>
+      <label
+        onchange="relayEvent(
+          event, 
+          'dark-mode', 
+          {checked: event.target.checked})">
         <input type="checkbox" autocomplete="off" /> Dark mode
       </label>
     </header>
