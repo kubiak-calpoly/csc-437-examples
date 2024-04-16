@@ -15,37 +15,10 @@
     <link rel="stylesheet" href="/styles/tokens.css" />
     <link rel="stylesheet" href="/styles/page.css" />
     <link rel="stylesheet" href="/styles/itinerary.css" />
-    <script>
-      const parser = new DOMParser();
+    <script type="module">
+      import { loadHTML } from "/js/html-loader.js";
 
-      function loadDestination(href, container) {
-        console.log("Loading Destination:", href, container);
-
-        fetch(href)
-          .then((response) => {
-            if (response.status !== 200) {
-              throw `Status: ${response.status}`;
-            }
-            return response.text();
-          })
-          .then((htmlString) => {
-            const doc = parser.parseFromString(
-              htmlString,
-              "text/html"
-            );
-
-            console.log("Destination Document:", doc);
-            const article = doc.body.firstChild;
-            container.replaceChildren(article);
-          })
-          .catch((error) => {
-            const message = document.createTextNode(
-              `Failed to fetch ${href}: ${error}`
-            );
-
-            container.append(message);
-          });
-      }
+      window.loadHTML = loadHTML;
     </script>
   </head>
   <body class="page">
@@ -127,7 +100,7 @@
         <dd class="destination">
           <h3>
             <a
-              onclick="loadDestination(
+              onclick="loadHTML(
                   'destination/venice.html', 
                   event.target.closest('dd'))">
               Venice
@@ -166,7 +139,7 @@
         <dd class="destination">
           <h3>
             <a
-              onclick="loadDestination(
+              onclick="loadHTML(
                 'destination/florence.html', 
                 event.target.closest('dd'))">
               Florence
@@ -205,7 +178,7 @@
         <dd class="destination">
           <h3>
             <a
-              onclick="loadDestination(
+              onclick="loadHTML(
                 'destination/rome.html', 
                 event.target.closest('dd'))">
               Rome
