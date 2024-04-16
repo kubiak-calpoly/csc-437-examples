@@ -37,3 +37,12 @@
   --font-weight-light: 200;
   --font-weight-bold: 700;
 }
+
+body.dark-mode {
+  --color-background-page: rgb(3, 69, 2);
+  --color-text: rgb(240, 240, 223);
+  --color-background-card: black;
+  --color-accent: var(--color-accent-inverted);
+  --color-text-control: rgb(51 51 51);
+  --color-text-control-inverted: var(--color-background-page);
+}

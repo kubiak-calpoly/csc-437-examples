@@ -1,6 +1,7 @@
 body {
   font-family: var(--font-family-body);
   background-color: var(--color-background-page);
+  color: var(--color-text);
 }
 .page {
   --page-grid-columns: 8;
@@ -39,7 +40,7 @@ body {
 .page > main > * {
   grid-column: start / span var(--page-main-columns);
 }
-header {
+.page > header {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -49,7 +50,7 @@ header {
   background-color: var(--color-background-header);
   color: var(--color-text-inverted);
 }
-header a[href] {
+.page > header a[href] {
   color: var(--color-link-inverted);
 }
 h1,
@@ -103,4 +104,7 @@ a[onclick] {
 }
 time {
   white-space: nowrap;
+}
+.card {
+  color-background: var(--color-background-card);
 }

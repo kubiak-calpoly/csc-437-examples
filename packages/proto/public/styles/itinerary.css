@@ -52,7 +52,7 @@
 }
 
 .destination {
-  background: white;
+  background: var(--color-background-card);
   padding: var(--size-spacing-large) var(--size-spacing-medium);
   border-radius: var(--size-radius-medium);
 }

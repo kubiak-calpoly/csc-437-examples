@@ -20,19 +20,25 @@
 
       window.loadHTML = loadHTML;
     </script>
+    <script type="module">
+      const page = document.body;
+
+      page.addEventListener("change", (event) => {
+        page.classList.add("dark-mode");
+      });
+    </script>
   </head>
   <body class="page">
     <header>
       <h1>Blazing Travels</h1>
-
-      <p>
-        12 days in
-        <a href="place.html">Italy</a>
-      </p>
+      <label> <input type="checkbox" /> Dark mode </label>
     </header>
 
     <main>
-      <h2>Itinerary</h2>
+      <h2>
+        12 days in
+        <a href="place.html">Italy</a>
+      </h2>
       <dl class="itinerary">
         <dt>
           <time datetime="2024-10-13">13 Oct</time> -
