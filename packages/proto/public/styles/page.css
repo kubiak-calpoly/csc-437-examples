@@ -49,7 +49,7 @@ header {
   background-color: var(--color-background-header);
   color: var(--color-text-inverted);
 }
-header a {
+header a[href] {
   color: var(--color-link-inverted);
 }
 h1,
