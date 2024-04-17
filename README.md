@@ -26,3 +26,7 @@ progress:
 
 - [Module 1](https://github.com/kubiak-calpoly/csc-437-examples/tree/mod-1):
   Information Architecture and HTML
+- [Module 2](https://github.com/kubiak-calpoly/csc-437-examples/tree/mod-2):
+  Styling and Layout with CSS
+- [Module 3](https://github.com/kubiak-calpoly/csc-437-examples/tree/mod-3):
+  Adding Interactions with Javascript
