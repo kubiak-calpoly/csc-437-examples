@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -15,6 +16,7 @@
     <link rel="stylesheet" href="/styles/tokens.css" />
     <link rel="stylesheet" href="/styles/page.css" />
     <link rel="stylesheet" href="/styles/itinerary.css" />
+    <script type="module" src="/js/drop-down.js"></script>
     <script type="module">
       import { loadHTML } from "/js/html-loader.js";
       import { relayEvent } from "/js/relay-event.js";
@@ -38,13 +40,15 @@
   <body class="page">
     <header>
       <h1>Blazing Travels</h1>
-      <label
-        onchange="relayEvent(
+      <drop-down open>
+        <label
+          onchange="relayEvent(
           event, 
           'dark-mode', 
           {checked: event.target.checked})">
-        <input type="checkbox" autocomplete="off" /> Dark mode
-      </label>
+          <input type="checkbox" autocomplete="off" /> Dark mode
+        </label>
+      </drop-down>
     </header>
 
     <main>
