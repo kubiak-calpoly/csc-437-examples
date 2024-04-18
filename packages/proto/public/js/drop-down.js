@@ -1,11 +1,4 @@
-const parser = new DOMParser();
-
-function prepareTemplate(htmlString) {
-  const doc = parser.parseFromString(htmlString, "text/html");
-  const content = doc.head.firstElementChild.content;
-
-  return content;
-}
+import { prepareTemplate } from "./template.js";
 
 export class DropdownElement extends HTMLElement {
   static template = prepareTemplate(`<template>

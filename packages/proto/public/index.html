@@ -17,11 +17,10 @@
     <link rel="stylesheet" href="/styles/page.css" />
     <link rel="stylesheet" href="/styles/itinerary.css" />
     <script type="module" src="/js/drop-down.js"></script>
+    <script type="module" src="/js/html-loader.js"></script>
     <script type="module">
-      import { loadHTML } from "/js/html-loader.js";
       import { relayEvent } from "/js/relay-event.js";
 
-      window.loadHTML = loadHTML;
       window.relayEvent = relayEvent;
     </script>
     <script type="module">
@@ -126,14 +125,8 @@
           <time datetime="2024-10-18">18 Oct</time>
         </dt>
         <dd class="destination">
-          <h3>
-            <a
-              onclick="loadHTML(
-                  'destination/venice.html', 
-                  event.target.closest('dd'))">
-              Venice
-            </a>
-          </h3>
+          <html-fragment href="destination/venice.html">
+          </html-fragment>
         </dd>
 
         <dt><time datetime="2024-10-18">18 Oct</time></dt>
@@ -165,14 +158,8 @@
           <time datetime="2024-10-21">21 Oct</time>
         </dt>
         <dd class="destination">
-          <h3>
-            <a
-              onclick="loadHTML(
-                'destination/florence.html', 
-                event.target.closest('dd'))">
-              Florence
-            </a>
-          </h3>
+          <html-fragment href="destination/florence.html">
+          </html-fragment>
         </dd>
 
         <dt><time datetime="2024-10-21">21 Oct</time></dt>
@@ -204,14 +191,8 @@
           <time datetime="2024-10-25">25 Oct</time>
         </dt>
         <dd class="destination">
-          <h3>
-            <a
-              onclick="loadHTML(
-                'destination/rome.html', 
-                event.target.closest('dd'))">
-              Rome
-            </a>
-          </h3>
+          <html-fragment href="destination/rome.html">
+          </html-fragment>
         </dd>
 
         <dt><time datetime="2024-10-25">25 Oct</time></dt>
