@@ -1,18 +1,20 @@
 export class HtmlFragmentElement extends HTMLElement {
   connectedCallback() {
     const href = this.getAttribute("href");
+    const open = this.hasAttribute("open");
 
-    this.load(href);
-  }
+    if (open) loadHTML(href, this);
 
-  load(href) {
-    loadHTML(href, this);
+    this.addEventListener("html-fragment:open", () =>
+      loadHTML(href, this)
+    );
   }
 }
 
 customElements.define("html-fragment", HtmlFragmentElement);
 
 function loadHTML(href, container) {
+  container.replaceChildren();
   fetch(href)
     .then((response) => {
       if (response.status !== 200) {
