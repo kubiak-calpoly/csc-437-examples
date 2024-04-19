@@ -1,8 +1,20 @@
-const parser = new DOMParser();
+export class HtmlFragmentElement extends HTMLElement {
+  connectedCallback() {
+    const href = this.getAttribute("href");
+    const open = this.hasAttribute("open");
 
-export function loadHTML(href, container) {
-  console.log("Loading HTML:", href, container);
+    if (open) loadHTML(href, this);
 
+    this.addEventListener("html-fragment:open", () =>
+      loadHTML(href, this)
+    );
+  }
+}
+
+customElements.define("html-fragment", HtmlFragmentElement);
+
+function loadHTML(href, container) {
+  container.replaceChildren();
   fetch(href)
     .then((response) => {
       if (response.status !== 200) {
@@ -21,7 +33,9 @@ export function loadHTML(href, container) {
     );
 }
 
-export function addFragment(htmlString, container) {
+const parser = new DOMParser();
+
+function addFragment(htmlString, container) {
   const doc = parser.parseFromString(htmlString, "text/html");
   const fragment = Array.from(doc.body.childNodes);
 
