@@ -2,7 +2,7 @@ import { prepareTemplate } from "./template.js";
 
 export class DropdownElement extends HTMLElement {
   static template = prepareTemplate(`<template>
-    <button id="actuator"> Menu </button>
+    <slot name="actuator"><button> Menu </button></slot>
     <div id="panel">
       <slot></slot>
     </div>
@@ -39,7 +39,7 @@ export class DropdownElement extends HTMLElement {
       DropdownElement.template.cloneNode(true)
     );
     this.shadowRoot
-      .getElementById("actuator")
+      .querySelector("slot[name='actuator']")
       .addEventListener("click", () => this.toggle());
   }
 

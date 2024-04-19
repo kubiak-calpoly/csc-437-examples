@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="/styles/itinerary.css" />
     <script type="module" src="/js/drop-down.js"></script>
     <script type="module" src="/js/html-loader.js"></script>
+    <script type="module" src="/js/hello-world.js"></script>
     <script type="module">
       import { relayEvent } from "/js/relay-event.js";
 
@@ -35,6 +36,21 @@
         )
       );
     </script>
+    <template id="hello-world-template">
+      <h1> Hello, <slot class="fancy">world</slot>! </h1>
+      <style>
+        h1 {
+          font: var(--size-type-xlarge)
+            var(--font-family-display);
+        }
+
+        .fancy {
+          font-family: var(--font-family-body);
+          font-style: italic;
+          color: var(--color-accent);
+        }
+      </style>
+    </template>
   </head>
   <body class="page">
     <header>
@@ -51,6 +67,7 @@
     </header>
 
     <main>
+      <hello-world></hello-world>
       <h2>
         12 days in
         <a href="place.html">Italy</a>
