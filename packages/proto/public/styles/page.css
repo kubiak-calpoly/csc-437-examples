@@ -1,42 +1,61 @@
 body {
   font-family: var(--font-family-body);
   background-color: var(--color-background-page);
+  color: var(--color-text);
 }
 .page {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 100%;
+  --page-grid-columns: 8;
+  --page-section-columns: 2;
+  --page-grid-gap: var(--size-spacing-large);
+
+  display: grid;
+  grid-template-columns:
+    [start] repeat(var(--page-grid-columns), 1fr)
+    [end];
+  gap: var(--page-grid-gap);
+  align-items: baseline;
+  padding: 0 calc(0.5 * var(--page-grid-gap));
 }
 .page > header {
-  flex-basis: min-content;
+  grid-column: start / end;
+  margin: 0 calc(-0.5 * var(--page-grid-gap));
 }
 .page > section {
-  flex-basis: 100%;
-  overflow: auto;
-  margin: 0;
-  padding: var(--size-spacing-medium);
+  grid-template-columns: subgrid;
+  display: grid;
+  grid-column-end: span var(--page-section-columns);
 }
-header {
+.page > section > * {
+  grid-column-end: span var(--page-section-columns);
+}
+.page > main {
+  --page-main-columns: calc(
+    var(--page-grid-columns) - var(--page-section-columns)
+  );
+
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: start / span var(--page-main-columns);
+}
+.page > main > * {
+  grid-column: start / span var(--page-main-columns);
+}
+.page > header {
   display: flex;
-  flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
   padding: var(--size-spacing-medium);
-  gap: var(--size-spacing-xlarge);
+  /* flex-wrap: wrap;
+  gap: var(--size-spacing-xlarge); */
   background-color: var(--color-background-header);
   color: var(--color-text-inverted);
 }
-header a {
+.page > header a[href] {
   color: var(--color-link-inverted);
-}
-body > section {
-  margin: var(--size-spacing-medium);
 }
 h1,
 h2,
 h3,
-h4,
 h5,
 h6,
 dt,
@@ -61,7 +80,7 @@ h3 {
 }
 h4 {
   font-size: var(--size-type-mlarge);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-light);
 }
 h5 {
   font-size: var(--size-type-body);
@@ -76,16 +95,16 @@ dt {
   font-weight: var(--size-type-body);
 }
 h3,
-a {
+a[href],
+a[onclick] {
   color: var(--color-accent);
 }
-svg.outline-map {
-  fill: #ff0;
+a[onclick] {
+  cursor: pointer;
 }
-svg.icon {
-  display: inline;
-  fill: currentColor;
-  height: var(--size-icon-large);
-  width: var(--size-icon-large);
-  vertical-align: middle;
+time {
+  white-space: nowrap;
+}
+.card {
+  color-background: var(--color-background-card);
 }
