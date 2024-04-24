@@ -1,4 +1,4 @@
-import { Profile } from "../models/Profile";
+import { Profile } from "../models/profile";
 
 // in-memory DB
 let profiles: Array<Profile> = [
@@ -31,12 +31,8 @@ let profiles: Array<Profile> = [
   }
 ];
 
-export function get(id: String): Profile {
-  const found = profiles.find((t) => t.id === id);
-
-  if (found) return found;
-
-  throw `Profile not found: ${id}`;
+function get(id: String): Profile | undefined {
+  return profiles.find((t) => t.id === id);
 }
 
 export default { get };
