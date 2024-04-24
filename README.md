@@ -15,9 +15,9 @@ which is developed as a separate workspace in this monorepo:
 
 - [Prototype](packages/proto/README.md) uses only HTML/CSS
   static files.
-- [MVC](packages/mvc/README.md) adds a backend API and
+- [Server](packages/server/README.md) adds a backend API and
   communication with a database.
-- [MVU](packages/mvu/README.md) adds routing and state
+- [App](packages/app/README.md) adds routing and state
   management to the frontend, making it a single-page app.
 
 Each module (week) of the course builds on the previous ones. In
@@ -30,3 +30,5 @@ progress:
   Styling and Layout with CSS
 - [Module 3](https://github.com/kubiak-calpoly/csc-437-examples/tree/mod-3):
   Adding Interactions with Javascript
+- [Module 4](https://github.com/kubiak-calpoly/csc-437-examples/tree/mod-4):
+  MVC Architecture
