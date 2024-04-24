@@ -1,8 +1,0 @@
-.map {
-  grid-area: map;
-}
-svg.outline-map {
-  width: 100%;
-  aspect-ratio: 1;
-  fill: var(--color-link-inverted);
-}
