@@ -15,9 +15,9 @@ which is developed as a separate workspace in this monorepo:
 
 - [Prototype](packages/proto/README.md) uses only HTML/CSS
   static files.
-- [Server](packages/server/README.md) adds a backend API and
+- [MVC](packages/mvc/README.md) adds a backend API and
   communication with a database.
-- [App](packages/app/README.md) adds routing and state
+- [MVU](packages/mvu/README.md) adds routing and state
   management to the frontend, making it a single-page app.
 
 Each module (week) of the course builds on the previous ones. In

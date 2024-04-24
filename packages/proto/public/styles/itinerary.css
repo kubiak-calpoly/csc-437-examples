@@ -1,31 +1,66 @@
 .itinerary {
   display: grid;
-  grid-template-columns: max-content 1fr;
-  gap: 0 var(--size-spacing-xlarge);
-  align-items: baseline;
+  grid-template-columns: subgrid;
 }
+
 .itinerary > dt {
   text-align: right;
 }
 
-.transportation {
-  text-align: center;
-  /*
-  border-top: 2px solid #008000;
-  border-bottom: 2px solid #008000;
-  */
+.itinerary > dd {
+  display: grid;
+  grid-column: 2 / end;
+  grid-template-columns: subgrid;
 }
+
+.itinerary h3 {
+  grid-column: 1 / end;
+  text-align: center;
+}
+
+.itinerary h4 {
+  grid-column: 1 / end;
+}
+
+.transportation > details {
+  display: contents;
+}
+
+.transportation summary {
+  grid-column: 1 / end;
+}
+
+.transportation ol,
+.transportation ol > li {
+  display: contents;
+}
+
+.transportation dl {
+  display: contents;
+}
+
+.transportation dt {
+  grid-column-start: 1;
+}
+
+.transportation dt + dd {
+  grid-column-end: span 3;
+}
+
+.transportation dd + dd {
+  text-align: right;
+}
+
 .destination {
-  background: white;
+  background: var(--color-background-card);
   padding: var(--size-spacing-large) var(--size-spacing-medium);
   border-radius: var(--size-radius-medium);
 }
 
-.transportation summary {
-  font-size: var(--size-type-large);
-  font-style: oblique;
+.destination article {
+  grid-column: 1 / end;
 }
 
-.entourage {
-  display: none;
+.transportation summary {
+  font-size: var(--size-type-mlarge);
 }
