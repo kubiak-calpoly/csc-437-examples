@@ -1,14 +1,32 @@
 import express, { Request, Response } from "express";
-import profileService from "../services/profile-svc";
+import { Profile } from "../models/profile";
+import profiles from "../services/profile-svc";
 
 const router = express.Router();
 
+router.get("/", (req: Request, res: Response) => {
+  profiles
+    .index()
+    .then((list: Profile[]) => res.json(list))
+    .catch((err) => res.status(500).send(err));
+});
+
 router.get("/:userid", (req: Request, res: Response) => {
   const { userid } = req.params;
-  const got = profileService.get(userid);
 
-  if (got) res.send(got);
-  else res.status(404).end();
+  profiles
+    .get(userid)
+    .then((profile: Profile) => res.json(profile))
+    .catch((err) => res.status(404).send(err));
+});
+
+router.post("/", (req: Request, res: Response) => {
+  const newProfile = req.body;
+
+  profiles
+    .create(newProfile)
+    .then((profile: Profile) => res.status(201).send(profile))
+    .catch((err) => res.status(500).send(err));
 });
 
 export default router;

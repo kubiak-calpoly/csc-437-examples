@@ -1,5 +1,9 @@
 import express, { Request, Response } from "express";
 import profiles from "./routes/profiles";
+import { connect } from "./services/mongo";
+
+// Mongo Connection
+connect("blazing");
 
 const app = express();
 const port = process.env.PORT || 3000;

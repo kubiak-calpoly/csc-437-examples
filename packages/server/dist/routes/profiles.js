@@ -5,6 +5,10 @@ var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
 var __copyProps = (to, from, except, desc) => {
   if (from && typeof from === "object" || typeof from === "function") {
     for (let key of __getOwnPropNames(from))
@@ -21,24 +25,24 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
   mod
 ));
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var profiles_exports = {};
+__export(profiles_exports, {
+  default: () => profiles_default
+});
+module.exports = __toCommonJS(profiles_exports);
 var import_express = __toESM(require("express"));
-var import_profiles = __toESM(require("./routes/profiles"));
-var import_mongo = require("./services/mongo");
-(0, import_mongo.connect)("blazing");
-const app = (0, import_express.default)();
-const port = process.env.PORT || 3e3;
-const staticDir = process.env.STATIC || "public";
-app.use(import_express.default.static(staticDir));
-app.use(import_express.default.json());
-app.use("/api/profiles", import_profiles.default);
-app.get("/hello", (_, res) => {
-  res.send(
-    `<h1>Hello!</h1>
-     <p>Server is up and running.</p>
-     <p>Serving static files from <code>${staticDir}</code>.</p>
-    `
-  );
+var import_profile_svc = __toESM(require("../services/profile-svc"));
+const router = import_express.default.Router();
+router.get("/", (req, res) => {
+  import_profile_svc.default.index().then((list) => res.json(list)).catch((err) => res.status(500).send(err));
 });
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+router.get("/:userid", (req, res) => {
+  const { userid } = req.params;
+  import_profile_svc.default.get(userid).then((profile) => res.json(profile)).catch((err) => res.status(404).send(err));
 });
+router.post("/", (req, res) => {
+  const newProfile = req.body;
+  import_profile_svc.default.create(newProfile).then((profile) => res.status(201).send(profile)).catch((err) => res.status(500).send(err));
+});
+var profiles_default = router;
