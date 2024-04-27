@@ -2,22 +2,22 @@ import { addFragment } from "./html-loader.js";
 
 export class JsonObjectElement extends HTMLElement {
   connectedCallback() {
-    const href = this.getAttribute("href");
+    const src = this.getAttribute("src");
     const open = this.hasAttribute("open");
 
-    if (open) loadJSON(href, this);
+    if (open) loadJSON(src, this);
 
     this.addEventListener("json-object:open", () =>
-      loadJSON(href, this)
+      loadJSON(src, this)
     );
   }
 }
 
 customElements.define("json-object", JsonObjectElement);
 
-export function loadJSON(href, container) {
+export function loadJSON(src, container) {
   container.replaceChildren();
-  fetch(href)
+  fetch(src)
     .then((response) => {
       if (response.status !== 200) {
         throw `Status: ${response.status}`;
@@ -28,7 +28,7 @@ export function loadJSON(href, container) {
     .catch((error) =>
       addFragment(
         `<p class="error">
-        Failed to fetch ${href}: ${error}
+        Failed to fetch ${src}: ${error}
         </p>`,
         container
       )
