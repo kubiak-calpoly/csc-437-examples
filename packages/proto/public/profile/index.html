@@ -15,7 +15,8 @@
     <link rel="stylesheet" href="/styles/reset.css" />
     <link rel="stylesheet" href="/styles/tokens.css" />
     <link rel="stylesheet" href="/styles/page.css" />
-    <script type="module" src="/js/json-loader.js"></script>
+    <link rel="stylesheet" href="/styles/form.css" />
+    <script type="module" src="/js/restful-form.js"></script>
     <script type="module">
       import { relayEvent } from "/js/relay-event.js";
 
@@ -23,12 +24,38 @@
     </script>
   </head>
   <body>
-    <json-object src="/api/profiles/blaze">
-      <a
-        href="#"
-        onclick="relayEvent(event, 'json-object:open')">
-        Blaze Pasquale
-      </a>
-    </json-object>
+    <restful-form src="/api/profiles/blaze">
+      <form>
+        <label>
+          <span>Username</span>
+          <input name="userid" />
+        </label>
+        <label>
+          <span>Name</span>
+          <input name="name" />
+        </label>
+        <label>
+          <span>Nickname</span>
+          <input name="nickname" />
+        </label>
+        <label>
+          <span>Home City</span>
+          <input name="city" />
+        </label>
+        <label>
+          <span>Airports</span>
+          <input name="airports" />
+        </label>
+        <label>
+          <span>Color</span>
+          <input name="color" />
+        </label>
+        <label>
+          <span>Avatar</span>
+          <input name="avatar" />
+        </label>
+        <button type="submit">Submit</button>
+      </form>
+    </restful-form>
   </body>
 </html>
