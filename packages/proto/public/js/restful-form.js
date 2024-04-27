@@ -23,6 +23,10 @@ export class RestfulFormElement extends HTMLElement {
         this.isNew ? "POST" : "PUT"
       );
     });
+    this.addEventListener("restful-form:delete", (event) => {
+      event.stopPropagation();
+      deleteResource(this.src, this.form);
+    });
   }
 
   connectedCallback() {
@@ -69,7 +73,6 @@ function populateForm(json, form) {
 function submitForm(src, form, method = "PUT") {
   const formData = new FormData(form);
   const json = Object.fromEntries(formData);
-  console.log("FormData as JSON: ", json);
 
   fetch(src, {
     method,
@@ -77,12 +80,22 @@ function submitForm(src, form, method = "PUT") {
     body: JSON.stringify(json)
   })
     .then((res) => {
-      if (res.status == 200) {
-        return res.json();
-      } else {
+      if (res.status != 200)
         throw `Form submission failed: Status ${res.status}`;
-      }
+      return res.json();
     })
     .then((json) => populateForm(json, form))
     .catch((err) => console.log("Error submitting form:", err));
+}
+
+function deleteResource(src, form) {
+  fetch(src, { method: "DELETE" })
+    .then((res) => {
+      if (res.status != 204)
+        throw `Deletion failed: Status ${res.status}`;
+      form.reset();
+    })
+    .catch((err) =>
+      console.log("Error deleting resource:", err)
+    );
 }

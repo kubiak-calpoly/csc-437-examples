@@ -66,4 +66,12 @@ function create(profile) {
   const p = new ProfileModel(profile);
   return p.save();
 }
-var profile_svc_default = { index, get, create, update };
+function remove(userid) {
+  return ProfileModel.findOneAndDelete({ userid }).then(
+    (deleted) => {
+      if (!deleted)
+        throw `${userid} not deleted`;
+    }
+  );
+}
+var profile_svc_default = { index, get, create, update, remove };

@@ -39,4 +39,13 @@ router.post("/", (req: Request, res: Response) => {
     .catch((err) => res.status(500).send(err));
 });
 
+router.delete("/:userid", (req: Request, res: Response) => {
+  const { userid } = req.params;
+
+  profiles
+    .remove(userid)
+    .then(() => res.status(204).end())
+    .catch((err) => res.status(404).send(err));
+});
+
 export default router;
