@@ -16,8 +16,19 @@
     <link rel="stylesheet" href="/styles/tokens.css" />
     <link rel="stylesheet" href="/styles/page.css" />
     <script type="module" src="/js/json-loader.js"></script>
+    <script type="module">
+      import { relayEvent } from "/js/relay-event.js";
+
+      window.relayEvent = relayEvent;
+    </script>
   </head>
   <body>
-    <json-object open href="/api/profiles/blaze"> </json-object>
+    <json-object href="/api/profiles/blaze">
+      <a
+        href="#"
+        onclick="relayEvent(event, 'json-object:open')">
+        Blaze Pasquale
+      </a>
+    </json-object>
   </body>
 </html>
