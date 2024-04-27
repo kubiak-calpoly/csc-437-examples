@@ -20,6 +20,16 @@ router.get("/:userid", (req: Request, res: Response) => {
     .catch((err) => res.status(404).send(err));
 });
 
+router.put("/:userid", (req: Request, res: Response) => {
+  const { userid } = req.params;
+  const editedProfile = req.body;
+
+  profiles
+    .update(userid, editedProfile)
+    .then((profile: Profile) => res.json(profile))
+    .catch((err) => res.status(404).send(err));
+});
+
 router.post("/", (req: Request, res: Response) => {
   const newProfile = req.body;
 

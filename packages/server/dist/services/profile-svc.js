@@ -24,7 +24,7 @@ module.exports = __toCommonJS(profile_svc_exports);
 var import_mongoose = require("mongoose");
 const ProfileSchema = new import_mongoose.Schema(
   {
-    id: { type: String, required: true, trim: true },
+    userid: { type: String, required: true, trim: true },
     name: { type: String, required: true, trim: true },
     nickname: { type: String, trim: true },
     home: { type: String, trim: true },
@@ -35,35 +35,6 @@ const ProfileSchema = new import_mongoose.Schema(
   { collection: "user_profiles" }
 );
 const ProfileModel = (0, import_mongoose.model)("Profile", ProfileSchema);
-let profiles = [
-  {
-    id: "blaze",
-    name: "Blaze Pasquale",
-    nickname: void 0,
-    home: "Oakland, CA",
-    airports: ["SFO", "OAK", "SJC"],
-    color: "#8A81BE",
-    avatar: "/data/avatars/Blaze Pasquale.png"
-  },
-  {
-    id: "mondy",
-    name: "Pia Mondrian",
-    nickname: "Mondy",
-    home: "Ventura, CA",
-    airports: ["LAX"],
-    avatar: void 0,
-    color: void 0
-  },
-  {
-    id: "izzy",
-    name: "Isabel Nuton",
-    nickname: "Izzy",
-    home: "San Miguel de Allende, Gto., Mexico",
-    airports: ["BJX", "QRO"],
-    avatar: void 0,
-    color: void 0
-  }
-];
 function index() {
   return ProfileModel.find();
 }
@@ -72,8 +43,27 @@ function get(userid) {
     throw `${userid} Not Found`;
   });
 }
+function update(userid, profile) {
+  return ProfileModel.findOne({ userid }).then((found) => {
+    if (!found)
+      throw `${userid} Not Found`;
+    else
+      return ProfileModel.findByIdAndUpdate(
+        found._id,
+        profile,
+        {
+          new: true
+        }
+      );
+  }).then((updated) => {
+    if (!updated)
+      throw `${userid} not updated`;
+    else
+      return updated;
+  });
+}
 function create(profile) {
   const p = new ProfileModel(profile);
   return p.save();
 }
-var profile_svc_default = { index, get, create };
+var profile_svc_default = { index, get, create, update };

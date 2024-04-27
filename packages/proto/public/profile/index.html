@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="/styles/tokens.css" />
     <link rel="stylesheet" href="/styles/page.css" />
     <link rel="stylesheet" href="/styles/form.css" />
+    <script type="module" src="/js/json-loader.js"></script>
     <script type="module" src="/js/restful-form.js"></script>
     <script type="module">
       import { relayEvent } from "/js/relay-event.js";
@@ -57,5 +58,6 @@
         <button type="submit">Submit</button>
       </form>
     </restful-form>
+    <json-object open src="/api/profiles/blaze"> </json-object>
   </body>
 </html>

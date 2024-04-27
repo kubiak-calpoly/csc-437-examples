@@ -1,11 +1,24 @@
 import { prepareTemplate } from "./template.js";
 
 export class RestfulFormElement extends HTMLElement {
-  connectedCallback() {
-    const src = this.getAttribute("src");
-    this._form = this.querySelector("form");
+  get form() {
+    return this.querySelector("form");
+  }
 
-    loadForm(src, this._form);
+  get src() {
+    return this.getAttribute("src");
+  }
+
+  constructor() {
+    super();
+    this.addEventListener("submit", (event) => {
+      event.preventDefault();
+      submitForm(this.src, this.form);
+    });
+  }
+
+  connectedCallback() {
+    loadForm(this.src, this.form);
   }
 }
 
@@ -30,10 +43,8 @@ function populateForm(json, form) {
 
   for (const [key, val] of entries) {
     const input = form.elements[key];
-    console.log(`Populating input name=${key}`, input);
 
     if (input) {
-      console.log(`Populating ${key}=${val}`);
       switch (input.type) {
         case "checkbox":
           input.checked = Boolean(value);
@@ -44,4 +55,25 @@ function populateForm(json, form) {
       }
     }
   }
+}
+
+function submitForm(src, form, method = "PUT") {
+  const formData = new FormData(form);
+  const json = Object.fromEntries(formData);
+  console.log("FormData as JSON: ", json);
+
+  fetch(src, {
+    method,
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(json)
+  })
+    .then((res) => {
+      if (res.status == 200) {
+        return res.json();
+      } else {
+        throw `Form submission failed: Status ${res.status}`;
+      }
+    })
+    .then((json) => populateForm(json, form))
+    .catch((err) => console.log("Error submitting form:", err));
 }
