@@ -9,16 +9,25 @@ export class RestfulFormElement extends HTMLElement {
     return this.getAttribute("src");
   }
 
+  get isNew() {
+    return this.hasAttribute("new");
+  }
+
   constructor() {
     super();
     this.addEventListener("submit", (event) => {
       event.preventDefault();
-      submitForm(this.src, this.form);
+      submitForm(
+        this.src,
+        this.form,
+        this.isNew ? "POST" : "PUT"
+      );
     });
   }
 
   connectedCallback() {
-    loadForm(this.src, this.form);
+    this.form.reset();
+    if (!this.isNew) loadForm(this.src, this.form);
   }
 }
 
