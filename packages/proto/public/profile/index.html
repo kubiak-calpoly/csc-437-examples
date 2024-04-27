@@ -38,7 +38,7 @@
       </drop-down>
     </header>
     <main>
-      <profile-view style="--avatar-bg: #8a81be">
+      <profile-view>
         <span slot="userid">blaze</span>
         <span slot="name">Blaze Pasquale</span>
         <span slot="nickname">Blaze</span>
@@ -48,9 +48,11 @@
           <li>OAK</li>
           <li>SJC</li>
         </ul>
-        <img
+        <profile-avatar
           slot="avatar"
-          src="/images/avatars/Blaze Pasquale.png" />
+          color="#8a81be"
+          src="/images/avatars/Blaze Pasquale.png">
+        </profile-avatar>
         <restful-form slot="form" src="/api/profiles/blaze">
           <form autocomplete="off">
             <label>
