@@ -15,20 +15,89 @@
     <link rel="stylesheet" href="/styles/reset.css" />
     <link rel="stylesheet" href="/styles/tokens.css" />
     <link rel="stylesheet" href="/styles/page.css" />
+    <link rel="stylesheet" href="/styles/form.css" />
+    <script type="module" src="/js/profile-view.js"></script>
     <script type="module" src="/js/json-loader.js"></script>
+    <script type="module" src="/js/restful-form.js"></script>
     <script type="module">
       import { relayEvent } from "/js/relay-event.js";
-
       window.relayEvent = relayEvent;
     </script>
   </head>
-  <body>
-    <json-object src="/api/profiles/blaze">
-      <a
-        href="#"
-        onclick="relayEvent(event, 'json-object:open')">
-        Blaze Pasquale
-      </a>
-    </json-object>
+  <body class="page">
+    <header>
+      <h1>Blazing Travels</h1>
+      <drop-down>
+        <label
+          onchange="relayEvent(
+          event, 
+          'dark-mode', 
+          {checked: event.target.checked})">
+          <input type="checkbox" autocomplete="off" /> Dark mode
+        </label>
+      </drop-down>
+    </header>
+    <main>
+      <profile-view>
+        <span slot="userid">blaze</span>
+        <span slot="name">Blaze Pasquale</span>
+        <span slot="nickname">Blaze</span>
+        <span slot="home">Oakland, CA</span>
+        <ul slot="airports">
+          <li>SFO</li>
+          <li>OAK</li>
+          <li>SJC</li>
+        </ul>
+        <profile-avatar
+          slot="avatar"
+          color="#8a81be"
+          src="/images/avatars/Blaze Pasquale.png">
+        </profile-avatar>
+        <restful-form slot="form" src="/api/profiles/blaze">
+          <form autocomplete="off">
+            <label>
+              <span>Username</span>
+              <input name="userid" />
+            </label>
+            <label>
+              <span>Name</span>
+              <input name="name" />
+            </label>
+            <label>
+              <span>Nickname</span>
+              <input name="nickname" />
+            </label>
+            <label>
+              <span>Home City</span>
+              <input name="home" />
+            </label>
+            <label>
+              <span>Airports</span>
+              <input name="airports" />
+            </label>
+            <label>
+              <span>Color</span>
+              <input name="color" />
+            </label>
+            <label>
+              <span>Avatar</span>
+              <input name="avatar" />
+            </label>
+            <button type="submit">Submit</button>
+          </form>
+          <button
+            onclick="relayEvent(event,'restful-form:delete')"
+            >Delete this Profile</button
+          >
+        </restful-form>
+      </profile-view>
+      <json-object src="/api/profiles/blaze">
+        <a
+          href="#"
+          onclick="relayEvent(event, 'json-object:open')">
+          Blaze Pasquale
+        </a>
+      </json-object>
+    </main>
   </body>
 </html>

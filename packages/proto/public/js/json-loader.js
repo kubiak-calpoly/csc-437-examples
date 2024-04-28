@@ -1,21 +1,52 @@
 import { addFragment } from "./html-loader.js";
+import { prepareTemplate } from "./template.js";
 
 export class JsonObjectElement extends HTMLElement {
+  static template = prepareTemplate(`<template>
+      <dl>
+        <slot></slot>
+      </dl>
+      <style>
+        dl {
+          display: grid;
+          grid-template-columns: 1fr 3fr;
+        }
+        ::slotted(dt) {
+          color: var(--color-accent);
+          grid-column-start: 1;
+        }
+        ::slotted(dd) {
+          grid-column-start: 2;
+        }
+      </style>
+    </template>`);
+
+  get dl() {
+    return this.shadowRoot.querySelector("dl");
+  }
+
+  constructor() {
+    super();
+    this.attachShadow({ mode: "open" }).appendChild(
+      JsonObjectElement.template.cloneNode(true)
+    );
+  }
+
   connectedCallback() {
     const src = this.getAttribute("src");
     const open = this.hasAttribute("open");
 
-    if (open) loadJSON(src, this);
+    if (open) loadJSON(src, this, renderJSON);
 
     this.addEventListener("json-object:open", () =>
-      loadJSON(src, this)
+      loadJSON(src, this, renderJSON)
     );
   }
 }
 
 customElements.define("json-object", JsonObjectElement);
 
-export function loadJSON(src, container) {
+export function loadJSON(src, container, render) {
   container.replaceChildren();
   fetch(src)
     .then((response) => {
@@ -24,12 +55,14 @@ export function loadJSON(src, container) {
       }
       return response.json();
     })
-    .then((json) => addFragment(renderJSON(json), container))
+    .then((json) => addFragment(render(json), container))
     .catch((error) =>
       addFragment(
-        `<p class="error">
-        Failed to fetch ${src}: ${error}
-        </p>`,
+        `<dt class="error">Error</dt>
+         <dd>${error}</dd>
+         <dt>While Loading</dt>
+         <dd>${src}</dd>
+        `,
         container
       )
     );
@@ -37,11 +70,9 @@ export function loadJSON(src, container) {
 
 function renderJSON(json) {
   const entries = Object.entries(json);
-  const dtdd = (key, value) => `
+  const dtdd = ([key, value]) => `
     <dt>${key}</dt>
     <dd>${value}</dd>
     `;
-  return `
-    <dl>${entries.map(([k, v]) => dtdd(k, v)).join("")}</dl>
-    `;
+  return entries.map(dtdd).join("\n");
 }

@@ -20,6 +20,16 @@ router.get("/:userid", (req: Request, res: Response) => {
     .catch((err) => res.status(404).send(err));
 });
 
+router.put("/:userid", (req: Request, res: Response) => {
+  const { userid } = req.params;
+  const editedProfile = req.body;
+
+  profiles
+    .update(userid, editedProfile)
+    .then((profile: Profile) => res.json(profile))
+    .catch((err) => res.status(404).send(err));
+});
+
 router.post("/", (req: Request, res: Response) => {
   const newProfile = req.body;
 
@@ -27,6 +37,15 @@ router.post("/", (req: Request, res: Response) => {
     .create(newProfile)
     .then((profile: Profile) => res.status(201).send(profile))
     .catch((err) => res.status(500).send(err));
+});
+
+router.delete("/:userid", (req: Request, res: Response) => {
+  const { userid } = req.params;
+
+  profiles
+    .remove(userid)
+    .then(() => res.status(204).end())
+    .catch((err) => res.status(404).send(err));
 });
 
 export default router;
