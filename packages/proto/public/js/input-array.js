@@ -35,12 +35,17 @@ export class InputArrayElement extends HTMLElement {
       `input[name^="${this.name}."] `
     );
     console.log("Inputs were:", oldInputs);
-    oldInputs.forEach(removeClosestItem);
+    oldInputs.forEach((input) => {
+      const label = input.closest("label");
+      label.remove();
+    });
     this._array = Array.isArray(array) ? array : [array];
     const html = this._array
       .map((value, i) => renderItem(this.name, i, value))
       .join("");
     addFragment(html, this);
+    const newEvent = new Event("change", { bubbles: true });
+    this.dispatchEvent(newEvent);
   }
 
   constructor() {
@@ -58,7 +63,7 @@ export class InputArrayElement extends HTMLElement {
     });
     this.addEventListener("input-array:remove", (event) => {
       event.stopPropagation();
-      removeClosestItem(event.target);
+      this.removeClosestItem(event.target);
     });
     this.addEventListener("change", (event) => {
       event.stopPropagation();
@@ -74,6 +79,21 @@ export class InputArrayElement extends HTMLElement {
         this.dispatchEvent(newEvent);
       }
     });
+    this.addEventListener("formdata", (event) => {
+      event.preventDefault();
+      console.log("FormData event on input-array:", event);
+    });
+  }
+
+  removeClosestItem(element) {
+    const label = element.closest("label");
+    const input = label.querySelector("input");
+    const name = input.name;
+    const [prefix, index] = name.split(".");
+    const array = this.value;
+    array.splice(index, 1);
+    this.value = array;
+    label.remove();
   }
 }
 
@@ -91,9 +111,4 @@ function renderItem(name, i, value) {
         Remove
       </button>
     </label>`;
-}
-
-function removeClosestItem(element) {
-  const label = element.closest("label");
-  label.remove();
 }
