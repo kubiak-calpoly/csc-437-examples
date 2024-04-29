@@ -19,6 +19,7 @@
     <script type="module" src="/js/profile-view.js"></script>
     <script type="module" src="/js/json-loader.js"></script>
     <script type="module" src="/js/restful-form.js"></script>
+    <script type="module" src="/js/input-array.js"></script>
     <script type="module">
       import { relayEvent } from "/js/relay-event.js";
       window.relayEvent = relayEvent;
@@ -73,7 +74,9 @@
             </label>
             <label>
               <span>Airports</span>
-              <input name="airports" />
+              <input-array name="airports">
+                <span slot="label-add">Add an airport</span>
+              </input-array>
             </label>
             <label>
               <span>Color</span>
@@ -91,6 +94,7 @@
           >
         </restful-form>
       </profile-view>
+
       <json-object src="/api/profiles/blaze">
         <a
           href="#"
