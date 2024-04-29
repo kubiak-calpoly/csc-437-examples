@@ -55,7 +55,9 @@ function populateForm(json, form) {
   const entries = Object.entries(json);
 
   for (const [key, val] of entries) {
-    const input = form.elements[key];
+    const input =
+      form.elements[key] ||
+      form.querySelector(`[name="${key}"]`);
 
     if (input) {
       switch (input.type) {
@@ -63,7 +65,7 @@ function populateForm(json, form) {
           input.checked = Boolean(value);
           break;
         default:
-          input.value = val.toString();
+          input.value = val;
           break;
       }
     }
@@ -72,7 +74,47 @@ function populateForm(json, form) {
 
 function submitForm(src, form, method = "PUT") {
   const formData = new FormData(form);
-  const json = Object.fromEntries(formData);
+  let prefixes = {};
+  for (const key of formData.keys()) {
+    const path = key.split(".");
+    if (path.length > 1) {
+      const prefix = path[0];
+      if (prefixes[prefix] === undefined) prefixes[prefix] = [];
+      prefixes[prefix].push(path.slice(1));
+    }
+  }
+  const entries = Array.from(formData.entries());
+  const simpleEntries = entries.filter(
+    ([key]) => !key.match(/[.]/)
+  );
+  const compoundKeys = Object.keys(prefixes);
+  let compoundEntries = [];
+  compoundKeys.forEach((prefix) => {
+    const prefixLength = prefix.length;
+    const subentries = entries
+      .filter(([key]) => key.startsWith(`${prefix}.`))
+      .map(([k, v]) => [k.slice(prefixLength + 1), v]);
+    const obj = Object.fromEntries(subentries);
+    const isArray = Object.keys(obj)
+      .map((k) => k.match(/^[0-9]+$/))
+      .reduce((a, b) => a && b, true);
+
+    if (isArray) {
+      const max = Object.keys(obj)
+        .map((k) => parseInt(k))
+        .reduce((a, b) => Math.max(a, b), 0);
+      const array = Array.from({ length: max + 1, ...obj });
+      compoundEntries.push([prefix, array]);
+    } else {
+      compoundEntries.push([prefix, obj]);
+    }
+  });
+
+  const json = Object.fromEntries(
+    simpleEntries.concat(compoundEntries)
+  );
+
+  console.log("FormData: ", json);
 
   fetch(src, {
     method,

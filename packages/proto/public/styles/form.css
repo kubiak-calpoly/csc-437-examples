@@ -1,7 +1,7 @@
 form {
   display: grid;
   gap: var(--size-spacing-medium);
-  grid-template-columns: [start] 1fr [label] 1fr [input] 1fr 3fr 1fr [end];
+  grid-template-columns: [start] 1fr [label] 1fr [input] 1fr [input-center] 3fr [input-end] 1fr [end];
 }
 
 label {
