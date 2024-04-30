@@ -1,5 +1,5 @@
 export interface Profile {
-  id: string;
+  userid: string;
   name: string;
   nickname: string | undefined;
   home: string;
