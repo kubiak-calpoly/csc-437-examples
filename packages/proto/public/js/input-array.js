@@ -30,22 +30,8 @@ export class InputArrayElement extends HTMLElement {
   }
 
   set value(array) {
-    console.log("Setting value to", array);
-    const oldInputs = this.querySelectorAll(
-      `input[name^="${this.name}."] `
-    );
-    console.log("Inputs were:", oldInputs);
-    oldInputs.forEach((input) => {
-      const label = input.closest("label");
-      label.remove();
-    });
     this._array = Array.isArray(array) ? array : [array];
-    const html = this._array
-      .map((value, i) => renderItem(this.name, i, value))
-      .join("");
-    addFragment(html, this);
-    const newEvent = new Event("change", { bubbles: true });
-    this.dispatchEvent(newEvent);
+    populateArray(this._array, this);
   }
 
   constructor() {
@@ -56,10 +42,7 @@ export class InputArrayElement extends HTMLElement {
     );
     this.addEventListener("input-array:add", (event) => {
       event.stopPropagation();
-      addFragment(
-        renderItem(this.name, this._array.length),
-        this
-      );
+      addFragment(renderItem("", this._array.length), this);
     });
     this.addEventListener("input-array:remove", (event) => {
       event.stopPropagation();
@@ -69,43 +52,41 @@ export class InputArrayElement extends HTMLElement {
       event.stopPropagation();
       console.log("Change event:", event);
       const target = event.target;
-      const value = target.value;
-      const indexedName = event.target.name;
-      const [name, index] = indexedName.split(".");
 
-      if (target !== this && name === this.name) {
-        this._array[index] = value;
+      if (target !== this) {
         const newEvent = new Event("change", { bubbles: true });
+        const value = target.value;
+        const item = target.closest("label");
+        const index = Array.from(this.children).indexOf(item);
+        this._array[index] = value;
         this.dispatchEvent(newEvent);
       }
-    });
-    this.addEventListener("formdata", (event) => {
-      event.preventDefault();
-      console.log("FormData event on input-array:", event);
     });
   }
 
   removeClosestItem(element) {
-    const label = element.closest("label");
-    const input = label.querySelector("input");
-    const name = input.name;
-    const [prefix, index] = name.split(".");
-    const array = this.value;
-    array.splice(index, 1);
-    this.value = array;
-    label.remove();
+    const item = element.closest("label");
+    const index = Array.from(this.children).indexOf(item);
+    this._array.splice(index, 1);
+    item.remove();
   }
 }
 
 customElements.define("input-array", InputArrayElement);
 
-function renderItem(name, i, value) {
-  console.log("Rendering item", name, i);
+function populateArray(array, container) {
+  container.replaceChildren();
+  const html = array.map(renderItem).join("");
+  addFragment(html, container);
+}
+
+function renderItem(value, i) {
+  console.log("Rendering item", i);
   const valueAttr =
     value === undefined ? "" : `value="${value}"`;
 
   return `<label>
-    <input name="${name}.${i}" ${valueAttr}/>
+    <input ${valueAttr}/>
       <button class="remove" type="button"
         onclick="relayEvent(event,'input-array:remove')">
         Remove
