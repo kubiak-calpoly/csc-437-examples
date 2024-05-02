@@ -50,7 +50,7 @@ export class InputArrayElement extends HTMLElement {
     });
     this.addEventListener("change", (event) => {
       event.stopPropagation();
-      console.log("Change event:", event);
+      // console.log("Change event:", event);
       const target = event.target;
 
       if (target !== this) {
@@ -81,7 +81,6 @@ function populateArray(array, container) {
 }
 
 function renderItem(value, i) {
-  console.log("Rendering item", i);
   const valueAttr =
     value === undefined ? "" : `value="${value}"`;
 

@@ -39,23 +39,9 @@
       </drop-down>
     </header>
     <main>
-      <profile-view>
-        <span slot="userid">blaze</span>
-        <span slot="name">Blaze Pasquale</span>
-        <span slot="nickname">Blaze</span>
-        <span slot="home">Oakland, CA</span>
-        <ul slot="airports">
-          <li>SFO</li>
-          <li>OAK</li>
-          <li>SJC</li>
-        </ul>
-        <profile-avatar
-          slot="avatar"
-          color="#8a81be"
-          src="/images/avatars/Blaze Pasquale.png">
-        </profile-avatar>
-      </profile-view>
-      <restful-form slot="form" src="/api/profiles/blaze">
+      <profile-view src="/api/profiles/blaze"> </profile-view>
+      <hr />
+      <restful-form src="/api/profiles/blaze">
         <label>
           <span>Username</span>
           <input name="userid" disabled />
@@ -92,12 +78,8 @@
           >Delete this Profile</button
         >
       </restful-form>
-      <json-object open src="/api/profiles/foo">
-        <a
-          href="#"
-          onclick="relayEvent(event, 'json-object:open')">
-          Blaze Pasquale
-        </a>
+      <hr />
+      <json-object open src="/api/profiles/blaze">
       </json-object>
     </main>
   </body>

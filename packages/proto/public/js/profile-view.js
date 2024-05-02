@@ -65,16 +65,39 @@ export class ProfileViewElement extends HTMLElement {
 
   connectedCallback() {
     const src = this.getAttribute("src");
-    const open = this.hasAttribute("open");
 
-    if (open) loadJSON(src, this, renderSlots);
+    if (src) loadJSON(src, this, renderSlots);
   }
 }
 
 function renderSlots(json) {
   const entries = Object.entries(json);
-  const slot = ([key, value]) =>
-    `<span slot="${key}">${value}</span>`;
+  const slot = ([key, value]) => {
+    let type = typeof value;
+    console.log(`Slot name=${key} of type ${type}`);
+
+    if (type === "object") {
+      if (Array.isArray(value)) type = "array";
+    }
+
+    if (key === "avatar") {
+      type = "avatar";
+    }
+
+    switch (type) {
+      case "array":
+        return `<ul slot="${key}">
+          ${value.map((s) => `<li>${s}</li>`).join("")}
+          </ul>`;
+      case "avatar":
+        return `<profile-avatar slot="${key}"
+          color="${json.color}"
+          src="${value}">
+        </profile-avatar>`;
+      default:
+        return `<span slot="${key}">${value}</span>`;
+    }
+  };
 
   return entries.map(slot).join("\n");
 }
@@ -133,7 +156,7 @@ export class ProfileAvatarElement extends HTMLElement {
   }
 
   connectedCallback() {
-    console.log("Avatar connected", this);
+    // console.log("Avatar connected", this);
     this.style.setProperty(
       "--avatar-backgroundColor",
       this.color

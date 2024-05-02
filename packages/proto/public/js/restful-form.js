@@ -59,7 +59,6 @@ export class RestfulFormElement extends HTMLElement {
       deleteResource(this.src, this);
     });
     this.addEventListener("change", (event) => {
-      console.log("Change event on restful-form", event);
       const target = event.target;
       const name = target.name;
       const value = target.value;
@@ -99,7 +98,7 @@ function populateForm(json, formBody) {
   for (const [key, val] of entries) {
     const input = formBody.querySelector(`[name="${key}"]`);
 
-    console.log(`Populating ${key}`, input);
+    // console.log(`Populating ${key}`, input);
     if (input) {
       switch (input.type) {
         case "checkbox":
