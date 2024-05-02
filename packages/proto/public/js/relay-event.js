@@ -6,6 +6,11 @@ export function relayEvent(event, customType, detail) {
     detail
   });
 
+  console.log(
+    `Relaying event from ${event.type}:`,
+    customEvent
+  );
+
   relay.dispatchEvent(customEvent);
   event.stopPropagation();
 }
