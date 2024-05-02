@@ -1,8 +1,34 @@
 import { prepareTemplate } from "./template.js";
 
 export class RestfulFormElement extends HTMLElement {
+  static template = prepareTemplate(`
+    <template>
+      <form autocomplete="off">
+        <slot></slot>
+        <slot><button type="submit">Submit</button></slot>
+      </form>
+      <slot name="delete"></slot>
+      <style>
+        form {
+          display: grid;
+          gap: var(--size-spacing-medium);
+          grid-template-columns: [start] 1fr [label] 1fr [input] 3fr 1fr [end];
+        }
+        ::slotted(label) {
+          display: grid;
+          grid-column: label / end;
+          grid-template-columns: subgrid;
+        }
+        button[type="submit"] {
+          grid-column: input;
+          justify-self: start;
+        }
+      </style>
+    </template>
+  `);
+
   get form() {
-    return this.querySelector("form");
+    return this.shadowRoot.querySelector("form");
   }
 
   get src() {
@@ -16,17 +42,21 @@ export class RestfulFormElement extends HTMLElement {
   constructor() {
     super();
     this._state = {};
-    this.addEventListener("submit", (event) => {
+    this.attachShadow({ mode: "open" }).appendChild(
+      RestfulFormElement.template.cloneNode(true)
+    );
+
+    this.form.addEventListener("submit", (event) => {
       event.preventDefault();
       submitForm(
         this.src,
         this._state,
         this.isNew ? "POST" : "PUT"
-      ).then((json) => populateForm(json, this.form));
+      ).then((json) => populateForm(json, this));
     });
     this.addEventListener("restful-form:delete", (event) => {
       event.stopPropagation();
-      deleteResource(this.src, this.form);
+      deleteResource(this.src, this);
     });
     this.addEventListener("change", (event) => {
       console.log("Change event on restful-form", event);
@@ -39,11 +69,10 @@ export class RestfulFormElement extends HTMLElement {
   }
 
   connectedCallback() {
-    this.form.reset();
     if (!this.isNew) {
-      fetchData(this.src, this.form).then((json) => {
+      fetchData(this.src).then((json) => {
         this._state = json;
-        populateForm(json, this.form);
+        populateForm(json, this);
       });
     }
   }
@@ -64,14 +93,13 @@ export function fetchData(src) {
     );
 }
 
-function populateForm(json, form) {
+function populateForm(json, formBody) {
   const entries = Object.entries(json);
 
   for (const [key, val] of entries) {
-    const input =
-      form.elements[key] ||
-      form.querySelector(`[name="${key}"]`);
+    const input = formBody.querySelector(`[name="${key}"]`);
 
+    console.log(`Populating ${key}`, input);
     if (input) {
       switch (input.type) {
         case "checkbox":
