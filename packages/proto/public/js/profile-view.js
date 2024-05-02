@@ -1,4 +1,5 @@
 import { prepareTemplate } from "./template.js";
+import { loadJSON } from "./json-loader.js";
 
 export class ProfileViewElement extends HTMLElement {
   static styles = `
@@ -28,6 +29,11 @@ export class ProfileViewElement extends HTMLElement {
     dd {
       grid-column: value;
     }
+    ::slotted(ul) {
+      list-style: none;
+      display: flex;
+      gap: var(--size-spacing-medium);
+    }
   `;
   static template = prepareTemplate(`
     <template>
@@ -56,6 +62,21 @@ export class ProfileViewElement extends HTMLElement {
       ProfileViewElement.template.cloneNode(true)
     );
   }
+
+  connectedCallback() {
+    const src = this.getAttribute("src");
+    const open = this.hasAttribute("open");
+
+    if (open) loadJSON(src, this, renderSlots);
+  }
+}
+
+function renderSlots(json) {
+  const entries = Object.entries(json);
+  const slot = ([key, value]) =>
+    `<span slot="${key}">${value}</span>`;
+
+  return entries.map(slot).join("\n");
 }
 
 customElements.define("profile-view", ProfileViewElement);
