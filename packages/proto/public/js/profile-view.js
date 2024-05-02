@@ -13,6 +13,9 @@ export class ProfileViewElement extends HTMLElement {
       gap: var(--size-spacing-xlarge);
       align-items: end;
     }
+    restful-form {
+      display: none;
+    }
     dl {
       display: grid;
       grid-column: key / end;
@@ -51,6 +54,43 @@ export class ProfileViewElement extends HTMLElement {
         <dd><slot name="airports"></slot></dd>
       </dl>
     </section>
+    <restful-form>
+      <label>
+        <span>Username</span>
+        <input name="userid" disabled />
+      </label>
+      <label>
+        <span>Name</span>
+        <input name="name" />
+      </label>
+      <label>
+        <span>Nickname</span>
+        <input name="nickname" />
+      </label>
+      <label>
+        <span>Home City</span>
+        <input name="home" />
+      </label>
+      <label>
+        <span>Airports</span>
+        <input-array name="airports">
+          <span slot="label-add">Add an airport</span>
+        </input-array>
+      </label>
+      <label>
+        <span>Color</span>
+        <input type="color" name="color" />
+      </label>
+      <label>
+        <span>Avatar</span>
+        <input name="avatar" />
+      </label>
+      <button
+        slot="delete"
+        onclick="relayEvent(event,'restful-form:delete')"
+        >Delete this Profile</button
+      >
+    </restful-form>
     <style>${ProfileViewElement.styles}</style>
     </template>
     `);

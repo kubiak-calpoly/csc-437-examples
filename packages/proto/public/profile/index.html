@@ -40,47 +40,6 @@
     </header>
     <main>
       <profile-view src="/api/profiles/blaze"> </profile-view>
-      <hr />
-      <restful-form src="/api/profiles/blaze">
-        <label>
-          <span>Username</span>
-          <input name="userid" disabled />
-        </label>
-        <label>
-          <span>Name</span>
-          <input name="name" />
-        </label>
-        <label>
-          <span>Nickname</span>
-          <input name="nickname" />
-        </label>
-        <label>
-          <span>Home City</span>
-          <input name="home" />
-        </label>
-        <label>
-          <span>Airports</span>
-          <input-array name="airports">
-            <span slot="label-add">Add an airport</span>
-          </input-array>
-        </label>
-        <label>
-          <span>Color</span>
-          <input type="color" name="color" />
-        </label>
-        <label>
-          <span>Avatar</span>
-          <input name="avatar" />
-        </label>
-        <button
-          slot="delete"
-          onclick="relayEvent(event,'restful-form:delete')"
-          >Delete this Profile</button
-        >
-      </restful-form>
-      <hr />
-      <json-object open src="/api/profiles/blaze">
-      </json-object>
     </main>
   </body>
 </html>
