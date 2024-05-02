@@ -18,6 +18,9 @@ export class InputArrayElement extends HTMLElement {
       button.add {
         grid-column: input / input-end;
       }
+      ::slotted(label) {
+        display: contents;
+      }
     </style>
     </template>`);
 

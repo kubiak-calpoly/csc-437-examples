@@ -18,6 +18,7 @@ export class RestfulFormElement extends HTMLElement {
           display: grid;
           grid-column: label / end;
           grid-template-columns: subgrid;
+          gap: var(--size-spacing-medium);
         }
         button[type="submit"] {
           grid-column: input;
@@ -30,6 +31,8 @@ export class RestfulFormElement extends HTMLElement {
   get form() {
     return this.shadowRoot.querySelector("form");
   }
+
+  static observedAttributes = ["src", "new"];
 
   get src() {
     return this.getAttribute("src");
@@ -68,11 +71,23 @@ export class RestfulFormElement extends HTMLElement {
   }
 
   connectedCallback() {
-    if (!this.isNew) {
-      fetchData(this.src).then((json) => {
-        this._state = json;
-        populateForm(json, this);
-      });
+    console.log(`ConnectedCallback: src=`, this.src);
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    console.log(
+      `Attribute ${name} changed from ${oldValue} to`,
+      newValue
+    );
+    switch (name) {
+      case "src":
+        if (newValue && newValue !== oldValue && !this.isNew) {
+          fetchData(this.src).then((json) => {
+            this._state = json;
+            populateForm(json, this);
+          });
+        }
+        break;
     }
   }
 }

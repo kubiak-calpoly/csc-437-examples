@@ -15,6 +15,13 @@ export class ProfileViewElement extends HTMLElement {
     }
     restful-form {
       display: none;
+      grid-column: key / end;
+    }
+    restful-form input {
+      grid-column: input;
+    }
+    restful-form[src] {
+      display: block;
     }
     dl {
       display: grid;
@@ -22,6 +29,9 @@ export class ProfileViewElement extends HTMLElement {
       grid-template-columns: subgrid;
       gap: 0 var(--size-spacing-xlarge);
       align-items: baseline;
+    }
+    restful-form[src] + dl {
+      display: none;
     }
     dt {
       grid-column: key;
@@ -43,6 +53,43 @@ export class ProfileViewElement extends HTMLElement {
     <section>
       <slot name="avatar"></slot>
       <h1><slot name="name"></slot></h1>
+      <restful-form>
+        <label>
+          <span>Username</span>
+          <input name="userid" disabled />
+        </label>
+        <label>
+          <span>Name</span>
+          <input name="name" />
+        </label>
+        <label>
+          <span>Nickname</span>
+          <input name="nickname" />
+        </label>
+        <label>
+          <span>Home City</span>
+          <input name="home" />
+        </label>
+        <label>
+          <span>Airports</span>
+          <input-array name="airports">
+            <span slot="label-add">Add an airport</span>
+          </input-array>
+        </label>
+        <label>
+          <span>Color</span>
+          <input type="color" name="color" />
+        </label>
+        <label>
+          <span>Avatar</span>
+          <input name="avatar" />
+        </label>
+        <button
+          slot="delete"
+          onclick="relayEvent(event,'restful-form:delete')"
+          >Delete this Profile</button
+        >
+      </restful-form>
       <dl>
         <dt>Username</dt>
         <dd><slot name="userid"></slot></dd>
@@ -54,43 +101,6 @@ export class ProfileViewElement extends HTMLElement {
         <dd><slot name="airports"></slot></dd>
       </dl>
     </section>
-    <restful-form>
-      <label>
-        <span>Username</span>
-        <input name="userid" disabled />
-      </label>
-      <label>
-        <span>Name</span>
-        <input name="name" />
-      </label>
-      <label>
-        <span>Nickname</span>
-        <input name="nickname" />
-      </label>
-      <label>
-        <span>Home City</span>
-        <input name="home" />
-      </label>
-      <label>
-        <span>Airports</span>
-        <input-array name="airports">
-          <span slot="label-add">Add an airport</span>
-        </input-array>
-      </label>
-      <label>
-        <span>Color</span>
-        <input type="color" name="color" />
-      </label>
-      <label>
-        <span>Avatar</span>
-        <input name="avatar" />
-      </label>
-      <button
-        slot="delete"
-        onclick="relayEvent(event,'restful-form:delete')"
-        >Delete this Profile</button
-      >
-    </restful-form>
     <style>${ProfileViewElement.styles}</style>
     </template>
     `);
@@ -101,12 +111,33 @@ export class ProfileViewElement extends HTMLElement {
     this.attachShadow({ mode: "open" }).appendChild(
       ProfileViewElement.template.cloneNode(true)
     );
+
+    this.addEventListener("profile-view:edit-mode", (event) =>
+      this.setAttribute("mode", "edit")
+    );
+
+    this.addEventListener("profile-view:view-mode", (event) =>
+      this.setAttribute("mode", "view")
+    );
+
+    this.addEventListener("profile-view:new-mode", (event) =>
+      this.setAttribute("mode", "new")
+    );
   }
 
   connectedCallback() {
     const src = this.getAttribute("src");
+    const mode = this.getAttribute("mode") || "view";
 
-    if (src) loadJSON(src, this, renderSlots);
+    if (src) {
+      loadJSON(src, this, renderSlots);
+      if (mode === "edit") {
+        const form =
+          this.shadowRoot.querySelector("restful-form");
+        console.log(`Editing ${src} with`, form);
+        form.setAttribute("src", src);
+      }
+    }
   }
 }
 
@@ -114,7 +145,6 @@ function renderSlots(json) {
   const entries = Object.entries(json);
   const slot = ([key, value]) => {
     let type = typeof value;
-    console.log(`Slot name=${key} of type ${type}`);
 
     if (type === "object") {
       if (Array.isArray(value)) type = "array";
