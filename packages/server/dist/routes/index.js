@@ -26,10 +26,11 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-var profiles_exports = {};
-__export(profiles_exports, {
-  default: () => profiles_default
+var routes_exports = {};
+__export(routes_exports, {
+  default: () => routes_default
 });
+<<<<<<<< HEAD:packages/server/dist/services/profiles.js
 module.exports = __toCommonJS(profiles_exports);
 var import_profile = __toESM(require("../mongo/profile"));
 function index() {
@@ -57,3 +58,28 @@ function update(userid, profile) {
   });
 }
 var profiles_default = { index, get, create, update };
+========
+module.exports = __toCommonJS(routes_exports);
+var import_express = __toESM(require("express"), 1);
+var import_profiles = __toESM(require("../services/profiles"), 1);
+const router = import_express.default.Router();
+router.post("/", (req, res) => {
+  const newProfile = req.body;
+  import_profiles.default.create(newProfile).then((profile) => res.status(201).send(profile)).catch((err) => res.status(500).send(err));
+});
+router.get("/:userid", (req, res) => {
+  const { userid } = req.params;
+  import_profiles.default.get(userid).then((profile) => {
+    if (!profile)
+      throw "Not found";
+    else
+      res.json(profile);
+  }).catch((err) => res.status(404).end());
+});
+router.put("/:userid", (req, res) => {
+  const { userid } = req.params;
+  const newProfile = req.body;
+  import_profiles.default.update(userid, newProfile).then((profile) => res.json(profile)).catch((err) => res.status(404).end());
+});
+var routes_default = router;
+>>>>>>>> mod-4:packages/server/dist/routes/index.js

@@ -26,13 +26,13 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-var mongoConnect_exports = {};
-__export(mongoConnect_exports, {
+var mongo_exports = {};
+__export(mongo_exports, {
   connect: () => connect
 });
-module.exports = __toCommonJS(mongoConnect_exports);
-var import_mongoose = __toESM(require("mongoose"));
+module.exports = __toCommonJS(mongo_exports);
 var import_dotenv = __toESM(require("dotenv"));
+var import_mongoose = __toESM(require("mongoose"));
 import_mongoose.default.set("debug", true);
 import_dotenv.default.config();
 function getMongoURI(dbname) {

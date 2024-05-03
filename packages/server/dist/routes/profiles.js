@@ -32,6 +32,7 @@ __export(profiles_exports, {
 });
 module.exports = __toCommonJS(profiles_exports);
 var import_express = __toESM(require("express"));
+<<<<<<< HEAD:packages/express-backend/dist/routes/profiles.js
 var import_profiles = __toESM(require("../services/profiles"));
 const router = import_express.default.Router();
 router.post("/", (req, res) => {
@@ -51,5 +52,19 @@ router.put("/:userid", (req, res) => {
   const { userid } = req.params;
   const newProfile = req.body;
   import_profiles.default.update(userid, newProfile).then((profile) => res.json(profile)).catch((err) => res.status(404).end());
+=======
+var import_profile_svc = __toESM(require("../services/profile-svc"));
+const router = import_express.default.Router();
+router.get("/", (req, res) => {
+  import_profile_svc.default.index().then((list) => res.json(list)).catch((err) => res.status(500).send(err));
+});
+router.get("/:userid", (req, res) => {
+  const { userid } = req.params;
+  import_profile_svc.default.get(userid).then((profile) => res.json(profile)).catch((err) => res.status(404).send(err));
+});
+router.post("/", (req, res) => {
+  const newProfile = req.body;
+  import_profile_svc.default.create(newProfile).then((profile) => res.status(201).send(profile)).catch((err) => res.status(500).send(err));
+>>>>>>> mod-4:packages/server/dist/routes/profiles.js
 });
 var profiles_default = router;

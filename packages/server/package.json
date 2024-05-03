@@ -1,0 +1,25 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "cross-env STATIC=../proto/public nodemon",
+    "build": "npx etsc",
+    "start": "npm run build && npm run start:node",
+    "start:node": "node dist/index.js",
+    "start:proto": "cross-env STATIC=../proto/public npm run start",
+    "check": "tsc --noEmit"
+  },
+  "keywords": [
+    "express",
+    "backend"
+  ],
+  "author": "kubiak@calpoly.edu",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "cross-env": "^7.0.3",
+    "express": "^4.19.2",
+    "proto": "^1.0.0"
+  }
+}

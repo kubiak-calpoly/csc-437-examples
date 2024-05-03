@@ -22,6 +22,7 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 var import_express = __toESM(require("express"));
+<<<<<<< HEAD:packages/express-backend/dist/index.js
 var path = __toESM(require("path"));
 var import_promises = __toESM(require("node:fs/promises"));
 var import_mongoConnect = require("./mongoConnect");
@@ -60,6 +61,22 @@ app.use("/stats", (req, res) => {
       <dl><dt>Working Directory</dt><dd>${cwd}</dd>
       <dt>Frontend dist</dt><dd>${dist}</dd>
       <dt>HTML served</dt><dd>${indexHtml}</dd></dl>
+=======
+var import_profiles = __toESM(require("./routes/profiles"));
+var import_mongo = require("./services/mongo");
+(0, import_mongo.connect)("blazing");
+const app = (0, import_express.default)();
+const port = process.env.PORT || 3e3;
+const staticDir = process.env.STATIC || "public";
+app.use(import_express.default.static(staticDir));
+app.use(import_express.default.json());
+app.use("/api/profiles", import_profiles.default);
+app.get("/hello", (_, res) => {
+  res.send(
+    `<h1>Hello!</h1>
+     <p>Server is up and running.</p>
+     <p>Serving static files from <code>${staticDir}</code>.</p>
+>>>>>>> mod-4:packages/server/dist/index.js
     `
   );
 });
