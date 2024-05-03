@@ -1,8 +1,34 @@
 import { prepareTemplate } from "./template.js";
 
 export class RestfulFormElement extends HTMLElement {
+  static template = prepareTemplate(`
+    <template>
+      <form autocomplete="off">
+        <slot></slot>
+        <slot><button type="submit">Submit</button></slot>
+      </form>
+      <slot name="delete"></slot>
+      <style>
+        form {
+          display: grid;
+          gap: var(--size-spacing-medium);
+          grid-template-columns: [start] 1fr [label] 1fr [input] 3fr 1fr [end];
+        }
+        ::slotted(label) {
+          display: grid;
+          grid-column: label / end;
+          grid-template-columns: subgrid;
+        }
+        button[type="submit"] {
+          grid-column: input;
+          justify-self: start;
+        }
+      </style>
+    </template>
+  `);
+
   get form() {
-    return this.querySelector("form");
+    return this.shadowRoot.querySelector("form");
   }
 
   get src() {
@@ -15,66 +41,82 @@ export class RestfulFormElement extends HTMLElement {
 
   constructor() {
     super();
-    this.addEventListener("submit", (event) => {
+    this._state = {};
+    this.attachShadow({ mode: "open" }).appendChild(
+      RestfulFormElement.template.cloneNode(true)
+    );
+
+    this.form.addEventListener("submit", (event) => {
       event.preventDefault();
       submitForm(
         this.src,
-        this.form,
+        this._state,
         this.isNew ? "POST" : "PUT"
-      );
+      ).then((json) => populateForm(json, this));
     });
     this.addEventListener("restful-form:delete", (event) => {
       event.stopPropagation();
-      deleteResource(this.src, this.form);
+      deleteResource(this.src, this);
+    });
+    this.addEventListener("change", (event) => {
+      console.log("Change event on restful-form", event);
+      const target = event.target;
+      const name = target.name;
+      const value = target.value;
+
+      if (name) this._state[name] = value;
     });
   }
 
   connectedCallback() {
-    this.form.reset();
-    if (!this.isNew) loadForm(this.src, this.form);
+    if (!this.isNew) {
+      fetchData(this.src).then((json) => {
+        this._state = json;
+        populateForm(json, this);
+      });
+    }
   }
 }
 
 customElements.define("restful-form", RestfulFormElement);
 
-export function loadForm(src, form) {
-  fetch(src)
+export function fetchData(src) {
+  return fetch(src)
     .then((response) => {
       if (response.status !== 200) {
         throw `Status: ${response.status}`;
       }
       return response.json();
     })
-    .then((json) => populateForm(json, form))
     .catch((error) =>
       console.log(`Failed to load form from ${src}:`, error)
     );
 }
 
-function populateForm(json, form) {
+function populateForm(json, formBody) {
   const entries = Object.entries(json);
 
   for (const [key, val] of entries) {
-    const input = form.elements[key];
+    const input = formBody.querySelector(`[name="${key}"]`);
 
+    console.log(`Populating ${key}`, input);
     if (input) {
       switch (input.type) {
         case "checkbox":
           input.checked = Boolean(value);
           break;
         default:
-          input.value = val.toString();
+          input.value = val;
           break;
       }
     }
   }
+
+  return json;
 }
 
-function submitForm(src, form, method = "PUT") {
-  const formData = new FormData(form);
-  const json = Object.fromEntries(formData);
-
-  fetch(src, {
+function submitForm(src, json, method = "PUT") {
+  return fetch(src, {
     method,
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(json)
@@ -84,7 +126,6 @@ function submitForm(src, form, method = "PUT") {
         throw `Form submission failed: Status ${res.status}`;
       return res.json();
     })
-    .then((json) => populateForm(json, form))
     .catch((err) => console.log("Error submitting form:", err));
 }
 

@@ -16,9 +16,10 @@
     <link rel="stylesheet" href="/styles/tokens.css" />
     <link rel="stylesheet" href="/styles/page.css" />
     <link rel="stylesheet" href="/styles/form.css" />
-    <script type="module" src="/js/profile-view.js"></script>
     <script type="module" src="/js/json-loader.js"></script>
     <script type="module" src="/js/restful-form.js"></script>
+    <script type="module" src="/js/input-array.js"></script>
+    <script type="module" src="/js/profile-view.js"></script>
     <script type="module">
       import { relayEvent } from "/js/relay-event.js";
       window.relayEvent = relayEvent;
@@ -53,44 +54,44 @@
           color="#8a81be"
           src="/images/avatars/Blaze Pasquale.png">
         </profile-avatar>
-        <restful-form slot="form" src="/api/profiles/blaze">
-          <form autocomplete="off">
-            <label>
-              <span>Username</span>
-              <input name="userid" />
-            </label>
-            <label>
-              <span>Name</span>
-              <input name="name" />
-            </label>
-            <label>
-              <span>Nickname</span>
-              <input name="nickname" />
-            </label>
-            <label>
-              <span>Home City</span>
-              <input name="home" />
-            </label>
-            <label>
-              <span>Airports</span>
-              <input name="airports" />
-            </label>
-            <label>
-              <span>Color</span>
-              <input name="color" />
-            </label>
-            <label>
-              <span>Avatar</span>
-              <input name="avatar" />
-            </label>
-            <button type="submit">Submit</button>
-          </form>
-          <button
-            onclick="relayEvent(event,'restful-form:delete')"
-            >Delete this Profile</button
-          >
-        </restful-form>
       </profile-view>
+      <restful-form slot="form" src="/api/profiles/blaze">
+        <label>
+          <span>Username</span>
+          <input name="userid" disabled />
+        </label>
+        <label>
+          <span>Name</span>
+          <input name="name" />
+        </label>
+        <label>
+          <span>Nickname</span>
+          <input name="nickname" />
+        </label>
+        <label>
+          <span>Home City</span>
+          <input name="home" />
+        </label>
+        <label>
+          <span>Airports</span>
+          <input-array name="airports">
+            <span slot="label-add">Add an airport</span>
+          </input-array>
+        </label>
+        <label>
+          <span>Color</span>
+          <input type="color" name="color" />
+        </label>
+        <label>
+          <span>Avatar</span>
+          <input name="avatar" />
+        </label>
+        <button
+          slot="delete"
+          onclick="relayEvent(event,'restful-form:delete')"
+          >Delete this Profile</button
+        >
+      </restful-form>
       <json-object src="/api/profiles/blaze">
         <a
           href="#"
