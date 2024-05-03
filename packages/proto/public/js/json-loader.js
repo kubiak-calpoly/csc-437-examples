@@ -36,10 +36,10 @@ export class JsonObjectElement extends HTMLElement {
     const src = this.getAttribute("src");
     const open = this.hasAttribute("open");
 
-    if (open) loadJSON(src, this, renderJSON);
+    if (open) loadJSON(src, this, renderAssignments);
 
     this.addEventListener("json-object:open", () =>
-      loadJSON(src, this, renderJSON)
+      loadJSON(src, this, renderAssignments)
     );
   }
 }
@@ -58,17 +58,16 @@ export function loadJSON(src, container, render) {
     .then((json) => addFragment(render(json), container))
     .catch((error) =>
       addFragment(
-        `<dt class="error">Error</dt>
-         <dd>${error}</dd>
-         <dt>While Loading</dt>
-         <dd>${src}</dd>
-        `,
+        render({
+          Error: error,
+          "While Loading": src
+        }),
         container
       )
     );
 }
 
-function renderJSON(json) {
+function renderAssignments(json) {
   const entries = Object.entries(json);
   const dtdd = ([key, value]) => `
     <dt>${key}</dt>
