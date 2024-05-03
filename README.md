@@ -32,3 +32,5 @@ progress:
   Adding Interactions with Javascript
 - [Module 4](https://github.com/kubiak-calpoly/csc-437-examples/tree/mod-4):
   MVC Architecture
+- [Module 5](https://github.com/kubiak-calpoly/csc-437-examples/tree/mod-5):
+  Client-Server Communication with REST
