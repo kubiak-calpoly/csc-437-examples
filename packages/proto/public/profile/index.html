@@ -24,6 +24,18 @@
       import { relayEvent } from "/js/relay-event.js";
       window.relayEvent = relayEvent;
     </script>
+    <script type="module">
+      function toggleDarkMode(page, checked) {
+        page.classList.toggle("dark-mode", checked);
+      }
+
+      document.body.addEventListener("dark-mode", (event) =>
+        toggleDarkMode(
+          event.currentTarget,
+          event.detail.checked
+        )
+      );
+    </script>
   </head>
   <body class="page">
     <header>

@@ -5,7 +5,7 @@ import profiles from "../services/profile-svc";
 
 const router = express.Router();
 
-router.get("/", (req: Request, res: Response) => {
+router.get("/", (_, res: Response) => {
   profiles
     .index()
     .then((list: Profile[]) => res.json(list))

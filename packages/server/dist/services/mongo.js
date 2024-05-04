@@ -26,46 +26,6 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-<<<<<<<< HEAD:packages/express-backend/dist/services/tours.js
-var tours_exports = {};
-__export(tours_exports, {
-  default: () => tours_default
-});
-module.exports = __toCommonJS(tours_exports);
-var import_tour = __toESM(require("../mongo/tour"));
-function index() {
-  return import_tour.default.find();
-}
-function get(id) {
-  return import_tour.default.findById(id).populate({
-    path: "entourage",
-    populate: {
-      path: "people"
-    }
-  }).then((doc) => {
-    return doc;
-  }).catch((err) => {
-    throw `${id} Not Found`;
-  });
-}
-function create(profile) {
-  const p = new import_tour.default(profile);
-  return p.save();
-}
-function update(id, tour) {
-  return new Promise((resolve, reject) => {
-    import_tour.default.findByIdAndUpdate(id, tour, {
-      new: true
-    }).then((doc) => {
-      if (doc)
-        resolve(doc);
-      else
-        reject("Failed to update tour");
-    });
-  });
-}
-var tours_default = { index, get, create, update };
-========
 var mongo_exports = {};
 __export(mongo_exports, {
   connect: () => connect
@@ -96,4 +56,3 @@ function connect(dbname) {
 0 && (module.exports = {
   connect
 });
->>>>>>>> mod-6-cleanup:packages/server/dist/services/mongo.js
