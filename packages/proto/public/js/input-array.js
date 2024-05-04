@@ -49,11 +49,11 @@ export class InputArrayElement extends HTMLElement {
       this.removeClosestItem(event.target);
     });
     this.addEventListener("change", (event) => {
-      event.stopPropagation();
       console.log("Change event:", event);
       const target = event.target;
 
       if (target !== this) {
+        event.stopPropagation();
         const newEvent = new Event("change", { bubbles: true });
         const value = target.value;
         const item = target.closest("label");
