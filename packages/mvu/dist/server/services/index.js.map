@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../../../src/server/services/index.ts"],
-  "sourcesContent": ["export { connect } from \"./connect\";\nexport * as profile_service from \"./profile_service\";\nexport * as tour_service from \"./tour_service\";\nexport * as credential_service from \"./credential_service\";\n"],
-  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA,qBAAwB;AACxB,sBAAiC;AACjC,mBAA8B;AAC9B,yBAAoC;",
-  "names": []
-}
