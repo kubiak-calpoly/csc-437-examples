@@ -18,8 +18,14 @@
   "author": "kubiak@calpoly.edu",
   "license": "BSD-3-Clause",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "cross-env": "^7.0.3",
     "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
     "proto": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/jsonwebtoken": "^9.0.6"
   }
 }

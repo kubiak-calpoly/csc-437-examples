@@ -22,26 +22,7 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 var import_express = __toESM(require("express"));
-<<<<<<< HEAD:packages/express-backend/dist/index.js
-var path = __toESM(require("path"));
-var import_cors = __toESM(require("cors"));
-var import_mongoConnect = require("./mongoConnect");
-var import_auth = require("./auth");
-var import_api = __toESM(require("./routes/api"));
-const app = (0, import_express.default)();
-const port = process.env.PORT || 3e3;
-const frontend = require.resolve("lit-frontend");
-const dist = path.resolve(frontend, "..", "..");
-console.log("Serving lit-frontend from", dist);
-(0, import_mongoConnect.connect)("blazing");
-app.use(import_express.default.static(dist));
-app.use(import_express.default.json({ limit: "500kb" }));
-app.use((0, import_cors.default)());
-app.options("*", (0, import_cors.default)());
-app.post("/login", import_auth.loginUser);
-app.post("/signup", import_auth.registerUser);
-app.use("/api", import_api.default);
-=======
+var import_auth = __toESM(require("./routes/auth"));
 var import_profiles = __toESM(require("./routes/profiles"));
 var import_mongo = require("./services/mongo");
 (0, import_mongo.connect)("blazing");
@@ -50,6 +31,7 @@ const port = process.env.PORT || 3e3;
 const staticDir = process.env.STATIC || "public";
 app.use(import_express.default.static(staticDir));
 app.use(import_express.default.json());
+app.use("/auth", import_auth.default);
 app.use("/api/profiles", import_profiles.default);
 app.get("/hello", (_, res) => {
   res.send(
@@ -59,7 +41,6 @@ app.get("/hello", (_, res) => {
     `
   );
 });
->>>>>>> mod-5:packages/server/dist/index.js
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });

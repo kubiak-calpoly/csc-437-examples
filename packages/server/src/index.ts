@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express";
+import auth from "./routes/auth";
 import profiles from "./routes/profiles";
 import { connect } from "./services/mongo";
 
@@ -12,6 +13,9 @@ const staticDir = process.env.STATIC || "public";
 // Middleware:
 app.use(express.static(staticDir));
 app.use(express.json());
+
+// Auth routes
+app.use("/auth", auth);
 
 // API Routes:
 app.use("/api/profiles", profiles);

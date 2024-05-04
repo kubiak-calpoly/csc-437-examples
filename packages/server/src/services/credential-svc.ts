@@ -1,12 +1,32 @@
 import bcrypt from "bcryptjs";
-import credentialModel from "../models/mongo/credential";
+import { Schema, model } from "mongoose";
 import { Credential } from "../models/credential";
+
+const credentialSchema = new Schema<Credential>(
+  {
+    username: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    hashedPassword: {
+      type: String,
+      required: true
+    }
+  },
+  { collection: "user_credentials" }
+);
+
+const credentialModel = model<Credential>(
+  "Credential ",
+  credentialSchema
+);
 
 export function verify(
   username: string,
   password: string
-): Promise<String> {
-  return new Promise<String>((resolve, reject) => {
+): Promise<string> {
+  return new Promise<string>((resolve, reject) => {
     credentialModel
       .find({ username })
       .then((found) => {
@@ -68,4 +88,4 @@ export function create(username: string, password: string) {
   });
 }
 
-export default { checkExists, create, verify };
+export default { create, verify };

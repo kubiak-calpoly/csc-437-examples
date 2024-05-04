@@ -1,22 +1,37 @@
+import dotenv from "dotenv";
+import express, {
+  NextFunction,
+  Request,
+  Response
+} from "express";
 import jwt from "jsonwebtoken";
-import credentials from "./services/credentials";
 
-function generateAccessToken(username: string) {
+import credentials from "../services/credential-svc";
+
+const router = express.Router();
+
+dotenv.config();
+const TOKEN_SECRET: string =
+  process.env.TOKEN_SECRET || "NOT_A_SECRET";
+
+function generateAccessToken(
+  username: string
+): Promise<String> {
   console.log("Generating token for", username);
   return new Promise((resolve, reject) => {
     jwt.sign(
       { username: username },
-      process.env.TOKEN_SECRET,
+      TOKEN_SECRET,
       { expiresIn: "1d" },
       (error, token) => {
         if (error) reject(error);
-        else resolve(token);
+        else resolve(token as string);
       }
     );
   });
 }
 
-export function registerUser(req, res) {
+router.post("/register", (req: Request, res: Response) => {
   const { username, pwd } = req.body; // from form
 
   if (!username || !pwd) {
@@ -29,9 +44,9 @@ export function registerUser(req, res) {
         res.status(201).send({ token: token });
       });
   }
-}
+});
 
-export function loginUser(req, res) {
+router.post("/login", (req: Request, res: Response) => {
   const { username, pwd } = req.body; // from form
 
   if (!username || !pwd) {
@@ -43,9 +58,13 @@ export function loginUser(req, res) {
       .then((token) => res.status(200).send({ token: token }))
       .catch((error) => res.status(401).send("Unauthorized"));
   }
-}
+});
 
-export function authenticateUser(req, res, next) {
+export function authenticateUser(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   const authHeader = req.headers["authorization"];
   //Getting the 2nd part of the auth header (the token)
   const token = authHeader && authHeader.split(" ")[1];
@@ -53,17 +72,15 @@ export function authenticateUser(req, res, next) {
   if (!token) {
     res.status(401).end();
   } else {
-    jwt.verify(
-      token,
-      process.env.TOKEN_SECRET,
-      (error, decoded) => {
-        if (decoded) {
-          console.log("Decoded token", decoded);
-          next();
-        } else {
-          res.status(401).end();
-        }
+    jwt.verify(token, TOKEN_SECRET, (error, decoded) => {
+      if (decoded) {
+        console.log("Decoded token", decoded);
+        next();
+      } else {
+        res.status(401).end();
       }
-    );
+    });
   }
 }
+
+export default router;

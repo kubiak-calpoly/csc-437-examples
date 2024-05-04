@@ -31,58 +31,6 @@ __export(profiles_exports, {
   default: () => profiles_default
 });
 module.exports = __toCommonJS(profiles_exports);
-<<<<<<< HEAD:packages/express-backend/dist/routes/profiles.js
-var import_express = __toESM(require("express"));
-var import_profiles = __toESM(require("../services/profiles"));
-const router = import_express.default.Router();
-router.post("/", (req, res) => {
-  const newProfile = req.body;
-  import_profiles.default.create(newProfile).then((profile) => res.status(201).send(profile)).catch((err) => res.status(500).send(err));
-});
-router.get("/:userid", (req, res) => {
-  const { userid } = req.params;
-  import_profiles.default.get(userid).then((profile) => {
-    if (!profile)
-      throw "Not found";
-    else
-      res.json(profile);
-  }).catch((err) => res.status(404).end());
-});
-router.put("/:userid", (req, res) => {
-  const { userid } = req.params;
-  const newProfile = req.body;
-  import_profiles.default.update(userid, newProfile).then((profile) => res.json(profile)).catch((err) => res.status(404).end());
-});
-var profiles_default = router;
-=======
-<<<<<<<< HEAD:packages/express-backend/dist/profiles.js
-var import_profile = __toESM(require("./models/mongo/profile"));
-function index() {
-  return import_profile.default.find();
-}
-function get(userid) {
-  return import_profile.default.find({ userid }).then((list) => list[0]).catch((err) => {
-    throw `${userid} Not Found`;
-  });
-}
-function create(profile) {
-  const p = new import_profile.default(profile);
-  return p.save();
-}
-function update(userid, profile) {
-  return new Promise((resolve, reject) => {
-    import_profile.default.findOneAndUpdate({ userid }, profile, {
-      new: true
-    }).then((profile2) => {
-      if (profile2)
-        resolve(profile2);
-      else
-        reject("Failed to update profile");
-    });
-  });
-}
-var profiles_default = { index, get, create, update };
-========
 var import_express = __toESM(require("express"));
 var import_profile_svc = __toESM(require("../services/profile-svc"));
 const router = import_express.default.Router();
@@ -107,5 +55,3 @@ router.delete("/:userid", (req, res) => {
   import_profile_svc.default.remove(userid).then(() => res.status(204).end()).catch((err) => res.status(404).send(err));
 });
 var profiles_default = router;
->>>>>>>> mod-5:packages/server/dist/routes/profiles.js
->>>>>>> mod-5:packages/server/dist/routes/profiles.js
