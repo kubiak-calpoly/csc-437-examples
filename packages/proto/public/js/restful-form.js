@@ -1,4 +1,5 @@
 import { prepareTemplate } from "./template.js";
+import { Auth, Observer } from "@calpoly/mustang";
 
 export class RestfulFormElement extends HTMLElement {
   static observedAttributes = ["src", "new"];
@@ -58,7 +59,7 @@ export class RestfulFormElement extends HTMLElement {
         ? this.src.replace(/[/][$]new$/, "")
         : this.src;
 
-      submitForm(src, this._state, method)
+      submitForm(src, this._state, method, this.authorization)
         .then((json) => populateForm(json, this))
         .then((json) => {
           const customType = `restful-form:${action}`;
@@ -85,8 +86,33 @@ export class RestfulFormElement extends HTMLElement {
     });
   }
 
+  _authObserver = new Observer(this, "blazing:auth");
+
+  get authorization() {
+    console.log("Authorization for user, ", this._user);
+    return (
+      this._user?.authenticated && {
+        Authorization: `Bearer ${this._user.token}`
+      }
+    );
+  }
+
   connectedCallback() {
-    console.log(`ConnectedCallback: src=`, this.src);
+    this._authObserver.observe().then((obs) => {
+      obs.setEffect(({ user }) => {
+        console.log("Setting user as effect of change", user);
+        this._user = user;
+        if (this.src) {
+          console.log("LOading JSON", this.authorization);
+          loadJSON(
+            this.src,
+            this,
+            renderSlots,
+            this.authorization
+          );
+        }
+      });
+    });
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
@@ -97,10 +123,12 @@ export class RestfulFormElement extends HTMLElement {
     switch (name) {
       case "src":
         if (newValue && newValue !== oldValue && !this.isNew) {
-          fetchData(this.src).then((json) => {
-            this._state = json;
-            populateForm(json, this);
-          });
+          fetchData(this.src, this.authorization).then(
+            (json) => {
+              this._state = json;
+              populateForm(json, this);
+            }
+          );
         }
         break;
       case "new":
@@ -116,8 +144,8 @@ export class RestfulFormElement extends HTMLElement {
 
 customElements.define("restful-form", RestfulFormElement);
 
-export function fetchData(src) {
-  return fetch(src)
+export function fetchData(src, authorization) {
+  return fetch(src, { headers: authorization })
     .then((response) => {
       if (response.status !== 200) {
         throw `Status: ${response.status}`;
@@ -151,10 +179,18 @@ function populateForm(json, formBody) {
   return json;
 }
 
-function submitForm(src, json, method = "PUT") {
+function submitForm(
+  src,
+  json,
+  method = "PUT",
+  authorization = {}
+) {
   return fetch(src, {
     method,
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      ...authorization
+    },
     body: JSON.stringify(json)
   })
     .then((res) => {

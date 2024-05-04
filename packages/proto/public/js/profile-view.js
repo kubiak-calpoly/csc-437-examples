@@ -185,15 +185,6 @@ export class ProfileViewElement extends HTMLElement {
     return this.shadowRoot.querySelector("restful-form");
   }
 
-  get authorization() {
-    console.log("Authorization for user, ", this._user);
-    return (
-      this._user?.authenticated && {
-        Authorization: `Bearer ${this._user.token}`
-      }
-    );
-  }
-
   constructor() {
     super();
 
@@ -240,6 +231,15 @@ export class ProfileViewElement extends HTMLElement {
   }
 
   _authObserver = new Observer(this, "blazing:auth");
+
+  get authorization() {
+    console.log("Authorization for user, ", this._user);
+    return (
+      this._user?.authenticated && {
+        Authorization: `Bearer ${this._user.token}`
+      }
+    );
+  }
 
   connectedCallback() {
     this._authObserver.observe().then((obs) => {
