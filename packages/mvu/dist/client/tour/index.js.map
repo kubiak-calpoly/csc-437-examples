@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../../../src/client/tour/index.ts"],
-  "sourcesContent": ["export { TourPage } from \"./tour-page\";\n"],
-  "mappings": ";;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA,uBAAyB;",
-  "names": []
-}

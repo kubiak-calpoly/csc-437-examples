@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../../../src/client/tour/tour-router.ts"],
-  "sourcesContent": ["import { LitElement, html } from \"lit\";\nimport { outlet } from \"lit-element-router\";\nimport {\n  customElement,\n  property,\n  state\n} from \"lit/decorators.js\";\n\n@outlet\n@customElement(\"tour-router\")\nclass TourRouter extends LitElement {\n  render() {\n    return html` <slot></slot> `;\n  }\n}\n"],
-  "mappings": ";;;;;;;;;;;;AAAA,iBAAiC;AACjC,gCAAuB;AACvB,wBAIO;AAIP,IAAM,aAAN,cAAyB,sBAAW;AAAA,EAClC,SAAS;AACP,WAAO;AAAA,EACT;AACF;AAJM,aAAN;AAAA,EAFC;AAAA,MACA,iCAAc,aAAa;AAAA,GACtB;",
-  "names": []
-}

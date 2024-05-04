@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../../../src/client/tour/tour-link.ts"],
-  "sourcesContent": ["import { html, LitElement } from \"lit\";\nimport { navigator } from \"lit-element-router\";\nimport { customElement, property } from \"lit/decorators.js\";\n\n@navigator\nclass TourLink extends LitElement {\n  @property()\n  href = \"#\";\n\n  render() {\n    return html`\n      <a href=\"${this.href}\" @click=\"${this.linkClick}\">\n        <slot></slot>\n      </a>\n    `;\n  }\n\n  navigate(href: string) {\n    window.history.pushState({}, \"\", href);\n    window.dispatchEvent(new CustomEvent(\"route\"));\n  }\n\n  linkClick(event: MouseEvent) {\n    event.preventDefault();\n    this.navigate(this.href);\n  }\n}\n\ncustomElements.define(\"tour-link\", TourLink);\n"],
-  "mappings": ";;;;;;;;;;;;AAAA,iBAAiC;AACjC,gCAA0B;AAC1B,wBAAwC;AAGxC,IAAM,WAAN,cAAuB,sBAAW;AAAA,EAAlC;AAAA;AAEE,gBAAO;AAAA;AAAA,EAEP,SAAS;AACP,WAAO;AAAA,iBACM,KAAK,IAAI,aAAa,KAAK,SAAS;AAAA;AAAA;AAAA;AAAA,EAInD;AAAA,EAEA,SAAS,MAAc;AACrB,WAAO,QAAQ,UAAU,CAAC,GAAG,IAAI,IAAI;AACrC,WAAO,cAAc,IAAI,YAAY,OAAO,CAAC;AAAA,EAC/C;AAAA,EAEA,UAAU,OAAmB;AAC3B,UAAM,eAAe;AACrB,SAAK,SAAS,KAAK,IAAI;AAAA,EACzB;AACF;AAnBE;AAAA,MADC,4BAAS;AAAA,GADN,SAEJ;AAFI,WAAN;AAAA,EADC;AAAA,GACK;AAuBN,eAAe,OAAO,aAAa,QAAQ;",
-  "names": []
-}

@@ -1,4 +1,0 @@
-<header>
-  <h1>Blazing Travels</h1>
-  <p><%= it.name %></p>
-</header>

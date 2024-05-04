@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../../../src/server/api/profiles.ts"],
-  "sourcesContent": ["import { Request, Response, Router } from \"express\";\nimport { Profile } from \"../../models/Profile\";\nimport { profile_service } from \"../services\";\n\nconst api = Router();\n\napi.post(\"/\", (req: Request, res: Response) => {\n  console.log(\"Received a profile:\", req.body);\n  profile_service\n    .create(req.body as Profile)\n    .then((profile) => res.status(201).send(profile))\n    .catch((error) => res.status(400).send({ error }));\n});\n\nexport default api;\n"],
-  "mappings": ";;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA,qBAA0C;AAE1C,sBAAgC;AAEhC,MAAM,UAAM,uBAAO;AAEnB,IAAI,KAAK,KAAK,CAAC,KAAc,QAAkB;AAC7C,UAAQ,IAAI,uBAAuB,IAAI,IAAI;AAC3C,kCACG,OAAO,IAAI,IAAe,EAC1B,KAAK,CAAC,YAAY,IAAI,OAAO,GAAG,EAAE,KAAK,OAAO,CAAC,EAC/C,MAAM,CAAC,UAAU,IAAI,OAAO,GAAG,EAAE,KAAK,EAAE,MAAM,CAAC,CAAC;AACrD,CAAC;AAED,IAAO,mBAAQ;",
-  "names": []
-}
