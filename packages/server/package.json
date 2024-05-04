@@ -20,13 +20,18 @@
   "dependencies": {
     "@calpoly/mustang": "^0.0.0",
     "bcrypt": "^5.1.1",
-    "cross-env": "^7.0.3",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "proto": "^1.0.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
-    "@types/jsonwebtoken": "^9.0.6"
+    "cross-env": "^7.0.3",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/node": "^20.11.7",
+    "esbuild": "^0.20.0",
+    "esbuild-node-tsc": "^2.0.5",
+    "nodemon": "^3.0.2",
+    "typescript": "^5.3.3"
   }
 }
