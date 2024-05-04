@@ -66,10 +66,12 @@ export class RestfulFormElement extends HTMLElement {
             bubbles: true,
             composed: true,
             detail: {
+              method,
               [action]: json,
               url: src
             }
           });
+          console.log("Dispatching event:", event);
           this.dispatchEvent(event);
         });
     });

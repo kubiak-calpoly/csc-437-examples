@@ -35,6 +35,7 @@ var import_dotenv = __toESM(require("dotenv"));
 var import_mongoose = __toESM(require("mongoose"));
 import_mongoose.default.set("debug", true);
 import_dotenv.default.config();
+console.log("Env:", process.env);
 function getMongoURI(dbname) {
   let connection_string = `mongodb://localhost:27017/${dbname}`;
   const { MONGO_USER, MONGO_PWD, MONGO_CLUSTER } = process.env;

@@ -1,4 +1,4 @@
-export * from "./auth";
+export * as Auth from "./auth";
 export * from "./define";
 // export * from "./history";
 // export * from "./message";

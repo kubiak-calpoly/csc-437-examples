@@ -28,10 +28,7 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var credential_svc_exports = {};
 __export(credential_svc_exports, {
-  checkExists: () => checkExists,
-  create: () => create,
-  default: () => credential_svc_default,
-  verify: () => verify
+  default: () => credential_svc_default
 });
 module.exports = __toCommonJS(credential_svc_exports);
 var import_bcryptjs = __toESM(require("bcryptjs"));
@@ -46,7 +43,13 @@ const credentialSchema = new import_mongoose.Schema(
     hashedPassword: {
       type: String,
       required: true
-    }
+    },
+    roles: [
+      {
+        $role: { type: String, required: true },
+        groupid: String
+      }
+    ]
   },
   { collection: "user_credentials" }
 );
@@ -94,6 +97,7 @@ function create(username, password) {
       reject("must provide username and password");
     }
     credentialModel.find({ username }).then((found) => {
+      console.log(`"${username} already exists"`);
       if (found.length)
         reject("username exists");
     }).then(
@@ -111,9 +115,3 @@ function create(username, password) {
   });
 }
 var credential_svc_default = { create, verify };
-// Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  checkExists,
-  create,
-  verify
-});

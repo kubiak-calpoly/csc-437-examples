@@ -56,21 +56,21 @@ function generateAccessToken(username) {
   });
 }
 router.post("/register", (req, res) => {
-  const { username, pwd } = req.body;
-  if (!username || !pwd) {
+  const { username, password } = req.body;
+  if (!username || !password) {
     res.status(400).send("Bad request: Invalid input data.");
   } else {
-    import_credential_svc.default.create(username, pwd).then((creds) => generateAccessToken(creds.username)).then((token) => {
+    import_credential_svc.default.create(username, password).then((creds) => generateAccessToken(creds.username)).then((token) => {
       res.status(201).send({ token });
     });
   }
 });
 router.post("/login", (req, res) => {
-  const { username, pwd } = req.body;
-  if (!username || !pwd) {
+  const { username, password } = req.body;
+  if (!username || !password) {
     res.status(400).send("Bad request: Invalid input data.");
   } else {
-    import_credential_svc.default.verify(username, pwd).then((goodUser) => generateAccessToken(goodUser)).then((token) => res.status(200).send({ token })).catch((error) => res.status(401).send("Unauthorized"));
+    import_credential_svc.default.verify(username, password).then((goodUser) => generateAccessToken(goodUser)).then((token) => res.status(200).send({ token })).catch((error) => res.status(401).send("Unauthorized"));
   }
 });
 function authenticateUser(req, res, next) {

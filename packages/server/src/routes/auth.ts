@@ -32,13 +32,13 @@ function generateAccessToken(
 }
 
 router.post("/register", (req: Request, res: Response) => {
-  const { username, pwd } = req.body; // from form
+  const { username, password } = req.body; // from form
 
-  if (!username || !pwd) {
+  if (!username || !password) {
     res.status(400).send("Bad request: Invalid input data.");
   } else {
     credentials
-      .create(username, pwd)
+      .create(username, password)
       .then((creds) => generateAccessToken(creds.username))
       .then((token) => {
         res.status(201).send({ token: token });
@@ -47,13 +47,13 @@ router.post("/register", (req: Request, res: Response) => {
 });
 
 router.post("/login", (req: Request, res: Response) => {
-  const { username, pwd } = req.body; // from form
+  const { username, password } = req.body; // from form
 
-  if (!username || !pwd) {
+  if (!username || !password) {
     res.status(400).send("Bad request: Invalid input data.");
   } else {
     credentials
-      .verify(username, pwd)
+      .verify(username, password)
       .then((goodUser: string) => generateAccessToken(goodUser))
       .then((token) => res.status(200).send({ token: token }))
       .catch((error) => res.status(401).send("Unauthorized"));

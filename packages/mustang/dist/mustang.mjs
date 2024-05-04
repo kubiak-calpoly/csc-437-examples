@@ -1,256 +1,261 @@
-class c extends Error {
+class InvalidTokenError extends Error {
 }
-c.prototype.name = "InvalidTokenError";
-function y(n) {
-  return decodeURIComponent(atob(n).replace(/(.)/g, (t, e) => {
-    let s = e.charCodeAt(0).toString(16).toUpperCase();
-    return s.length < 2 && (s = "0" + s), "%" + s;
+InvalidTokenError.prototype.name = "InvalidTokenError";
+function b64DecodeUnicode(str) {
+  return decodeURIComponent(atob(str).replace(/(.)/g, (m, p) => {
+    let code = p.charCodeAt(0).toString(16).toUpperCase();
+    if (code.length < 2) {
+      code = "0" + code;
+    }
+    return "%" + code;
   }));
 }
-function w(n) {
-  let t = n.replace(/-/g, "+").replace(/_/g, "/");
-  switch (t.length % 4) {
+function base64UrlDecode(str) {
+  let output = str.replace(/-/g, "+").replace(/_/g, "/");
+  switch (output.length % 4) {
     case 0:
       break;
     case 2:
-      t += "==";
+      output += "==";
       break;
     case 3:
-      t += "=";
+      output += "=";
       break;
     default:
       throw new Error("base64 string is not of the correct length");
   }
   try {
-    return y(t);
-  } catch {
-    return atob(t);
+    return b64DecodeUnicode(output);
+  } catch (err) {
+    return atob(output);
   }
 }
-function x(n, t) {
-  if (typeof n != "string")
-    throw new c("Invalid token specified: must be a string");
-  t || (t = {});
-  const e = t.header === !0 ? 0 : 1, s = n.split(".")[e];
-  if (typeof s != "string")
-    throw new c(`Invalid token specified: missing part #${e + 1}`);
-  let o;
+function jwtDecode(token, options) {
+  if (typeof token !== "string") {
+    throw new InvalidTokenError("Invalid token specified: must be a string");
+  }
+  options || (options = {});
+  const pos = options.header === true ? 0 : 1;
+  const part = token.split(".")[pos];
+  if (typeof part !== "string") {
+    throw new InvalidTokenError(`Invalid token specified: missing part #${pos + 1}`);
+  }
+  let decoded;
   try {
-    o = w(s);
-  } catch (r) {
-    throw new c(`Invalid token specified: invalid base64 for part #${e + 1} (${r.message})`);
+    decoded = base64UrlDecode(part);
+  } catch (e) {
+    throw new InvalidTokenError(`Invalid token specified: invalid base64 for part #${pos + 1} (${e.message})`);
   }
   try {
-    return JSON.parse(o);
-  } catch (r) {
-    throw new c(`Invalid token specified: invalid json for part #${e + 1} (${r.message})`);
+    return JSON.parse(decoded);
+  } catch (e) {
+    throw new InvalidTokenError(`Invalid token specified: invalid json for part #${pos + 1} (${e.message})`);
   }
 }
-const b = "mu:context", d = `${b}:change`;
-class T {
-  constructor(t, e) {
-    this._proxy = _(t, e);
+const EVENT_PREFIX = "mu:context";
+const CONTEXT_CHANGE_EVENT = `${EVENT_PREFIX}:change`;
+class Context {
+  constructor(init, host) {
+    this._proxy = createContext(init, host);
   }
   get value() {
     return this._proxy;
   }
-  set value(t) {
-    Object.assign(this._proxy, t);
+  set value(next) {
+    Object.assign(this._proxy, next);
   }
-  apply(t) {
-    this.value = t(this.value);
-  }
-}
-class S extends HTMLElement {
-  constructor(t) {
-    super(), console.log("Constructing context", this), this.context = new T(t, this);
-  }
-  attach(t) {
-    return this.addEventListener(d, t), t;
-  }
-  detach(t) {
-    this.removeEventListener(d, t);
+  apply(mapFn) {
+    this.value = mapFn(this.value);
   }
 }
-function _(n, t) {
-  return console.log("creating Context:", JSON.stringify(n)), new Proxy(n, {
-    get: (s, o, r) => {
-      if (o === "then")
-        return;
-      const i = Reflect.get(s, o, r);
-      return console.log(
-        `Context['${o}'] => ${JSON.stringify(i)}`
-      ), i;
-    },
-    set: (s, o, r, i) => {
-      const p = n[o];
+class Provider extends HTMLElement {
+  constructor(init) {
+    super();
+    console.log("Constructing context", this);
+    this.context = new Context(init, this);
+  }
+  attach(observer) {
+    this.addEventListener(CONTEXT_CHANGE_EVENT, observer);
+    return observer;
+  }
+  detach(observer) {
+    this.removeEventListener(CONTEXT_CHANGE_EVENT, observer);
+  }
+}
+function createContext(root, eventTarget) {
+  console.log("creating Context:", JSON.stringify(root));
+  let proxy = new Proxy(root, {
+    get: (target, prop, receiver) => {
+      if (prop === "then") {
+        return void 0;
+      }
+      const value = Reflect.get(target, prop, receiver);
       console.log(
-        `Context['${o.toString()}'] <= ${JSON.stringify(
-          r
-        )}; was ${JSON.stringify(p)}`
+        `Context['${prop}'] => ${JSON.stringify(value)}`
       );
-      const f = Reflect.set(
-        s,
-        o,
-        r,
-        i
+      return value;
+    },
+    set: (target, prop, newValue, receiver) => {
+      const oldValue = root[prop];
+      console.log(
+        `Context['${prop.toString()}'] <= ${JSON.stringify(
+          newValue
+        )}; was ${JSON.stringify(oldValue)}`
       );
-      if (f) {
-        let h = new CustomEvent(d, {
-          bubbles: !0,
-          cancelable: !0,
-          composed: !0
+      const didSet = Reflect.set(
+        target,
+        prop,
+        newValue,
+        receiver
+      );
+      if (didSet) {
+        let evt = new CustomEvent(CONTEXT_CHANGE_EVENT, {
+          bubbles: true,
+          cancelable: true,
+          composed: true
         });
-        Object.assign(h, {
-          property: o,
-          oldValue: p,
-          value: r
-        }), t.dispatchEvent(h), console.log(
-          "dispatched event to target",
-          h,
-          t
-        );
-      } else
+        Object.assign(evt, {
+          property: prop,
+          oldValue,
+          value: newValue
+        });
+        eventTarget.dispatchEvent(evt);
         console.log(
-          `Context['${o}] was not set to ${r}`
+          "dispatched event to target",
+          evt,
+          eventTarget
         );
-      return f;
+      } else {
+        console.log(
+          `Context['${prop}] was not set to ${newValue}`
+        );
+      }
+      return didSet;
     }
   });
+  return proxy;
 }
-class C extends CustomEvent {
-  constructor(t, e = "mu:message") {
-    super(e, {
-      bubbles: !0,
-      composed: !0,
-      detail: t
+class Dispatch extends CustomEvent {
+  constructor(msg, eventType = "mu:message") {
+    super(eventType, {
+      bubbles: true,
+      composed: true,
+      detail: msg
     });
   }
 }
-function $(n) {
-  return (t, ...e) => t.dispatchEvent(new C(e, n));
+function dispatcher(eventType) {
+  return (target, ...msg) => target.dispatchEvent(new Dispatch(msg, eventType));
 }
-class N {
-  attach(t) {
-    t.addEventListener(this._eventType, (e) => {
-      e.stopPropagation();
-      const s = e.detail;
-      this.consume(s);
+class Service {
+  attach(host) {
+    host.addEventListener(this._eventType, (ev) => {
+      ev.stopPropagation();
+      const message = ev.detail;
+      this.consume(message);
     });
   }
-  constructor(t, e, s = "service:message") {
-    this._context = e, this._update = t, this._eventType = s;
+  constructor(update2, context, eventType = "service:message") {
+    this._context = context;
+    this._update = update2;
+    this._eventType = eventType;
   }
-  apply(t) {
-    this._context.apply(t);
+  apply(fn) {
+    this._context.apply(fn);
   }
-  consume(t) {
+  consume(message) {
     this._update(
-      t,
+      message,
       this.apply.bind(this),
       this._context.value
     );
   }
 }
-function m(n) {
-  return n;
+function replace(replacements) {
+  return (model) => ({ ...model, ...replacements });
 }
-function v(n) {
-  return (t) => ({ ...t, ...n });
-}
-const g = "mu:auth:jwt", a = class E extends N {
-  constructor(t) {
-    super(k, t, E.EVENT_TYPE);
+const TOKEN_KEY = "mu:auth:jwt";
+const _AuthService = class _AuthService2 extends Service {
+  constructor(context) {
+    super(update, context, _AuthService2.EVENT_TYPE);
   }
 };
-a.EVENT_TYPE = "auth:message";
-a.dispatch = $(a.EVENT_TYPE);
-let O = a;
-const k = (n, t) => {
-  switch (n[0]) {
+_AuthService.EVENT_TYPE = "auth:message";
+_AuthService.dispatch = dispatcher(_AuthService.EVENT_TYPE);
+let AuthService = _AuthService;
+const update = (message, apply) => {
+  switch (message[0]) {
     case "auth/signin":
-      I(n[1]).then(t);
-      return;
-    case "auth/signup":
-      P(n[1]).then(t);
+      const { token } = message[1];
+      apply(signIn(token));
       return;
     case "auth/signout":
-      t(U());
+      apply(signOut());
       return;
     default:
-      const e = n[0];
-      throw new Error(`Unhandled Auth message "${e}"`);
+      const unhandled = message[0];
+      throw new Error(`Unhandled Auth message "${unhandled}"`);
   }
 };
-class j extends S {
+class AuthProvider extends Provider {
   constructor() {
-    super({ user: new u() }), new O(this.context).attach(this);
+    super({
+      user: AuthenticatedUser.authenticateFromLocalStorage()
+    });
+    const service = new AuthService(this.context);
+    service.attach(this);
   }
 }
-class u {
+class APIUser {
   constructor() {
-    this.authenticated = !1, this.username = "anonymous";
+    this.authenticated = false;
+    this.username = "anonymous";
   }
-  static deauthenticate(t) {
-    return t.authenticated = !1, t.username = "anonymous", localStorage.removeItem(g), t;
+  static deauthenticate(user) {
+    user.authenticated = false;
+    user.username = "anonymous";
+    localStorage.removeItem(TOKEN_KEY);
+    return user;
   }
 }
-class l extends u {
-  constructor(t) {
+class AuthenticatedUser extends APIUser {
+  constructor(token) {
     super();
-    const e = x(t);
-    console.log("Token payload", e), this.token = t, this.authenticated = !0, this.username = e.username;
+    const jsonPayload = jwtDecode(token);
+    console.log("Token payload", jsonPayload);
+    this.token = token;
+    this.authenticated = true;
+    this.username = jsonPayload.username;
   }
-  static authenticate(t) {
-    const e = new l(t);
-    return localStorage.setItem(g, t), e;
+  static authenticate(token) {
+    const authenticatedUser = new AuthenticatedUser(token);
+    localStorage.setItem(TOKEN_KEY, token);
+    return authenticatedUser;
   }
   static authenticateFromLocalStorage() {
-    const t = localStorage.getItem(g);
-    return t ? l.authenticate(t) : new u();
+    const priorToken = localStorage.getItem(TOKEN_KEY);
+    return priorToken ? AuthenticatedUser.authenticate(priorToken) : new APIUser();
   }
 }
-function I(n) {
-  const t = window.location.origin;
-  return fetch(`${t}/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(n)
-  }).then((e) => {
-    if (e.status === 200)
-      return e.json();
-  }).then((e) => {
-    if (e) {
-      console.log("Authentication:", e.token);
-      const s = l.authenticate(e.token), o = s ? e.token : "";
-      return console.log("Providing auth user:", s), v({ user: s, token: o });
-    } else
-      return m;
+function signIn(token) {
+  return replace({
+    user: new AuthenticatedUser(token),
+    token
   });
 }
-function P(n) {
-  const t = window.location.origin;
-  return fetch(`${t}/signup`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(n)
-  }).then((e) => {
-    if (e.status === 200)
-      return e.json();
-  }).then((e) => (console.log("Registration:", e), m));
+function signOut() {
+  return replace({ user: new APIUser(), token: "" });
 }
-function U() {
-  return v({ user: new u(), token: "" });
-}
-function A(n) {
-  Object.entries(n).map(
-    ([t, e]) => customElements.define(t, e)
+const auth = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  Provider: AuthProvider
+}, Symbol.toStringTag, { value: "Module" }));
+function define(defns) {
+  Object.entries(defns).map(
+    ([k, v]) => customElements.define(k, v)
   );
 }
 export {
-  u as APIUser,
-  j as AuthElement,
-  O as AuthService,
-  l as AuthenticatedUser,
-  A as define
+  auth as Auth,
+  define
 };

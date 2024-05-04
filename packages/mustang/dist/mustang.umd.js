@@ -1,1 +1,265 @@
-(function(r,c){typeof exports=="object"&&typeof module<"u"?c(exports):typeof define=="function"&&define.amd?define(["exports"],c):(r=typeof globalThis<"u"?globalThis:r||self,c(r.mu={}))})(this,function(r){"use strict";class c extends Error{}c.prototype.name="InvalidTokenError";function b(n){return decodeURIComponent(atob(n).replace(/(.)/g,(e,t)=>{let o=t.charCodeAt(0).toString(16).toUpperCase();return o.length<2&&(o="0"+o),"%"+o}))}function T(n){let e=n.replace(/-/g,"+").replace(/_/g,"/");switch(e.length%4){case 0:break;case 2:e+="==";break;case 3:e+="=";break;default:throw new Error("base64 string is not of the correct length")}try{return b(e)}catch{return atob(e)}}function x(n,e){if(typeof n!="string")throw new c("Invalid token specified: must be a string");e||(e={});const t=e.header===!0?0:1,o=n.split(".")[t];if(typeof o!="string")throw new c(`Invalid token specified: missing part #${t+1}`);let s;try{s=T(o)}catch(i){throw new c(`Invalid token specified: invalid base64 for part #${t+1} (${i.message})`)}try{return JSON.parse(s)}catch(i){throw new c(`Invalid token specified: invalid json for part #${t+1} (${i.message})`)}}const d="mu:context:change";class S{constructor(e,t){this._proxy=C(e,t)}get value(){return this._proxy}set value(e){Object.assign(this._proxy,e)}apply(e){this.value=e(this.value)}}class _ extends HTMLElement{constructor(e){super(),console.log("Constructing context",this),this.context=new S(e,this)}attach(e){return this.addEventListener(d,e),e}detach(e){this.removeEventListener(d,e)}}function C(n,e){return console.log("creating Context:",JSON.stringify(n)),new Proxy(n,{get:(o,s,i)=>{if(s==="then")return;const h=Reflect.get(o,s,i);return console.log(`Context['${s}'] => ${JSON.stringify(h)}`),h},set:(o,s,i,h)=>{const E=n[s];console.log(`Context['${s.toString()}'] <= ${JSON.stringify(i)}; was ${JSON.stringify(E)}`);const y=Reflect.set(o,s,i,h);if(y){let f=new CustomEvent(d,{bubbles:!0,cancelable:!0,composed:!0});Object.assign(f,{property:s,oldValue:E,value:i}),e.dispatchEvent(f),console.log("dispatched event to target",f,e)}else console.log(`Context['${s}] was not set to ${i}`);return y}})}class N extends CustomEvent{constructor(e,t="mu:message"){super(t,{bubbles:!0,composed:!0,detail:e})}}function O(n){return(e,...t)=>e.dispatchEvent(new N(t,n))}class ${attach(e){e.addEventListener(this._eventType,t=>{t.stopPropagation();const o=t.detail;this.consume(o)})}constructor(e,t,o="service:message"){this._context=t,this._update=e,this._eventType=o}apply(e){this._context.apply(e)}consume(e){this._update(e,this.apply.bind(this),this._context.value)}}function p(n){return n}function m(n){return e=>({...e,...n})}const g="mu:auth:jwt",l=class w extends ${constructor(e){super(P,e,w.EVENT_TYPE)}};l.EVENT_TYPE="auth:message",l.dispatch=O(l.EVENT_TYPE);let v=l;const P=(n,e)=>{switch(n[0]){case"auth/signin":I(n[1]).then(e);return;case"auth/signup":A(n[1]).then(e);return;case"auth/signout":e(U());return;default:const t=n[0];throw new Error(`Unhandled Auth message "${t}"`)}};class k extends _{constructor(){super({user:new a}),new v(this.context).attach(this)}}class a{constructor(){this.authenticated=!1,this.username="anonymous"}static deauthenticate(e){return e.authenticated=!1,e.username="anonymous",localStorage.removeItem(g),e}}class u extends a{constructor(e){super();const t=x(e);console.log("Token payload",t),this.token=e,this.authenticated=!0,this.username=t.username}static authenticate(e){const t=new u(e);return localStorage.setItem(g,e),t}static authenticateFromLocalStorage(){const e=localStorage.getItem(g);return e?u.authenticate(e):new a}}function I(n){const e=window.location.origin;return fetch(`${e}/login`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(n)}).then(t=>{if(t.status===200)return t.json()}).then(t=>{if(t){console.log("Authentication:",t.token);const o=u.authenticate(t.token),s=o?t.token:"";return console.log("Providing auth user:",o),m({user:o,token:s})}else return p})}function A(n){const e=window.location.origin;return fetch(`${e}/signup`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(n)}).then(t=>{if(t.status===200)return t.json()}).then(t=>(console.log("Registration:",t),p))}function U(){return m({user:new a,token:""})}function j(n){Object.entries(n).map(([e,t])=>customElements.define(e,t))}r.APIUser=a,r.AuthElement=k,r.AuthService=v,r.AuthenticatedUser=u,r.define=j,Object.defineProperty(r,Symbol.toStringTag,{value:"Module"})});
+(function(global, factory) {
+  typeof exports === "object" && typeof module !== "undefined" ? factory(exports) : typeof define === "function" && define.amd ? define(["exports"], factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, factory(global.mu = {}));
+})(this, function(exports2) {
+  "use strict";
+  class InvalidTokenError extends Error {
+  }
+  InvalidTokenError.prototype.name = "InvalidTokenError";
+  function b64DecodeUnicode(str) {
+    return decodeURIComponent(atob(str).replace(/(.)/g, (m, p) => {
+      let code = p.charCodeAt(0).toString(16).toUpperCase();
+      if (code.length < 2) {
+        code = "0" + code;
+      }
+      return "%" + code;
+    }));
+  }
+  function base64UrlDecode(str) {
+    let output = str.replace(/-/g, "+").replace(/_/g, "/");
+    switch (output.length % 4) {
+      case 0:
+        break;
+      case 2:
+        output += "==";
+        break;
+      case 3:
+        output += "=";
+        break;
+      default:
+        throw new Error("base64 string is not of the correct length");
+    }
+    try {
+      return b64DecodeUnicode(output);
+    } catch (err) {
+      return atob(output);
+    }
+  }
+  function jwtDecode(token, options) {
+    if (typeof token !== "string") {
+      throw new InvalidTokenError("Invalid token specified: must be a string");
+    }
+    options || (options = {});
+    const pos = options.header === true ? 0 : 1;
+    const part = token.split(".")[pos];
+    if (typeof part !== "string") {
+      throw new InvalidTokenError(`Invalid token specified: missing part #${pos + 1}`);
+    }
+    let decoded;
+    try {
+      decoded = base64UrlDecode(part);
+    } catch (e) {
+      throw new InvalidTokenError(`Invalid token specified: invalid base64 for part #${pos + 1} (${e.message})`);
+    }
+    try {
+      return JSON.parse(decoded);
+    } catch (e) {
+      throw new InvalidTokenError(`Invalid token specified: invalid json for part #${pos + 1} (${e.message})`);
+    }
+  }
+  const EVENT_PREFIX = "mu:context";
+  const CONTEXT_CHANGE_EVENT = `${EVENT_PREFIX}:change`;
+  class Context {
+    constructor(init, host) {
+      this._proxy = createContext(init, host);
+    }
+    get value() {
+      return this._proxy;
+    }
+    set value(next) {
+      Object.assign(this._proxy, next);
+    }
+    apply(mapFn) {
+      this.value = mapFn(this.value);
+    }
+  }
+  class Provider extends HTMLElement {
+    constructor(init) {
+      super();
+      console.log("Constructing context", this);
+      this.context = new Context(init, this);
+    }
+    attach(observer) {
+      this.addEventListener(CONTEXT_CHANGE_EVENT, observer);
+      return observer;
+    }
+    detach(observer) {
+      this.removeEventListener(CONTEXT_CHANGE_EVENT, observer);
+    }
+  }
+  function createContext(root, eventTarget) {
+    console.log("creating Context:", JSON.stringify(root));
+    let proxy = new Proxy(root, {
+      get: (target, prop, receiver) => {
+        if (prop === "then") {
+          return void 0;
+        }
+        const value = Reflect.get(target, prop, receiver);
+        console.log(
+          `Context['${prop}'] => ${JSON.stringify(value)}`
+        );
+        return value;
+      },
+      set: (target, prop, newValue, receiver) => {
+        const oldValue = root[prop];
+        console.log(
+          `Context['${prop.toString()}'] <= ${JSON.stringify(
+            newValue
+          )}; was ${JSON.stringify(oldValue)}`
+        );
+        const didSet = Reflect.set(
+          target,
+          prop,
+          newValue,
+          receiver
+        );
+        if (didSet) {
+          let evt = new CustomEvent(CONTEXT_CHANGE_EVENT, {
+            bubbles: true,
+            cancelable: true,
+            composed: true
+          });
+          Object.assign(evt, {
+            property: prop,
+            oldValue,
+            value: newValue
+          });
+          eventTarget.dispatchEvent(evt);
+          console.log(
+            "dispatched event to target",
+            evt,
+            eventTarget
+          );
+        } else {
+          console.log(
+            `Context['${prop}] was not set to ${newValue}`
+          );
+        }
+        return didSet;
+      }
+    });
+    return proxy;
+  }
+  class Dispatch extends CustomEvent {
+    constructor(msg, eventType = "mu:message") {
+      super(eventType, {
+        bubbles: true,
+        composed: true,
+        detail: msg
+      });
+    }
+  }
+  function dispatcher(eventType) {
+    return (target, ...msg) => target.dispatchEvent(new Dispatch(msg, eventType));
+  }
+  class Service {
+    attach(host) {
+      host.addEventListener(this._eventType, (ev) => {
+        ev.stopPropagation();
+        const message = ev.detail;
+        this.consume(message);
+      });
+    }
+    constructor(update2, context, eventType = "service:message") {
+      this._context = context;
+      this._update = update2;
+      this._eventType = eventType;
+    }
+    apply(fn) {
+      this._context.apply(fn);
+    }
+    consume(message) {
+      this._update(
+        message,
+        this.apply.bind(this),
+        this._context.value
+      );
+    }
+  }
+  function replace(replacements) {
+    return (model) => ({ ...model, ...replacements });
+  }
+  const TOKEN_KEY = "mu:auth:jwt";
+  const _AuthService = class _AuthService2 extends Service {
+    constructor(context) {
+      super(update, context, _AuthService2.EVENT_TYPE);
+    }
+  };
+  _AuthService.EVENT_TYPE = "auth:message";
+  _AuthService.dispatch = dispatcher(_AuthService.EVENT_TYPE);
+  let AuthService = _AuthService;
+  const update = (message, apply) => {
+    switch (message[0]) {
+      case "auth/signin":
+        const { token } = message[1];
+        apply(signIn(token));
+        return;
+      case "auth/signout":
+        apply(signOut());
+        return;
+      default:
+        const unhandled = message[0];
+        throw new Error(`Unhandled Auth message "${unhandled}"`);
+    }
+  };
+  class AuthProvider extends Provider {
+    constructor() {
+      super({
+        user: AuthenticatedUser.authenticateFromLocalStorage()
+      });
+      const service = new AuthService(this.context);
+      service.attach(this);
+    }
+  }
+  class APIUser {
+    constructor() {
+      this.authenticated = false;
+      this.username = "anonymous";
+    }
+    static deauthenticate(user) {
+      user.authenticated = false;
+      user.username = "anonymous";
+      localStorage.removeItem(TOKEN_KEY);
+      return user;
+    }
+  }
+  class AuthenticatedUser extends APIUser {
+    constructor(token) {
+      super();
+      const jsonPayload = jwtDecode(token);
+      console.log("Token payload", jsonPayload);
+      this.token = token;
+      this.authenticated = true;
+      this.username = jsonPayload.username;
+    }
+    static authenticate(token) {
+      const authenticatedUser = new AuthenticatedUser(token);
+      localStorage.setItem(TOKEN_KEY, token);
+      return authenticatedUser;
+    }
+    static authenticateFromLocalStorage() {
+      const priorToken = localStorage.getItem(TOKEN_KEY);
+      return priorToken ? AuthenticatedUser.authenticate(priorToken) : new APIUser();
+    }
+  }
+  function signIn(token) {
+    return replace({
+      user: new AuthenticatedUser(token),
+      token
+    });
+  }
+  function signOut() {
+    return replace({ user: new APIUser(), token: "" });
+  }
+  const auth = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    Provider: AuthProvider
+  }, Symbol.toStringTag, { value: "Module" }));
+  function define2(defns) {
+    Object.entries(defns).map(
+      ([k, v]) => customElements.define(k, v)
+    );
+  }
+  exports2.Auth = auth;
+  exports2.define = define2;
+  Object.defineProperty(exports2, Symbol.toStringTag, { value: "Module" });
+});

@@ -2,29 +2,24 @@ import { jwtDecode } from "jwt-decode";
 import { Context, Provider } from "./context";
 import { dispatcher } from "./message";
 import { Service } from "./service";
-import { MapFn, Update, noUpdate, replace } from "./update";
+import { Update, replace } from "./update";
 
 const TOKEN_KEY = "mu:auth:jwt";
 
-export interface AuthModel {
+interface AuthModel {
   user?: APIUser;
   token?: string;
 }
 
-export interface AuthAttempt {
-  credentials: LoginCredential;
+interface AuthSuccessful {
+  token: string;
 }
 
-export interface AuthRegister {
-  credentials: LoginCredential;
-}
-
-export type AuthMsg =
-  | ["auth/signin", AuthAttempt]
-  | ["auth/signup", AuthRegister]
+type AuthMsg =
+  | ["auth/signin", AuthSuccessful]
   | ["auth/signout"];
 
-export class AuthService extends Service<AuthMsg, AuthModel> {
+class AuthService extends Service<AuthMsg, AuthModel> {
   static EVENT_TYPE = "auth:message";
 
   constructor(context: Context<AuthModel>) {
@@ -37,10 +32,8 @@ export class AuthService extends Service<AuthMsg, AuthModel> {
 const update: Update<AuthMsg, AuthModel> = (message, apply) => {
   switch (message[0]) {
     case "auth/signin":
-      loginUser(message[1] as AuthAttempt).then(apply);
-      return;
-    case "auth/signup":
-      registerUser(message[1] as AuthRegister).then(apply);
+      const { token } = message[1] as AuthSuccessful;
+      apply(signIn(token));
       return;
     case "auth/signout":
       apply(signOut());
@@ -51,20 +44,22 @@ const update: Update<AuthMsg, AuthModel> = (message, apply) => {
   }
 };
 
-export class AuthElement extends Provider<AuthModel> {
+class AuthProvider extends Provider<AuthModel> {
   constructor() {
-    super({ user: new APIUser() });
+    super({
+      user: AuthenticatedUser.authenticateFromLocalStorage()
+    });
     const service = new AuthService(this.context);
     service.attach(this);
   }
 }
 
-export interface LoginCredential {
+interface LoginCredential {
   username: string;
   pwd: string;
 }
 
-export class APIUser {
+class APIUser {
   authenticated = false;
   username = "anonymous";
 
@@ -76,7 +71,7 @@ export class APIUser {
   }
 }
 
-export class AuthenticatedUser extends APIUser {
+class AuthenticatedUser extends APIUser {
   token: string | undefined;
 
   constructor(token: string) {
@@ -103,53 +98,15 @@ export class AuthenticatedUser extends APIUser {
   }
 }
 
-function loginUser(
-  msg: AuthAttempt
-): Promise<MapFn<AuthModel>> {
-  const root = window.location.origin;
-
-  return fetch(`${root}/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(msg)
-  })
-    .then((res) => {
-      if (res.status === 200) return res.json();
-      else return undefined;
-    })
-    .then((json) => {
-      if (json) {
-        console.log("Authentication:", json.token);
-        const user = AuthenticatedUser.authenticate(json.token);
-        const token = user ? (json.token as string) : "";
-        console.log("Providing auth user:", user);
-        return replace<AuthModel>({ user, token });
-      } else {
-        return noUpdate;
-      }
-    });
-}
-
-function registerUser(
-  msg: AuthRegister
-): Promise<MapFn<AuthModel>> {
-  const root = window.location.origin;
-
-  return fetch(`${root}/signup`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(msg)
-  })
-    .then((res) => {
-      if (res.status === 200) return res.json();
-      else return undefined;
-    })
-    .then((json) => {
-      console.log("Registration:", json);
-      return noUpdate;
-    });
+function signIn(token: string) {
+  return replace<AuthModel>({
+    user: new AuthenticatedUser(token),
+    token
+  });
 }
 
 function signOut() {
   return replace<AuthModel>({ user: new APIUser(), token: "" });
 }
+
+export { AuthProvider as Provider };
