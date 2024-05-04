@@ -1,8 +1,8 @@
 export * as Auth from "./auth";
 export * from "./define";
+export * from "./observer";
 // export * from "./history";
 // export * from "./message";
-// export * from "./observer";
 // export * from "./rest";
 // export * from "./router";
 // export * from "./store";

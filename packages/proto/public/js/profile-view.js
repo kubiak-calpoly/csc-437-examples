@@ -1,5 +1,6 @@
 import { prepareTemplate } from "./template.js";
 import { loadJSON } from "./json-loader.js";
+import { Auth, Observer } from "@calpoly/mustang";
 
 export class ProfileViewElement extends HTMLElement {
   static observedAttributes = ["src", "mode"];
@@ -184,6 +185,15 @@ export class ProfileViewElement extends HTMLElement {
     return this.shadowRoot.querySelector("restful-form");
   }
 
+  get authorization() {
+    console.log("Authorization for user, ", this._user);
+    return (
+      this._user?.authenticated && {
+        Authorization: `Bearer ${this._user.token}`
+      }
+    );
+  }
+
   constructor() {
     super();
 
@@ -224,11 +234,30 @@ export class ProfileViewElement extends HTMLElement {
     this.addEventListener("restful-form:updated", (event) => {
       console.log("Updated a profile", event.detail);
       this.mode = "view";
-      loadJSON(this.src, this, renderSlots);
+      console.log("LOading JSON", this.authorization);
+      loadJSON(this.src, this, renderSlots, this.authorization);
     });
   }
 
-  connectedCallback() {}
+  _authObserver = new Observer(this, "blazing:auth");
+
+  connectedCallback() {
+    this._authObserver.observe().then((obs) => {
+      obs.setEffect(({ user }) => {
+        console.log("Setting user as effect of change", user);
+        this._user = user;
+        if (this.src) {
+          console.log("LOading JSON", this.authorization);
+          loadJSON(
+            this.src,
+            this,
+            renderSlots,
+            this.authorization
+          );
+        }
+      });
+    });
+  }
 
   attributeChangedCallback(name, oldValue, newValue) {
     console.log(
@@ -237,9 +266,18 @@ export class ProfileViewElement extends HTMLElement {
     );
     switch (name) {
       case "src":
-        if (newValue && this.mode !== "new") {
-          console.log("LOading JSON");
-          loadJSON(this.src, this, renderSlots);
+        if (
+          newValue &&
+          this.mode !== "new" &&
+          this.authorization
+        ) {
+          console.log("LOading JSON", this.authorization);
+          loadJSON(
+            this.src,
+            this,
+            renderSlots,
+            this.authorization
+          );
         }
         break;
       case "mode":

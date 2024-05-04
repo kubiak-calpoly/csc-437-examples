@@ -86,6 +86,7 @@ class AuthenticatedUser extends APIUser {
   static authenticate(token: string) {
     const authenticatedUser = new AuthenticatedUser(token);
     localStorage.setItem(TOKEN_KEY, token);
+    console.log("Saved token to localStorage", token);
     return authenticatedUser;
   }
 
@@ -100,7 +101,7 @@ class AuthenticatedUser extends APIUser {
 
 function signIn(token: string) {
   return replace<AuthModel>({
-    user: new AuthenticatedUser(token),
+    user: AuthenticatedUser.authenticate(token),
     token
   });
 }
@@ -109,4 +110,4 @@ function signOut() {
   return replace<AuthModel>({ user: new APIUser(), token: "" });
 }
 
-export { AuthProvider as Provider };
+export { AuthProvider as Provider, type AuthModel as Model };

@@ -46,9 +46,16 @@ export class JsonObjectElement extends HTMLElement {
 
 customElements.define("json-object", JsonObjectElement);
 
-export function loadJSON(src, container, render) {
+export function loadJSON(
+  src,
+  container,
+  render,
+  authorization
+) {
   container.replaceChildren();
-  fetch(src)
+  fetch(src, {
+    headers: authorization
+  })
     .then((response) => {
       if (response.status !== 200) {
         throw `Status: ${response.status}`;

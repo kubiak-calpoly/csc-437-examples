@@ -116,7 +116,7 @@ export function whenProviderReady<T extends object>(
         .then(() => resolve(provider));
     } else {
       reject({
-        context,
+        context: contextLabel,
         reason: `No provider for this context "${contextLabel}:`
       });
     }
@@ -128,15 +128,18 @@ function closestProvider(
   el: Element
 ): Element | undefined {
   const selector = `[provides="${contextLabel}"]`;
-  return (
-    (el &&
-      el !== document.rootElement &&
-      (el.closest(selector) ||
-        (el.shadowRoot &&
-          closestProvider(
-            contextLabel,
-            el.shadowRoot.host
-          )))) ||
-    undefined
-  );
+  console.log(`Searching closest ${contextLabel} from`, el);
+
+  if (!el || el === document.getRootNode()) return undefined;
+
+  const closest = el.closest(selector);
+
+  if (closest) return closest;
+
+  const root = el.getRootNode();
+
+  if (root instanceof ShadowRoot)
+    return closestProvider(contextLabel, root.host);
+
+  return undefined;
 }

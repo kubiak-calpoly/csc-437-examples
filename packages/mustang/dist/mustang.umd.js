@@ -139,6 +139,36 @@
     });
     return proxy;
   }
+  function whenProviderReady(consumer, contextLabel) {
+    const provider = closestProvider(
+      contextLabel,
+      consumer
+    );
+    return new Promise((resolve, reject) => {
+      if (provider) {
+        const name = provider.localName;
+        customElements.whenDefined(name).then(() => resolve(provider));
+      } else {
+        reject({
+          context: contextLabel,
+          reason: `No provider for this context "${contextLabel}:`
+        });
+      }
+    });
+  }
+  function closestProvider(contextLabel, el) {
+    const selector = `[provides="${contextLabel}"]`;
+    console.log(`Searching closest ${contextLabel} from`, el);
+    if (!el || el === document.getRootNode())
+      return void 0;
+    const closest = el.closest(selector);
+    if (closest)
+      return closest;
+    const root = el.getRootNode();
+    if (root instanceof ShadowRoot)
+      return closestProvider(contextLabel, root.host);
+    return void 0;
+  }
   class Dispatch extends CustomEvent {
     constructor(msg, eventType = "mu:message") {
       super(eventType, {
@@ -234,6 +264,7 @@
     static authenticate(token) {
       const authenticatedUser = new AuthenticatedUser(token);
       localStorage.setItem(TOKEN_KEY, token);
+      console.log("Saved token to localStorage", token);
       return authenticatedUser;
     }
     static authenticateFromLocalStorage() {
@@ -243,7 +274,7 @@
   }
   function signIn(token) {
     return replace({
-      user: new AuthenticatedUser(token),
+      user: AuthenticatedUser.authenticate(token),
       token
     });
   }
@@ -259,7 +290,67 @@
       ([k, v]) => customElements.define(k, v)
     );
   }
+  class Observer {
+    constructor(target, contextLabel) {
+      this._effects = [];
+      this._target = target;
+      this._contextLabel = contextLabel;
+    }
+    observe(fn) {
+      return new Promise((resolve, _) => {
+        if (this._provider) {
+          const effect = new Effect(this._provider, fn);
+          this._effects.push(effect);
+          resolve(effect);
+        } else {
+          whenProviderReady(
+            this._target,
+            this._contextLabel
+          ).then((provider) => {
+            const effect = new Effect(provider, fn);
+            this._provider = provider;
+            this._effects.push(effect);
+            provider.attach(
+              (ev) => this._handleChange(ev)
+            );
+            resolve(effect);
+          });
+        }
+      });
+    }
+    _handleChange(ev) {
+      console.log(
+        "Received change event for observers",
+        ev,
+        this._effects
+      );
+      this._effects.forEach((obs) => obs.runEffect());
+    }
+  }
+  class Effect {
+    constructor(observable, fn) {
+      this._provider = observable;
+      this._effectFn = fn;
+    }
+    get context() {
+      return this._provider.context;
+    }
+    get value() {
+      return this.context.value;
+    }
+    setEffect(fn) {
+      this._effectFn = fn;
+      this.runEffect();
+    }
+    runEffect() {
+      if (this._effectFn) {
+        this._effectFn(this.context.value);
+      }
+    }
+  }
   exports2.Auth = auth;
+  exports2.Effect = Effect;
+  exports2.Observer = Observer;
   exports2.define = define2;
   Object.defineProperty(exports2, Symbol.toStringTag, { value: "Module" });
 });

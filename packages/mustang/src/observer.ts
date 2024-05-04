@@ -11,10 +11,10 @@ export class Observer<T extends object> {
     this._contextLabel = contextLabel;
   }
 
-  observe() {
+  observe(fn: EffectFn<T>) {
     return new Promise<Effect<T>>((resolve, _) => {
       if (this._provider) {
-        const effect = new Effect<T>(this._provider);
+        const effect = new Effect<T>(this._provider, fn);
         this._effects.push(effect);
         resolve(effect);
       } else {
@@ -22,7 +22,7 @@ export class Observer<T extends object> {
           this._target,
           this._contextLabel
         ).then((provider: Provider<T>) => {
-          const effect = new Effect<T>(provider);
+          const effect = new Effect<T>(provider, fn);
           this._provider = provider;
           this._effects.push(effect);
           provider.attach((ev: Event) =>
@@ -50,12 +50,17 @@ export class Effect<T extends object> {
   _provider: Provider<T>;
   _effectFn?: EffectFn<T>;
 
-  constructor(observable: Provider<T>) {
+  constructor(observable: Provider<T>, fn?: EffectFn<T>) {
     this._provider = observable;
+    this._effectFn = fn;
   }
 
   get context() {
     return this._provider.context;
+  }
+
+  get value() {
+    return this.context.value;
   }
 
   setEffect(fn: EffectFn<T>) {
@@ -65,7 +70,7 @@ export class Effect<T extends object> {
 
   runEffect() {
     if (this._effectFn) {
-      this._effectFn(this.context);
+      this._effectFn(this.context.value);
     }
   }
 }

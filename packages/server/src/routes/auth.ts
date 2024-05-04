@@ -25,7 +25,10 @@ function generateAccessToken(
       { expiresIn: "1d" },
       (error, token) => {
         if (error) reject(error);
-        else resolve(token as string);
+        else {
+          console.log("Token is", token);
+          resolve(token as string);
+        }
       }
     );
   });
@@ -69,6 +72,7 @@ export function authenticateUser(
   //Getting the 2nd part of the auth header (the token)
   const token = authHeader && authHeader.split(" ")[1];
 
+  console.log("Authenticating request", req.headers, token);
   if (!token) {
     res.status(401).end();
   } else {

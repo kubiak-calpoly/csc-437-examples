@@ -49,8 +49,10 @@ function generateAccessToken(username) {
       (error, token) => {
         if (error)
           reject(error);
-        else
+        else {
+          console.log("Token is", token);
           resolve(token);
+        }
       }
     );
   });
@@ -76,6 +78,7 @@ router.post("/login", (req, res) => {
 function authenticateUser(req, res, next) {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
+  console.log("Authenticating request", req.headers, token);
   if (!token) {
     res.status(401).end();
   } else {

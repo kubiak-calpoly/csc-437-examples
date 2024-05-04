@@ -1,15 +1,13 @@
-import { LitElement } from "lit";
-import { ModelMap, TypedMessage, Update } from "./update";
 import { getModelProvider } from "./store";
+import { ModelMap, TypedMessage, Update } from "./update";
 
 export class View<
   M,
   Msg extends TypedMessage
-> extends LitElement {
+> extends HTMLElement {
   _model: M | undefined;
 
   connectedCallback() {
-    super.connectedCallback();
     const provider = getModelProvider<M>(this);
     this._model = provider?.model;
   }
