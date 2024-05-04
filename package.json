@@ -5,10 +5,13 @@
   "main": "index.js",
   "scripts": {
     "build:docs": "npx @11ty/eleventy",
+    "build:frontend": "npm run -w lit-frontend build",
     "docs": "npm run build:docs && npm run start:docs",
+    "start": "npm run build:frontend && npm run start:backend",
     "start:docs": "npx @11ty/eleventy --serve",
     "start:proto": "npm -w proto start",
-    "start:lit-frontend": "npm -w lit-frontend run dev",
+    "start:frontend": "npm -w lit-frontend run dev",
+    "start:backend": "npm -w express-backend run start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -34,6 +37,7 @@
     "@cre.ative/kram": "^1.6.0",
     "@cre.ative/kram-11ty": "^1.6.4",
     "@cre.ative/kram-typescript": "^1.6.0",
+    "@types/geojson": "^7946.0.14",
     "lit": "^3.1.1"
   },
   "dependencies": {
