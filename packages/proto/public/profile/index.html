@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="/styles/tokens.css" />
     <link rel="stylesheet" href="/styles/page.css" />
     <link rel="stylesheet" href="/styles/form.css" />
+    <script type="importmap"></script>
     <script type="module" src="/js/json-loader.js"></script>
     <script type="module" src="/js/restful-form.js"></script>
     <script type="module" src="/js/input-array.js"></script>
@@ -36,6 +37,11 @@
         )
       );
     </script>
+    <script type="module">
+      import { define, Auth } from "@calpoly/mustang";
+
+      define({ "mu-auth": Auth.Provider });
+    </script>
   </head>
   <body class="page">
     <header>
@@ -51,7 +57,9 @@
       </drop-down>
     </header>
     <main>
-      <profile-view src="/api/profiles/blaze"> </profile-view>
+      <mu-auth redirect="../login.html">
+        <profile-view src="/api/profiles/blaze"> </profile-view>
+      </mu-auth>
     </main>
   </body>
 </html>
