@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import path from "path";
-import auth from "./routes/auth";
+import auth, { authenticateUser } from "./routes/auth";
 import profiles from "./routes/profiles";
 import { connect } from "./services/mongo";
 
@@ -30,7 +30,7 @@ console.log("Serving NPM packages from", nodeModules);
 app.use("/node_modules", express.static(nodeModules));
 
 // API Routes:
-app.use("/api/profiles", profiles);
+app.use("/api/profiles", authenticateUser, profiles);
 
 // HTML Routes:
 app.get("/hello", (_: Request, res: Response) => {

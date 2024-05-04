@@ -97,7 +97,6 @@ function create(username, password) {
       reject("must provide username and password");
     }
     credentialModel.find({ username }).then((found) => {
-      console.log(`"${username} already exists"`);
       if (found.length)
         reject("username exists");
     }).then(

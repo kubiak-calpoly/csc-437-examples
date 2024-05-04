@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 
 mongoose.set("debug", true);
 dotenv.config();
-console.log("Env:", process.env);
 
 function getMongoURI(dbname: string) {
   let connection_string = `mongodb://localhost:27017/${dbname}`;

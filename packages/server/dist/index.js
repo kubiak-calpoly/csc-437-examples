@@ -40,7 +40,7 @@ const nodeModules = import_path.default.resolve(
 );
 console.log("Serving NPM packages from", nodeModules);
 app.use("/node_modules", import_express.default.static(nodeModules));
-app.use("/api/profiles", import_profiles.default);
+app.use("/api/profiles", import_auth.authenticateUser, import_profiles.default);
 app.get("/hello", (_, res) => {
   res.send(
     `<h1>Hello!</h1>
