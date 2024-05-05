@@ -24,7 +24,7 @@ const credentialSchema = new Schema<Credential>(
 );
 
 const credentialModel = model<Credential>(
-  "Credential ",
+  "Credential",
   credentialSchema
 );
 
