@@ -28,6 +28,7 @@ export class Provider<T extends object> extends HTMLElement {
     super();
     console.log("Constructing context provider", this);
     this.context = new Context<T>(init, this);
+    this.style.display = "contents";
   }
 
   attach(observer: EventListener) {

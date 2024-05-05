@@ -1,5 +1,5 @@
 import { prepareTemplate } from "./template.js";
-import { Auth, Observer } from "@calpoly/mustang";
+import { Observer } from "@calpoly/mustang";
 
 export class RestfulFormElement extends HTMLElement {
   static observedAttributes = ["src", "new"];

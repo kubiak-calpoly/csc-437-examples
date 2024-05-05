@@ -23,11 +23,8 @@
         }
       }
     </script>
+    <script type="module" src="/js/blazing-header.js"></script>
     <script type="module" src="/js/login-form.js"></script>
-    <script type="module">
-      import { relayEvent } from "/js/relay-event.js";
-      window.relayEvent = relayEvent;
-    </script>
     <script type="module">
       import { define, Auth } from "@calpoly/mustang";
 
@@ -45,6 +42,7 @@
   <body class="page">
     <main class="card">
       <mu-auth>
+        <blazing-header></blazing-header>
         <h2>User Login</h2>
         <p
           >Or did you want to

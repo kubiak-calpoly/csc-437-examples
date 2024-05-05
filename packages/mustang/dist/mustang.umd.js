@@ -77,6 +77,7 @@
       super();
       console.log("Constructing context provider", this);
       this.context = new Context(init, this);
+      this.style.display = "contents";
     }
     attach(observer) {
       this.addEventListener(CONTEXT_CHANGE_EVENT, observer);

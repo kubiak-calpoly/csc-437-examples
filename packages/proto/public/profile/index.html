@@ -23,10 +23,7 @@
         }
       }
     </script>
-    <script type="module" src="/js/json-loader.js"></script>
-    <script type="module" src="/js/restful-form.js"></script>
-    <script type="module" src="/js/drop-down.js"></script>
-    <script type="module" src="/js/input-array.js"></script>
+    <script type="module" src="/js/blazing-header.js"></script>
     <script type="module" src="/js/profile-view.js"></script>
     <script type="module">
       import { relayEvent } from "/js/relay-event.js";
@@ -52,31 +49,7 @@
   </head>
   <body class="page">
     <mu-auth provides="blazing:auth" redirect="../login.html">
-      <header>
-        <h1>Blazing Travels</h1>
-        <drop-down>
-          <a href="#" slot="actuator"> Hello, user </a>
-          <ul>
-            <li
-              ><label
-                onchange="relayEvent(
-          event, 
-          'dark-mode', 
-          {checked: event.target.checked})">
-                <input type="checkbox" autocomplete="off" />
-                Dark mode
-              </label>
-            </li>
-            <li>
-              <a
-                href="#"
-                onclick="relayEvent(event, 'auth:message', ['auth/signout'])"
-                >Sign out</a
-              >
-            </li>
-          </ul>
-        </drop-down>
-      </header>
+      <blazing-header></blazing-header>
       <main>
         <profile-view src="/api/profiles/blaze"> </profile-view>
       </main>
