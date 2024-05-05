@@ -11,6 +11,11 @@ export class LoginFormElement extends HTMLElement {
     </template>
   `);
 
+  get next() {
+    let query = new URLSearchParams(document.location.search);
+    return query.get("next");
+  }
+
   constructor() {
     super();
 
@@ -19,10 +24,13 @@ export class LoginFormElement extends HTMLElement {
     );
 
     this.addEventListener("restful-form:created", (event) => {
-      console.log("Login successful", event.detail);
+      const { token } = event.detail.created;
+      const redirect = this.next;
+      console.log("Login successful", event.detail, redirect);
+
       relayEvent(event, "auth:message", [
         "auth/signin",
-        event.detail.created
+        { token, redirect }
       ]);
     });
   }

@@ -72,7 +72,6 @@ export class RestfulFormElement extends HTMLElement {
               url: src
             }
           });
-          console.log("Dispatching event:", event);
           this.dispatchEvent(event);
         });
     });
@@ -89,7 +88,6 @@ export class RestfulFormElement extends HTMLElement {
   _authObserver = new Observer(this, "blazing:auth");
 
   get authorization() {
-    console.log("Authorization for user, ", this._user);
     return (
       this._user?.authenticated && {
         Authorization: `Bearer ${this._user.token}`
@@ -100,10 +98,8 @@ export class RestfulFormElement extends HTMLElement {
   connectedCallback() {
     this._authObserver.observe().then((obs) => {
       obs.setEffect(({ user }) => {
-        console.log("Setting user as effect of change", user);
         this._user = user;
         if (this.src) {
-          console.log("LOading JSON", this.authorization);
           loadJSON(
             this.src,
             this,
@@ -116,10 +112,6 @@ export class RestfulFormElement extends HTMLElement {
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
-    console.log(
-      `restful-form: Attribute ${name} changed from ${oldValue} to`,
-      newValue
-    );
     switch (name) {
       case "src":
         if (newValue && newValue !== oldValue && !this.isNew) {
@@ -133,7 +125,6 @@ export class RestfulFormElement extends HTMLElement {
         break;
       case "new":
         if (newValue) {
-          console.log("Blanking state for new form");
           this._state = {};
           populateForm({}, this);
         }

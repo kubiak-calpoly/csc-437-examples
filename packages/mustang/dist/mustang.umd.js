@@ -75,7 +75,7 @@
   class Provider extends HTMLElement {
     constructor(init) {
       super();
-      console.log("Constructing context", this);
+      console.log("Constructing context provider", this);
       this.context = new Context(init, this);
     }
     attach(observer) {
@@ -87,7 +87,6 @@
     }
   }
   function createContext(root, eventTarget) {
-    console.log("creating Context:", JSON.stringify(root));
     let proxy = new Proxy(root, {
       get: (target, prop, receiver) => {
         if (prop === "then") {
@@ -124,11 +123,6 @@
             value: newValue
           });
           eventTarget.dispatchEvent(evt);
-          console.log(
-            "dispatched event to target",
-            evt,
-            eventTarget
-          );
         } else {
           console.log(
             `Context['${prop}] was not set to ${newValue}`
@@ -158,7 +152,6 @@
   }
   function closestProvider(contextLabel, el) {
     const selector = `[provides="${contextLabel}"]`;
-    console.log(`Searching closest ${contextLabel} from`, el);
     if (!el || el === document.getRootNode())
       return void 0;
     const closest = el.closest(selector);
@@ -198,11 +191,13 @@
       this._context.apply(fn);
     }
     consume(message) {
-      this._update(
+      const command = this._update(
         message,
         this.apply.bind(this),
         this._context.value
       );
+      if (command)
+        command(this._context.value);
     }
   }
   function replace(replacements) {
@@ -220,9 +215,12 @@
   const update = (message, apply) => {
     switch (message[0]) {
       case "auth/signin":
-        const { token } = message[1];
+        const { token, redirect } = message[1];
         apply(signIn(token));
-        return;
+        return redirect ? () => {
+          console.log("Redirecting to ", redirect);
+          window.location.assign(redirect);
+        } : void 0;
       case "auth/signout":
         apply(signOut());
         return;
@@ -264,7 +262,6 @@
     static authenticate(token) {
       const authenticatedUser = new AuthenticatedUser(token);
       localStorage.setItem(TOKEN_KEY, token);
-      console.log("Saved token to localStorage", token);
       return authenticatedUser;
     }
     static authenticateFromLocalStorage() {
@@ -303,10 +300,7 @@
           this._effects.push(effect);
           resolve(effect);
         } else {
-          whenProviderReady(
-            this._target,
-            this._contextLabel
-          ).then((provider) => {
+          whenProviderReady(this._target, this._contextLabel).then((provider) => {
             const effect = new Effect(provider, fn);
             this._provider = provider;
             this._effects.push(effect);
@@ -314,7 +308,12 @@
               (ev) => this._handleChange(ev)
             );
             resolve(effect);
-          });
+          }).catch(
+            (err) => console.log(
+              `Observer ${this._contextLabel} failed to locate a provider`,
+              err
+            )
+          );
         }
       });
     }

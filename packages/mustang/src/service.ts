@@ -33,10 +33,11 @@ export class Service<
   }
 
   consume(message: Msg) {
-    this._update(
+    const command = this._update(
       message,
       this.apply.bind(this),
       this._context.value
     );
+    if (command) command(this._context.value);
   }
 }

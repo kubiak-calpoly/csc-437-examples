@@ -26,7 +26,7 @@ export class Provider<T extends object> extends HTMLElement {
 
   constructor(init: T) {
     super();
-    console.log("Constructing context", this);
+    console.log("Constructing context provider", this);
     this.context = new Context<T>(init, this);
   }
 
@@ -44,8 +44,6 @@ export function createContext<T extends object>(
   root: T,
   eventTarget: Provider<T>
 ): T {
-  console.log("creating Context:", JSON.stringify(root));
-
   let proxy = new Proxy<T>(root, {
     get: (target, prop: string, receiver) => {
       if (prop === "then") {
@@ -82,11 +80,6 @@ export function createContext<T extends object>(
           value: newValue
         });
         eventTarget.dispatchEvent(evt);
-        console.log(
-          "dispatched event to target",
-          evt,
-          eventTarget
-        );
       } else {
         console.log(
           `Context['${prop}] was not set to ${newValue}`
@@ -128,7 +121,6 @@ function closestProvider(
   el: Element
 ): Element | undefined {
   const selector = `[provides="${contextLabel}"]`;
-  console.log(`Searching closest ${contextLabel} from`, el);
 
   if (!el || el === document.getRootNode()) return undefined;
 

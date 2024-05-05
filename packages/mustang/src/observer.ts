@@ -18,18 +18,22 @@ export class Observer<T extends object> {
         this._effects.push(effect);
         resolve(effect);
       } else {
-        whenProviderReady<T>(
-          this._target,
-          this._contextLabel
-        ).then((provider: Provider<T>) => {
-          const effect = new Effect<T>(provider, fn);
-          this._provider = provider;
-          this._effects.push(effect);
-          provider.attach((ev: Event) =>
-            this._handleChange(ev as CustomEvent)
+        whenProviderReady<T>(this._target, this._contextLabel)
+          .then((provider: Provider<T>) => {
+            const effect = new Effect<T>(provider, fn);
+            this._provider = provider;
+            this._effects.push(effect);
+            provider.attach((ev: Event) =>
+              this._handleChange(ev as CustomEvent)
+            );
+            resolve(effect);
+          })
+          .catch((err) =>
+            console.log(
+              `Observer ${this._contextLabel} failed to locate a provider`,
+              err
+            )
           );
-          resolve(effect);
-        });
       }
     });
   }

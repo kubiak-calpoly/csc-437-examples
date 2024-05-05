@@ -13,6 +13,7 @@ interface AuthModel {
 
 interface AuthSuccessful {
   token: string;
+  redirect?: string;
 }
 
 type AuthMsg =
@@ -32,9 +33,14 @@ class AuthService extends Service<AuthMsg, AuthModel> {
 const update: Update<AuthMsg, AuthModel> = (message, apply) => {
   switch (message[0]) {
     case "auth/signin":
-      const { token } = message[1] as AuthSuccessful;
+      const { token, redirect } = message[1] as AuthSuccessful;
       apply(signIn(token));
-      return;
+      return redirect
+        ? () => {
+          console.log("Redirecting to ", redirect);
+          window.location.assign(redirect);
+        }
+        : undefined;
     case "auth/signout":
       apply(signOut());
       return;
@@ -54,11 +60,6 @@ class AuthProvider extends Provider<AuthModel> {
   }
 }
 
-interface LoginCredential {
-  username: string;
-  pwd: string;
-}
-
 class APIUser {
   authenticated = false;
   username = "anonymous";
@@ -71,12 +72,16 @@ class APIUser {
   }
 }
 
+interface TokenModel {
+  username: string;
+}
+
 class AuthenticatedUser extends APIUser {
   token: string | undefined;
 
   constructor(token: string) {
     super();
-    const jsonPayload = jwtDecode(token) as LoginCredential;
+    const jsonPayload = jwtDecode(token) as TokenModel;
     console.log("Token payload", jsonPayload);
     this.token = token;
     this.authenticated = true;
@@ -86,7 +91,6 @@ class AuthenticatedUser extends APIUser {
   static authenticate(token: string) {
     const authenticatedUser = new AuthenticatedUser(token);
     localStorage.setItem(TOKEN_KEY, token);
-    console.log("Saved token to localStorage", token);
     return authenticatedUser;
   }
 
