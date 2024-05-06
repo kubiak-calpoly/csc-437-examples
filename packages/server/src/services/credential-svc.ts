@@ -59,14 +59,6 @@ function verify(
   });
 }
 
-function checkExists(username: string) {
-  return new Promise<boolean>((resolve, reject) => {
-    credentialModel
-      .find({ username })
-      .then((found) => resolve(found && found.length > 0));
-  });
-}
-
 function create(username: string, password: string) {
   return new Promise<Credential>((resolve, reject) => {
     if (!username || !password) {

@@ -36,20 +36,26 @@
     <style>
       .page {
         height: 100vh;
+        grid-template-rows: 1fr fit-content(1fr) 1fr;
       }
       main.card {
         align-self: center;
+        grid-column: 3 / span 4;
+      }
+      h2 {
+        grid-column: start / end;
+        align-self: end;
+      }
+      p {
+        grid-column: 2 / -2;
+        text-align: center;
       }
     </style>
   </head>
   <body class="page">
-    <main class="card">
-      <mu-auth>
-        <h2>Signup as a new User</h2>
-        <p
-          >Already signed up? Then you can
-          <a href="./login.html">log in</a> instead.
-        </p>
+    <mu-auth>
+      <h2>Signup as a new User</h2>
+      <main class="card">
         <restful-form new src="/auth/register">
           <label>
             <span>Username:</span>
@@ -60,7 +66,11 @@
             <input type="password" name="password" />
           </label>
         </restful-form>
-      </mu-auth>
-    </main>
+      </main>
+      <p
+        >Already signed up? Then you can
+        <a href="./login.html">log in</a> instead.
+      </p>
+    </mu-auth>
   </body>
 </html>

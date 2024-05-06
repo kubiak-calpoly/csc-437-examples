@@ -23,7 +23,6 @@
         }
       }
     </script>
-    <script type="module" src="/js/blazing-header.js"></script>
     <script type="module" src="/js/login-form.js"></script>
     <script type="module">
       import { define, Auth } from "@calpoly/mustang";
@@ -33,21 +32,26 @@
     <style>
       .page {
         height: 100vh;
+        grid-template-rows: 1fr fit-content(1fr) 1fr;
       }
       main.card {
         align-self: center;
+        grid-column: 3 / span 4;
+      }
+      h2 {
+        grid-column: start / end;
+        align-self: end;
+      }
+      p {
+        grid-column: 2 / -2;
+        text-align: center;
       }
     </style>
   </head>
   <body class="page">
-    <main class="card">
-      <mu-auth>
-        <blazing-header></blazing-header>
-        <h2>User Login</h2>
-        <p
-          >Or did you want to
-          <a href="./newuser.html">Sign up as a new user</a>?
-        </p>
+    <mu-auth>
+      <h2>User Login</h2>
+      <main class="card">
         <login-form>
           <label>
             <span>Username:</span>
@@ -58,7 +62,11 @@
             <input type="password" name="password" />
           </label>
         </login-form>
-      </mu-auth>
-    </main>
+      </main>
+      <p
+        >Or did you want to
+        <a href="./newuser.html">Sign up as a new user</a>?
+      </p>
+    </mu-auth>
   </body>
 </html>
