@@ -11,9 +11,5 @@
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules"],
-<<<<<<< HEAD:packages/express-backend/tsconfig.json
-  "lib": ["esnext", "cypress"]
-=======
   "lib": ["esnext"]
->>>>>>> mod-4:packages/server/tsconfig.json
 }

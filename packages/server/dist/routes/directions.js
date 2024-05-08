@@ -1,7 +1,9 @@
 "use strict";
+var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __export = (target, all) => {
   for (var name in all)
@@ -15,7 +17,6 @@ var __copyProps = (to, from, except, desc) => {
   }
   return to;
 };
-<<<<<<<< HEAD:packages/server/dist/routes/directions.js
 var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
   // If the importer is in node compatibility mode or this is not an ESM
   // file that has been converted to a CommonJS file using a Babel-
@@ -44,52 +45,3 @@ router.get("/", (req, res) => {
   }).catch((error) => res.status(500).send(error));
 });
 var directions_default = router;
-========
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-var profiles_exports = {};
-__export(profiles_exports, {
-  default: () => profiles_default,
-  get: () => get
-});
-module.exports = __toCommonJS(profiles_exports);
-let profiles = [
-  {
-    id: "blaze",
-    name: "Blaze Pasquale",
-    nickname: void 0,
-    home: "Oakland, CA",
-    airports: ["SFO", "OAK", "SJC"],
-    color: "#8A81BE",
-    avatar: "/data/avatars/Blaze Pasquale.png"
-  },
-  {
-    id: "mondy",
-    name: "Pia Mondrian",
-    nickname: "Mondy",
-    home: "Ventura, CA",
-    airports: ["LAX"],
-    avatar: void 0,
-    color: void 0
-  },
-  {
-    id: "izzy",
-    name: "Isabel Nuton",
-    nickname: "Izzy",
-    home: "San Miguel de Allende, Gto., Mexico",
-    airports: ["BJX", "QRO"],
-    avatar: void 0,
-    color: void 0
-  }
-];
-function get(id) {
-  const found = profiles.find((t) => t.id === id);
-  if (found)
-    return found;
-  throw `Profile not found: ${id}`;
-}
-var profiles_default = { get };
-// Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  get
-});
->>>>>>>> mod-4:packages/server/dist/services/profiles.js
