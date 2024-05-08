@@ -326,7 +326,8 @@ class Observer {
 class Effect {
   constructor(observable, fn) {
     this._provider = observable;
-    this._effectFn = fn;
+    if (fn)
+      this.setEffect(fn);
   }
   get context() {
     return this._provider.context;

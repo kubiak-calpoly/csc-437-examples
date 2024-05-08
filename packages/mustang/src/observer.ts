@@ -56,7 +56,7 @@ export class Effect<T extends object> {
 
   constructor(observable: Provider<T>, fn?: EffectFn<T>) {
     this._provider = observable;
-    this._effectFn = fn;
+    if (fn) this.setEffect(fn);
   }
 
   get context() {

@@ -72,7 +72,7 @@ class APIUser {
   }
 }
 
-interface TokenModel {
+interface PayloadModel {
   username: string;
 }
 
@@ -81,7 +81,7 @@ class AuthenticatedUser extends APIUser {
 
   constructor(token: string) {
     super();
-    const jsonPayload = jwtDecode(token) as TokenModel;
+    const jsonPayload = jwtDecode(token) as PayloadModel;
     console.log("Token payload", jsonPayload);
     this.token = token;
     this.authenticated = true;

@@ -242,20 +242,18 @@ export class ProfileViewElement extends HTMLElement {
   }
 
   connectedCallback() {
-    this._authObserver.observe().then((obs) => {
-      obs.setEffect(({ user }) => {
-        console.log("Setting user as effect of change", user);
-        this._user = user;
-        if (this.src) {
-          console.log("LOading JSON", this.authorization);
-          loadJSON(
-            this.src,
-            this,
-            renderSlots,
-            this.authorization
-          );
-        }
-      });
+    this._authObserver.observe(({ user }) => {
+      console.log("Setting user as effect of change", user);
+      this._user = user;
+      if (this.src) {
+        console.log("LOading JSON", this.authorization);
+        loadJSON(
+          this.src,
+          this,
+          renderSlots,
+          this.authorization
+        );
+      }
     });
   }
 

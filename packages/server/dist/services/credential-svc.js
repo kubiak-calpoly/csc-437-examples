@@ -54,7 +54,7 @@ const credentialSchema = new import_mongoose.Schema(
   { collection: "user_credentials" }
 );
 const credentialModel = (0, import_mongoose.model)(
-  "Credential ",
+  "Credential",
   credentialSchema
 );
 function verify(username, password) {
@@ -84,11 +84,6 @@ function verify(username, password) {
       else
         reject("Invalid username or password");
     });
-  });
-}
-function checkExists(username) {
-  return new Promise((resolve, reject) => {
-    credentialModel.find({ username }).then((found) => resolve(found && found.length > 0));
   });
 }
 function create(username, password) {
