@@ -4,14 +4,7 @@
   "description": "Code examples for CSC 437 — Dynamic Web Development",
   "main": "index.js",
   "scripts": {
-    "build:docs": "npx @11ty/eleventy",
-    "build:frontend": "npm run -w lit-frontend build",
-    "docs": "npm run build:docs && npm run start:docs",
-    "start": "npm run build:frontend && npm run start:backend",
-    "start:docs": "npx @11ty/eleventy --serve",
-    "start:proto": "npm -w proto start",
-    "start:frontend": "npm -w lit-frontend run dev",
-    "start:backend": "npm -w express-backend run start",
+    "start": "npm run -w server start:proto",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
