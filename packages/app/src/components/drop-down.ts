@@ -1,6 +1,10 @@
 import { html, css, LitElement } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 export class DropdownElement extends LitElement {
+  @property({ reflect: true, type: Boolean })
+  open: boolean;
+
   render() {
     return html`
       <slot name="actuator"><button> Menu </button></slot>
@@ -37,11 +41,9 @@ export class DropdownElement extends LitElement {
   constructor() {
     super();
 
-    this.addEventListener("click", () => this.toggle());
-  }
-
-  toggle() {
-    if (this.hasAttribute("open")) this.removeAttribute("open");
-    else this.setAttribute("open", "open");
+    this.addEventListener(
+      "click",
+      () => (this.open = !this.open)
+    );
   }
 }
