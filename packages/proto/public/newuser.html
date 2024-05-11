@@ -23,36 +23,54 @@
         }
       }
     </script>
-    <script type="module" src="/js/blazing-header.js"></script>
-    <script type="module" src="/js/profile-view.js"></script>
+    <script type="module" src="/js/restful-form.js"></script>
     <script type="module">
       import { relayEvent } from "/js/relay-event.js";
       window.relayEvent = relayEvent;
-    </script>
-    <script type="module">
-      function toggleDarkMode(page, checked) {
-        page.classList.toggle("dark-mode", checked);
-      }
-
-      document.body.addEventListener("dark-mode", (event) =>
-        toggleDarkMode(
-          event.currentTarget,
-          event.detail.checked
-        )
-      );
     </script>
     <script type="module">
       import { define, Auth } from "@calpoly/mustang";
 
       define({ "mu-auth": Auth.Provider });
     </script>
+    <style>
+      .page {
+        height: 100vh;
+        grid-template-rows: 1fr fit-content(1fr) 1fr;
+      }
+      main.card {
+        align-self: center;
+        grid-column: 3 / span 4;
+      }
+      h2 {
+        grid-column: start / end;
+        align-self: end;
+      }
+      p {
+        grid-column: 2 / -2;
+        text-align: center;
+      }
+    </style>
   </head>
   <body class="page">
-    <mu-auth provides="blazing:auth" redirect="../login.html">
-      <blazing-header></blazing-header>
-      <main>
-        <profile-view src="/api/profiles/blaze"> </profile-view>
+    <mu-auth>
+      <h2>Signup as a new User</h2>
+      <main class="card">
+        <restful-form new src="/auth/register">
+          <label>
+            <span>Username:</span>
+            <input name="username" autocomplete="off" />
+          </label>
+          <label>
+            <span>Password:</span>
+            <input type="password" name="password" />
+          </label>
+        </restful-form>
       </main>
+      <p
+        >Already signed up? Then you can
+        <a href="./login.html">log in</a> instead.
+      </p>
     </mu-auth>
   </body>
 </html>

@@ -16,10 +16,7 @@ body {
   align-items: baseline;
   padding: 0 calc(0.5 * var(--page-grid-gap));
 }
-.page > header {
-  grid-column: start / end;
-  margin: 0 calc(-0.5 * var(--page-grid-gap));
-}
+
 .page > section {
   grid-template-columns: subgrid;
   display: grid;
@@ -40,19 +37,7 @@ body {
 .page > main > * {
   grid-column: start / span var(--page-main-columns);
 }
-.page > header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  padding: var(--size-spacing-medium);
-  /* flex-wrap: wrap;
-  gap: var(--size-spacing-xlarge); */
-  background-color: var(--color-background-header);
-  color: var(--color-text-inverted);
-}
-.page > header a[href] {
-  color: var(--color-link-inverted);
-}
+
 h1,
 h2,
 h3,

@@ -1,8 +1,34 @@
 import bcrypt from "bcryptjs";
-import credentialModel from "../mongo/credential";
-import { Credential } from "ts-models";
+import { Schema, model } from "mongoose";
+import { Credential, Role } from "../models/credential";
 
-export function verify(
+const credentialSchema = new Schema<Credential>(
+  {
+    username: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    hashedPassword: {
+      type: String,
+      required: true
+    },
+    roles: [
+      {
+        $role: { type: String, required: true },
+        groupid: String
+      }
+    ]
+  },
+  { collection: "user_credentials" }
+);
+
+const credentialModel = model<Credential>(
+  "Credential",
+  credentialSchema
+);
+
+function verify(
   username: string,
   password: string
 ): Promise<string> {
@@ -33,15 +59,7 @@ export function verify(
   });
 }
 
-export function checkExists(username: string) {
-  return new Promise<boolean>((resolve, reject) => {
-    credentialModel
-      .find({ username })
-      .then((found) => resolve(found && found.length > 0));
-  });
-}
-
-export function create(username: string, password: string) {
+function create(username: string, password: string) {
   return new Promise<Credential>((resolve, reject) => {
     if (!username || !password) {
       reject("must provide username and password");
@@ -68,4 +86,4 @@ export function create(username: string, password: string) {
   });
 }
 
-export default { checkExists, create, verify };
+export default { create, verify };

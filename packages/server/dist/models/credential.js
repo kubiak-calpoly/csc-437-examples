@@ -3,10 +3,6 @@ var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __export = (target, all) => {
-  for (var name in all)
-    __defProp(target, name, { get: all[name], enumerable: true });
-};
 var __copyProps = (to, from, except, desc) => {
   if (from && typeof from === "object" || typeof from === "function") {
     for (let key of __getOwnPropNames(from))
@@ -16,6 +12,7 @@ var __copyProps = (to, from, except, desc) => {
   return to;
 };
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+<<<<<<<< HEAD:packages/server/dist/mongo/entourage.js
 var entourage_exports = {};
 __export(entourage_exports, {
   default: () => entourage_default
@@ -37,3 +34,7 @@ const entourageModel = (0, import_mongoose.model)(
   entourageSchema
 );
 var entourage_default = entourageModel;
+========
+var credential_exports = {};
+module.exports = __toCommonJS(credential_exports);
+>>>>>>>> mod-6:packages/server/dist/models/credential.js

@@ -1,4 +1,4 @@
-import { Document, Model, Schema, model } from "mongoose";
+import { Schema, model } from "mongoose";
 import { Profile } from "../models/profile";
 
 const ProfileSchema = new Schema<Profile>(
@@ -23,7 +23,7 @@ function index(): Promise<Profile[]> {
 function get(userid: String): Promise<Profile> {
   return ProfileModel.find({ userid })
     .then((list) => list[0])
-    .catch((err) => {
+    .catch(() => {
       throw `${userid} Not Found`;
     });
 }
