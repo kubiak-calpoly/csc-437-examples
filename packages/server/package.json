@@ -7,6 +7,8 @@
     "dev": "cross-env STATIC=../proto/public nodemon",
     "build": "npx etsc",
     "start": "npm run build && npm run start:node",
+    "start:api": "cross-env STATIC=./public npm run start",
+    "start:app": "cross-env STATIC=../app npm run start",
     "start:node": "node dist/index.js",
     "start:proto": "cross-env STATIC=../proto/public npm run start",
     "check": "tsc --noEmit"

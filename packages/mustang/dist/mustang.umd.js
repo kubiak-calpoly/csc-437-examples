@@ -288,6 +288,24 @@
       ([k, v]) => customElements.define(k, v)
     );
   }
+  function relay(event2, customType, detail) {
+    const relay2 = event2.currentTarget;
+    const customEvent = new CustomEvent(customType, {
+      bubbles: true,
+      composed: true,
+      detail
+    });
+    console.log(
+      `Relaying event from ${event2.type}:`,
+      customEvent
+    );
+    relay2.dispatchEvent(customEvent);
+    event2.stopPropagation();
+  }
+  const event = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    relay
+  }, Symbol.toStringTag, { value: "Module" }));
   class Observer {
     constructor(target, contextLabel) {
       this._effects = [];
@@ -351,6 +369,7 @@
   }
   exports2.Auth = auth;
   exports2.Effect = Effect;
+  exports2.Events = event;
   exports2.Observer = Observer;
   exports2.define = define2;
   Object.defineProperty(exports2, Symbol.toStringTag, { value: "Module" });

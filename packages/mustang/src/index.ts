@@ -1,5 +1,6 @@
 export * as Auth from "./auth";
 export * from "./define";
+export * as Events from "./event";
 export * from "./observer";
 // export * from "./history";
 // export * from "./message";

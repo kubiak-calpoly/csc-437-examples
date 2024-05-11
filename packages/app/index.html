@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com" />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,200;0,400;0,700;1,700&family=Merriweather:wght@400;700&display=swap"
+      rel="stylesheet" />
+    <link rel="stylesheet" href="/styles/reset.css" />
+    <link rel="stylesheet" href="/styles/tokens.css" />
+    <link rel="stylesheet" href="/styles/page.css" />
+    <script type="module">
+      import { define, Auth, Events } from "@calpoly/mustang";
+      import { BlazingHeaderElement } from "/src/components/blazing-header";
+
+      define({
+        "mu-auth": Auth.Provider,
+        "blazing-header": BlazingHeaderElement
+      });
+
+      window.relayEvent = Events.relay;
+    </script>
+    <script type="module">
+      function toggleDarkMode(page, checked) {
+        page.classList.toggle("dark-mode", checked);
+      }
+
+      document.body.addEventListener("dark-mode", (event) =>
+        toggleDarkMode(
+          event.currentTarget,
+          event.detail.checked
+        )
+      );
+    </script>
+    <style>
+      mu-auth {
+        display: contents;
+      }
+    </style>
+  </head>
+  <body>
+    <mu-auth provides="blazing-auth">
+      <article class="page">
+        <blazing-header></blazing-header>
+        <main>
+          <h2>
+            12 days in
+            <a href="place.html">Italy</a>
+          </h2>
+
+          <dl class="itinerary">
+            <dt>
+              <time datetime="2024-10-13">13 Oct</time> -
+              <time datetime="2024-10-14">14 Oct</time>
+            </dt>
+            <dd class="transportation">
+              <details>
+                <summary>SFO &rarr; VCE via FRA</summary>
+                <ol>
+                  <li>
+                    <h4>United 926</h4>
+                    <dl>
+                      <dt>Date</dt>
+                      <dd>
+                        <time datetime="2024-10-13"
+                          >13 Oct</time
+                        >
+                      </dd>
+                      <dt>Depart</dt>
+                      <dd>San Francisco (SFO)</dd>
+                      <dd>
+                        <time
+                          datetime="2024-10-13 19:05:00-0800">
+                          7:05 PM
+                        </time>
+                      </dd>
+                      <dt>Arrive</dt>
+                      <dd>Frankfurt (FRA)</dd>
+                      <dd>
+                        <time
+                          datetime="2024-10-14 14:55:00+0100">
+                          2:55 PM
+                          <sub>+1 day</sub>
+                        </time>
+                      </dd>
+                    </dl>
+                  </li>
+                  <li>
+                    <h4>Lufthansa 330</h4>
+                    <dl>
+                      <dt>Date</dt>
+                      <dd>
+                        <time datetime="2024-10-14"
+                          >14 Oct</time
+                        >
+                      </dd>
+                      <dt>Depart</dt>
+                      <dd>Frankfurt (FRA)</dd>
+                      <dd>
+                        <time
+                          datetime="2024-10-14 17:15:00+0100">
+                          5:15 PM
+                        </time>
+                      </dd>
+                      <dt>Arrive</dt>
+                      <dd>Venice (VCE)</dd>
+                      <dd>
+                        <time
+                          datetime="2024-10-14 18:30:00+0100">
+                          6:30 PM
+                        </time>
+                      </dd>
+                    </dl>
+                  </li>
+                </ol>
+              </details>
+            </dd>
+
+            <dt>
+              <time datetime="2024-10-14">14 Oct</time> -
+              <time datetime="2024-10-18">18 Oct</time>
+            </dt>
+            <dd class="destination">
+              <html-fragment href="destination/venice.html">
+                <h3
+                  ><a
+                    href="#"
+                    onclick="relayEvent(event, 'html-fragment:open')">
+                    Venice
+                  </a></h3
+                >
+              </html-fragment>
+            </dd>
+
+            <dt><time datetime="2024-10-18">18 Oct</time></dt>
+            <dd class="transportation">
+              <details>
+                <summary>Venice &rarr; Florence</summary>
+                <h4>9407 Frecciarossa</h4>
+                <dl>
+                  <dt>Depart</dt>
+                  <dd>Venezia S. Lucia</dd>
+                  <dd>
+                    <time datetime="2024-10-18 09:25:00+0100">
+                      9:25 AM
+                    </time>
+                  </dd>
+                  <dt>Arrive</dt>
+                  <dd>Firenze S.M.N.</dd>
+                  <dd>
+                    <time datetime="2024-10-18 11:30:00+0100">
+                      11:30 AM
+                    </time>
+                  </dd>
+                </dl>
+              </details>
+            </dd>
+
+            <dt>
+              <time datetime="2024-10-18">18 Oct</time> -
+              <time datetime="2024-10-21">21 Oct</time>
+            </dt>
+            <dd class="destination">
+              <html-fragment
+                open
+                href="destination/florence.html">
+              </html-fragment>
+            </dd>
+
+            <dt><time datetime="2024-10-21">21 Oct</time></dt>
+            <dd class="transportation">
+              <details>
+                <summary>Florence &rarr; Rome</summary>
+                <h4>9435 Frecciarossa</h4>
+                <dl class="timings">
+                  <dt>Depart</dt>
+                  <dd>Firenze S.M.N.</dd>
+                  <dd>
+                    <time datetime="2024-10-21 15:38:00+0100">
+                      3:38 PM
+                    </time>
+                  </dd>
+                  <dt>Arrive</dt>
+                  <dd>Roma Termini</dd>
+                  <dd>
+                    <time datetime="2024-10-21 17:10:00+0100">
+                      5:10 PM
+                    </time>
+                  </dd>
+                </dl>
+              </details>
+            </dd>
+
+            <dt>
+              <time datetime="2024-10-21">21 Oct</time> -
+              <time datetime="2024-10-25">25 Oct</time>
+            </dt>
+            <dd class="destination">
+              <html-fragment href="destination/rome.html">
+                <h3
+                  ><a
+                    href="#"
+                    onclick="relayEvent(event, 'html-fragment:open')">
+                    Rome
+                  </a></h3
+                >
+              </html-fragment>
+            </dd>
+
+            <dt><time datetime="2024-10-25">25 Oct</time></dt>
+            <dd class="transportation">
+              <details>
+                <summary>FCO &rarr; SFO via FRA</summary>
+                <ol>
+                  <li>
+                    <h4> Lufthansa LH233</h4>
+                    <dl>
+                      <dt>Date</dt>
+                      <dd>
+                        <time datetime="2024-10-25"
+                          >25 Oct</time
+                        >
+                      </dd>
+                      <dt>Depart</dt>
+                      <dd>Rome (FCO)</dd>
+                      <dd>
+                        <time
+                          datetime="2024-10-25 13:25:00+0100">
+                          1:25 PM
+                        </time>
+                      </dd>
+                      <dt>Arrive</dt>
+                      <dd>Frankfurt (FRA)</dd>
+                      <dd>
+                        <time
+                          datetime="2024-10-25 15:20:00+0100">
+                          3:20 PM
+                        </time>
+                      </dd>
+                    </dl>
+                  </li>
+                  <li>
+                    <h4>United UA927</h4>
+                    <dl>
+                      <dt>Date</dt>
+                      <dd>
+                        <time datetime="2024-10-25"
+                          >25 Oct</time
+                        >
+                      </dd>
+                      <dt>Depart</dt>
+                      <dd>Frankfurt (FRA)</dd>
+                      <dd>
+                        <time
+                          datetime="2024-10-25 17:25:00-0800">
+                          5:25 PM
+                        </time>
+                      </dd>
+                      <dt>Arrive</dt>
+                      <dd>San Francisco (SFO)</dd>
+                      <dd>
+                        <time
+                          datetime="2024-10-25 9:45:00+0100">
+                          7:45 PM
+                        </time>
+                      </dd>
+                    </dl>
+                  </li>
+                </ol>
+              </details>
+            </dd>
+          </dl>
+        </main>
+
+        <section>
+          <h2>Entourage</h2>
+          <ul>
+            <li><a href="person.html">Blaze Pasquale</a></li>
+            <li><a href="person.html">Isabel Nootin</a></li>
+            <li><a href="person.html">Pia Mondrian</a></li>
+          </ul>
+        </section>
+      </article>
+    </mu-auth>
+  </body>
+</html>
