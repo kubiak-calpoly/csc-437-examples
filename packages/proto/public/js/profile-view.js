@@ -269,7 +269,7 @@ export class ProfileViewElement extends HTMLElement {
           this.mode !== "new" &&
           this.authorization
         ) {
-          console.log("LOading JSON", this.authorization);
+          console.log("Loading JSON", this.authorization);
           loadJSON(
             this.src,
             this,

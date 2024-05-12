@@ -1,7 +1,10 @@
 export * as Auth from "./auth";
+export * from "./components";
 export * from "./define";
 export * as Events from "./event";
+export { html, shadow } from "./html";
 export * from "./observer";
+export * as Rest from "./rest";
 // export * from "./history";
 // export * from "./message";
 // export * from "./rest";

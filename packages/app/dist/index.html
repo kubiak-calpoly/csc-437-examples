@@ -15,34 +15,14 @@
     <link rel="stylesheet" href="/styles/reset.css" />
     <link rel="stylesheet" href="/styles/tokens.css" />
     <link rel="stylesheet" href="/styles/page.css" />
-    <script type="module">
-      import { define, Auth, Events } from "@calpoly/mustang";
-      import { BlazingHeaderElement } from "/src/components/blazing-header";
-
-      define({
-        "mu-auth": Auth.Provider,
-        "blazing-header": BlazingHeaderElement
-      });
-
-      window.relayEvent = Events.relay;
-    </script>
-    <script type="module">
-      function toggleDarkMode(page, checked) {
-        page.classList.toggle("dark-mode", checked);
-      }
-
-      document.body.addEventListener("dark-mode", (event) =>
-        toggleDarkMode(
-          event.currentTarget,
-          event.detail.checked
-        )
-      );
-    </script>
+    
+    
     <style>
       mu-auth {
         display: contents;
       }
     </style>
+    <script type="module" crossorigin src="/assets/index-168af106.js"></script>
   </head>
   <body>
     <mu-auth provides="blazing:auth">

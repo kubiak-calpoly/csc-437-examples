@@ -114,4 +114,6 @@ function signOut() {
   return replace<AuthModel>({ user: new APIUser(), token: "" });
 }
 
-export { AuthProvider as Provider, type AuthModel as Model };
+export {
+  AuthenticatedUser, AuthProvider as Provider, APIUser as User, type AuthModel as Model
+};

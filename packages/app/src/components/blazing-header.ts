@@ -1,32 +1,39 @@
-import { Auth, Observer, define } from "@calpoly/mustang";
+import {
+  Auth,
+  DropdownElement,
+  Events,
+  Observer,
+  define
+} from "@calpoly/mustang";
 import { LitElement, css, html } from "lit";
-import { DropdownElement } from "./drop-down";
-
-define({ "drop-down": DropdownElement });
+import { property } from "lit/decorators.js";
 
 export class BlazingHeaderElement extends LitElement {
+  static uses = define({
+    "drop-down": DropdownElement
+  });
+
+  @property()
+  username = "anonymous";
+
   render() {
     return html`<header>
       <h1>Blazing Travels</h1>
       <drop-down>
         <a href="#" slot="actuator">
-          <slot name="greeting">Hello, user</slot></a
+          <slot name="greeting"
+            >Hello, ${this.username}</slot
+          ></a
         >
         <ul>
           <li>
-            <label
-              onchange="relayEvent(event, 'dark-mode', 
-                {checked: event.target.checked})">
+            <label @change=${toggleDarkMode}>
               <input type="checkbox" autocomplete="off" />
               Dark mode
             </label>
           </li>
           <li>
-            <a
-              href="#"
-              onclick="relayEvent(event, 'auth:message', ['auth/signout'])"
-              >Sign out</a
-            >
+            <a href="#" @click=${signOutUser}> Sign out </a>
           </li>
         </ul>
       </drop-down>
@@ -76,9 +83,21 @@ export class BlazingHeaderElement extends LitElement {
     super.connectedCallback();
     this._authObserver.observe(({ user }: Auth.Model) => {
       if (user) {
-        const { username } = user;
-        console.log("Hello, ", username);
+        this.username = user.username;
       }
     });
   }
+}
+
+type Checkbox = HTMLInputElement & { checked: boolean };
+
+function toggleDarkMode(ev: InputEvent) {
+  const target = ev.target as Checkbox;
+  const checked = target.checked;
+
+  Events.relay(ev, "dark-mode", { checked });
+}
+
+function signOutUser(ev: Event) {
+  Events.relay(ev, "auth:message", ["auth/signout"]);
 }
