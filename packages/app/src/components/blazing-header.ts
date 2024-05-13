@@ -77,11 +77,14 @@ export class BlazingHeaderElement extends LitElement {
     }
   `;
 
-  _authObserver = new Observer(this, "blazing:auth");
+  _authObserver = new Observer<Auth.Model>(
+    this,
+    "blazing:auth"
+  );
 
   connectedCallback() {
     super.connectedCallback();
-    this._authObserver.observe(({ user }: Auth.Model) => {
+    this._authObserver.observe(({ user }) => {
       if (user) {
         this.username = user.username;
       }
