@@ -179,9 +179,9 @@ class Service {
       this.consume(message);
     });
   }
-  constructor(update2, context, eventType = "service:message") {
+  constructor(update, context, eventType = "service:message") {
     this._context = context;
-    this._update = update2;
+    this._update = update;
     this._eventType = eventType;
   }
   apply(fn) {
@@ -202,36 +202,66 @@ function replace(replacements) {
 }
 const TOKEN_KEY = "mu:auth:jwt";
 const _AuthService = class _AuthService2 extends Service {
-  constructor(context) {
-    super(update, context, _AuthService2.EVENT_TYPE);
+  constructor(context, redirectForLogin) {
+    super(
+      (m, a) => this.update(m, a),
+      context,
+      _AuthService2.EVENT_TYPE
+    );
+    this._redirectForLogin = redirectForLogin;
+  }
+  update(message, apply) {
+    switch (message[0]) {
+      case "auth/signin":
+        const { token, redirect } = message[1];
+        apply(signIn(token));
+        return redirection(redirect);
+      case "auth/signout":
+        apply(signOut());
+        return redirection(this._redirectForLogin);
+      case "auth/redirect":
+        apply(signOut());
+        return redirection(this._redirectForLogin, {
+          next: window.location.href
+        });
+      default:
+        const unhandled = message[0];
+        throw new Error(
+          `Unhandled Auth message "${unhandled}"`
+        );
+    }
   }
 };
 _AuthService.EVENT_TYPE = "auth:message";
 _AuthService.dispatch = dispatcher(_AuthService.EVENT_TYPE);
 let AuthService = _AuthService;
-const update = (message, apply) => {
-  switch (message[0]) {
-    case "auth/signin":
-      const { token, redirect } = message[1];
-      apply(signIn(token));
-      return redirect ? () => {
-        console.log("Redirecting to ", redirect);
-        window.location.assign(redirect);
-      } : void 0;
-    case "auth/signout":
-      apply(signOut());
-      return;
-    default:
-      const unhandled = message[0];
-      throw new Error(`Unhandled Auth message "${unhandled}"`);
-  }
-};
+function redirection(redirect, query = {}) {
+  if (!redirect)
+    return void 0;
+  const base = window.location.href;
+  const target = new URL(redirect, base);
+  Object.entries(query).forEach(
+    ([k, v]) => target.searchParams.set(k, v)
+  );
+  return () => {
+    console.log("Redirecting to ", redirect);
+    window.location.assign(target);
+  };
+}
 class AuthProvider extends Provider {
+  get redirect() {
+    return this.getAttribute("redirect") || void 0;
+  }
   constructor() {
     super({
       user: AuthenticatedUser.authenticateFromLocalStorage()
     });
-    const service = new AuthService(this.context);
+  }
+  connectedCallback() {
+    const service = new AuthService(
+      this.context,
+      this.redirect
+    );
     service.attach(this);
   }
 }
@@ -273,7 +303,13 @@ function signIn(token) {
   });
 }
 function signOut() {
-  return replace({ user: new APIUser(), token: "" });
+  return (model) => {
+    const oldUser = model.user;
+    return {
+      user: oldUser && oldUser.authenticated ? APIUser.deauthenticate(oldUser) : oldUser,
+      token: ""
+    };
+  };
 }
 const auth = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
@@ -431,8 +467,8 @@ const _FormElement = class _FormElement2 extends HTMLElement {
     );
     shadow(_FormElement2.template).attach(this);
     if (this.form) {
-      this.form.addEventListener("submit", (event2) => {
-        event2.preventDefault();
+      this.form.addEventListener("submit", (event) => {
+        event.preventDefault();
         if (this.src) {
           console.log("Submitting form", this._state);
           const method = this.isNew ? "POST" : "PUT";
@@ -445,7 +481,7 @@ const _FormElement = class _FormElement2 extends HTMLElement {
             this.authorization
           ).then((json) => populateForm(json, this)).then((json) => {
             const customType = `mu-rest-form:${action}`;
-            const event22 = new CustomEvent(customType, {
+            const event2 = new CustomEvent(customType, {
               bubbles: true,
               composed: true,
               detail: {
@@ -454,13 +490,13 @@ const _FormElement = class _FormElement2 extends HTMLElement {
                 url: src
               }
             });
-            this.dispatchEvent(event22);
+            this.dispatchEvent(event2);
           });
         }
       });
     }
-    this.addEventListener("change", (event2) => {
-      const target = event2.target;
+    this.addEventListener("change", (event) => {
+      const target = event.target;
       if (target) {
         const name = target.name;
         const value = target.value;

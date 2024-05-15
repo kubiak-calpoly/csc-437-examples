@@ -18,6 +18,6 @@
     "http-server": "^14.1.1"
   },
   "dependencies": {
-    "@calpoly/mustang": "^0.1.1"
+    "@calpoly/mustang": "^0.1.3"
   }
 }
