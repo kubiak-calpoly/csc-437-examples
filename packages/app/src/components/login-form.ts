@@ -25,7 +25,7 @@ export class LoginFormElement extends LitElement {
       (event: Event) => {
         const detail = (event as CustomEvent).detail;
         const { token } = detail.created;
-        const redirect = this.next;
+        const redirect = this.next || "/";
         console.log("Login successful", detail, redirect);
 
         Events.relay(event, "auth:message", [
