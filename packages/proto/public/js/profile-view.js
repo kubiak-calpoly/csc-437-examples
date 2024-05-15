@@ -1,6 +1,8 @@
 import { prepareTemplate } from "./template.js";
 import { loadJSON } from "./json-loader.js";
 import { Auth, Observer } from "@calpoly/mustang";
+import "./restful-form.js";
+import "./input-array.js";
 
 export class ProfileViewElement extends HTMLElement {
   static observedAttributes = ["src", "mode"];
@@ -252,7 +254,20 @@ export class ProfileViewElement extends HTMLElement {
           this,
           renderSlots,
           this.authorization
-        );
+        ).catch((error) => {
+          const { status } = error;
+          if (status === 401) {
+            const message = new CustomEvent("auth:message", {
+              bubbles: true,
+              composed: true,
+              detail: ["auth/redirect"]
+            });
+            console.log("Dispatching", message);
+            this.dispatchEvent(message);
+          } else {
+            console.log("Error:", error);
+          }
+        });
       }
     });
   }
@@ -269,7 +284,7 @@ export class ProfileViewElement extends HTMLElement {
           this.mode !== "new" &&
           this.authorization
         ) {
-          console.log("LOading JSON", this.authorization);
+          console.log("Loading JSON", this.authorization);
           loadJSON(
             this.src,
             this,

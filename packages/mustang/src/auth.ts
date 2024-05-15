@@ -2,7 +2,7 @@ import { jwtDecode } from "jwt-decode";
 import { Context, Provider } from "./context";
 import { dispatcher } from "./message";
 import { Service } from "./service";
-import { Update, replace } from "./update";
+import { ApplyMap, replace } from "./update";
 
 const TOKEN_KEY = "mu:auth:jwt";
 
@@ -18,44 +18,87 @@ interface AuthSuccessful {
 
 type AuthMsg =
   | ["auth/signin", AuthSuccessful]
-  | ["auth/signout"];
+  | ["auth/signout"]
+  | ["auth/redirect"];
 
 class AuthService extends Service<AuthMsg, AuthModel> {
   static EVENT_TYPE = "auth:message";
 
-  constructor(context: Context<AuthModel>) {
-    super(update, context, AuthService.EVENT_TYPE);
+  _redirectForLogin: string | undefined;
+
+  constructor(
+    context: Context<AuthModel>,
+    redirectForLogin: string | undefined
+  ) {
+    super(
+      (m, a) => this.update(m, a),
+      context,
+      AuthService.EVENT_TYPE
+    );
+    this._redirectForLogin = redirectForLogin;
+  }
+
+  update(message: AuthMsg, apply: ApplyMap<AuthModel>) {
+    switch (message[0]) {
+      case "auth/signin":
+        const { token, redirect } =
+          message[1] as AuthSuccessful;
+        apply(signIn(token));
+        return redirection(redirect);
+      case "auth/signout":
+        apply(signOut());
+        return redirection(this._redirectForLogin);
+      case "auth/redirect":
+        apply(signOut());
+        return redirection(this._redirectForLogin, {
+          next: window.location.href
+        });
+      default:
+        const unhandled: never = message[0];
+        throw new Error(
+          `Unhandled Auth message "${unhandled}"`
+        );
+    }
   }
 
   static dispatch = dispatcher(AuthService.EVENT_TYPE);
 }
 
-const update: Update<AuthMsg, AuthModel> = (message, apply) => {
-  switch (message[0]) {
-    case "auth/signin":
-      const { token, redirect } = message[1] as AuthSuccessful;
-      apply(signIn(token));
-      return redirect
-        ? () => {
-          console.log("Redirecting to ", redirect);
-          window.location.assign(redirect);
-        }
-        : undefined;
-    case "auth/signout":
-      apply(signOut());
-      return;
-    default:
-      const unhandled: never = message[0];
-      throw new Error(`Unhandled Auth message "${unhandled}"`);
-  }
-};
+function redirection(
+  redirect: string | undefined,
+  query: { [key: string]: string } = {}
+) {
+  if (!redirect) return undefined;
+
+  const base = window.location.href;
+  const target = new URL(redirect, base);
+
+  Object.entries(query).forEach(([k, v]) =>
+    target.searchParams.set(k, v)
+  );
+
+  return () => {
+    console.log("Redirecting to ", redirect);
+    window.location.assign(target);
+  };
+}
 
 class AuthProvider extends Provider<AuthModel> {
+  get redirect() {
+    return this.getAttribute("redirect") || undefined;
+  }
+
   constructor() {
     super({
       user: AuthenticatedUser.authenticateFromLocalStorage()
     });
-    const service = new AuthService(this.context);
+  }
+
+  connectedCallback() {
+    const service = new AuthService(
+      this.context,
+      this.redirect
+    );
     service.attach(this);
   }
 }
@@ -64,7 +107,7 @@ class APIUser {
   authenticated = false;
   username = "anonymous";
 
-  static deauthenticate(user: AuthenticatedUser) {
+  static deauthenticate(user: APIUser) {
     user.authenticated = false;
     user.username = "anonymous";
     localStorage.removeItem(TOKEN_KEY);
@@ -111,7 +154,24 @@ function signIn(token: string) {
 }
 
 function signOut() {
-  return replace<AuthModel>({ user: new APIUser(), token: "" });
+  return (model: AuthModel) => {
+    const oldUser = model.user;
+
+    return {
+      user:
+        oldUser && oldUser.authenticated
+          ? APIUser.deauthenticate(oldUser)
+          : oldUser,
+      token: ""
+    };
+  };
 }
 
-export { AuthProvider as Provider, type AuthModel as Model };
+export {
+  AuthenticatedUser,
+  AuthProvider as Provider,
+  APIUser as User,
+  type AuthSuccessful,
+  type AuthModel as Model,
+  type AuthMsg as Msg
+};

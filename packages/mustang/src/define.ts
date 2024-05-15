@@ -3,7 +3,8 @@ type ElementDefinitions = {
 };
 
 export function define(defns: ElementDefinitions) {
-  Object.entries(defns).map(([k, v]) =>
-    customElements.define(k, v)
-  );
+  Object.entries(defns).map(([k, v]) => {
+    if (!customElements.get(k)) customElements.define(k, v);
+  });
+  return customElements;
 }
