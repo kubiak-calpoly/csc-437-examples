@@ -9,7 +9,6 @@ export default function update(
   apply: Update.ApplyMap<Model>,
   user: Auth.User
 ) {
-  console.log("Update for message:", message, user);
   switch (message[0]) {
     case "profile/save":
       saveProfile(message[1], user).then((profile) =>
@@ -49,16 +48,11 @@ function saveProfile(
     body: JSON.stringify(msg.profile)
   })
     .then((response: Response) => {
-      if (response.status === 200) {
-        return response.json();
-      }
+      if (response.status === 200) return response.json();
       return undefined;
     })
     .then((json: unknown) => {
-      if (json) {
-        console.log("Profile:", json);
-        json as Profile;
-      }
+      if (json) return json as Profile;
       return undefined;
     });
 }

@@ -79,8 +79,8 @@ export class TourViewElement extends View<Model, Msg> {
       "Dec"
     ];
 
-    const formatDate = (date: string | undefined) => {
-      const dt = date ? new Date(date) : new Date();
+    const formatDate = (date: Date | undefined) => {
+      const dt = date || new Date();
       const m = months[dt.getUTCMonth()];
       const d = dt.getUTCDate();
 
