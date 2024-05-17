@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import path from "path";
 import auth, { authenticateUser } from "./routes/auth";
 import profiles from "./routes/profiles";
+import tours from "./routes/tours";
 import { connect } from "./services/mongo";
 
 // Mongo Connection
@@ -31,6 +32,7 @@ app.use("/node_modules", express.static(nodeModules));
 
 // API Routes:
 app.use("/api/profiles", authenticateUser, profiles);
+app.use("/api/tours", authenticateUser, tours);
 
 // HTML Routes:
 app.get("/hello", (_: Request, res: Response) => {

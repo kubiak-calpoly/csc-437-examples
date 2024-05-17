@@ -1,12 +1,12 @@
-export type Message<
+export type Type<
   msg extends string,
   T extends object | undefined
 > = [msg, T] | [msg];
 
-export type BaseMessage = Message<string, object | undefined>;
+export type Base = Type<string, object | undefined>;
 
 export class Dispatch<
-  Msg extends BaseMessage
+  Msg extends Base
 > extends CustomEvent<Msg> {
   constructor(msg: Msg, eventType: string = "mu:message") {
     super(eventType, {
@@ -17,7 +17,7 @@ export class Dispatch<
   }
 }
 
-export function dispatcher<Msg extends BaseMessage>(
+export function dispatcher<Msg extends Base>(
   eventType: string
 ) {
   return (target: HTMLElement, ...msg: Msg) =>
