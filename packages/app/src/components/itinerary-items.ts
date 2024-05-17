@@ -89,7 +89,7 @@ class ItineraryItemElement extends LitElement {
       display: grid;
       grid-column: 2/-1;
       grid-template-columns: subgrid;
-      align-items: center;
+      place-items: center;
     }
     .transportation > h3 {
       display: contents;
@@ -107,7 +107,10 @@ class ItineraryItemElement extends LitElement {
       text-align: right;
     }
     .transportation > h3 > :first-child {
-      text-align: right;
+      justify-self: end;
+    }
+    .transportation > h3 > :last-child {
+      justify-self: start;
     }
     ::slotted([slot="via"]) {
       font-weight: var(--font-weight-light);
