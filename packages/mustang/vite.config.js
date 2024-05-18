@@ -1,6 +1,8 @@
+import { defineConfig } from "vite";
 import { resolve } from "path";
+import dts from "vite-plugin-dts";
 
-export default {
+export default defineConfig({
   mode: "development",
   build: {
     minify: false,
@@ -9,5 +11,11 @@ export default {
       name: "mu",
       fileName: "mustang"
     }
-  }
-};
+  },
+  plugins: [
+    dts({
+      insertTypesEntry: true,
+      rollupTypes: true
+    })
+  ]
+});

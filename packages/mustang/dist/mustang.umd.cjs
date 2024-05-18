@@ -245,7 +245,7 @@
   const _AuthService = class _AuthService2 extends Service {
     constructor(context, redirectForLogin) {
       super(
-        (m2, a2) => this.update(m2, a2),
+        (msg, apply) => this.update(msg, apply),
         context,
         _AuthService2.EVENT_TYPE
       );
@@ -369,6 +369,67 @@
     User: APIUser,
     headers: authHeaders
   }, Symbol.toStringTag, { value: "Module" }));
+  function relay(event2, customType, detail) {
+    const relay2 = event2.currentTarget;
+    const customEvent = new CustomEvent(customType, {
+      bubbles: true,
+      composed: true,
+      detail
+    });
+    console.log(
+      `Relaying event from ${event2.type}:`,
+      customEvent
+    );
+    relay2.dispatchEvent(customEvent);
+    event2.stopPropagation();
+  }
+  const event = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    relay
+  }, Symbol.toStringTag, { value: "Module" }));
+  const _HistoryService = class _HistoryService2 extends Service {
+    constructor(context) {
+      super(
+        (msg, apply) => this.update(msg, apply),
+        context,
+        _HistoryService2.EVENT_TYPE
+      );
+    }
+    update(message2, apply) {
+      switch (message2[0]) {
+        case "history/navigate":
+          const { href, state } = message2[1];
+          apply(navigate(href, state));
+      }
+    }
+  };
+  _HistoryService.EVENT_TYPE = "history:message";
+  let HistoryService = _HistoryService;
+  class HistoryProvider extends Provider {
+    constructor() {
+      super({
+        location: document.location,
+        state: {}
+      });
+    }
+    connectedCallback() {
+      const service = new HistoryService(this.context);
+      service.attach(this);
+    }
+  }
+  function navigate(href, state = {}) {
+    history.pushState(state, "", href);
+    return () => ({
+      location: document.location,
+      state: history.state
+    });
+  }
+  const history$1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    HistoryProvider,
+    Provider: HistoryProvider,
+    Service: HistoryService
+  }, Symbol.toStringTag, { value: "Module" }));
   const parser = new DOMParser();
   function html(template, ...params) {
     const htmlString = template.map((s2, i2) => i2 ? [params[i2 - 1], s2] : [s2]).flat().join("");
@@ -389,82 +450,6 @@
       return shadow2;
     }
   }
-  const _DropdownElement = class _DropdownElement2 extends HTMLElement {
-    constructor() {
-      super();
-      shadow(_DropdownElement2.template).attach(this);
-      if (this.shadowRoot) {
-        const actuator = this.shadowRoot.querySelector(
-          "slot[name='actuator']"
-        );
-        if (actuator)
-          actuator.addEventListener("click", () => this.toggle());
-      }
-    }
-    toggle() {
-      if (this.hasAttribute("open"))
-        this.removeAttribute("open");
-      else
-        this.setAttribute("open", "open");
-    }
-  };
-  _DropdownElement.template = html`<template>
-    <slot name="actuator"><button> Menu </button></slot>
-    <div id="panel">
-      <slot></slot>
-    </div>
-
-    <style>
-      :host {
-        position: relative;
-      }
-      #is-shown {
-        display: none;
-      }
-      #panel {
-        display: none;
-
-        position: absolute;
-        right: 0;
-        margin-top: var(--size-spacing-small);
-        width: max-content;
-        padding: var(--size-spacing-small);
-        border-radius: var(--size-radius-small);
-        background: var(--color-background-card);
-        color: var(--color-text);
-        box-shadow: var(--shadow-popover);
-      }
-      :host([open]) #panel {
-        display: block;
-      }
-    </style>
-  </template>`;
-  let DropdownElement = _DropdownElement;
-  function define2(defns) {
-    Object.entries(defns).map(([k2, v2]) => {
-      if (!customElements.get(k2))
-        customElements.define(k2, v2);
-    });
-    return customElements;
-  }
-  function relay(event2, customType, detail) {
-    const relay2 = event2.currentTarget;
-    const customEvent = new CustomEvent(customType, {
-      bubbles: true,
-      composed: true,
-      detail
-    });
-    console.log(
-      `Relaying event from ${event2.type}:`,
-      customEvent
-    );
-    relay2.dispatchEvent(customEvent);
-    event2.stopPropagation();
-  }
-  const event = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
-    __proto__: null,
-    relay
-  }, Symbol.toStringTag, { value: "Module" }));
   class Observer {
     constructor(target, contextLabel) {
       this._effects = [];
@@ -748,6 +733,64 @@
     Provider: StoreProvider,
     Service: StoreService
   }, Symbol.toStringTag, { value: "Module" }));
+  const _DropdownElement = class _DropdownElement2 extends HTMLElement {
+    constructor() {
+      super();
+      shadow(_DropdownElement2.template).attach(this);
+      if (this.shadowRoot) {
+        const actuator = this.shadowRoot.querySelector(
+          "slot[name='actuator']"
+        );
+        if (actuator)
+          actuator.addEventListener("click", () => this.toggle());
+      }
+    }
+    toggle() {
+      if (this.hasAttribute("open"))
+        this.removeAttribute("open");
+      else
+        this.setAttribute("open", "open");
+    }
+  };
+  _DropdownElement.template = html`<template>
+    <slot name="actuator"><button> Menu </button></slot>
+    <div id="panel">
+      <slot></slot>
+    </div>
+
+    <style>
+      :host {
+        position: relative;
+      }
+      #is-shown {
+        display: none;
+      }
+      #panel {
+        display: none;
+
+        position: absolute;
+        right: 0;
+        margin-top: var(--size-spacing-small);
+        width: max-content;
+        padding: var(--size-spacing-small);
+        border-radius: var(--size-radius-small);
+        background: var(--color-background-card);
+        color: var(--color-text);
+        box-shadow: var(--shadow-popover);
+      }
+      :host([open]) #panel {
+        display: block;
+      }
+    </style>
+  </template>`;
+  let DropdownElement = _DropdownElement;
+  function define2(defns) {
+    Object.entries(defns).map(([k2, v2]) => {
+      if (!customElements.get(k2))
+        customElements.define(k2, v2);
+    });
+    return customElements;
+  }
   /**
    * @license
    * Copyright 2019 Google LLC
@@ -1407,6 +1450,7 @@
   exports2.DropdownElement = DropdownElement;
   exports2.Effect = Effect;
   exports2.Events = event;
+  exports2.History = history$1;
   exports2.Message = message;
   exports2.Observer = Observer;
   exports2.Rest = rest;

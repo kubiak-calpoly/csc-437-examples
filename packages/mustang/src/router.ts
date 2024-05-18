@@ -1,22 +1,21 @@
-import { html, LitElement } from "lit";
-import { Route, Router as VaadinRouter } from "@vaadin/router";
+import { TemplateResult } from "lit";
 
-export class Router extends LitElement {
-  _routes: Route[];
-  router = new VaadinRouter(this);
+interface RouteInfo extends Location {
+  params: { [key: string]: string };
+}
+
+interface Route {
+  path: Array<string>;
+  view: (location: RouteInfo) => TemplateResult;
+}
+
+export class Router extends HTMLElement {
+  _routes: Route[] = [];
 
   constructor(routes: any) {
     super();
     this._routes = routes;
   }
 
-  connectedCallback() {
-    super.connectedCallback();
-    this.router.setRoutes(this._routes);
-    console.log("Router:", this._routes);
-  }
-
-  createRenderRoot() {
-    return this;
-  }
+  connectedCallback() { }
 }

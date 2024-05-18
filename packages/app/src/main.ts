@@ -1,4 +1,4 @@
-import { Auth, Store, define } from "@calpoly/mustang";
+import { Auth, History, Store, define } from "@calpoly/mustang";
 import { BlazingHeaderElement } from "./components/blazing-header";
 import { Msg } from "./messages";
 import { Model, init } from "./model";
@@ -7,6 +7,7 @@ import { TourViewElement } from "./views/tour-view";
 
 define({
   "mu-auth": Auth.Provider,
+  "mu-history": History.Provider,
   "mu-store": class AppStore extends Store.Provider<
     Model,
     Msg

@@ -1,20 +1,64 @@
-import { LitElement } from "lit";
-import { ContextProvider, createContext } from "@lit/context";
+import { Context, Provider } from "./context";
+import { Service } from "./service";
+import { ApplyMap } from "./update";
 
-export let historyContext = createContext<Location>("auth");
+interface HistoryModel {
+  location: Location;
+  state: object;
+}
 
-export class History extends LitElement {
-  _historyProvider;
+type HistoryMsg =
+  | [
+    "history/navigate",
+    {
+      href: string;
+      state?: object;
+    }
+  ];
 
+class HistoryService extends Service<HistoryMsg, HistoryModel> {
+  static EVENT_TYPE = "history:message";
+
+  constructor(context: Context<HistoryModel>) {
+    super(
+      (msg, apply) => this.update(msg, apply),
+      context,
+      HistoryService.EVENT_TYPE
+    );
+  }
+
+  update(message: HistoryMsg, apply: ApplyMap<HistoryModel>) {
+    switch (message[0]) {
+      case "history/navigate":
+        const { href, state } = message[1];
+        apply(navigate(href, state));
+    }
+  }
+}
+
+export class HistoryProvider extends Provider<HistoryModel> {
   constructor() {
-    super();
-    this._historyProvider = new ContextProvider(this, {
-      context: historyContext,
-      initialValue: window.location
+    super({
+      location: document.location,
+      state: {}
     });
   }
 
-  createRenderRoot() {
-    return this;
+  connectedCallback() {
+    const service = new HistoryService(this.context);
+    service.attach(this);
   }
 }
+
+function navigate(href: string, state: object = {}) {
+  history.pushState(state, "", href);
+  return () => ({
+    location: document.location,
+    state: history.state
+  });
+}
+
+export {
+  HistoryProvider as Provider,
+  HistoryService as Service
+};

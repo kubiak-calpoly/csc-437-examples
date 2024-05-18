@@ -1,14 +1,15 @@
-export * as Auth from "./auth";
+import * as Auth from "./auth";
+import * as Events from "./event";
+import * as History from "./history";
+import * as Message from "./message";
+import * as Rest from "./rest";
+import * as Store from "./store";
+import * as Update from "./update";
+
+export { Auth, Events, History, Message, Rest, Store, Update };
+
 export * from "./components";
 export * from "./define";
-export * as Events from "./event";
 export { html, shadow } from "./html";
 export * from "./observer";
-export * as Rest from "./rest";
-// export * from "./history";
-export * as Message from "./message";
-// export * from "./rest";
-// export * from "./router";
-export * as Store from "./store";
-export * as Update from "./update";
-export * from "./view";
+export { View } from "./view";
