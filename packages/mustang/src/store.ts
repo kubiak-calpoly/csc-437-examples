@@ -12,7 +12,12 @@ class StoreService<
   static EVENT_TYPE = "mu:message";
 
   constructor(context: Context<M>, updateFn: Update<Msg, M>) {
-    super(updateFn, context, StoreService.EVENT_TYPE);
+    super(
+      updateFn,
+      context,
+      StoreService.EVENT_TYPE,
+      false // don't start
+    );
   }
 }
 

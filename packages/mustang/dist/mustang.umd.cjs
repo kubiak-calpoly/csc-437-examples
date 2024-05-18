@@ -182,12 +182,12 @@
     dispatcher
   }, Symbol.toStringTag, { value: "Module" }));
   class Service {
-    constructor(update2, context, eventType = "service:message") {
-      this._running = false;
+    constructor(update2, context, eventType = "service:message", autostart = true) {
       this._pending = [];
       this._context = context;
       this._update = update2;
       this._eventType = eventType;
+      this._running = autostart;
     }
     attach(host) {
       host.addEventListener(this._eventType, (ev) => {
@@ -708,7 +708,13 @@
   }, Symbol.toStringTag, { value: "Module" }));
   const _StoreService = class _StoreService2 extends Service {
     constructor(context, updateFn) {
-      super(updateFn, context, _StoreService2.EVENT_TYPE);
+      super(
+        updateFn,
+        context,
+        _StoreService2.EVENT_TYPE,
+        false
+        // don't start
+      );
     }
   };
   _StoreService.EVENT_TYPE = "mu:message";
