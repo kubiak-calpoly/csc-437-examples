@@ -1,5 +1,6 @@
 import { addFragment } from "./html-loader.js";
 import { prepareTemplate } from "./template.js";
+import { Observer } from "@calpoly/mustang";
 
 export class JsonObjectElement extends HTMLElement {
   static template = prepareTemplate(`<template>
@@ -32,14 +33,28 @@ export class JsonObjectElement extends HTMLElement {
     );
   }
 
+  _authObserver = new Observer(this, "blazing:auth");
+
   connectedCallback() {
     const src = this.getAttribute("src");
     const open = this.hasAttribute("open");
 
-    if (open) loadJSON(src, this, renderAssignments);
+    this._authObserver.observe(({ user }) => {
+      console.log("Setting user as effect of change", user);
+      this._user = user;
+      if (this.src) {
+        if (open)
+          loadJSON(
+            src,
+            this,
+            renderAssignments,
+            this.authorization
+          );
+      }
+    });
 
     this.addEventListener("json-object:open", () =>
-      loadJSON(src, this, renderAssignments)
+      loadJSON(src, this, renderAssignments, this.authorization)
     );
   }
 }

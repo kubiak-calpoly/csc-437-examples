@@ -167,11 +167,26 @@ function signOut() {
   };
 }
 
+function authHeaders(user: APIUser): {
+  Authorization?: string;
+} {
+  if (user.authenticated) {
+    const authUser = user as AuthenticatedUser;
+    return {
+      Authorization: `Bearer ${authUser.token || "NO_TOKEN"}`
+    };
+  } else {
+    return {};
+  }
+}
+
 export {
   AuthenticatedUser,
   AuthProvider as Provider,
   APIUser as User,
+  authHeaders as headers,
   type AuthSuccessful,
   type AuthModel as Model,
-  type AuthMsg as Msg
+  type AuthMsg as Msg,
+  type AuthService as Service
 };
