@@ -418,6 +418,25 @@
         location: document.location,
         state: {}
       });
+      this.addEventListener("click", (event2) => {
+        const originalTarget = event2.composed ? event2.composedPath()[0] : event2.target;
+        if (originalTarget.tagName == "A" && originalTarget.href && event2.button == 0) {
+          const url = new URL(originalTarget.href);
+          if (url.origin === this.context.value.location.origin) {
+            console.log("Preventing Click Event on <A>", event2);
+            event2.preventDefault();
+            dispatch(originalTarget, "history/navigate", {
+              href: url.pathname + url.search
+            });
+          }
+        }
+      });
+      window.addEventListener("popstate", (event2) => {
+        this.context.value = {
+          location: document.location,
+          state: event2.state
+        };
+      });
     }
     connectedCallback() {
       const service = new HistoryService(this.context);
