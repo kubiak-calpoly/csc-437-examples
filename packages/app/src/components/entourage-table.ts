@@ -48,7 +48,7 @@ export class EntourageTable extends LitElement {
             </span>
           </td>
           <td class="name">
-            <a href="./profile/${userid}">${name}</a>
+            <a href="/app/profile/${userid}">${name}</a>
           </td>
         </tr>
       `;

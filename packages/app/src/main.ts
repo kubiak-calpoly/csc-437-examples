@@ -10,13 +10,20 @@ import { BlazingHeaderElement } from "./components/blazing-header";
 import { Msg } from "./messages";
 import { Model, init } from "./model";
 import update from "./update";
+import { ProfileViewElement } from "./views/profile-view";
 import { TourViewElement } from "./views/tour-view";
 
 const routes: Switch.Route[] = [
   {
-    path: "/tour/:id",
+    path: "/app/tour/:id",
     view: (params: Switch.Params) => html`
       <tour-view tour-id=${params.id}></tour-view>
+    `
+  },
+  {
+    path: "/app/profile/:id",
+    view: (params: Switch.Params) => html`
+      <profile-view user-id=${params.id}></profile-view>
     `
   },
   {
@@ -42,5 +49,6 @@ define({
     }
   },
   "blazing-header": BlazingHeaderElement,
-  "tour-view": TourViewElement
+  "tour-view": TourViewElement,
+  "profile-view": ProfileViewElement
 });
