@@ -40,6 +40,7 @@ export class TourViewElement extends View<Model, Msg> {
     oldValue: string,
     newValue: string
   ) {
+    super.attributeChangedCallback(name, oldValue, newValue);
     if (
       name === "tour-id" &&
       oldValue !== newValue &&
@@ -51,7 +52,6 @@ export class TourViewElement extends View<Model, Msg> {
         { tourid: newValue }
       ]);
     }
-    super.attributeChangedCallback(name, oldValue, newValue);
   }
 
   render(): TemplateResult {

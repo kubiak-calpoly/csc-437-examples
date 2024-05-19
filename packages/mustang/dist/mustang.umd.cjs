@@ -245,7 +245,7 @@
   const _AuthService = class _AuthService2 extends Service {
     constructor(context, redirectForLogin) {
       super(
-        (m2, a2) => this.update(m2, a2),
+        (msg, apply) => this.update(msg, apply),
         context,
         _AuthService2.EVENT_TYPE
       );
@@ -254,9 +254,9 @@
     update(message2, apply) {
       switch (message2[0]) {
         case "auth/signin":
-          const { token, redirect } = message2[1];
+          const { token, redirect: redirect2 } = message2[1];
           apply(signIn(token));
-          return redirection(redirect);
+          return redirection(redirect2);
         case "auth/signout":
           apply(signOut());
           return redirection(this._redirectForLogin);
@@ -276,16 +276,16 @@
   _AuthService.EVENT_TYPE = "auth:message";
   _AuthService.dispatch = dispatcher(_AuthService.EVENT_TYPE);
   let AuthService = _AuthService;
-  function redirection(redirect, query = {}) {
-    if (!redirect)
+  function redirection(redirect2, query = {}) {
+    if (!redirect2)
       return void 0;
     const base = window.location.href;
-    const target = new URL(redirect, base);
+    const target = new URL(redirect2, base);
     Object.entries(query).forEach(
       ([k2, v2]) => target.searchParams.set(k2, v2)
     );
     return () => {
-      console.log("Redirecting to ", redirect);
+      console.log("Redirecting to ", redirect2);
       window.location.assign(target);
     };
   }
@@ -369,84 +369,6 @@
     User: APIUser,
     headers: authHeaders
   }, Symbol.toStringTag, { value: "Module" }));
-  const parser = new DOMParser();
-  function html(template, ...params) {
-    const htmlString = template.map((s2, i2) => i2 ? [params[i2 - 1], s2] : [s2]).flat().join("");
-    const doc = parser.parseFromString(htmlString, "text/html");
-    const collection = doc.head.childElementCount ? doc.head.children : doc.body.children;
-    const fragment = new DocumentFragment();
-    fragment.replaceChildren(...collection);
-    return fragment;
-  }
-  function shadow(fragment) {
-    const first = fragment.firstElementChild;
-    const template = first && first.tagName === "TEMPLATE" ? first : void 0;
-    return { attach };
-    function attach(el, options = { mode: "open" }) {
-      const shadow2 = el.attachShadow(options);
-      if (template)
-        shadow2.appendChild(template.content.cloneNode(true));
-      return shadow2;
-    }
-  }
-  const _DropdownElement = class _DropdownElement2 extends HTMLElement {
-    constructor() {
-      super();
-      shadow(_DropdownElement2.template).attach(this);
-      if (this.shadowRoot) {
-        const actuator = this.shadowRoot.querySelector(
-          "slot[name='actuator']"
-        );
-        if (actuator)
-          actuator.addEventListener("click", () => this.toggle());
-      }
-    }
-    toggle() {
-      if (this.hasAttribute("open"))
-        this.removeAttribute("open");
-      else
-        this.setAttribute("open", "open");
-    }
-  };
-  _DropdownElement.template = html`<template>
-    <slot name="actuator"><button> Menu </button></slot>
-    <div id="panel">
-      <slot></slot>
-    </div>
-
-    <style>
-      :host {
-        position: relative;
-      }
-      #is-shown {
-        display: none;
-      }
-      #panel {
-        display: none;
-
-        position: absolute;
-        right: 0;
-        margin-top: var(--size-spacing-small);
-        width: max-content;
-        padding: var(--size-spacing-small);
-        border-radius: var(--size-radius-small);
-        background: var(--color-background-card);
-        color: var(--color-text);
-        box-shadow: var(--shadow-popover);
-      }
-      :host([open]) #panel {
-        display: block;
-      }
-    </style>
-  </template>`;
-  let DropdownElement = _DropdownElement;
-  function define2(defns) {
-    Object.entries(defns).map(([k2, v2]) => {
-      if (!customElements.get(k2))
-        customElements.define(k2, v2);
-    });
-    return customElements;
-  }
   function relay(event2, customType, detail) {
     const relay2 = event2.currentTarget;
     const customEvent = new CustomEvent(customType, {
@@ -465,6 +387,106 @@
     __proto__: null,
     relay
   }, Symbol.toStringTag, { value: "Module" }));
+  const _HistoryService = class _HistoryService2 extends Service {
+    constructor(context) {
+      super(
+        (msg, apply) => this.update(msg, apply),
+        context,
+        _HistoryService2.EVENT_TYPE
+      );
+    }
+    update(message2, apply) {
+      switch (message2[0]) {
+        case "history/navigate": {
+          const { href, state } = message2[1];
+          apply(navigate(href, state));
+          break;
+        }
+        case "history/redirect": {
+          const { href, state } = message2[1];
+          apply(redirect(href, state));
+          break;
+        }
+      }
+    }
+  };
+  _HistoryService.EVENT_TYPE = "history:message";
+  let HistoryService = _HistoryService;
+  class HistoryProvider extends Provider {
+    constructor() {
+      super({
+        location: document.location,
+        state: {}
+      });
+      this.addEventListener("click", (event2) => {
+        const originalTarget = event2.composed ? event2.composedPath()[0] : event2.target;
+        if (originalTarget.tagName == "A" && originalTarget.href && event2.button == 0) {
+          const url = new URL(originalTarget.href);
+          if (url.origin === this.context.value.location.origin) {
+            console.log("Preventing Click Event on <A>", event2);
+            event2.preventDefault();
+            dispatch(originalTarget, "history/navigate", {
+              href: url.pathname + url.search
+            });
+          }
+        }
+      });
+      window.addEventListener("popstate", (event2) => {
+        this.context.value = {
+          location: document.location,
+          state: event2.state
+        };
+      });
+    }
+    connectedCallback() {
+      const service = new HistoryService(this.context);
+      service.attach(this);
+    }
+  }
+  function navigate(href, state = {}) {
+    history.pushState(state, "", href);
+    return () => ({
+      location: document.location,
+      state: history.state
+    });
+  }
+  function redirect(href, state = {}) {
+    history.replaceState(state, "", href);
+    return () => ({
+      location: document.location,
+      state: history.state
+    });
+  }
+  const dispatch = dispatcher(
+    HistoryService.EVENT_TYPE
+  );
+  const history$1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    HistoryProvider,
+    Provider: HistoryProvider,
+    Service: HistoryService,
+    dispatch
+  }, Symbol.toStringTag, { value: "Module" }));
+  const parser$1 = new DOMParser();
+  function html(template, ...params) {
+    const htmlString = template.map((s2, i2) => i2 ? [params[i2 - 1], s2] : [s2]).flat().join("");
+    const doc = parser$1.parseFromString(htmlString, "text/html");
+    const collection = doc.head.childElementCount ? doc.head.children : doc.body.children;
+    const fragment = new DocumentFragment();
+    fragment.replaceChildren(...collection);
+    return fragment;
+  }
+  function shadow(fragment) {
+    const first = fragment.firstElementChild;
+    const template = first && first.tagName === "TEMPLATE" ? first : void 0;
+    return { attach };
+    function attach(el, options = { mode: "open" }) {
+      const shadow2 = el.attachShadow(options);
+      if (template)
+        shadow2.appendChild(template.content.cloneNode(true));
+      return shadow2;
+    }
+  }
   class Observer {
     constructor(target, contextLabel) {
       this._effects = [];
@@ -773,7 +795,16 @@
       return this.cssText;
     }
   };
-  const r$4 = (t2) => new n$3("string" == typeof t2 ? t2 : t2 + "", void 0, s$2), S$1 = (s2, o2) => {
+  const r$4 = (t2) => new n$3("string" == typeof t2 ? t2 : t2 + "", void 0, s$2), i$2 = (t2, ...e2) => {
+    const o2 = 1 === t2.length ? t2[0] : e2.reduce((e3, s2, o3) => e3 + ((t3) => {
+      if (true === t3._$cssResult$)
+        return t3.cssText;
+      if ("number" == typeof t3)
+        return t3;
+      throw Error("Value passed to 'css' function must be a 'css' function result: " + t3 + ". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.");
+    })(s2) + t2[o3 + 1], t2[0]);
+    return new n$3(o2, t2, s$2);
+  }, S$1 = (s2, o2) => {
     if (e$2)
       s2.adoptedStyleSheets = o2.map((t2) => t2 instanceof CSSStyleSheet ? t2 : t2.styleSheet);
     else
@@ -820,7 +851,7 @@
         }
     }
     return i2;
-  } }, f$1 = (t2, s2) => !i$1(t2, s2), y = { attribute: true, type: String, converter: u$1, reflect: false, hasChanged: f$1 };
+  } }, f$1 = (t2, s2) => !i$1(t2, s2), y$1 = { attribute: true, type: String, converter: u$1, reflect: false, hasChanged: f$1 };
   Symbol.metadata ?? (Symbol.metadata = Symbol("metadata")), a$1.litPropertyMetadata ?? (a$1.litPropertyMetadata = /* @__PURE__ */ new WeakMap());
   class b extends HTMLElement {
     static addInitializer(t2) {
@@ -829,7 +860,7 @@
     static get observedAttributes() {
       return this.finalize(), this._$Eh && [...this._$Eh.keys()];
     }
-    static createProperty(t2, s2 = y) {
+    static createProperty(t2, s2 = y$1) {
       if (s2.state && (s2.attribute = false), this._$Ei(), this.elementProperties.set(t2, s2), !s2.noAccessor) {
         const i2 = Symbol(), r2 = this.getPropertyDescriptor(t2, i2, s2);
         void 0 !== r2 && e$1(this.prototype, t2, r2);
@@ -849,7 +880,7 @@
       }, configurable: true, enumerable: true };
     }
     static getPropertyOptions(t2) {
-      return this.elementProperties.get(t2) ?? y;
+      return this.elementProperties.get(t2) ?? y$1;
     }
     static _$Ei() {
       if (this.hasOwnProperty(d$1("elementProperties")))
@@ -1040,7 +1071,7 @@
    * SPDX-License-Identifier: BSD-3-Clause
    */
   const t = globalThis, i = t.trustedTypes, s$1 = i ? i.createPolicy("lit-html", { createHTML: (t2) => t2 }) : void 0, e = "$lit$", h = `lit$${Math.random().toFixed(9).slice(2)}$`, o$1 = "?" + h, n$1 = `<${o$1}>`, r$2 = document, l = () => r$2.createComment(""), c = (t2) => null === t2 || "object" != typeof t2 && "function" != typeof t2, a = Array.isArray, u = (t2) => a(t2) || "function" == typeof (t2 == null ? void 0 : t2[Symbol.iterator]), d = "[ 	\n\f\r]", f = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, v = /-->/g, _ = />/g, m = RegExp(`>|${d}(?:([^\\s"'>=/]+)(${d}*=${d}*(?:[^ 	
-\f\r"'\`<>=]|("|')|))|$)`, "g"), p = /'/g, g = /"/g, $ = /^(?:script|style|textarea|title)$/i, w = Symbol.for("lit-noChange"), T = Symbol.for("lit-nothing"), A = /* @__PURE__ */ new WeakMap(), E = r$2.createTreeWalker(r$2, 129);
+\f\r"'\`<>=]|("|')|))|$)`, "g"), p = /'/g, g = /"/g, $ = /^(?:script|style|textarea|title)$/i, y = (t2) => (i2, ...s2) => ({ _$litType$: t2, strings: i2, values: s2 }), x = y(1), w = Symbol.for("lit-noChange"), T = Symbol.for("lit-nothing"), A = /* @__PURE__ */ new WeakMap(), E = r$2.createTreeWalker(r$2, 129);
   function C(t2, i2) {
     if (!Array.isArray(t2) || !t2.hasOwnProperty("raw"))
       throw Error("invalid template strings array");
@@ -1054,8 +1085,8 @@
       let a2, u2, d2 = -1, y2 = 0;
       for (; y2 < s3.length && (c2.lastIndex = y2, u2 = c2.exec(s3), null !== u2); )
         y2 = c2.lastIndex, c2 === f ? "!--" === u2[1] ? c2 = v : void 0 !== u2[1] ? c2 = _ : void 0 !== u2[2] ? ($.test(u2[2]) && (r2 = RegExp("</" + u2[2], "g")), c2 = m) : void 0 !== u2[3] && (c2 = m) : c2 === m ? ">" === u2[0] ? (c2 = r2 ?? f, d2 = -1) : void 0 === u2[1] ? d2 = -2 : (d2 = c2.lastIndex - u2[2].length, a2 = u2[1], c2 = void 0 === u2[3] ? m : '"' === u2[3] ? g : p) : c2 === g || c2 === p ? c2 = m : c2 === v || c2 === _ ? c2 = f : (c2 = m, r2 = void 0);
-      const x = c2 === m && t2[i3 + 1].startsWith("/>") ? " " : "";
-      l2 += c2 === f ? s3 + n$1 : d2 >= 0 ? (o2.push(a2), s3.slice(0, d2) + e + s3.slice(d2) + h + x) : s3 + h + (-2 === d2 ? i3 : x);
+      const x2 = c2 === m && t2[i3 + 1].startsWith("/>") ? " " : "";
+      l2 += c2 === f ? s3 + n$1 : d2 >= 0 ? (o2.push(a2), s3.slice(0, d2) + e + s3.slice(d2) + h + x2) : s3 + h + (-2 === d2 ? i3 : x2);
     }
     return [C(t2, l2 + (t2[s2] || "<?>") + (2 === i2 ? "</svg>" : "")), o2];
   };
@@ -1351,6 +1382,859 @@
       return e3.constructor.createProperty(o3, r2 ? { ...t3, wrapped: true } : t3), r2 ? Object.getOwnPropertyDescriptor(e3, o3) : void 0;
     })(t2, e2, o2);
   }
+  function getDefaultExportFromCjs(x2) {
+    return x2 && x2.__esModule && Object.prototype.hasOwnProperty.call(x2, "default") ? x2["default"] : x2;
+  }
+  function commonjsRequire(path) {
+    throw new Error('Could not dynamically require "' + path + '". Please configure the dynamicRequireTargets or/and ignoreDynamicRequires option of @rollup/plugin-commonjs appropriately for this require call to work.');
+  }
+  var compiledGrammar = {};
+  (function(exports3) {
+    var parser2 = function() {
+      var o2 = function(k2, v2, o3, l2) {
+        for (o3 = o3 || {}, l2 = k2.length; l2--; o3[k2[l2]] = v2)
+          ;
+        return o3;
+      }, $V0 = [1, 9], $V1 = [1, 10], $V2 = [1, 11], $V3 = [1, 12], $V4 = [5, 11, 12, 13, 14, 15];
+      var parser3 = {
+        trace: function trace() {
+        },
+        yy: {},
+        symbols_: { "error": 2, "root": 3, "expressions": 4, "EOF": 5, "expression": 6, "optional": 7, "literal": 8, "splat": 9, "param": 10, "(": 11, ")": 12, "LITERAL": 13, "SPLAT": 14, "PARAM": 15, "$accept": 0, "$end": 1 },
+        terminals_: { 2: "error", 5: "EOF", 11: "(", 12: ")", 13: "LITERAL", 14: "SPLAT", 15: "PARAM" },
+        productions_: [0, [3, 2], [3, 1], [4, 2], [4, 1], [6, 1], [6, 1], [6, 1], [6, 1], [7, 3], [8, 1], [9, 1], [10, 1]],
+        performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate, $$, _$) {
+          var $0 = $$.length - 1;
+          switch (yystate) {
+            case 1:
+              return new yy.Root({}, [$$[$0 - 1]]);
+            case 2:
+              return new yy.Root({}, [new yy.Literal({ value: "" })]);
+            case 3:
+              this.$ = new yy.Concat({}, [$$[$0 - 1], $$[$0]]);
+              break;
+            case 4:
+            case 5:
+              this.$ = $$[$0];
+              break;
+            case 6:
+              this.$ = new yy.Literal({ value: $$[$0] });
+              break;
+            case 7:
+              this.$ = new yy.Splat({ name: $$[$0] });
+              break;
+            case 8:
+              this.$ = new yy.Param({ name: $$[$0] });
+              break;
+            case 9:
+              this.$ = new yy.Optional({}, [$$[$0 - 1]]);
+              break;
+            case 10:
+              this.$ = yytext;
+              break;
+            case 11:
+            case 12:
+              this.$ = yytext.slice(1);
+              break;
+          }
+        },
+        table: [{ 3: 1, 4: 2, 5: [1, 3], 6: 4, 7: 5, 8: 6, 9: 7, 10: 8, 11: $V0, 13: $V1, 14: $V2, 15: $V3 }, { 1: [3] }, { 5: [1, 13], 6: 14, 7: 5, 8: 6, 9: 7, 10: 8, 11: $V0, 13: $V1, 14: $V2, 15: $V3 }, { 1: [2, 2] }, o2($V4, [2, 4]), o2($V4, [2, 5]), o2($V4, [2, 6]), o2($V4, [2, 7]), o2($V4, [2, 8]), { 4: 15, 6: 4, 7: 5, 8: 6, 9: 7, 10: 8, 11: $V0, 13: $V1, 14: $V2, 15: $V3 }, o2($V4, [2, 10]), o2($V4, [2, 11]), o2($V4, [2, 12]), { 1: [2, 1] }, o2($V4, [2, 3]), { 6: 14, 7: 5, 8: 6, 9: 7, 10: 8, 11: $V0, 12: [1, 16], 13: $V1, 14: $V2, 15: $V3 }, o2($V4, [2, 9])],
+        defaultActions: { 3: [2, 2], 13: [2, 1] },
+        parseError: function parseError(str, hash) {
+          if (hash.recoverable) {
+            this.trace(str);
+          } else {
+            let _parseError = function(msg, hash2) {
+              this.message = msg;
+              this.hash = hash2;
+            };
+            _parseError.prototype = Error;
+            throw new _parseError(str, hash);
+          }
+        },
+        parse: function parse(input) {
+          var self2 = this, stack = [0], vstack = [null], lstack = [], table = this.table, yytext = "", yylineno = 0, yyleng = 0, TERROR = 2, EOF = 1;
+          var args = lstack.slice.call(arguments, 1);
+          var lexer2 = Object.create(this.lexer);
+          var sharedState = { yy: {} };
+          for (var k2 in this.yy) {
+            if (Object.prototype.hasOwnProperty.call(this.yy, k2)) {
+              sharedState.yy[k2] = this.yy[k2];
+            }
+          }
+          lexer2.setInput(input, sharedState.yy);
+          sharedState.yy.lexer = lexer2;
+          sharedState.yy.parser = this;
+          if (typeof lexer2.yylloc == "undefined") {
+            lexer2.yylloc = {};
+          }
+          var yyloc = lexer2.yylloc;
+          lstack.push(yyloc);
+          var ranges = lexer2.options && lexer2.options.ranges;
+          if (typeof sharedState.yy.parseError === "function") {
+            this.parseError = sharedState.yy.parseError;
+          } else {
+            this.parseError = Object.getPrototypeOf(this).parseError;
+          }
+          var lex = function() {
+            var token;
+            token = lexer2.lex() || EOF;
+            if (typeof token !== "number") {
+              token = self2.symbols_[token] || token;
+            }
+            return token;
+          };
+          var symbol, state, action, r2, yyval = {}, p2, len, newState, expected;
+          while (true) {
+            state = stack[stack.length - 1];
+            if (this.defaultActions[state]) {
+              action = this.defaultActions[state];
+            } else {
+              if (symbol === null || typeof symbol == "undefined") {
+                symbol = lex();
+              }
+              action = table[state] && table[state][symbol];
+            }
+            if (typeof action === "undefined" || !action.length || !action[0]) {
+              var errStr = "";
+              expected = [];
+              for (p2 in table[state]) {
+                if (this.terminals_[p2] && p2 > TERROR) {
+                  expected.push("'" + this.terminals_[p2] + "'");
+                }
+              }
+              if (lexer2.showPosition) {
+                errStr = "Parse error on line " + (yylineno + 1) + ":\n" + lexer2.showPosition() + "\nExpecting " + expected.join(", ") + ", got '" + (this.terminals_[symbol] || symbol) + "'";
+              } else {
+                errStr = "Parse error on line " + (yylineno + 1) + ": Unexpected " + (symbol == EOF ? "end of input" : "'" + (this.terminals_[symbol] || symbol) + "'");
+              }
+              this.parseError(errStr, {
+                text: lexer2.match,
+                token: this.terminals_[symbol] || symbol,
+                line: lexer2.yylineno,
+                loc: yyloc,
+                expected
+              });
+            }
+            if (action[0] instanceof Array && action.length > 1) {
+              throw new Error("Parse Error: multiple actions possible at state: " + state + ", token: " + symbol);
+            }
+            switch (action[0]) {
+              case 1:
+                stack.push(symbol);
+                vstack.push(lexer2.yytext);
+                lstack.push(lexer2.yylloc);
+                stack.push(action[1]);
+                symbol = null;
+                {
+                  yyleng = lexer2.yyleng;
+                  yytext = lexer2.yytext;
+                  yylineno = lexer2.yylineno;
+                  yyloc = lexer2.yylloc;
+                }
+                break;
+              case 2:
+                len = this.productions_[action[1]][1];
+                yyval.$ = vstack[vstack.length - len];
+                yyval._$ = {
+                  first_line: lstack[lstack.length - (len || 1)].first_line,
+                  last_line: lstack[lstack.length - 1].last_line,
+                  first_column: lstack[lstack.length - (len || 1)].first_column,
+                  last_column: lstack[lstack.length - 1].last_column
+                };
+                if (ranges) {
+                  yyval._$.range = [
+                    lstack[lstack.length - (len || 1)].range[0],
+                    lstack[lstack.length - 1].range[1]
+                  ];
+                }
+                r2 = this.performAction.apply(yyval, [
+                  yytext,
+                  yyleng,
+                  yylineno,
+                  sharedState.yy,
+                  action[1],
+                  vstack,
+                  lstack
+                ].concat(args));
+                if (typeof r2 !== "undefined") {
+                  return r2;
+                }
+                if (len) {
+                  stack = stack.slice(0, -1 * len * 2);
+                  vstack = vstack.slice(0, -1 * len);
+                  lstack = lstack.slice(0, -1 * len);
+                }
+                stack.push(this.productions_[action[1]][0]);
+                vstack.push(yyval.$);
+                lstack.push(yyval._$);
+                newState = table[stack[stack.length - 2]][stack[stack.length - 1]];
+                stack.push(newState);
+                break;
+              case 3:
+                return true;
+            }
+          }
+          return true;
+        }
+      };
+      var lexer = function() {
+        var lexer2 = {
+          EOF: 1,
+          parseError: function parseError(str, hash) {
+            if (this.yy.parser) {
+              this.yy.parser.parseError(str, hash);
+            } else {
+              throw new Error(str);
+            }
+          },
+          // resets the lexer, sets new input
+          setInput: function(input, yy) {
+            this.yy = yy || this.yy || {};
+            this._input = input;
+            this._more = this._backtrack = this.done = false;
+            this.yylineno = this.yyleng = 0;
+            this.yytext = this.matched = this.match = "";
+            this.conditionStack = ["INITIAL"];
+            this.yylloc = {
+              first_line: 1,
+              first_column: 0,
+              last_line: 1,
+              last_column: 0
+            };
+            if (this.options.ranges) {
+              this.yylloc.range = [0, 0];
+            }
+            this.offset = 0;
+            return this;
+          },
+          // consumes and returns one char from the input
+          input: function() {
+            var ch = this._input[0];
+            this.yytext += ch;
+            this.yyleng++;
+            this.offset++;
+            this.match += ch;
+            this.matched += ch;
+            var lines = ch.match(/(?:\r\n?|\n).*/g);
+            if (lines) {
+              this.yylineno++;
+              this.yylloc.last_line++;
+            } else {
+              this.yylloc.last_column++;
+            }
+            if (this.options.ranges) {
+              this.yylloc.range[1]++;
+            }
+            this._input = this._input.slice(1);
+            return ch;
+          },
+          // unshifts one char (or a string) into the input
+          unput: function(ch) {
+            var len = ch.length;
+            var lines = ch.split(/(?:\r\n?|\n)/g);
+            this._input = ch + this._input;
+            this.yytext = this.yytext.substr(0, this.yytext.length - len);
+            this.offset -= len;
+            var oldLines = this.match.split(/(?:\r\n?|\n)/g);
+            this.match = this.match.substr(0, this.match.length - 1);
+            this.matched = this.matched.substr(0, this.matched.length - 1);
+            if (lines.length - 1) {
+              this.yylineno -= lines.length - 1;
+            }
+            var r2 = this.yylloc.range;
+            this.yylloc = {
+              first_line: this.yylloc.first_line,
+              last_line: this.yylineno + 1,
+              first_column: this.yylloc.first_column,
+              last_column: lines ? (lines.length === oldLines.length ? this.yylloc.first_column : 0) + oldLines[oldLines.length - lines.length].length - lines[0].length : this.yylloc.first_column - len
+            };
+            if (this.options.ranges) {
+              this.yylloc.range = [r2[0], r2[0] + this.yyleng - len];
+            }
+            this.yyleng = this.yytext.length;
+            return this;
+          },
+          // When called from action, caches matched text and appends it on next action
+          more: function() {
+            this._more = true;
+            return this;
+          },
+          // When called from action, signals the lexer that this rule fails to match the input, so the next matching rule (regex) should be tested instead.
+          reject: function() {
+            if (this.options.backtrack_lexer) {
+              this._backtrack = true;
+            } else {
+              return this.parseError("Lexical error on line " + (this.yylineno + 1) + ". You can only invoke reject() in the lexer when the lexer is of the backtracking persuasion (options.backtrack_lexer = true).\n" + this.showPosition(), {
+                text: "",
+                token: null,
+                line: this.yylineno
+              });
+            }
+            return this;
+          },
+          // retain first n characters of the match
+          less: function(n2) {
+            this.unput(this.match.slice(n2));
+          },
+          // displays already matched input, i.e. for error messages
+          pastInput: function() {
+            var past = this.matched.substr(0, this.matched.length - this.match.length);
+            return (past.length > 20 ? "..." : "") + past.substr(-20).replace(/\n/g, "");
+          },
+          // displays upcoming input, i.e. for error messages
+          upcomingInput: function() {
+            var next = this.match;
+            if (next.length < 20) {
+              next += this._input.substr(0, 20 - next.length);
+            }
+            return (next.substr(0, 20) + (next.length > 20 ? "..." : "")).replace(/\n/g, "");
+          },
+          // displays the character position where the lexing error occurred, i.e. for error messages
+          showPosition: function() {
+            var pre = this.pastInput();
+            var c2 = new Array(pre.length + 1).join("-");
+            return pre + this.upcomingInput() + "\n" + c2 + "^";
+          },
+          // test the lexed token: return FALSE when not a match, otherwise return token
+          test_match: function(match, indexed_rule) {
+            var token, lines, backup;
+            if (this.options.backtrack_lexer) {
+              backup = {
+                yylineno: this.yylineno,
+                yylloc: {
+                  first_line: this.yylloc.first_line,
+                  last_line: this.last_line,
+                  first_column: this.yylloc.first_column,
+                  last_column: this.yylloc.last_column
+                },
+                yytext: this.yytext,
+                match: this.match,
+                matches: this.matches,
+                matched: this.matched,
+                yyleng: this.yyleng,
+                offset: this.offset,
+                _more: this._more,
+                _input: this._input,
+                yy: this.yy,
+                conditionStack: this.conditionStack.slice(0),
+                done: this.done
+              };
+              if (this.options.ranges) {
+                backup.yylloc.range = this.yylloc.range.slice(0);
+              }
+            }
+            lines = match[0].match(/(?:\r\n?|\n).*/g);
+            if (lines) {
+              this.yylineno += lines.length;
+            }
+            this.yylloc = {
+              first_line: this.yylloc.last_line,
+              last_line: this.yylineno + 1,
+              first_column: this.yylloc.last_column,
+              last_column: lines ? lines[lines.length - 1].length - lines[lines.length - 1].match(/\r?\n?/)[0].length : this.yylloc.last_column + match[0].length
+            };
+            this.yytext += match[0];
+            this.match += match[0];
+            this.matches = match;
+            this.yyleng = this.yytext.length;
+            if (this.options.ranges) {
+              this.yylloc.range = [this.offset, this.offset += this.yyleng];
+            }
+            this._more = false;
+            this._backtrack = false;
+            this._input = this._input.slice(match[0].length);
+            this.matched += match[0];
+            token = this.performAction.call(this, this.yy, this, indexed_rule, this.conditionStack[this.conditionStack.length - 1]);
+            if (this.done && this._input) {
+              this.done = false;
+            }
+            if (token) {
+              return token;
+            } else if (this._backtrack) {
+              for (var k2 in backup) {
+                this[k2] = backup[k2];
+              }
+              return false;
+            }
+            return false;
+          },
+          // return next match in input
+          next: function() {
+            if (this.done) {
+              return this.EOF;
+            }
+            if (!this._input) {
+              this.done = true;
+            }
+            var token, match, tempMatch, index;
+            if (!this._more) {
+              this.yytext = "";
+              this.match = "";
+            }
+            var rules = this._currentRules();
+            for (var i2 = 0; i2 < rules.length; i2++) {
+              tempMatch = this._input.match(this.rules[rules[i2]]);
+              if (tempMatch && (!match || tempMatch[0].length > match[0].length)) {
+                match = tempMatch;
+                index = i2;
+                if (this.options.backtrack_lexer) {
+                  token = this.test_match(tempMatch, rules[i2]);
+                  if (token !== false) {
+                    return token;
+                  } else if (this._backtrack) {
+                    match = false;
+                    continue;
+                  } else {
+                    return false;
+                  }
+                } else if (!this.options.flex) {
+                  break;
+                }
+              }
+            }
+            if (match) {
+              token = this.test_match(match, rules[index]);
+              if (token !== false) {
+                return token;
+              }
+              return false;
+            }
+            if (this._input === "") {
+              return this.EOF;
+            } else {
+              return this.parseError("Lexical error on line " + (this.yylineno + 1) + ". Unrecognized text.\n" + this.showPosition(), {
+                text: "",
+                token: null,
+                line: this.yylineno
+              });
+            }
+          },
+          // return next match that has a token
+          lex: function lex() {
+            var r2 = this.next();
+            if (r2) {
+              return r2;
+            } else {
+              return this.lex();
+            }
+          },
+          // activates a new lexer condition state (pushes the new lexer condition state onto the condition stack)
+          begin: function begin(condition) {
+            this.conditionStack.push(condition);
+          },
+          // pop the previously active lexer condition state off the condition stack
+          popState: function popState() {
+            var n2 = this.conditionStack.length - 1;
+            if (n2 > 0) {
+              return this.conditionStack.pop();
+            } else {
+              return this.conditionStack[0];
+            }
+          },
+          // produce the lexer rule set which is active for the currently active lexer condition state
+          _currentRules: function _currentRules() {
+            if (this.conditionStack.length && this.conditionStack[this.conditionStack.length - 1]) {
+              return this.conditions[this.conditionStack[this.conditionStack.length - 1]].rules;
+            } else {
+              return this.conditions["INITIAL"].rules;
+            }
+          },
+          // return the currently active lexer condition state; when an index argument is provided it produces the N-th previous condition state, if available
+          topState: function topState(n2) {
+            n2 = this.conditionStack.length - 1 - Math.abs(n2 || 0);
+            if (n2 >= 0) {
+              return this.conditionStack[n2];
+            } else {
+              return "INITIAL";
+            }
+          },
+          // alias for begin(condition)
+          pushState: function pushState(condition) {
+            this.begin(condition);
+          },
+          // return the number of states currently on the stack
+          stateStackSize: function stateStackSize() {
+            return this.conditionStack.length;
+          },
+          options: {},
+          performAction: function anonymous(yy, yy_, $avoiding_name_collisions, YY_START) {
+            switch ($avoiding_name_collisions) {
+              case 0:
+                return "(";
+              case 1:
+                return ")";
+              case 2:
+                return "SPLAT";
+              case 3:
+                return "PARAM";
+              case 4:
+                return "LITERAL";
+              case 5:
+                return "LITERAL";
+              case 6:
+                return "EOF";
+            }
+          },
+          rules: [/^(?:\()/, /^(?:\))/, /^(?:\*+\w+)/, /^(?::+\w+)/, /^(?:[\w%\-~\n]+)/, /^(?:.)/, /^(?:$)/],
+          conditions: { "INITIAL": { "rules": [0, 1, 2, 3, 4, 5, 6], "inclusive": true } }
+        };
+        return lexer2;
+      }();
+      parser3.lexer = lexer;
+      function Parser2() {
+        this.yy = {};
+      }
+      Parser2.prototype = parser3;
+      parser3.Parser = Parser2;
+      return new Parser2();
+    }();
+    if (typeof commonjsRequire !== "undefined" && true) {
+      exports3.parser = parser2;
+      exports3.Parser = parser2.Parser;
+      exports3.parse = function() {
+        return parser2.parse.apply(parser2, arguments);
+      };
+    }
+  })(compiledGrammar);
+  function createNode(displayName) {
+    return function(props, children) {
+      return {
+        displayName,
+        props,
+        children: children || []
+      };
+    };
+  }
+  var nodes = {
+    Root: createNode("Root"),
+    Concat: createNode("Concat"),
+    Literal: createNode("Literal"),
+    Splat: createNode("Splat"),
+    Param: createNode("Param"),
+    Optional: createNode("Optional")
+  };
+  var parser = compiledGrammar.parser;
+  parser.yy = nodes;
+  var parser_1 = parser;
+  var nodeTypes = Object.keys(nodes);
+  function createVisitor$2(handlers) {
+    nodeTypes.forEach(function(nodeType) {
+      if (typeof handlers[nodeType] === "undefined") {
+        throw new Error("No handler defined for " + nodeType.displayName);
+      }
+    });
+    return {
+      /**
+       * Call the given handler for this node type
+       * @param  {Object} node    the AST node
+       * @param  {Object} context context to pass through to handlers
+       * @return {Object}
+       */
+      visit: function(node, context) {
+        return this.handlers[node.displayName].call(this, node, context);
+      },
+      handlers
+    };
+  }
+  var create_visitor = createVisitor$2;
+  var createVisitor$1 = create_visitor, escapeRegExp = /[\-{}\[\]+?.,\\\^$|#\s]/g;
+  function Matcher(options) {
+    this.captures = options.captures;
+    this.re = options.re;
+  }
+  Matcher.prototype.match = function(path) {
+    var match = this.re.exec(path), matchParams = {};
+    if (!match) {
+      return;
+    }
+    this.captures.forEach(function(capture, i2) {
+      if (typeof match[i2 + 1] === "undefined") {
+        matchParams[capture] = void 0;
+      } else {
+        matchParams[capture] = decodeURIComponent(match[i2 + 1]);
+      }
+    });
+    return matchParams;
+  };
+  var RegexpVisitor$1 = createVisitor$1({
+    "Concat": function(node) {
+      return node.children.reduce(
+        (function(memo, child) {
+          var childResult = this.visit(child);
+          return {
+            re: memo.re + childResult.re,
+            captures: memo.captures.concat(childResult.captures)
+          };
+        }).bind(this),
+        { re: "", captures: [] }
+      );
+    },
+    "Literal": function(node) {
+      return {
+        re: node.props.value.replace(escapeRegExp, "\\$&"),
+        captures: []
+      };
+    },
+    "Splat": function(node) {
+      return {
+        re: "([^?]*?)",
+        captures: [node.props.name]
+      };
+    },
+    "Param": function(node) {
+      return {
+        re: "([^\\/\\?]+)",
+        captures: [node.props.name]
+      };
+    },
+    "Optional": function(node) {
+      var child = this.visit(node.children[0]);
+      return {
+        re: "(?:" + child.re + ")?",
+        captures: child.captures
+      };
+    },
+    "Root": function(node) {
+      var childResult = this.visit(node.children[0]);
+      return new Matcher({
+        re: new RegExp("^" + childResult.re + "(?=\\?|$)"),
+        captures: childResult.captures
+      });
+    }
+  });
+  var regexp = RegexpVisitor$1;
+  var createVisitor = create_visitor;
+  var ReverseVisitor$1 = createVisitor({
+    "Concat": function(node, context) {
+      var childResults = node.children.map((function(child) {
+        return this.visit(child, context);
+      }).bind(this));
+      if (childResults.some(function(c2) {
+        return c2 === false;
+      })) {
+        return false;
+      } else {
+        return childResults.join("");
+      }
+    },
+    "Literal": function(node) {
+      return decodeURI(node.props.value);
+    },
+    "Splat": function(node, context) {
+      if (context[node.props.name]) {
+        return context[node.props.name];
+      } else {
+        return false;
+      }
+    },
+    "Param": function(node, context) {
+      if (context[node.props.name]) {
+        return context[node.props.name];
+      } else {
+        return false;
+      }
+    },
+    "Optional": function(node, context) {
+      var childResult = this.visit(node.children[0], context);
+      if (childResult) {
+        return childResult;
+      } else {
+        return "";
+      }
+    },
+    "Root": function(node, context) {
+      context = context || {};
+      var childResult = this.visit(node.children[0], context);
+      if (!childResult) {
+        return false;
+      }
+      return encodeURI(childResult);
+    }
+  });
+  var reverse = ReverseVisitor$1;
+  var Parser = parser_1, RegexpVisitor = regexp, ReverseVisitor = reverse;
+  Route$2.prototype = /* @__PURE__ */ Object.create(null);
+  Route$2.prototype.match = function(path) {
+    var re = RegexpVisitor.visit(this.ast), matched = re.match(path);
+    return matched ? matched : false;
+  };
+  Route$2.prototype.reverse = function(params) {
+    return ReverseVisitor.visit(this.ast, params);
+  };
+  function Route$2(spec) {
+    var route2;
+    if (this) {
+      route2 = this;
+    } else {
+      route2 = Object.create(Route$2.prototype);
+    }
+    if (typeof spec === "undefined") {
+      throw new Error("A route spec is required");
+    }
+    route2.spec = spec;
+    route2.ast = Parser.parse(spec);
+    return route2;
+  }
+  var route = Route$2;
+  var Route = route;
+  var routeParser = Route;
+  const Route$1 = /* @__PURE__ */ getDefaultExportFromCjs(routeParser);
+  var __defProp$1 = Object.defineProperty;
+  var __getOwnPropDesc$1 = Object.getOwnPropertyDescriptor;
+  var __decorateClass$1 = (decorators, target, key, kind) => {
+    var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$1(target, key) : target;
+    for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+      if (decorator = decorators[i2])
+        result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+    if (kind && result)
+      __defProp$1(target, key, result);
+    return result;
+  };
+  class Switch extends s {
+    constructor(routes, historyContext) {
+      super();
+      this._cases = [];
+      this._fallback = () => x`
+      <h1>Not Found</h1>
+    `;
+      this._cases = routes.map((r2) => ({
+        ...r2,
+        route: new Route$1(r2.path)
+      }));
+      this._historyObserver = new Observer(
+        this,
+        historyContext
+      );
+    }
+    connectedCallback() {
+      this._historyObserver.observe(({ location }) => {
+        console.log("New location", location);
+        if (location)
+          this._match = this.matchRoute(location);
+      });
+      super.connectedCallback();
+    }
+    render() {
+      console.log("Rendering for match", this._match);
+      const renderView = () => {
+        if (this._match) {
+          if ("view" in this._match)
+            return this._match.view(this._match.params || {});
+          if ("redirect" in this._match) {
+            const redirect2 = this._match.redirect;
+            if (typeof redirect2 === "string") {
+              this.redirect(redirect2);
+              return x`
+              <h1>Redirecting to ${redirect2}…</h1>
+            `;
+            }
+          }
+        }
+        return this._fallback({});
+      };
+      return x`
+      <main>${renderView()}</main>
+    `;
+    }
+    updated(changedProperties) {
+      if (changedProperties.has("_match"))
+        this.requestUpdate();
+    }
+    matchRoute(location) {
+      const { search, pathname } = location;
+      const query = new URLSearchParams(search);
+      const path = pathname + search;
+      for (const option of this._cases) {
+        const params = option.route.match(path);
+        if (params) {
+          const match = {
+            ...option,
+            path: pathname,
+            params,
+            query
+          };
+          return match;
+        }
+      }
+      return;
+    }
+    redirect(href) {
+      dispatch(this, "history/redirect", { href });
+    }
+  }
+  Switch.styles = i$2`
+    :host,
+    main {
+      display: contents;
+    }
+  `;
+  __decorateClass$1([
+    n()
+  ], Switch.prototype, "_match", 2);
+  const _switch = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    Element: Switch,
+    Switch
+  }, Symbol.toStringTag, { value: "Module" }));
+  const _DropdownElement = class _DropdownElement2 extends HTMLElement {
+    constructor() {
+      super();
+      shadow(_DropdownElement2.template).attach(this);
+      if (this.shadowRoot) {
+        const actuator = this.shadowRoot.querySelector(
+          "slot[name='actuator']"
+        );
+        if (actuator)
+          actuator.addEventListener("click", () => this.toggle());
+      }
+    }
+    toggle() {
+      if (this.hasAttribute("open"))
+        this.removeAttribute("open");
+      else
+        this.setAttribute("open", "open");
+    }
+  };
+  _DropdownElement.template = html`<template>
+    <slot name="actuator"><button> Menu </button></slot>
+    <div id="panel">
+      <slot></slot>
+    </div>
+
+    <style>
+      :host {
+        position: relative;
+      }
+      #is-shown {
+        display: none;
+      }
+      #panel {
+        display: none;
+
+        position: absolute;
+        right: 0;
+        margin-top: var(--size-spacing-small);
+        width: max-content;
+        padding: var(--size-spacing-small);
+        border-radius: var(--size-radius-small);
+        background: var(--color-background-card);
+        color: var(--color-text);
+        box-shadow: var(--shadow-popover);
+      }
+      :host([open]) #panel {
+        display: block;
+      }
+    </style>
+  </template>`;
+  let DropdownElement = _DropdownElement;
+  function define2(defns) {
+    Object.entries(defns).map(([k2, v2]) => {
+      if (!customElements.get(k2))
+        customElements.define(k2, v2);
+    });
+    return customElements;
+  }
   var __defProp = Object.defineProperty;
   var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
   var __decorateClass = (decorators, target, key, kind) => {
@@ -1365,6 +2249,7 @@
   class View extends s {
     constructor(context) {
       super();
+      this._pending = [];
       this._observer = new Observer(this, context);
     }
     get model() {
@@ -1377,6 +2262,12 @@
       (_a2 = this._observer) == null ? void 0 : _a2.observe().then((effect) => {
         console.log("View effect (initial)", effect);
         this._context = effect.context;
+        if (this._pending.length) {
+          this._pending.forEach(([target, ev]) => {
+            console.log("Dispatching queued event", ev, target);
+            target.dispatchEvent(ev);
+          });
+        }
         effect.setEffect(() => {
           console.log("View effect", effect, this._context);
           if (this._context) {
@@ -1394,7 +2285,13 @@
         composed: true,
         detail: msg
       });
-      target.dispatchEvent(ev);
+      if (!this._context) {
+        console.log("Queueing message event", ev);
+        this._pending.push([target, ev]);
+      } else {
+        console.log("Dispatching message event", ev);
+        target.dispatchEvent(ev);
+      }
     }
     ref(key) {
       return this.model ? this.model[key] : void 0;
@@ -1407,10 +2304,12 @@
   exports2.DropdownElement = DropdownElement;
   exports2.Effect = Effect;
   exports2.Events = event;
+  exports2.History = history$1;
   exports2.Message = message;
   exports2.Observer = Observer;
   exports2.Rest = rest;
   exports2.Store = store;
+  exports2.Switch = _switch;
   exports2.Update = update;
   exports2.View = View;
   exports2.define = define2;

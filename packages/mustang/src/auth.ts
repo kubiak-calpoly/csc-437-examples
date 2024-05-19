@@ -31,7 +31,7 @@ class AuthService extends Service<AuthMsg, AuthModel> {
     redirectForLogin: string | undefined
   ) {
     super(
-      (m, a) => this.update(m, a),
+      (msg, apply) => this.update(msg, apply),
       context,
       AuthService.EVENT_TYPE
     );
@@ -41,8 +41,7 @@ class AuthService extends Service<AuthMsg, AuthModel> {
   update(message: AuthMsg, apply: ApplyMap<AuthModel>) {
     switch (message[0]) {
       case "auth/signin":
-        const { token, redirect } =
-          message[1] as AuthSuccessful;
+        const { token, redirect } = message[1];
         apply(signIn(token));
         return redirection(redirect);
       case "auth/signout":
