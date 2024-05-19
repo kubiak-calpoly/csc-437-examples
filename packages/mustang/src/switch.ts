@@ -99,7 +99,8 @@ export class Switch extends LitElement {
   }
 
   static override styles = css`
-    :host {
+    :host,
+    main {
       display: contents;
     }
   `;

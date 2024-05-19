@@ -16,22 +16,14 @@
     <link rel="stylesheet" href="/styles/tokens.css" />
     <link rel="stylesheet" href="/styles/page.css" />
     <link rel="stylesheet" href="/styles/form.css" />
-    <script type="importmap">
-      {
-        "imports": {
-          "@calpoly/mustang": "/node_modules/@calpoly/mustang/dist/mustang.mjs"
-        }
-      }
-    </script>
-    <script type="module" src="/js/restful-form.js"></script>
-    <script type="module">
-      import { relayEvent } from "/js/relay-event.js";
-      window.relayEvent = relayEvent;
-    </script>
     <script type="module">
       import { define, Auth } from "@calpoly/mustang";
+      import { SignupFormElement } from "/src/components/signup-form";
 
-      define({ "mu-auth": Auth.Provider });
+      define({
+        "mu-auth": Auth.Provider,
+        "sighnup-form": SignupFormElement
+      });
     </script>
     <style>
       .page {
@@ -54,9 +46,9 @@
   </head>
   <body class="page">
     <mu-auth>
-      <h2>Signup as a new User</h2>
+      <h2>New User Registration</h2>
       <main class="card">
-        <restful-form new src="/auth/register">
+        <signup-form>
           <label>
             <span>Username:</span>
             <input name="username" autocomplete="off" />
@@ -65,11 +57,12 @@
             <span>Password:</span>
             <input type="password" name="password" />
           </label>
-        </restful-form>
+        </signup-form>
       </main>
-      <p
-        >Already signed up? Then you can
-        <a href="./login.html">log in</a> instead.
+      <p>
+        Already have an account and want to
+        <a href="./login.html">Log In</a>
+        instead?
       </p>
     </mu-auth>
   </body>

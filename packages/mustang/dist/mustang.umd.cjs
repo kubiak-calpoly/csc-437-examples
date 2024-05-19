@@ -2164,7 +2164,8 @@
     }
   }
   Switch.styles = i$2`
-    :host {
+    :host,
+    main {
       display: contents;
     }
   `;
