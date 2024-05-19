@@ -11,6 +11,7 @@ export class View<
   _observer?: Observer<M>;
   _context?: Context<M>;
   _lastModel?: M;
+  _pending: Array<[EventTarget, CustomEvent]> = [];
 
   @property()
   get model() {
@@ -30,6 +31,12 @@ export class View<
     this._observer?.observe().then((effect) => {
       console.log("View effect (initial)", effect);
       this._context = effect.context;
+      if (this._pending.length) {
+        this._pending.forEach(([target, ev]) => {
+          console.log("Dispatching queued event", ev, target);
+          target.dispatchEvent(ev);
+        });
+      }
       effect.setEffect(() => {
         console.log("View effect", effect, this._context);
         if (this._context) {
@@ -49,7 +56,13 @@ export class View<
       composed: true,
       detail: msg
     });
-    target.dispatchEvent(ev);
+    if (!this._context) {
+      console.log("Queueing message event", ev);
+      this._pending.push([target, ev]);
+    } else {
+      console.log("Dispatching message event", ev);
+      target.dispatchEvent(ev);
+    }
   }
 
   ref<T>(key: keyof M) {

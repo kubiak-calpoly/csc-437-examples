@@ -1,4 +1,7 @@
+import { CSSResult } from 'lit';
+import { default as default_2 } from 'route-parser';
 import { LitElement } from 'lit';
+import { TemplateResult } from 'lit';
 
 declare class APIUser {
     authenticated: boolean;
@@ -63,6 +66,12 @@ declare interface AuthSuccessful {
 
 declare type Base = Type<string, object | undefined>;
 
+declare type Case = CaseRoute & (ViewCase | RedirectCase);
+
+declare interface CaseRoute {
+    route: default_2;
+}
+
 declare type Command<M> = (model: M) => void;
 
 declare class Context<T extends object> {
@@ -78,6 +87,8 @@ export declare function define(defns: ElementDefinitions): CustomElementRegistry
 declare class Dispatch<Msg extends Base> extends CustomEvent<Msg> {
     constructor(msg: Msg, eventType?: string);
 }
+
+declare const dispatch: (target: HTMLElement, ...msg: HistoryMsg) => boolean;
 
 declare function dispatcher<Msg extends Base>(eventType: string): (target: HTMLElement, ...msg: Msg) => boolean;
 
@@ -137,7 +148,10 @@ declare namespace History_2 {
     export {
         HistoryProvider,
         HistoryProvider as Provider,
-        HistoryService as Service
+        HistoryService as Service,
+        dispatch,
+        HistoryModel as Model,
+        HistoryMsg as Msg
     }
 }
 export { History_2 as History }
@@ -149,6 +163,12 @@ declare interface HistoryModel {
 
 declare type HistoryMsg = [
 "history/navigate",
+    {
+    href: string;
+    state?: object;
+}
+] | [
+"history/redirect",
     {
     href: string;
     state?: object;
@@ -171,6 +191,14 @@ export declare function html(template: TemplateStringsArray, ...params: string[]
 declare function identity<M>(model: M): M;
 
 declare type MapFn<M> = (model: M) => M;
+
+declare type Match = MatchPath & (ViewCase | RedirectCase);
+
+declare interface MatchPath {
+    path: string;
+    query?: URLSearchParams;
+    params?: RouteParams;
+}
 
 declare namespace Message {
     export {
@@ -199,6 +227,10 @@ declare class Provider<T extends object> extends HTMLElement {
     detach(observer: EventListener): void;
 }
 
+declare interface RedirectCase {
+    redirect: RouteRedirect;
+}
+
 declare function relay(event: Event, customType: string, detail: any): void;
 
 declare function replace<M>(replacements: Partial<M>): MapFn<M>;
@@ -210,6 +242,14 @@ declare namespace Rest {
     }
 }
 export { Rest }
+
+declare type RouteParams = {
+    [key: string]: string;
+};
+
+declare type RouteRedirect = string | ((arg: RouteParams) => string);
+
+declare type RouteView = (arg: RouteParams) => TemplateResult;
 
 declare class Service<Msg extends Base, T extends object> {
     _context: Context<T>;
@@ -250,6 +290,36 @@ declare class StoreService<Msg extends Message.Base, M extends object> extends S
     constructor(context: Context<M>, updateFn: Update_2<Msg, M>);
 }
 
+declare namespace Switch {
+    export {
+        Switch_2 as Switch,
+        Switch_2 as Element,
+        RouteParams as Params,
+        SwitchRoute as Route
+    }
+}
+export { Switch }
+
+declare class Switch_2 extends LitElement {
+    _cases: Case[];
+    _historyObserver: Observer<History_2.Model>;
+    _fallback: RouteView;
+    _match?: Match;
+    constructor(routes: SwitchRoute[], historyContext: string);
+    connectedCallback(): void;
+    render(): TemplateResult<1>;
+    updated(changedProperties: Map<PropertyKey, unknown>): void;
+    static styles: CSSResult;
+    matchRoute(location: Location): Match | undefined;
+    redirect(href: string): void;
+}
+
+declare interface SwitchPath {
+    path: string;
+}
+
+declare type SwitchRoute = SwitchPath & (ViewCase | RedirectCase);
+
 declare type Type<msg extends string, T extends object | undefined> = [msg, T] | [msg];
 
 declare namespace Update {
@@ -270,11 +340,16 @@ export declare class View<M extends object, Msg extends Message.Base> extends Li
     _observer?: Observer<M>;
     _context?: Context<M>;
     _lastModel?: M;
+    _pending: Array<[EventTarget, CustomEvent]>;
     get model(): M;
     constructor(context: string);
     connectedCallback(): void;
     dispatchMessage(msg: Msg, target?: HTMLElement): void;
     ref<T>(key: keyof M): T | undefined;
+}
+
+declare interface ViewCase {
+    view: RouteView;
 }
 
 export { }

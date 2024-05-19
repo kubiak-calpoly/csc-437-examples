@@ -1,4 +1,5 @@
 import { Context, Provider } from "./context";
+import { dispatcher } from "./message";
 import { Service } from "./service";
 import { ApplyMap } from "./update";
 
@@ -10,6 +11,13 @@ interface HistoryModel {
 type HistoryMsg =
   | [
     "history/navigate",
+    {
+      href: string;
+      state?: object;
+    }
+  ]
+  | [
+    "history/redirect",
     {
       href: string;
       state?: object;
@@ -29,9 +37,16 @@ class HistoryService extends Service<HistoryMsg, HistoryModel> {
 
   update(message: HistoryMsg, apply: ApplyMap<HistoryModel>) {
     switch (message[0]) {
-      case "history/navigate":
+      case "history/navigate": {
         const { href, state } = message[1];
         apply(navigate(href, state));
+        break;
+      }
+      case "history/redirect": {
+        const { href, state } = message[1];
+        apply(redirect(href, state));
+        break;
+      }
     }
   }
 }
@@ -58,7 +73,20 @@ function navigate(href: string, state: object = {}) {
   });
 }
 
+function redirect(href: string, state: object = {}) {
+  history.replaceState(state, "", href);
+  return () => ({
+    location: document.location,
+    state: history.state
+  });
+}
+
+const dispatch = dispatcher<HistoryMsg>(
+  HistoryService.EVENT_TYPE
+);
+
 export {
   HistoryProvider as Provider,
-  HistoryService as Service
+  HistoryService as Service, dispatch, type HistoryModel as Model,
+  type HistoryMsg as Msg
 };

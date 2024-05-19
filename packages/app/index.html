@@ -18,13 +18,12 @@
     <script type="module" src="/src/main"></script>
   </head>
   <body>
-    <mu-history>
+    <mu-history provides="blazing:history">
       <mu-auth provides="blazing:auth" redirect="./login.html">
         <mu-store provides="blazing:model">
           <article class="page">
             <blazing-header></blazing-header>
-            <tour-view
-              tour-id="65c7e92ea837ff7c15b669e5"></tour-view>
+            <mu-switch></mu-switch>
           </article>
         </mu-store>
       </mu-auth>
