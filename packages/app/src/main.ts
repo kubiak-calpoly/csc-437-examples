@@ -13,7 +13,7 @@ import update from "./update";
 import { ProfileViewElement } from "./views/profile-view";
 import { TourViewElement } from "./views/tour-view";
 
-const routes: Switch.Route[] = [
+const routes = [
   {
     path: "/app/tour/:id",
     view: (params: Switch.Params) => html`
@@ -24,6 +24,12 @@ const routes: Switch.Route[] = [
     path: "/app/profile/:id",
     view: (params: Switch.Params) => html`
       <profile-view user-id=${params.id}></profile-view>
+    `
+  },
+  {
+    path: "/app",
+    view: () => html`
+      <landing-view></landing-view>
     `
   },
   {
