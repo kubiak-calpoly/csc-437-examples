@@ -1,5 +1,10 @@
 import { Auth, Update } from "@calpoly/mustang";
-import { Destination, Profile, Tour } from "server/models";
+import {
+  Destination,
+  Profile,
+  Tour,
+  Transportation
+} from "server/models";
 import { Msg } from "./messages";
 import { Model } from "./model";
 import { convertStartEndDates } from "./utils/dates";
@@ -94,6 +99,9 @@ function selectTour(msg: { tourid: string }, user: Auth.User) {
         let tour: Tour = convertStartEndDates<Tour>(json);
         tour.destinations = tour.destinations.map(
           convertStartEndDates<Destination>
+        );
+        tour.transportation = tour.transportation.map(
+          convertStartEndDates<Transportation>
         );
         return tour;
       }

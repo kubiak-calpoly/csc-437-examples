@@ -95,17 +95,14 @@
           return void 0;
         }
         const value = Reflect.get(target, prop, receiver);
-        console.log(
-          `Context['${prop}'] => ${JSON.stringify(value)}`
-        );
+        console.log(`Context['${prop}'] => `, value);
         return value;
       },
       set: (target, prop, newValue, receiver) => {
         const oldValue = root[prop];
         console.log(
-          `Context['${prop.toString()}'] <= ${JSON.stringify(
-            newValue
-          )}; was ${JSON.stringify(oldValue)}`
+          `Context['${prop.toString()}'] <= `,
+          newValue
         );
         const didSet = Reflect.set(
           target,

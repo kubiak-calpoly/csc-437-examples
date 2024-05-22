@@ -113,6 +113,10 @@ export class CalendarWidget extends LitElement {
       padding: 0;
     }
 
+    fieldset + button {
+      margin-top: var(--size-spacing-large);
+    }
+
     h6 {
       text-align: center;
     }

@@ -30,7 +30,7 @@ interface DateStringRange {
 
 interface DateRange {
   startDate: Date;
-  endDate: Date;
+  endDate?: Date;
 }
 
 export function parseUTCDate(s: string) {
@@ -48,6 +48,8 @@ export function convertStartEndDates<T extends DateRange>(
   const datestrings = obj as DateStringRange;
   let result = obj as T;
   result.startDate = parseUTCDate(datestrings.startDate);
-  result.endDate = parseUTCDate(datestrings.endDate);
+  result.endDate = datestrings.endDate
+    ? parseUTCDate(datestrings.endDate)
+    : undefined;
   return result;
 }
