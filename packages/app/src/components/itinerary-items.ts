@@ -12,12 +12,6 @@ class ItineraryItemElement extends LitElement {
   @property()
   href?: string;
 
-  @property({ reflect: true, type: Boolean })
-  hidden: boolean = false;
-
-  _calendar_widget_select = (_: Event) => { };
-  _calendar_widget_clear = (_: Event) => { };
-
   render() {
     const item = this.renderItem();
 
@@ -52,9 +46,6 @@ class ItineraryItemElement extends LitElement {
     }
     :host(*) {
       display: contents;
-    }
-    :host([hidden]) {
-      display: none;
     }
     #dates {
       display: flex;
@@ -139,47 +130,6 @@ class ItineraryItemElement extends LitElement {
       vertical-align: middle;
     }
   `;
-
-  connectedCallback() {
-    const hideOrShow = (event: Event) => {
-      const selectionEvent = event as CustomEvent<{
-        date: Date;
-      }>;
-      const selectedDate = selectionEvent.detail.date as Date;
-      const hidden =
-        selectedDate < new Date(this.startDate) ||
-        selectedDate > new Date(this.endDate || this.startDate);
-      if (hidden) {
-        this.setAttribute("hidden", "hidden");
-      } else {
-        this.removeAttribute("hidden");
-      }
-    };
-    const showAll = (_: Event) => {
-      this.removeAttribute("hidden");
-    };
-    document.addEventListener(
-      "calendar-widget:select",
-      (this._calendar_widget_select = hideOrShow)
-    );
-    document.addEventListener(
-      "calendar-widget:clear",
-      (this._calendar_widget_clear = showAll)
-    );
-    super.connectedCallback();
-  }
-
-  disconnectedCallback() {
-    document.removeEventListener(
-      "calendar-widget:select",
-      this._calendar_widget_select
-    );
-    document.removeEventListener(
-      "calendar-widget:clear",
-      this._calendar_widget_clear
-    );
-    super.disconnectedCallback();
-  }
 }
 
 export class ItineraryDestinationElement extends ItineraryItemElement {

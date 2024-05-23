@@ -1,6 +1,6 @@
 import { define, View } from "@calpoly/mustang";
 import { css, html, TemplateResult } from "lit";
-import { property } from "lit/decorators.js";
+import { property, state } from "lit/decorators.js";
 import {
   Destination,
   Tour,
@@ -26,13 +26,26 @@ export class TourViewElement extends View<Model, Msg> {
   @property({ attribute: "tour-id", reflect: true })
   tourid = "";
 
-  @property()
+  @state()
   get tour(): Tour | undefined {
     return this.model.tour;
   }
 
+  @state()
+  selectedDate: Date | undefined;
+
   constructor() {
     super("blazing:model");
+
+    this.addEventListener("calendar-widget:select", (event) => {
+      const { detail } = event as CustomEvent;
+      const { date } = detail as { date: Date };
+      this.selectedDate = date;
+    });
+
+    this.addEventListener("calendar-widget:clear", () => {
+      this.selectedDate = undefined;
+    });
   }
 
   attributeChangedCallback(
@@ -132,17 +145,54 @@ export class TourViewElement extends View<Model, Msg> {
       `;
     };
 
+    const renderDates = () => {
+      if (this.selectedDate) {
+        return html`
+          <p>
+            ${formatDate(this.selectedDate)}
+            ${this.selectedDate.getFullYear()}
+          </p>
+        `;
+      } else {
+        return html`
+          <p>
+            from ${formatDate(startDate)} to
+            ${formatDate(endDate)}
+            ${endDate && endDate.getFullYear()}
+          </p>
+        `;
+      }
+    };
+
+    const renderDestAndTrans = (d: Destination, i: number) => {
+      const dt = this.selectedDate;
+      const dFilter =
+        dt && (d.startDate > dt || d.endDate < dt);
+
+      if (dFilter) return "";
+
+      const t0 = transportation[i];
+      const tn = transportation[i + 1];
+      const t0Filter =
+        dt &&
+        (t0.endDate || t0.startDate).valueOf() !== dt.valueOf();
+      const tnFilter =
+        dt && tn.startDate.valueOf() !== dt.valueOf();
+
+      return html`
+        ${i || t0Filter ? "" : renderTransportation(t0)}
+        ${renderDestination(d)}
+        ${tnFilter ? "" : renderTransportation(tn)}
+      `;
+    };
+
     console.log("Rendering Tour page", this.tour);
 
     return html`
       <main class="page">
         <header>
           <h2>${name}</h2>
-          <p>
-            from ${formatDate(startDate)} to
-            ${formatDate(endDate)}
-            ${endDate && endDate.getFullYear()}
-          </p>
+          ${renderDates()}
         </header>
 
         <calendar-widget
@@ -150,20 +200,7 @@ export class TourViewElement extends View<Model, Msg> {
           end-date=${endDate}></calendar-widget>
 
         <section class="itinerary">
-          ${destinations.map((d, i) => {
-      const t0 =
-        i === 0
-          ? renderTransportation(transportation[i])
-          : "";
-      const dthis = renderDestination(d);
-      const tnext = renderTransportation(
-        transportation[i + 1]
-      );
-
-      return html`
-              ${t0}${dthis}${tnext}
-            `;
-    })}
+          ${destinations.map(renderDestAndTrans)}
         </section>
 
         <entourage-table .using=${entourage}></entourage-table>
@@ -175,6 +212,10 @@ export class TourViewElement extends View<Model, Msg> {
     css`
       :host {
         display: contents;
+      }
+      h2,
+      p {
+        margin: 0;
       }
       main.page {
         display: grid;
@@ -188,6 +229,8 @@ export class TourViewElement extends View<Model, Msg> {
           "ca ca ca it it it it it"
           "en en en it it it it it"
           "xx xx xx it it it it it";
+        gap: var(--size-spacing-medium)
+          var(--size-spacing-large);
       }
 
       header {
@@ -197,6 +240,8 @@ export class TourViewElement extends View<Model, Msg> {
       calendar-widget {
         grid-area: ca;
         align-self: start;
+        border: 1px solid var(--color-accent);
+        padding: 1rem 0;
       }
 
       .itinerary {

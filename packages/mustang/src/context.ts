@@ -51,17 +51,14 @@ export function createContext<T extends object>(
         return undefined;
       }
       const value = Reflect.get(target, prop, receiver);
-      console.log(
-        `Context['${prop}'] => ${JSON.stringify(value)}`
-      );
+      console.log(`Context['${prop}'] => `, value);
       return value;
     },
     set: (target, prop: string, newValue, receiver) => {
       const oldValue = root[prop as keyof T];
       console.log(
-        `Context['${prop.toString()}'] <= ${JSON.stringify(
-          newValue
-        )}; was ${JSON.stringify(oldValue)}`
+        `Context['${prop.toString()}'] <= `,
+        newValue
       );
       const didSet = Reflect.set(
         target,
