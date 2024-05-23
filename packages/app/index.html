@@ -16,6 +16,18 @@
     <link rel="stylesheet" href="/styles/tokens.css" />
     <link rel="stylesheet" href="/styles/page.css" />
     <script type="module" src="/src/main"></script>
+    <script type="module">
+      function toggleDarkMode(page, checked) {
+        page.classList.toggle("dark-mode", checked);
+      }
+
+      document.body.addEventListener("dark-mode", (event) =>
+        toggleDarkMode(
+          event.currentTarget,
+          event.detail.checked
+        )
+      );
+    </script>
   </head>
   <body>
     <mu-history provides="blazing:history">

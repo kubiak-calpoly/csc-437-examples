@@ -2279,7 +2279,7 @@ class View extends s {
     var _a2;
     super.connectedCallback();
     (_a2 = this._observer) == null ? void 0 : _a2.observe().then((effect) => {
-      console.log("View effect (initial)", effect);
+      console.log("View effect (initial)", this, effect);
       this._context = effect.context;
       if (this._pending.length) {
         this._pending.forEach(([target, ev]) => {
@@ -2288,7 +2288,13 @@ class View extends s {
         });
       }
       effect.setEffect(() => {
-        console.log("View effect", effect, this._context);
+        var _a3;
+        console.log(
+          "View effect",
+          this,
+          effect,
+          (_a3 = this._context) == null ? void 0 : _a3.value
+        );
         if (this._context) {
           console.log("requesting update");
           this.requestUpdate();

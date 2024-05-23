@@ -1,11 +1,36 @@
 import { define, View } from "@calpoly/mustang";
 import { css, html, LitElement } from "lit";
-import { property } from "lit/decorators.js";
+import { property, state } from "lit/decorators.js";
 import { Profile } from "server/models";
+import { ProfileAvatarElement } from "../components/profile-avatar";
 import { Msg } from "../messages";
 import { Model } from "../model";
 
 class ProfileViewer extends LitElement {
+  render() {
+    return html`
+      <section>
+        <slot name="avatar"></slot>
+        <h1><slot name="name"></slot></h1>
+        <nav>
+          <button class="edit">Edit</button>
+          <button class="close">Close</button>
+          <button class="delete">Delete</button>
+        </nav>
+        <dl>
+          <dt>Username</dt>
+          <dd><slot name="userid"></slot></dd>
+          <dt>Nickname</dt>
+          <dd><slot name="nickname"></slot></dd>
+          <dt>Home City</dt>
+          <dd><slot name="home"></slot></dd>
+          <dt>Airports</dt>
+          <dd><slot name="airports"></slot></dd>
+        </dl>
+      </section>
+    `;
+  }
+
   static styles = css`
     :host {
       --display-new-button: inline-block;
@@ -96,90 +121,24 @@ class ProfileViewer extends LitElement {
       gap: var(--size-spacing-medium);
     }
   `;
-
-  render() {
-    return html`
-      <section>
-        <slot name="avatar"></slot>
-        <h1><slot name="name"></slot></h1>
-        <nav>
-          <button class="new">New…</button>
-          <button class="edit">Edit</button>
-          <button class="close">Close</button>
-          <button class="delete">Delete</button>
-        </nav>
-        <dl>
-          <dt>Username</dt>
-          <dd><slot name="userid"></slot></dd>
-          <dt>Nickname</dt>
-          <dd><slot name="nickname"></slot></dd>
-          <dt>Home City</dt>
-          <dd><slot name="home"></slot></dd>
-          <dt>Airports</dt>
-          <dd><slot name="airports"></slot></dd>
-        </dl>
-      </section>
-    `;
-  }
 }
 
-class ProfileAvatarElement extends LitElement {
-  @property()
-  color: string = "white";
-
-  @property()
-  src?: string;
-
-  render() {
-    return html`
-      <div
-        class="avatar"
-        style="
-        ${this.color
-        ? `--avatar-backgroundColor: ${this.color};`
-        : ""}
-        ${this.src
-        ? `background-image: url('${this.src}');`
-        : ""}
-      "></div>
-    `;
-  }
-
-  static styles = css`
-    :host {
-      display: contents;
-      --avatar-backgroundColor: var(--color-accent);
-      --avatar-size: 100px;
-    }
-    .avatar {
-      grid-column: key;
-      justify-self: end;
-      position: relative;
-      width: var(--avatar-size);
-      aspect-ratio: 1;
-      background-color: var(--avatar-backgroundColor);
-      background-size: cover;
-      border-radius: 50%;
-      text-align: center;
-      line-height: var(--avatar-size);
-      font-size: calc(0.66 * var(--avatar-size));
-      font-family: var(--font-family-display);
-      color: var(--color-link-inverted);
-      overflow: hidden;
-    }
-  `;
-}
+class ProfileEditor extends LitElement { }
 
 export class ProfileViewElement extends View<Model, Msg> {
   static uses = define({
     "profile-viewer": ProfileViewer,
+    "profile-editor": ProfileEditor,
     "profile-avatar": ProfileAvatarElement
   });
+
+  @property({ reflect: true })
+  edit = false;
 
   @property({ attribute: "user-id", reflect: true })
   userid = "";
 
-  @property()
+  @state()
   get profile(): Profile | undefined {
     return this.model.profile;
   }
@@ -225,20 +184,26 @@ export class ProfileViewElement extends View<Model, Msg> {
         `
     );
 
-    return html`
-      <profile-viewer>
-        <profile-avatar
-          slot="avatar"
-          color=${color}
-          src=${avatar}></profile-avatar>
-        <span slot="name">${name}</span>
-        <span slot="userid">${userid}</span>
-        <span slot="nickname">${nickname}</span>
-        <span slot="home">${home}</span>
-        <ul slot="airports">
-          ${airports_html}
-        </ul>
-      </profile-viewer>
+    const fields = html`
+      <profile-avatar
+        slot="avatar"
+        color=${color}
+        src=${avatar}></profile-avatar>
+      <span slot="name">${name}</span>
+      <span slot="userid">${userid}</span>
+      <span slot="nickname">${nickname}</span>
+      <span slot="home">${home}</span>
+      <ul slot="airports">
+        ${airports_html}
+      </ul>
     `;
+
+    return this.edit
+      ? html`
+          <profile-editor>$[fields]</profile-editor>
+        `
+      : html`
+          <profile-viewer>$[fields]</profile-viewer>
+        `;
   }
 }
