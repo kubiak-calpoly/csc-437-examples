@@ -43,9 +43,11 @@ export class EntourageTable extends LitElement {
       return html`
         <tr>
           <td>
-            <span class="avatar" ${colorStyle}>
+              <a
+              class="avatar"
+              ${colorStyle}
+              href="/app/profile/${userid}">
               ${avatarImg}
-            </span>
           </td>
           <td class="name">
             <a href="/app/profile/${userid}">${name}</a>
@@ -84,7 +86,12 @@ export class EntourageTable extends LitElement {
       padding: 0 var(--size-spacing-small);
       vertical-align: middle;
     }
-    .avatar {
+    a[href] {
+      font: inherit;
+      color: inherit;
+    }
+    .avatar,
+    a[href].avatar {
       display: inline-block;
       position: relative;
       width: var(--size-icon-medium);
@@ -96,15 +103,12 @@ export class EntourageTable extends LitElement {
       font-family: var(--font-family-display);
       color: var(--color-link-inverted);
       overflow: hidden;
+      text-decoration: none;
     }
     .name {
       width: 100%;
       font-family: var(--font-family-display);
       color: var(--color-accent);
-    }
-    a[href] {
-      font: inherit;
-      color: inherit;
     }
     img {
       width: 100%;

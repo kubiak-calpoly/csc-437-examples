@@ -17,6 +17,7 @@ declare namespace Auth {
         AuthProvider as Provider,
         APIUser as User,
         authHeaders as headers,
+        tokenPayload as payload,
         AuthSuccessful,
         AuthModel as Model,
         AuthMsg as Msg,
@@ -32,12 +33,12 @@ declare class AuthenticatedUser extends APIUser {
     static authenticateFromLocalStorage(): APIUser;
 }
 
-declare function authHeaders(user: APIUser): {
+declare function authHeaders(user: APIUser | AuthenticatedUser): {
     Authorization?: string;
 };
 
 declare interface AuthModel {
-    user?: APIUser;
+    user?: APIUser | AuthenticatedUser;
     token?: string;
 }
 
@@ -319,6 +320,8 @@ declare interface SwitchPath {
 }
 
 declare type SwitchRoute = SwitchPath & (ViewCase | RedirectCase);
+
+declare function tokenPayload(user: APIUser | AuthenticatedUser): object;
 
 declare type Type<msg extends string, T extends object | undefined> = [msg, T] | [msg];
 

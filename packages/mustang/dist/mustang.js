@@ -355,12 +355,21 @@ function authHeaders(user) {
     return {};
   }
 }
+function tokenPayload(user) {
+  if (user.authenticated) {
+    const authUser = user;
+    return jwtDecode(authUser.token || "");
+  } else {
+    return {};
+  }
+}
 const auth = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   AuthenticatedUser,
   Provider: AuthProvider,
   User: APIUser,
-  headers: authHeaders
+  headers: authHeaders,
+  payload: tokenPayload
 }, Symbol.toStringTag, { value: "Module" }));
 function relay(event2, customType, detail) {
   const relay2 = event2.currentTarget;
@@ -412,13 +421,13 @@ class HistoryProvider extends Provider {
       state: {}
     });
     this.addEventListener("click", (event2) => {
-      const originalTarget = event2.composed ? event2.composedPath()[0] : event2.target;
-      if (originalTarget.tagName == "A" && originalTarget.href && event2.button == 0) {
-        const url = new URL(originalTarget.href);
+      const linkTarget = originalLinkTarget(event2);
+      if (linkTarget) {
+        const url = new URL(linkTarget.href);
         if (url.origin === this.context.value.location.origin) {
           console.log("Preventing Click Event on <A>", event2);
           event2.preventDefault();
-          dispatch(originalTarget, "history/navigate", {
+          dispatch(linkTarget, "history/navigate", {
             href: url.pathname + url.search
           });
         }
@@ -434,6 +443,23 @@ class HistoryProvider extends Provider {
   connectedCallback() {
     const service = new HistoryService(this.context);
     service.attach(this);
+  }
+}
+function originalLinkTarget(event2) {
+  const current = event2.currentTarget;
+  const isLink = (el) => el.tagName == "A" && el.href;
+  if (event2.button !== 0)
+    return void 0;
+  if (event2.composed) {
+    const path = event2.composedPath();
+    const target = path.find(isLink);
+    return target ? target : void 0;
+  } else {
+    for (let target = event2.target; target; target === current ? null : target.parentElement) {
+      if (isLink(target))
+        return target;
+    }
+    return void 0;
   }
 }
 function navigate(href, state = {}) {

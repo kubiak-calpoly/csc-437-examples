@@ -59,20 +59,14 @@ export class HistoryProvider extends Provider<HistoryModel> {
     });
 
     this.addEventListener("click", (event: MouseEvent) => {
-      const originalTarget = (
-        event.composed ? event.composedPath()[0] : event.target
-      ) as HTMLAnchorElement;
-      if (
-        originalTarget.tagName == "A" &&
-        originalTarget.href &&
-        event.button == 0
-      ) {
+      const linkTarget = originalLinkTarget(event);
+      if (linkTarget) {
         // It's a left click on an <a href=...>.
-        const url = new URL(originalTarget.href);
+        const url = new URL(linkTarget.href);
         if (url.origin === this.context.value.location.origin) {
           console.log("Preventing Click Event on <A>", event);
           event.preventDefault();
-          dispatch(originalTarget, "history/navigate", {
+          dispatch(linkTarget, "history/navigate", {
             href: url.pathname + url.search
           });
         }
@@ -90,6 +84,35 @@ export class HistoryProvider extends Provider<HistoryModel> {
   connectedCallback() {
     const service = new HistoryService(this.context);
     service.attach(this);
+  }
+}
+
+function originalLinkTarget(
+  event: MouseEvent
+): HTMLAnchorElement | undefined {
+  const current = event.currentTarget;
+  const isLink = (el: EventTarget) =>
+    (el as HTMLElement).tagName == "A" &&
+    (el as HTMLAnchorElement).href;
+
+  if (event.button !== 0) return undefined;
+
+  if (event.composed) {
+    const path = event.composedPath();
+    const target = path.find(isLink);
+    return target ? (target as HTMLAnchorElement) : undefined;
+  } else {
+    for (
+      let target: HTMLElement | null =
+        event.target as HTMLElement;
+      target;
+      target === current
+        ? null
+        : (target as HTMLElement).parentElement
+    ) {
+      if (isLink(target)) return target as HTMLAnchorElement;
+    }
+    return undefined;
   }
 }
 

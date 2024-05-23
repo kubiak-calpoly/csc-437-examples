@@ -7,7 +7,7 @@ import { ApplyMap, replace } from "./update";
 const TOKEN_KEY = "mu:auth:jwt";
 
 interface AuthModel {
-  user?: APIUser;
+  user?: APIUser | AuthenticatedUser;
   token?: string;
 }
 
@@ -166,7 +166,7 @@ function signOut() {
   };
 }
 
-function authHeaders(user: APIUser): {
+function authHeaders(user: APIUser | AuthenticatedUser): {
   Authorization?: string;
 } {
   if (user.authenticated) {
@@ -179,11 +179,23 @@ function authHeaders(user: APIUser): {
   }
 }
 
+function tokenPayload(
+  user: APIUser | AuthenticatedUser
+): object {
+  if (user.authenticated) {
+    const authUser = user as AuthenticatedUser;
+    return jwtDecode(authUser.token || "");
+  } else {
+    return {};
+  }
+}
+
 export {
   AuthenticatedUser,
   AuthProvider as Provider,
   APIUser as User,
   authHeaders as headers,
+  tokenPayload as payload,
   type AuthSuccessful,
   type AuthModel as Model,
   type AuthMsg as Msg,
