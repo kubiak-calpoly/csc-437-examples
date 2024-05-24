@@ -1,4 +1,4 @@
-import { Auth, History, Update } from "@calpoly/mustang";
+import { Auth, Update } from "@calpoly/mustang";
 import {
   Destination,
   Profile,
@@ -22,10 +22,12 @@ export default function update(
           apply((model) => ({ ...model, profile }))
         )
         .then(() => {
-          const { userid } = message[1].profile;
-          History.dispatch(this, "history/navigate", {
-            href: `/app/profile/${userid}`
-          });
+          const { onSuccess } = message[1];
+          if (onSuccess) onSuccess();
+        })
+        .catch((error: Error) => {
+          const { onFailure } = message[1];
+          if (onFailure) onFailure(error);
         });
       break;
     case "profile/select":
@@ -62,7 +64,10 @@ function saveProfile(
   })
     .then((response: Response) => {
       if (response.status === 200) return response.json();
-      return undefined;
+      else
+        throw new Error(
+          `Failed to save profile for ${msg.userid}`
+        );
     })
     .then((json: unknown) => {
       if (json) return json as Profile;

@@ -272,11 +272,12 @@ export class ProfileViewElement extends View<Model, Msg> {
       {
         userid: this.userid,
         profile: event.detail,
-        onSuccess: () => {
+        onSuccess: () =>
           History.dispatch(this, "history/navigate", {
-            href: `/app/profile / ${this.userid}`
-          });
-        }
+            href: `/app/profile/${this.userid}`
+          }),
+        onFailure: (error: Error) =>
+          console.log("ERROR:", error)
       }
     ]);
   }
