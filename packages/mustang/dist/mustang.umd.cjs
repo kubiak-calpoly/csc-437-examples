@@ -601,9 +601,7 @@
     HistoryProvider,
     Provider: HistoryProvider,
     Service: HistoryService,
-    dispatch,
-    navigate,
-    redirect
+    dispatch
   }, Symbol.toStringTag, { value: "Module" }));
   class Observer {
     constructor(target, contextLabel) {

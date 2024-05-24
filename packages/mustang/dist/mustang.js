@@ -597,9 +597,7 @@ const history$1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePro
   HistoryProvider,
   Provider: HistoryProvider,
   Service: HistoryService,
-  dispatch,
-  navigate,
-  redirect
+  dispatch
 }, Symbol.toStringTag, { value: "Module" }));
 class Observer {
   constructor(target, contextLabel) {
