@@ -74,6 +74,7 @@ export class HistoryProvider extends Provider<HistoryModel> {
     });
 
     window.addEventListener("popstate", (event) => {
+      console.log("Popstate", event.state);
       this.context.value = {
         location: document.location,
         state: event.state

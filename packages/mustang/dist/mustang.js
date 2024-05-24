@@ -546,6 +546,7 @@ class HistoryProvider extends Provider {
       }
     });
     window.addEventListener("popstate", (event2) => {
+      console.log("Popstate", event2.state);
       this.context.value = {
         location: document.location,
         state: event2.state
@@ -596,7 +597,9 @@ const history$1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePro
   HistoryProvider,
   Provider: HistoryProvider,
   Service: HistoryService,
-  dispatch
+  dispatch,
+  navigate,
+  redirect
 }, Symbol.toStringTag, { value: "Module" }));
 class Observer {
   constructor(target, contextLabel) {

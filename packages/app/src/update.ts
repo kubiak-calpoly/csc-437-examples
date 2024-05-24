@@ -1,4 +1,4 @@
-import { Auth, Update } from "@calpoly/mustang";
+import { Auth, History, Update } from "@calpoly/mustang";
 import {
   Destination,
   Profile,
@@ -17,9 +17,16 @@ export default function update(
   console.log(`Updating for message:`, message);
   switch (message[0]) {
     case "profile/save":
-      saveProfile(message[1], user).then((profile) =>
-        apply((model) => ({ ...model, profile }))
-      );
+      saveProfile(message[1], user)
+        .then((profile) =>
+          apply((model) => ({ ...model, profile }))
+        )
+        .then(() => {
+          const { userid } = message[1].profile;
+          History.dispatch(this, "history/navigate", {
+            href: `/app/profile/${userid}`
+          });
+        });
       break;
     case "profile/select":
       selectProfile(message[1], user).then((profile) =>

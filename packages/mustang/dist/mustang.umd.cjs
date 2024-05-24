@@ -550,6 +550,7 @@
         }
       });
       window.addEventListener("popstate", (event2) => {
+        console.log("Popstate", event2.state);
         this.context.value = {
           location: document.location,
           state: event2.state
@@ -600,7 +601,9 @@
     HistoryProvider,
     Provider: HistoryProvider,
     Service: HistoryService,
-    dispatch
+    dispatch,
+    navigate,
+    redirect
   }, Symbol.toStringTag, { value: "Module" }));
   class Observer {
     constructor(target, contextLabel) {

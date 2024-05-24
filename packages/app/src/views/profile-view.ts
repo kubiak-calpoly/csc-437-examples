@@ -1,6 +1,7 @@
 import {
   define,
   Form,
+  History,
   InputArray,
   View
 } from "@calpoly/mustang";
@@ -119,7 +120,7 @@ class ProfileEditor extends LitElement {
         <mu-form .init=${this.init}>
           <label>
             <span>Username</span>
-            <input name="userid" />
+            <input disabled name="userid" />
           </label>
           <label>
             <span>Name</span>
@@ -186,9 +187,9 @@ export class ProfileViewElement extends View<Model, Msg> {
 
   constructor() {
     super("blazing:model");
-    this.addEventListener("mu-form:submit", (event) =>
-      this._handleSubmit(event as Form.SubmitEvent<Profile>)
-    );
+    // this.addEventListener("mu-form:submit", (event) =>
+    //   this._handleSubmit(event as Form.SubmitEvent<Profile>)
+    // );
   }
 
   attributeChangedCallback(
@@ -237,26 +238,29 @@ export class ProfileViewElement extends View<Model, Msg> {
         color=${color}
         src=${avatar}
         initial=${initial}></profile-avatar>
-      <span slot="name">${name}</span>
-      <span slot="userid">${userid}</span>
-      <span slot="nickname">${nickname}</span>
-      <span slot="home">${home}</span>
-      <ul slot="airports">
-        ${airports_html}
-      </ul>
     `;
 
     return this.edit
       ? html`
           <profile-editor
             username=${userid}
-            .init=${this.profile}>
+            .init=${this.profile}
+            @mu-form:submit=${(
+        event: Form.SubmitEvent<Profile>
+      ) => this._handleSubmit(event)}>
             ${fields}
           </profile-editor>
         `
       : html`
           <profile-viewer username=${userid}>
             ${fields}
+            <span slot="name">${name}</span>
+            <span slot="userid">${userid}</span>
+            <span slot="nickname">${nickname}</span>
+            <span slot="home">${home}</span>
+            <ul slot="airports">
+              ${airports_html}
+            </ul>
           </profile-viewer>
         `;
   }
@@ -265,7 +269,15 @@ export class ProfileViewElement extends View<Model, Msg> {
     console.log("Handling submit of mu-form");
     this.dispatchMessage([
       "profile/save",
-      { userid: this.userid, profile: event.detail }
+      {
+        userid: this.userid,
+        profile: event.detail,
+        onSuccess: () => {
+          History.dispatch(this, "history/navigate", {
+            href: `/app/profile / ${this.userid}`
+          });
+        }
+      }
     ]);
   }
 

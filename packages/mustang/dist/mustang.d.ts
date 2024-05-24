@@ -186,6 +186,8 @@ declare namespace History_2 {
         HistoryProvider as Provider,
         HistoryService as Service,
         dispatch_2 as dispatch,
+        navigate,
+        redirect,
         HistoryModel as Model,
         HistoryMsg as Msg
     }
@@ -264,6 +266,11 @@ declare namespace Message {
 }
 export { Message }
 
+declare function navigate(href: string, state?: object): () => {
+    location: Location;
+    state: any;
+};
+
 export declare class Observer<T extends object> {
     _target: HTMLElement;
     _contextLabel: string;
@@ -282,6 +289,11 @@ declare class Provider<T extends object> extends HTMLElement {
     attach(observer: EventListener): EventListener;
     detach(observer: EventListener): void;
 }
+
+declare function redirect(href: string, state?: object): () => {
+    location: Location;
+    state: any;
+};
 
 declare interface RedirectCase {
     redirect: RouteRedirect;
