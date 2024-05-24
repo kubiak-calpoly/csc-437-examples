@@ -14,6 +14,7 @@ export default function update(
   apply: Update.ApplyMap<Model>,
   user: Auth.User
 ) {
+  console.log(`Updating for message:`, message);
   switch (message[0]) {
     case "profile/save":
       saveProfile(message[1], user).then((profile) =>

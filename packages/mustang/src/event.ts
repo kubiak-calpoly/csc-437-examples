@@ -1,9 +1,9 @@
 export function relay(
   event: Event,
   customType: string,
-  detail: any
+  detail?: any
 ) {
-  const relay = event.currentTarget as EventTarget;
+  const relay = event.target as EventTarget;
   const customEvent = new CustomEvent(customType, {
     bubbles: true,
     composed: true,
@@ -17,4 +17,15 @@ export function relay(
 
   relay.dispatchEvent(customEvent);
   event.stopPropagation();
+}
+
+export function originalTarget(
+  event: Event,
+  selector: string = "*"
+) {
+  const path = event.composedPath();
+  return path.find((tgt) => {
+    const el = tgt as HTMLElement;
+    return el.tagName && el.matches(selector);
+  });
 }

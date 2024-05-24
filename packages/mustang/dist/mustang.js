@@ -166,12 +166,14 @@ class Dispatch extends CustomEvent {
     });
   }
 }
-function dispatcher(eventType) {
+function dispatcher(eventType = "mu:message") {
   return (target, ...msg) => target.dispatchEvent(new Dispatch(msg, eventType));
 }
+const dispatch$1 = dispatcher();
 const message = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   Dispatch,
+  dispatch: dispatch$1,
   dispatcher
 }, Symbol.toStringTag, { value: "Module" }));
 class Service {
@@ -372,7 +374,7 @@ const auth = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty
   payload: tokenPayload
 }, Symbol.toStringTag, { value: "Module" }));
 function relay(event2, customType, detail) {
-  const relay2 = event2.currentTarget;
+  const relay2 = event2.target;
   const customEvent = new CustomEvent(customType, {
     bubbles: true,
     composed: true,
@@ -385,8 +387,16 @@ function relay(event2, customType, detail) {
   relay2.dispatchEvent(customEvent);
   event2.stopPropagation();
 }
+function originalTarget(event2, selector = "*") {
+  const path = event2.composedPath();
+  return path.find((tgt) => {
+    const el = tgt;
+    return el.tagName && el.matches(selector);
+  });
+}
 const event = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
+  originalTarget,
   relay
 }, Symbol.toStringTag, { value: "Module" }));
 const _HistoryService = class _HistoryService2 extends Service {
@@ -580,29 +590,34 @@ const _FormElement = class _FormElement2 extends HTMLElement {
     if (this.form) {
       this.form.addEventListener("submit", (event2) => {
         event2.preventDefault();
-        if (this.src) {
+        if (this.src || this.action) {
           console.log("Submitting form", this._state);
-          const method = this.isNew ? "POST" : "PUT";
-          const action = this.isNew ? "created" : "updated";
-          const src = this.isNew ? this.src.replace(/[/][$]new$/, "") : this.src;
-          submitForm(
-            src,
-            this._state,
-            method,
-            this.authorization
-          ).then((json) => populateForm(json, this)).then((json) => {
-            const customType = `mu-rest-form:${action}`;
-            const event22 = new CustomEvent(customType, {
-              bubbles: true,
-              composed: true,
-              detail: {
-                method,
-                [action]: json,
-                url: src
-              }
+          if (this.action) {
+            const message$1 = this.action(this._state);
+            dispatch$1(this, ...message$1);
+          } else if (this.src) {
+            const method = this.isNew ? "POST" : "PUT";
+            const action = this.isNew ? "created" : "updated";
+            const src = this.isNew ? this.src.replace(/[/][$]new$/, "") : this.src;
+            submitForm(
+              src,
+              this._state,
+              method,
+              this.authorization
+            ).then((json) => populateForm(json, this)).then((json) => {
+              const customType = `mu-rest-form:${action}`;
+              const event22 = new CustomEvent(customType, {
+                bubbles: true,
+                composed: true,
+                detail: {
+                  method,
+                  [action]: json,
+                  url: src
+                }
+              });
+              this.dispatchEvent(event22);
             });
-            this.dispatchEvent(event22);
-          });
+          }
         }
       });
     }
@@ -621,6 +636,10 @@ const _FormElement = class _FormElement2 extends HTMLElement {
   }
   get isNew() {
     return this.hasAttribute("new");
+  }
+  set init(x2) {
+    this._state = x2 || {};
+    populateForm(this._state, this);
   }
   get form() {
     var _a2;
@@ -671,12 +690,14 @@ const _FormElement = class _FormElement2 extends HTMLElement {
     }
   }
 };
-_FormElement.observedAttributes = ["src", "new"];
+_FormElement.observedAttributes = ["src", "new", "action"];
 _FormElement.template = html`
     <template>
       <form autocomplete="off">
         <slot></slot>
-        <slot><button type="submit">Submit</button></slot>
+        <slot name="submit">
+          <button type="submit">Submit</button>
+        </slot>
       </form>
       <slot name="delete"></slot>
       <style>
@@ -2215,38 +2236,148 @@ const _DropdownElement = class _DropdownElement2 extends HTMLElement {
       this.setAttribute("open", "open");
   }
 };
-_DropdownElement.template = html`<template>
-    <slot name="actuator"><button> Menu </button></slot>
-    <div id="panel">
-      <slot></slot>
-    </div>
+_DropdownElement.template = html`
+    <template>
+      <slot name="actuator"><button>Menu</button></slot>
+      <div id="panel">
+        <slot></slot>
+      </div>
 
-    <style>
-      :host {
-        position: relative;
-      }
-      #is-shown {
-        display: none;
-      }
-      #panel {
-        display: none;
+      <style>
+        :host {
+          position: relative;
+        }
+        #is-shown {
+          display: none;
+        }
+        #panel {
+          display: none;
 
-        position: absolute;
-        right: 0;
-        margin-top: var(--size-spacing-small);
-        width: max-content;
-        padding: var(--size-spacing-small);
-        border-radius: var(--size-radius-small);
-        background: var(--color-background-card);
-        color: var(--color-text);
-        box-shadow: var(--shadow-popover);
-      }
-      :host([open]) #panel {
-        display: block;
-      }
-    </style>
-  </template>`;
+          position: absolute;
+          right: 0;
+          margin-top: var(--size-spacing-small);
+          width: max-content;
+          padding: var(--size-spacing-small);
+          border-radius: var(--size-radius-small);
+          background: var(--color-background-card);
+          color: var(--color-text);
+          box-shadow: var(--shadow-popover);
+        }
+        :host([open]) #panel {
+          display: block;
+        }
+      </style>
+    </template>
+  `;
 let DropdownElement = _DropdownElement;
+const dropDown = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  Element: DropdownElement
+}, Symbol.toStringTag, { value: "Module" }));
+const _InputArrayElement = class _InputArrayElement2 extends HTMLElement {
+  constructor() {
+    super();
+    this._array = [];
+    shadow(_InputArrayElement2.template).attach(this);
+    this.addEventListener("input-array:add", (event2) => {
+      event2.stopPropagation();
+      this.append(renderItem("", this._array.length));
+    });
+    this.addEventListener("input-array:remove", (event2) => {
+      event2.stopPropagation();
+      this.removeClosestItem(event2.target);
+    });
+    this.addEventListener("change", (event2) => {
+      event2.stopPropagation();
+      const target = event2.target;
+      if (target && target !== this) {
+        const newEvent = new Event("change", { bubbles: true });
+        const value = target.value;
+        const item = target.closest("label");
+        if (item) {
+          const index = Array.from(this.children).indexOf(item);
+          this._array[index] = value;
+          this.dispatchEvent(newEvent);
+        }
+      }
+    });
+    this.addEventListener("click", (event2) => {
+      const addbutton = originalTarget(event2, "button.add");
+      if (addbutton)
+        relay(event2, "input-array:add");
+      else {
+        const removebutton = originalTarget(
+          event2,
+          "button.remove"
+        );
+        if (removebutton)
+          relay(event2, "input-array:remove");
+      }
+    });
+  }
+  get name() {
+    return this.getAttribute("name");
+  }
+  get value() {
+    return this._array;
+  }
+  set value(array) {
+    this._array = Array.isArray(array) ? array : [array];
+    populateArray(this._array, this);
+  }
+  removeClosestItem(element) {
+    const item = element.closest("label");
+    console.log("Removing closest item:", item, element);
+    if (item) {
+      const index = Array.from(this.children).indexOf(item);
+      this._array.splice(index, 1);
+      item.remove();
+    }
+  }
+};
+_InputArrayElement.template = html`
+    <template>
+      <ul>
+        <slot></slot>
+      </ul>
+      <button class="add">
+        <slot name="label-add">Add one</slot>
+        <style>
+          :host {
+            display: contents;
+          }
+          ul {
+            display: contents;
+          }
+          button.add {
+            grid-column: input / input-end;
+          }
+          ::slotted(label) {
+            display: contents;
+          }
+        </style>
+      </button>
+    </template>
+  `;
+let InputArrayElement = _InputArrayElement;
+customElements.define("input-array", InputArrayElement);
+function populateArray(array, container) {
+  container.replaceChildren();
+  array.forEach((s2, i2) => container.append(renderItem(s2)));
+}
+function renderItem(value, _2) {
+  const valueAttr = value === void 0 ? "" : `value="${value}"`;
+  return html`
+    <label>
+      <input ${valueAttr} />
+      <button class="remove" type="button">Remove</button>
+    </label>
+  `;
+}
+const inputArray = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  Element: InputArrayElement
+}, Symbol.toStringTag, { value: "Module" }));
 function define(defns) {
   Object.entries(defns).map(([k2, v2]) => {
     if (!customElements.get(k2))
@@ -2327,10 +2458,11 @@ __decorateClass([
 ], View.prototype, "model", 1);
 export {
   auth as Auth,
-  DropdownElement,
+  dropDown as Dropdown,
   Effect,
   event as Events,
   history$1 as History,
+  inputArray as InputArray,
   message as Message,
   Observer,
   rest as Rest,

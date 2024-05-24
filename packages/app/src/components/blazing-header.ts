@@ -1,6 +1,6 @@
 import {
   Auth,
-  DropdownElement,
+  Dropdown,
   Events,
   Observer,
   View,
@@ -15,7 +15,7 @@ import { ProfileAvatarElement } from "./profile-avatar";
 
 export class BlazingHeaderElement extends View<Model, Msg> {
   static uses = define({
-    "drop-down": DropdownElement,
+    "drop-down": Dropdown.Element,
     "profile-avatar": ProfileAvatarElement
   });
 

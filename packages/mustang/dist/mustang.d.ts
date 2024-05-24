@@ -89,11 +89,20 @@ declare class Dispatch<Msg extends Base> extends CustomEvent<Msg> {
     constructor(msg: Msg, eventType?: string);
 }
 
-declare const dispatch: (target: HTMLElement, ...msg: HistoryMsg) => boolean;
+declare const dispatch: (target: HTMLElement, ...msg: Base) => boolean;
 
-declare function dispatcher<Msg extends Base>(eventType: string): (target: HTMLElement, ...msg: Msg) => boolean;
+declare const dispatch_2: (target: HTMLElement, ...msg: HistoryMsg) => boolean;
 
-export declare class DropdownElement extends HTMLElement {
+declare function dispatcher<Msg extends Base>(eventType?: string): (target: HTMLElement, ...msg: Msg) => boolean;
+
+declare namespace Dropdown {
+    export {
+        DropdownElement as Element
+    }
+}
+export { Dropdown }
+
+declare class DropdownElement extends HTMLElement {
     static template: DocumentFragment;
     constructor();
     toggle(): void;
@@ -117,7 +126,8 @@ declare type ElementDefinitions = {
 
 declare namespace Events {
     export {
-        relay
+        relay,
+        originalTarget
     }
 }
 export { Events }
@@ -128,11 +138,11 @@ declare class FormElement extends HTMLElement {
     static observedAttributes: string[];
     get src(): string | null;
     get isNew(): boolean;
+    action?: (obj: FormValues) => Message.Base;
+    set init(x: FormValues);
     static template: DocumentFragment;
     get form(): HTMLFormElement | null | undefined;
-    _state: {
-        [key: string]: any;
-    };
+    _state: FormValues;
     _user: Auth.User;
     constructor();
     _authObserver: Observer<Auth.Model>;
@@ -142,15 +152,19 @@ declare class FormElement extends HTMLElement {
         Authorization?: undefined;
     };
     connectedCallback(): void;
-    attributeChangedCallback(name: string, oldValue: string, newValue: string): void;
+    attributeChangedCallback(name: string, oldValue: unknown, newValue: unknown): void;
 }
+
+declare type FormValues = {
+    [key: string]: unknown;
+};
 
 declare namespace History_2 {
     export {
         HistoryProvider,
         HistoryProvider as Provider,
         HistoryService as Service,
-        dispatch,
+        dispatch_2 as dispatch,
         HistoryModel as Model,
         HistoryMsg as Msg
     }
@@ -191,6 +205,23 @@ export declare function html(template: TemplateStringsArray, ...params: string[]
 
 declare function identity<M>(model: M): M;
 
+declare namespace InputArray {
+    export {
+        InputArrayElement as Element
+    }
+}
+export { InputArray }
+
+declare class InputArrayElement extends HTMLElement {
+    static template: DocumentFragment;
+    _array: Array<string>;
+    get name(): string | null;
+    get value(): string[];
+    set value(array: string[]);
+    constructor();
+    removeClosestItem(element: HTMLElement): void;
+}
+
 declare type MapFn<M> = (model: M) => M;
 
 declare type Match = MatchPath & (ViewCase | RedirectCase);
@@ -206,7 +237,8 @@ declare namespace Message {
         dispatcher,
         Type,
         Base,
-        Dispatch
+        Dispatch,
+        dispatch
     }
 }
 export { Message }
@@ -221,6 +253,8 @@ export declare class Observer<T extends object> {
     _handleChange(ev: CustomEvent): void;
 }
 
+declare function originalTarget(event: Event, selector?: string): EventTarget | undefined;
+
 declare class Provider<T extends object> extends HTMLElement {
     readonly context: Context<T>;
     constructor(init: T);
@@ -232,7 +266,7 @@ declare interface RedirectCase {
     redirect: RouteRedirect;
 }
 
-declare function relay(event: Event, customType: string, detail: any): void;
+declare function relay(event: Event, customType: string, detail?: any): void;
 
 declare function replace<M>(replacements: Partial<M>): MapFn<M>;
 

@@ -18,8 +18,10 @@ export class Dispatch<
 }
 
 export function dispatcher<Msg extends Base>(
-  eventType: string
+  eventType: string = "mu:message"
 ) {
   return (target: HTMLElement, ...msg: Msg) =>
     target.dispatchEvent(new Dispatch<Msg>(msg, eventType));
 }
+
+export const dispatch = dispatcher();
