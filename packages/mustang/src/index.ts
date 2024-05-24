@@ -1,5 +1,6 @@
 import * as Auth from "./auth";
 import * as Events from "./event";
+import * as Form from "./form";
 import * as History from "./history";
 import * as Message from "./message";
 import * as Rest from "./rest";
@@ -10,6 +11,7 @@ import * as Update from "./update";
 export {
   Auth,
   Events,
+  Form,
   History,
   Message,
   Rest,

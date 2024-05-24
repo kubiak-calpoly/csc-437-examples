@@ -399,6 +399,108 @@ const event = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePropert
   originalTarget,
   relay
 }, Symbol.toStringTag, { value: "Module" }));
+const parser$1 = new DOMParser();
+function html(template, ...params) {
+  const htmlString = template.map((s2, i2) => i2 ? [params[i2 - 1], s2] : [s2]).flat().join("");
+  const doc = parser$1.parseFromString(htmlString, "text/html");
+  const collection = doc.head.childElementCount ? doc.head.children : doc.body.children;
+  const fragment = new DocumentFragment();
+  fragment.replaceChildren(...collection);
+  return fragment;
+}
+function shadow(fragment) {
+  const first = fragment.firstElementChild;
+  const template = first && first.tagName === "TEMPLATE" ? first : void 0;
+  return { attach };
+  function attach(el, options = { mode: "open" }) {
+    const shadow2 = el.attachShadow(options);
+    if (template)
+      shadow2.appendChild(template.content.cloneNode(true));
+    return shadow2;
+  }
+}
+const _FormElement$1 = class _FormElement extends HTMLElement {
+  constructor() {
+    super();
+    this._state = {};
+    shadow(_FormElement.template).attach(this);
+    this.addEventListener("change", (event2) => {
+      const target = event2.target;
+      if (target) {
+        const name = target.name;
+        const value = target.value;
+        if (name)
+          this._state[name] = value;
+      }
+    });
+    if (this.form) {
+      this.form.addEventListener("submit", (event2) => {
+        event2.preventDefault();
+        relay(event2, "mu-form:submit", this._state);
+      });
+    }
+  }
+  set init(x2) {
+    this._state = x2 || {};
+    populateForm$1(this._state, this);
+  }
+  get form() {
+    var _a2;
+    return (_a2 = this.shadowRoot) == null ? void 0 : _a2.querySelector("form");
+  }
+};
+_FormElement$1.template = html`
+    <template>
+      <form autocomplete="off">
+        <slot></slot>
+        <slot name="submit">
+          <button type="submit">Submit</button>
+        </slot>
+      </form>
+      <slot name="delete"></slot>
+      <style>
+        form {
+          display: grid;
+          gap: var(--size-spacing-medium);
+          grid-template-columns: [start] 1fr [label] 1fr [input] 3fr 1fr [end];
+        }
+        ::slotted(label) {
+          display: grid;
+          grid-column: label / end;
+          grid-template-columns: subgrid;
+          gap: var(--size-spacing-medium);
+        }
+        button[type="submit"] {
+          grid-column: input;
+          justify-self: start;
+        }
+      </style>
+    </template>
+  `;
+let FormElement$1 = _FormElement$1;
+function populateForm$1(json, formBody) {
+  const entries = Object.entries(json);
+  for (const [key, val] of entries) {
+    const el = formBody.querySelector(`[name="${key}"]`);
+    if (el) {
+      const input = el;
+      switch (input.type) {
+        case "checkbox":
+          const checkbox = input;
+          checkbox.checked = Boolean(val);
+          break;
+        default:
+          input.value = val;
+          break;
+      }
+    }
+  }
+  return json;
+}
+const form = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  Element: FormElement$1
+}, Symbol.toStringTag, { value: "Module" }));
 const _HistoryService = class _HistoryService2 extends Service {
   constructor(context) {
     super(
@@ -496,26 +598,6 @@ const history$1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePro
   Service: HistoryService,
   dispatch
 }, Symbol.toStringTag, { value: "Module" }));
-const parser$1 = new DOMParser();
-function html(template, ...params) {
-  const htmlString = template.map((s2, i2) => i2 ? [params[i2 - 1], s2] : [s2]).flat().join("");
-  const doc = parser$1.parseFromString(htmlString, "text/html");
-  const collection = doc.head.childElementCount ? doc.head.children : doc.body.children;
-  const fragment = new DocumentFragment();
-  fragment.replaceChildren(...collection);
-  return fragment;
-}
-function shadow(fragment) {
-  const first = fragment.firstElementChild;
-  const template = first && first.tagName === "TEMPLATE" ? first : void 0;
-  return { attach };
-  function attach(el, options = { mode: "open" }) {
-    const shadow2 = el.attachShadow(options);
-    if (template)
-      shadow2.appendChild(template.content.cloneNode(true));
-    return shadow2;
-  }
-}
 class Observer {
   constructor(target, contextLabel) {
     this._effects = [];
@@ -577,7 +659,7 @@ class Effect {
     }
   }
 }
-const _FormElement = class _FormElement2 extends HTMLElement {
+const _FormElement2 = class _FormElement3 extends HTMLElement {
   constructor() {
     super();
     this._state = {};
@@ -586,15 +668,14 @@ const _FormElement = class _FormElement2 extends HTMLElement {
       this,
       "blazing:auth"
     );
-    shadow(_FormElement2.template).attach(this);
+    shadow(_FormElement3.template).attach(this);
     if (this.form) {
       this.form.addEventListener("submit", (event2) => {
         event2.preventDefault();
         if (this.src || this.action) {
           console.log("Submitting form", this._state);
           if (this.action) {
-            const message$1 = this.action(this._state);
-            dispatch$1(this, ...message$1);
+            this.action(this._state);
           } else if (this.src) {
             const method = this.isNew ? "POST" : "PUT";
             const action = this.isNew ? "created" : "updated";
@@ -690,8 +771,8 @@ const _FormElement = class _FormElement2 extends HTMLElement {
     }
   }
 };
-_FormElement.observedAttributes = ["src", "new", "action"];
-_FormElement.template = html`
+_FormElement2.observedAttributes = ["src", "new", "action"];
+_FormElement2.template = html`
     <template>
       <form autocomplete="off">
         <slot></slot>
@@ -719,7 +800,7 @@ _FormElement.template = html`
       </style>
     </template>
   `;
-let FormElement = _FormElement;
+let FormElement = _FormElement2;
 function fetchData(src, authorization) {
   return fetch(src, { headers: authorization }).then((response) => {
     if (response.status !== 200) {
@@ -2360,7 +2441,6 @@ _InputArrayElement.template = html`
     </template>
   `;
 let InputArrayElement = _InputArrayElement;
-customElements.define("input-array", InputArrayElement);
 function populateArray(array, container) {
   container.replaceChildren();
   array.forEach((s2, i2) => container.append(renderItem(s2)));
@@ -2461,6 +2541,7 @@ export {
   dropDown as Dropdown,
   Effect,
   event as Events,
+  form as Form,
   history$1 as History,
   inputArray as InputArray,
   message as Message,

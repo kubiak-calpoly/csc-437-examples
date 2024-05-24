@@ -70,8 +70,7 @@ export class FormElement extends HTMLElement {
           console.log("Submitting form", this._state);
 
           if (this.action) {
-            const message = this.action(this._state);
-            Message.dispatch(this, ...message);
+            this.action(this._state);
           } else if (this.src) {
             const method = this.isNew ? "POST" : "PUT";
             const action = this.isNew ? "created" : "updated";

@@ -95,8 +95,6 @@ class InputArrayElement extends HTMLElement {
   }
 }
 
-customElements.define("input-array", InputArrayElement);
-
 function populateArray(
   array: Array<string>,
   container: HTMLElement

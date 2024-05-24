@@ -134,15 +134,32 @@ export { Events }
 
 declare function fetchData(src: string, authorization: {}): Promise<any>;
 
+declare namespace Form {
+    export {
+        FormElement as Element,
+        SubmitEvent_2 as SubmitEvent,
+        FormValues as Values
+    }
+}
+export { Form }
+
 declare class FormElement extends HTMLElement {
-    static observedAttributes: string[];
-    get src(): string | null;
-    get isNew(): boolean;
-    action?: (obj: FormValues) => Message.Base;
     set init(x: FormValues);
     static template: DocumentFragment;
     get form(): HTMLFormElement | null | undefined;
     _state: FormValues;
+    constructor();
+}
+
+declare class FormElement_2 extends HTMLElement {
+    static observedAttributes: string[];
+    get src(): string | null;
+    get isNew(): boolean;
+    action?: (obj: FormValues_2) => Message.Base;
+    set init(x: FormValues_2);
+    static template: DocumentFragment;
+    get form(): HTMLFormElement | null | undefined;
+    _state: FormValues_2;
     _user: Auth.User;
     constructor();
     _authObserver: Observer<Auth.Model>;
@@ -156,6 +173,10 @@ declare class FormElement extends HTMLElement {
 }
 
 declare type FormValues = {
+    [key: string]: unknown;
+};
+
+declare type FormValues_2 = {
     [key: string]: unknown;
 };
 
@@ -273,7 +294,7 @@ declare function replace<M>(replacements: Partial<M>): MapFn<M>;
 declare namespace Rest {
     export {
         fetchData,
-        FormElement
+        FormElement_2 as FormElement
     }
 }
 export { Rest }
@@ -324,6 +345,10 @@ declare class StoreService<Msg extends Message.Base, M extends object> extends S
     static EVENT_TYPE: string;
     constructor(context: Context<M>, updateFn: Update_2<Msg, M>);
 }
+
+declare type SubmitEvent_2<T> = CustomEvent & {
+    detail: T;
+};
 
 declare namespace Switch {
     export {

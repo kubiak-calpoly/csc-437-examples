@@ -1,7 +1,7 @@
 import {
   define,
+  Form,
   InputArray,
-  Rest,
   View
 } from "@calpoly/mustang";
 import { css, html, LitElement } from "lit";
@@ -98,7 +98,7 @@ class ProfileViewer extends LitElement {
 
 class ProfileEditor extends LitElement {
   static uses = define({
-    "restful-form": Rest.FormElement,
+    "mu-form": Form.Element,
     "input-array": InputArray.Element
   });
   @property()
@@ -113,19 +113,10 @@ class ProfileEditor extends LitElement {
         <slot name="avatar"></slot>
         <h1><slot name="name"></slot></h1>
         <nav>
-          <a class="close" href="..">Close</a>
-          <button
-            class="delete"
-            onclick="relayEvent(event,'profile-view:delete')">
-            Delete
-          </button>
+          <a class="close" href="../${this.username}">Close</a>
+          <button class="delete">Delete</button>
         </nav>
-        <restful-form
-          .init=${this.init}
-          .action=${(profile: Profile) => [
-        "profile/save",
-        { userid: this.username, profile }
-      ]}>
+        <mu-form .init=${this.init}>
           <label>
             <span>Username</span>
             <input name="userid" />
@@ -156,7 +147,7 @@ class ProfileEditor extends LitElement {
             <span>Avatar</span>
             <input name="avatar" />
           </label>
-        </restful-form>
+        </mu-form>
       </section>
     `;
   }
@@ -165,10 +156,10 @@ class ProfileEditor extends LitElement {
     resetStyles,
     gridStyles,
     css`
-      restful-form {
+      mu-form {
         grid-column: key / end;
       }
-      restful-form input {
+      mu-form input {
         grid-column: input;
       }
     `
@@ -195,6 +186,9 @@ export class ProfileViewElement extends View<Model, Msg> {
 
   constructor() {
     super("blazing:model");
+    this.addEventListener("mu-form:submit", (event) =>
+      this._handleSubmit(event as Form.SubmitEvent<Profile>)
+    );
   }
 
   attributeChangedCallback(
@@ -254,7 +248,9 @@ export class ProfileViewElement extends View<Model, Msg> {
 
     return this.edit
       ? html`
-          <profile-editor .init=${this.profile}>
+          <profile-editor
+            username=${userid}
+            .init=${this.profile}>
             ${fields}
           </profile-editor>
         `
@@ -263,6 +259,14 @@ export class ProfileViewElement extends View<Model, Msg> {
             ${fields}
           </profile-viewer>
         `;
+  }
+
+  _handleSubmit(event: Form.SubmitEvent<Profile>) {
+    console.log("Handling submit of mu-form");
+    this.dispatchMessage([
+      "profile/save",
+      { userid: this.userid, profile: event.detail }
+    ]);
   }
 
   static styles = [resetStyles];
