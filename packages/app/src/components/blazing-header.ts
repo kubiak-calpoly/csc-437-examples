@@ -51,8 +51,7 @@ export class BlazingHeaderElement extends View<Model, Msg> {
       0,
       1
     );
-
-    console.log("Rendering header for Profile:", this.profile);
+    const editProfileHref = `/app/profile/${userid}/edit`;
 
     return html`
       <header>
@@ -74,6 +73,9 @@ export class BlazingHeaderElement extends View<Model, Msg> {
                 <input type="checkbox" autocomplete="off" />
                 Dark mode
               </label>
+            </li>
+            <li>
+              <a href=${editProfileHref}>Edit Profile</a>
             </li>
             <li>
               <a href="#" @click=${signOutUser}>Sign out</a>
