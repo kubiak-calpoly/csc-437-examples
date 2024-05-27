@@ -14,11 +14,21 @@ export default function update(
   apply: Update.ApplyMap<Model>,
   user: Auth.User
 ) {
+  console.log(`Updating for message:`, message);
   switch (message[0]) {
     case "profile/save":
-      saveProfile(message[1], user).then((profile) =>
-        apply((model) => ({ ...model, profile }))
-      );
+      saveProfile(message[1], user)
+        .then((profile) =>
+          apply((model) => ({ ...model, profile }))
+        )
+        .then(() => {
+          const { onSuccess } = message[1];
+          if (onSuccess) onSuccess();
+        })
+        .catch((error: Error) => {
+          const { onFailure } = message[1];
+          if (onFailure) onFailure(error);
+        });
       break;
     case "profile/select":
       selectProfile(message[1], user).then((profile) =>
@@ -54,7 +64,10 @@ function saveProfile(
   })
     .then((response: Response) => {
       if (response.status === 200) return response.json();
-      return undefined;
+      else
+        throw new Error(
+          `Failed to save profile for ${msg.userid}`
+        );
     })
     .then((json: unknown) => {
       if (json) return json as Profile;

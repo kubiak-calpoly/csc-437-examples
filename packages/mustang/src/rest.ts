@@ -1,9 +1,12 @@
 import * as Auth from "./auth";
 import { html, shadow } from "./html";
+import * as Message from "./message";
 import { Observer } from "./observer";
 
+type FormValues = { [key: string]: unknown };
+
 export class FormElement extends HTMLElement {
-  static observedAttributes = ["src", "new"];
+  static observedAttributes = ["src", "new", "action"];
 
   get src() {
     return this.getAttribute("src");
@@ -13,11 +16,20 @@ export class FormElement extends HTMLElement {
     return this.hasAttribute("new");
   }
 
+  action?: (obj: FormValues) => Message.Base;
+
+  set init(x: FormValues) {
+    this._state = x || {};
+    populateForm(this._state, this);
+  }
+
   static template = html`
     <template>
       <form autocomplete="off">
         <slot></slot>
-        <slot><button type="submit">Submit</button></slot>
+        <slot name="submit">
+          <button type="submit">Submit</button>
+        </slot>
       </form>
       <slot name="delete"></slot>
       <style>
@@ -44,7 +56,7 @@ export class FormElement extends HTMLElement {
     return this.shadowRoot?.querySelector("form");
   }
 
-  _state: { [key: string]: any } = {};
+  _state: FormValues = {};
   _user: Auth.User = new Auth.User();
 
   constructor() {
@@ -54,34 +66,39 @@ export class FormElement extends HTMLElement {
     if (this.form) {
       this.form.addEventListener("submit", (event) => {
         event.preventDefault();
-        if (this.src) {
+        if (this.src || this.action) {
           console.log("Submitting form", this._state);
-          const method = this.isNew ? "POST" : "PUT";
-          const action = this.isNew ? "created" : "updated";
-          const src = this.isNew
-            ? this.src.replace(/[/][$]new$/, "")
-            : this.src;
 
-          submitForm(
-            src,
-            this._state,
-            method,
-            this.authorization
-          )
-            .then((json) => populateForm(json, this))
-            .then((json) => {
-              const customType = `mu-rest-form:${action}`;
-              const event = new CustomEvent(customType, {
-                bubbles: true,
-                composed: true,
-                detail: {
-                  method,
-                  [action]: json,
-                  url: src
-                }
+          if (this.action) {
+            this.action(this._state);
+          } else if (this.src) {
+            const method = this.isNew ? "POST" : "PUT";
+            const action = this.isNew ? "created" : "updated";
+            const src = this.isNew
+              ? this.src.replace(/[/][$]new$/, "")
+              : this.src;
+
+            submitForm(
+              src,
+              this._state,
+              method,
+              this.authorization
+            )
+              .then((json) => populateForm(json, this))
+              .then((json) => {
+                const customType = `mu-rest-form:${action}`;
+                const event = new CustomEvent(customType, {
+                  bubbles: true,
+                  composed: true,
+                  detail: {
+                    method,
+                    [action]: json,
+                    url: src
+                  }
+                });
+                this.dispatchEvent(event);
               });
-              this.dispatchEvent(event);
-            });
+          }
         }
       });
     }
@@ -129,8 +146,8 @@ export class FormElement extends HTMLElement {
 
   attributeChangedCallback(
     name: string,
-    oldValue: string,
-    newValue: string
+    oldValue: unknown,
+    newValue: unknown
   ) {
     switch (name) {
       case "src":

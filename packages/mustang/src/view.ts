@@ -29,7 +29,7 @@ export class View<
   override connectedCallback() {
     super.connectedCallback();
     this._observer?.observe().then((effect) => {
-      console.log("View effect (initial)", effect);
+      console.log("View effect (initial)", this, effect);
       this._context = effect.context;
       if (this._pending.length) {
         this._pending.forEach(([target, ev]) => {
@@ -38,7 +38,12 @@ export class View<
         });
       }
       effect.setEffect(() => {
-        console.log("View effect", effect, this._context);
+        console.log(
+          "View effect",
+          this,
+          effect,
+          this._context?.value
+        );
         if (this._context) {
           console.log("requesting update");
           this.requestUpdate();

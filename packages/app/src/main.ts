@@ -21,6 +21,12 @@ const routes = [
     `
   },
   {
+    path: "/app/profile/:id/edit",
+    view: (params: Switch.Params) => html`
+      <profile-view edit user-id=${params.id}></profile-view>
+    `
+  },
+  {
     path: "/app/profile/:id",
     view: (params: Switch.Params) => html`
       <profile-view user-id=${params.id}></profile-view>

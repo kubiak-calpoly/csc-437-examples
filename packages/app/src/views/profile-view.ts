@@ -1,101 +1,35 @@
-import { define, View } from "@calpoly/mustang";
+import {
+  define,
+  Form,
+  History,
+  InputArray,
+  View
+} from "@calpoly/mustang";
 import { css, html, LitElement } from "lit";
-import { property } from "lit/decorators.js";
+import { property, state } from "lit/decorators.js";
 import { Profile } from "server/models";
+import { ProfileAvatarElement } from "../components/profile-avatar";
+import resetStyles from "../css/reset";
 import { Msg } from "../messages";
 import { Model } from "../model";
 
+const gridStyles = css`
+  slot[name="avatar"] {
+    display: block;
+    grid-row: 1 / span 4;
+  }
+  nav {
+    display: contents;
+    text-align: right;
+  }
+  nav > * {
+    grid-column: controls;
+  }
+`;
+
 class ProfileViewer extends LitElement {
-  static styles = css`
-    :host {
-      --display-new-button: inline-block;
-      --display-edit-button: inline-block;
-      --display-close-button: none;
-      --display-delete-button: none;
-    }
-    :host([mode="edit"]) {
-      --display-new-button: none;
-      --display-edit-button: none;
-      --display-close-button: inline-block;
-      --display-delete-button: inline-block;
-    }
-    :host([mode="new"]) {
-      --display-new-button: none;
-      --display-edit-button: none;
-      --display-close-button: inline-block;
-    }
-    * {
-      margin: 0;
-      box-sizing: border-box;
-    }
-    section {
-      display: grid;
-      grid-template-columns: [key] 1fr [value] 3fr [controls] 1fr [end];
-      gap: var(--size-spacing-medium) var(--size-spacing-xlarge);
-      align-items: end;
-    }
-    h1 {
-      grid-row: 4;
-      grid-column: value;
-    }
-    slot[name="avatar"] {
-      display: block;
-      grid-row: 1 / span 4;
-    }
-    nav {
-      display: contents;
-      text-align: right;
-    }
-    nav > * {
-      grid-column: controls;
-    }
-    nav > .new {
-      display: var(--display-new-button);
-    }
-    nav > .edit {
-      display: var(--display-edit-button);
-    }
-    nav > .close {
-      display: var(--display-close-button);
-    }
-    nav > .delete {
-      display: var(--display-delete-button);
-    }
-    restful-form {
-      display: none;
-      grid-column: key / end;
-    }
-    restful-form input {
-      grid-column: input;
-    }
-    restful-form[src] {
-      display: block;
-    }
-    dl {
-      display: grid;
-      grid-column: key / end;
-      grid-template-columns: subgrid;
-      gap: 0 var(--size-spacing-xlarge);
-      align-items: baseline;
-    }
-    restful-form[src] + dl {
-      display: none;
-    }
-    dt {
-      grid-column: key;
-      justify-self: end;
-      color: var(--color-accent);
-      font-family: var(--font-family-display);
-    }
-    dd {
-      grid-column: value;
-    }
-    ::slotted(ul) {
-      list-style: none;
-      display: flex;
-      gap: var(--size-spacing-medium);
-    }
-  `;
+  @property()
+  username?: string;
 
   render() {
     return html`
@@ -103,10 +37,7 @@ class ProfileViewer extends LitElement {
         <slot name="avatar"></slot>
         <h1><slot name="name"></slot></h1>
         <nav>
-          <button class="new">New…</button>
-          <button class="edit">Edit</button>
-          <button class="close">Close</button>
-          <button class="delete">Delete</button>
+          <a href="${this.username}/edit" class="edit">Edit</a>
         </nav>
         <dl>
           <dt>Username</dt>
@@ -121,71 +52,144 @@ class ProfileViewer extends LitElement {
       </section>
     `;
   }
+
+  static styles = [
+    resetStyles,
+    gridStyles,
+    css`
+      * {
+        margin: 0;
+        box-sizing: border-box;
+      }
+      section {
+        display: grid;
+        grid-template-columns: [key] 1fr [value] 3fr [controls] 1fr [end];
+        gap: var(--size-spacing-medium)
+          var(--size-spacing-xlarge);
+        align-items: end;
+      }
+      h1 {
+        grid-row: 4;
+        grid-column: value;
+      }
+      dl {
+        display: grid;
+        grid-column: key / end;
+        grid-template-columns: subgrid;
+        gap: 0 var(--size-spacing-xlarge);
+        align-items: baseline;
+      }
+      dt {
+        grid-column: key;
+        justify-self: end;
+        color: var(--color-accent);
+        font-family: var(--font-family-display);
+      }
+      dd {
+        grid-column: value;
+      }
+      ::slotted(ul) {
+        list-style: none;
+        display: flex;
+        gap: var(--size-spacing-medium);
+      }
+    `
+  ];
 }
 
-class ProfileAvatarElement extends LitElement {
+class ProfileEditor extends LitElement {
+  static uses = define({
+    "mu-form": Form.Element,
+    "input-array": InputArray.Element
+  });
   @property()
-  color: string = "white";
+  username?: string;
 
-  @property()
-  src?: string;
+  @property({ attribute: false })
+  init?: Profile;
 
   render() {
     return html`
-      <div
-        class="avatar"
-        style="
-        ${this.color
-        ? `--avatar-backgroundColor: ${this.color};`
-        : ""}
-        ${this.src
-        ? `background-image: url('${this.src}');`
-        : ""}
-      "></div>
+      <section>
+        <slot name="avatar"></slot>
+        <h1><slot name="name"></slot></h1>
+        <nav>
+          <a class="close" href="../${this.username}">Close</a>
+          <button class="delete">Delete</button>
+        </nav>
+        <mu-form .init=${this.init}>
+          <label>
+            <span>Username</span>
+            <input disabled name="userid" />
+          </label>
+          <label>
+            <span>Name</span>
+            <input name="name" />
+          </label>
+          <label>
+            <span>Nickname</span>
+            <input name="nickname" />
+          </label>
+          <label>
+            <span>Home City</span>
+            <input name="home" />
+          </label>
+          <label>
+            <span>Airports</span>
+            <input-array name="airports">
+              <span slot="label-add">Add an airport</span>
+            </input-array>
+          </label>
+          <label>
+            <span>Color</span>
+            <input type="color" name="color" />
+          </label>
+          <label>
+            <span>Avatar</span>
+            <input name="avatar" />
+          </label>
+        </mu-form>
+      </section>
     `;
   }
 
-  static styles = css`
-    :host {
-      display: contents;
-      --avatar-backgroundColor: var(--color-accent);
-      --avatar-size: 100px;
-    }
-    .avatar {
-      grid-column: key;
-      justify-self: end;
-      position: relative;
-      width: var(--avatar-size);
-      aspect-ratio: 1;
-      background-color: var(--avatar-backgroundColor);
-      background-size: cover;
-      border-radius: 50%;
-      text-align: center;
-      line-height: var(--avatar-size);
-      font-size: calc(0.66 * var(--avatar-size));
-      font-family: var(--font-family-display);
-      color: var(--color-link-inverted);
-      overflow: hidden;
-    }
-  `;
+  static styles = [
+    resetStyles,
+    gridStyles,
+    css`
+      mu-form {
+        grid-column: key / end;
+      }
+      mu-form input {
+        grid-column: input;
+      }
+    `
+  ];
 }
 
 export class ProfileViewElement extends View<Model, Msg> {
   static uses = define({
     "profile-viewer": ProfileViewer,
+    "profile-editor": ProfileEditor,
     "profile-avatar": ProfileAvatarElement
   });
+
+  @property({ type: Boolean, reflect: true })
+  edit = false;
 
   @property({ attribute: "user-id", reflect: true })
   userid = "";
 
-  @property()
+  @state()
   get profile(): Profile | undefined {
     return this.model.profile;
   }
 
   constructor() {
     super("blazing:model");
+    // this.addEventListener("mu-form:submit", (event) =>
+    //   this._handleSubmit(event as Form.SubmitEvent<Profile>)
+    // );
   }
 
   attributeChangedCallback(
@@ -217,7 +221,10 @@ export class ProfileViewElement extends View<Model, Msg> {
       home,
       airports = []
     } = this.profile || {};
-
+    const initial = (name || nickname || userid || "?").slice(
+      0,
+      1
+    );
     const airports_html = airports.map(
       (s) =>
         html`
@@ -225,20 +232,55 @@ export class ProfileViewElement extends View<Model, Msg> {
         `
     );
 
-    return html`
-      <profile-viewer>
-        <profile-avatar
-          slot="avatar"
-          color=${color}
-          src=${avatar}></profile-avatar>
-        <span slot="name">${name}</span>
-        <span slot="userid">${userid}</span>
-        <span slot="nickname">${nickname}</span>
-        <span slot="home">${home}</span>
-        <ul slot="airports">
-          ${airports_html}
-        </ul>
-      </profile-viewer>
+    const fields = html`
+      <profile-avatar
+        slot="avatar"
+        color=${color}
+        src=${avatar}
+        initial=${initial}></profile-avatar>
     `;
+
+    return this.edit
+      ? html`
+          <profile-editor
+            username=${userid}
+            .init=${this.profile}
+            @mu-form:submit=${(
+        event: Form.SubmitEvent<Profile>
+      ) => this._handleSubmit(event)}>
+            ${fields}
+          </profile-editor>
+        `
+      : html`
+          <profile-viewer username=${userid}>
+            ${fields}
+            <span slot="name">${name}</span>
+            <span slot="userid">${userid}</span>
+            <span slot="nickname">${nickname}</span>
+            <span slot="home">${home}</span>
+            <ul slot="airports">
+              ${airports_html}
+            </ul>
+          </profile-viewer>
+        `;
   }
+
+  _handleSubmit(event: Form.SubmitEvent<Profile>) {
+    console.log("Handling submit of mu-form");
+    this.dispatchMessage([
+      "profile/save",
+      {
+        userid: this.userid,
+        profile: event.detail,
+        onSuccess: () =>
+          History.dispatch(this, "history/navigate", {
+            href: `/app/profile/${this.userid}`
+          }),
+        onFailure: (error: Error) =>
+          console.log("ERROR:", error)
+      }
+    ]);
+  }
+
+  static styles = [resetStyles];
 }

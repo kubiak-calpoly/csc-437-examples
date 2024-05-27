@@ -72,13 +72,11 @@ export function authenticateUser(
   //Getting the 2nd part of the auth header (the token)
   const token = authHeader && authHeader.split(" ")[1];
 
-  console.log("Authenticating request", req.headers, token);
   if (!token) {
     res.status(401).end();
   } else {
     jwt.verify(token, TOKEN_SECRET, (error, decoded) => {
       if (decoded) {
-        console.log("Decoded token", decoded);
         next();
       } else {
         res.status(401).end();

@@ -1,43 +1,87 @@
 import {
   Auth,
-  DropdownElement,
+  Dropdown,
   Events,
   Observer,
+  View,
   define
 } from "@calpoly/mustang";
-import { LitElement, css, html } from "lit";
-import { property } from "lit/decorators.js";
+import { css, html } from "lit";
+import { property, state } from "lit/decorators.js";
+import { Profile } from "server/models";
+import { Msg } from "../messages";
+import { Model } from "../model";
+import { ProfileAvatarElement } from "./profile-avatar";
 
-export class BlazingHeaderElement extends LitElement {
+export class BlazingHeaderElement extends View<Model, Msg> {
   static uses = define({
-    "drop-down": DropdownElement
+    "drop-down": Dropdown.Element,
+    "profile-avatar": ProfileAvatarElement
   });
 
   @property()
   username = "anonymous";
 
+  @state()
+  get profile(): Profile | undefined {
+    return this.model.profile;
+  }
+
+  constructor() {
+    super("blazing:model");
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    this._authObserver.observe(({ user }) => {
+      if (user && user.username !== this.username) {
+        this.username = user.username;
+        this.dispatchMessage([
+          "profile/select",
+          { userid: this.username }
+        ]);
+      }
+    });
+  }
+
   render() {
-    return html`<header>
-      <h1>Blazing Travels</h1>
-      <drop-down>
-        <a href="#" slot="actuator">
-          <slot name="greeting"
-            >Hello, ${this.username}</slot
-          ></a
-        >
-        <ul>
-          <li>
-            <label @change=${toggleDarkMode}>
-              <input type="checkbox" autocomplete="off" />
-              Dark mode
-            </label>
-          </li>
-          <li>
-            <a href="#" @click=${signOutUser}> Sign out </a>
-          </li>
-        </ul>
-      </drop-down>
-    </header> `;
+    const { avatar, name, nickname, userid, color } =
+      this.profile || {};
+    const initial = (nickname || name || userid || "?").slice(
+      0,
+      1
+    );
+
+    console.log("Rendering header for Profile:", this.profile);
+
+    return html`
+      <header>
+        <h1>Blazing Travels</h1>
+        <drop-down>
+          <a href="#" slot="actuator">
+            <slot name="greeting">Hello, ${this.username}</slot>
+          </a>
+          <ul>
+            <li>
+              <profile-avatar
+                color=${color}
+                src=${avatar}
+                initial="${initial}"></profile-avatar>
+            </li>
+            <li><h3>${name || nickname || userid}</h3></li>
+            <li>
+              <label @change=${toggleDarkMode}>
+                <input type="checkbox" autocomplete="off" />
+                Dark mode
+              </label>
+            </li>
+            <li>
+              <a href="#" @click=${signOutUser}>Sign out</a>
+            </li>
+          </ul>
+        </drop-down>
+      </header>
+    `;
   }
 
   static styles = css`
@@ -71,6 +115,14 @@ export class BlazingHeaderElement extends LitElement {
       line-height: 1;
       font-weight: var(--font-weight-bold);
     }
+    h3 {
+      font-family: var(--font-family-display);
+      line-height: var(--font-line-height-display);
+      font-size: var(--size-type-large);
+      font-weight: var(--font-weight-normal);
+      font-style: oblique;
+      width: min-content;
+    }
     ul {
       list-style: none;
       padding: var(--size-spacing-medium);
@@ -81,15 +133,6 @@ export class BlazingHeaderElement extends LitElement {
     this,
     "blazing:auth"
   );
-
-  connectedCallback() {
-    super.connectedCallback();
-    this._authObserver.observe(({ user }) => {
-      if (user) {
-        this.username = user.username;
-      }
-    });
-  }
 }
 
 type Checkbox = HTMLInputElement & { checked: boolean };

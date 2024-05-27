@@ -78,13 +78,11 @@ router.post("/login", (req, res) => {
 function authenticateUser(req, res, next) {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
-  console.log("Authenticating request", req.headers, token);
   if (!token) {
     res.status(401).end();
   } else {
     import_jsonwebtoken.default.verify(token, TOKEN_SECRET, (error, decoded) => {
       if (decoded) {
-        console.log("Decoded token", decoded);
         next();
       } else {
         res.status(401).end();

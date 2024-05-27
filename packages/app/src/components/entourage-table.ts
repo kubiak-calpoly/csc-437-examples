@@ -1,8 +1,14 @@
+import { define } from "@calpoly/mustang";
 import { css, html, LitElement } from "lit";
 import { property } from "lit/decorators.js";
 import { Entourage, Profile } from "server/models";
+import { ProfileAvatarElement } from "./profile-avatar";
 
 export class EntourageTable extends LitElement {
+  static uses = define({
+    "profile-avatar": ProfileAvatarElement
+  });
+
   @property({ attribute: false })
   using?: Entourage;
 
@@ -31,23 +37,19 @@ export class EntourageTable extends LitElement {
         nickname,
         color
       } = row;
-      const avatarImg = avatar
-        ? html`
-            <img src="${avatar}" />
-          `
-        : (nickname || name).slice(0, 1);
-      const colorStyle = color
-        ? `style="--color-avatar-bg: ${color}"`
-        : "";
+      const initial = (nickname || name || userid).slice(0, 1);
+      const avatarImage = html`
+        <profile-avatar
+          color=${color}
+          src=${avatar}
+          initial=${initial}
+          style="--avatar-size: 2em"></profile-avatar>
+      `;
 
       return html`
         <tr>
           <td>
-              <a
-              class="avatar"
-              ${colorStyle}
-              href="/app/profile/${userid}">
-              ${avatarImg}
+            <a href="/app/profile/${userid}">${avatarImage}</a>
           </td>
           <td class="name">
             <a href="/app/profile/${userid}">${name}</a>
@@ -68,9 +70,6 @@ export class EntourageTable extends LitElement {
   }
 
   static styles = css`
-    :host {
-      --color-avatar-bg: var(--color-accent);
-    }
     * {
       margin: 0;
       box-sizing: border-box;
@@ -89,21 +88,6 @@ export class EntourageTable extends LitElement {
     a[href] {
       font: inherit;
       color: inherit;
-    }
-    .avatar,
-    a[href].avatar {
-      display: inline-block;
-      position: relative;
-      width: var(--size-icon-medium);
-      aspect-ratio: 1;
-      background-color: var(--color-avatar-bg);
-      border-radius: 50%;
-      text-align: center;
-      font-size: calc(0.66 * var(--size-icon-medium));
-      font-family: var(--font-family-display);
-      color: var(--color-link-inverted);
-      overflow: hidden;
-      text-decoration: none;
     }
     .name {
       width: 100%;
