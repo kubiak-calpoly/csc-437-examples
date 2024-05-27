@@ -29,10 +29,9 @@ export function saveFile(req: Request, res: Response) {
 export function getFile(req: Request, res: Response) {
   const { id } = req.params;
 
-  fs.open(`${IMAGES}/${id}`)
-    .then((file) => {
-      const stream = file.createReadStream();
-      res.send(stream);
+  fs.readFile(`${IMAGES}/${id}`)
+    .then((buf) => {
+      res.send(buf);
     })
     .catch((error: Error) => {
       res.status(404).send({

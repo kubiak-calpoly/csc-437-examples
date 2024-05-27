@@ -14,6 +14,7 @@ import {
 } from "../components/itinerary-items";
 import { Msg } from "../messages";
 import { Model } from "../model";
+import { formatDate } from "../utils/dates";
 
 export class TourViewElement extends View<Model, Msg> {
   static uses = define({
@@ -100,15 +101,17 @@ export class TourViewElement extends View<Model, Msg> {
       return `${d} ${m}`;
     };
 
-    const renderDestination = (dest: Destination) => {
-      const { startDate, endDate, link, name, featuredImage } =
-        dest;
+    const renderDestination = (
+      dest: Destination,
+      i: number
+    ) => {
+      const { startDate, endDate, name, featuredImage } = dest;
       return html`
         <itinerary-destination
           start-date=${startDate}
           end-date=${endDate}
           img-src=${featuredImage}
-          href=${link}>
+          href="./${this.tourid}/destination/${i}">
           ${name}
         </itinerary-destination>
       `;
@@ -181,7 +184,7 @@ export class TourViewElement extends View<Model, Msg> {
 
       return html`
         ${i || t0Filter ? "" : renderTransportation(t0)}
-        ${renderDestination(d)}
+        ${renderDestination(d, i)}
         ${tnFilter ? "" : renderTransportation(tn)}
       `;
     };

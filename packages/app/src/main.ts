@@ -10,11 +10,29 @@ import { BlazingHeaderElement } from "./components/blazing-header";
 import { Msg } from "./messages";
 import { Model, init } from "./model";
 import update from "./update";
+import { DestinationViewElement } from "./views/destination-view";
 import { HomeViewElement } from "./views/home-view";
 import { ProfileViewElement } from "./views/profile-view";
 import { TourViewElement } from "./views/tour-view";
 
 const routes = [
+  {
+    path: "/app/tour/:id/destination/:index/edit",
+    view: (params: Switch.Params) => html`
+      <destination-view
+        edit
+        tour-id=${params.id}
+        index=${params.index}></destination-view>
+    `
+  },
+  {
+    path: "/app/tour/:id/destination/:index",
+    view: (params: Switch.Params) => html`
+      <destination-view
+        tour-id=${params.id}
+        index=${params.index}></destination-view>
+    `
+  },
   {
     path: "/app/tour/:id",
     view: (params: Switch.Params) => html`
@@ -62,6 +80,7 @@ define({
     }
   },
   "blazing-header": BlazingHeaderElement,
+  "destination-view": DestinationViewElement,
   "home-view": HomeViewElement,
   "profile-view": ProfileViewElement,
   "tour-view": TourViewElement

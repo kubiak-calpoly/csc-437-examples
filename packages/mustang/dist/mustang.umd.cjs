@@ -493,6 +493,9 @@
             const checkbox = input;
             checkbox.checked = Boolean(val);
             break;
+          case "date":
+            input.value = val.toISOString().substr(0, 10);
+            break;
           default:
             input.value = val;
             break;
