@@ -32,27 +32,25 @@ __export(tours_exports, {
 });
 module.exports = __toCommonJS(tours_exports);
 var import_express = __toESM(require("express"));
-var import_tours = __toESM(require("../services/tours"));
+var import_tour_svc = __toESM(require("../services/tour-svc"));
 const router = import_express.default.Router();
 router.post("/", (req, res) => {
   const newTour = req.body;
-  import_tours.default.create(newTour).then((tour) => res.status(201).send(tour)).catch((err) => res.status(500).send(err));
+  import_tour_svc.default.create(newTour).then((tour) => res.status(201).send(tour)).catch((err) => res.status(500).send(err));
 });
 router.get("/:id", (req, res) => {
   const { id } = req.params;
-  import_tours.default.get(id).then((tour) => {
+  import_tour_svc.default.get(id).then((tour) => {
     if (!tour)
       throw "Not found";
     else
       res.json(tour);
-  }).catch(
-    (err) => res.status(404).end(`Tour ${id} not found.`)
-  );
+  }).catch((err) => res.status(404).end());
 });
 router.put("/:id", (req, res) => {
   const { id } = req.params;
   const newTour = req.body;
-  import_tours.default.update(id, newTour).then((tour) => res.json(tour)).catch(() => res.status(404).end());
+  import_tour_svc.default.update(id, newTour).then((tour) => res.json(tour)).catch(() => res.status(404).end());
 });
 router.put(
   "/:id/destinations/:n",
@@ -63,7 +61,7 @@ router.put(
       `Updating Destination ${n} of tour ${id} with`,
       newDest
     );
-    import_tours.default.updateDestination(id, parseInt(n), newDest).then((dest) => res.json(dest)).catch(() => res.status(404).end());
+    import_tour_svc.default.updateDestination(id, parseInt(n), newDest).then((dest) => res.json(dest)).catch(() => res.status(404).end());
   }
 );
 var tours_default = router;

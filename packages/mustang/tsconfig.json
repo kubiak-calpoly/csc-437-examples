@@ -5,6 +5,10 @@
     "experimentalDecorators": true,
     "useDefineForClassFields": false,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    /* Types */
+
+    "declaration": true,
+    "declarationDir": "./dist",
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -21,8 +25,5 @@
     "noImplicitReturns": true,
     "noImplicitOverride": true
   },
-  "include": ["src"],
-  "paths": {
-    "/src/styles/*?inline": ["./src/styles/*"]
-  }
+  "include": ["src"]
 }

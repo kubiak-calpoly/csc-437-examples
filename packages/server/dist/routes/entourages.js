@@ -32,15 +32,15 @@ __export(entourages_exports, {
 });
 module.exports = __toCommonJS(entourages_exports);
 var import_express = __toESM(require("express"));
-var import_entourages = __toESM(require("../services/entourages"));
+var import_entourage_svc = __toESM(require("../services/entourage-svc"));
 const router = import_express.default.Router();
 router.post("/", (req, res) => {
   const newEntourage = req.body;
-  import_entourages.default.create(newEntourage).then((profile) => res.status(201).send(profile)).catch((err) => res.status(500).send(err));
+  import_entourage_svc.default.create(newEntourage).then((profile) => res.status(201).send(profile)).catch((err) => res.status(500).send(err));
 });
 router.get("/:id", (req, res) => {
   const { id } = req.params;
-  import_entourages.default.get(id).then((profile) => {
+  import_entourage_svc.default.get(id).then((profile) => {
     if (!profile)
       throw "Not found";
     else
@@ -50,6 +50,6 @@ router.get("/:id", (req, res) => {
 router.put("/:userid", (req, res) => {
   const { userid } = req.params;
   const newEntourage = req.body;
-  import_entourages.default.update(userid, newEntourage).then((profile) => res.json(profile)).catch((err) => res.status(404).end());
+  import_entourage_svc.default.update(userid, newEntourage).then((profile) => res.json(profile)).catch((err) => res.status(404).end());
 });
 var entourages_default = router;

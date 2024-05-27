@@ -3,10 +3,17 @@
   "version": "1.0.0",
   "description": "",
   "main": "src/index.ts",
+  "exports": {
+    "./models": {
+      "import": "./src/models/index.ts"
+    }
+  },
   "scripts": {
-    "dev": "cross-env STATIC=../proto/public nodemon",
+    "dev": "nodemon",
     "build": "npx etsc",
     "start": "npm run build && npm run start:node",
+    "start:api": "cross-env STATIC=./public npm run start",
+    "start:app": "cross-env STATIC=../app/dist npm run start",
     "start:node": "node dist/index.js",
     "start:proto": "cross-env STATIC=../proto/public npm run start",
     "check": "tsc --noEmit"

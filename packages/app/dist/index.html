@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com" />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,200;0,400;0,700;1,700&family=Merriweather:wght@400;700&display=swap"
+      rel="stylesheet" />
+    <link rel="stylesheet" href="/styles/reset.css" />
+    <link rel="stylesheet" href="/styles/tokens.css" />
+    <link rel="stylesheet" href="/styles/page.css" />
+    
+    <script type="module" crossorigin src="/assets/spa-35be7c40.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/lit-element-f95d858a.js">
+  </head>
+  <body>
+    <mu-history provides="blazing:history">
+      <mu-auth provides="blazing:auth" redirect="/login.html">
+        <mu-store provides="blazing:model">
+          <article class="page">
+            <blazing-header></blazing-header>
+            <mu-switch></mu-switch>
+          </article>
+        </mu-store>
+      </mu-auth>
+    </mu-history>
+  </body>
+</html>

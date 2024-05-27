@@ -11,7 +11,7 @@ export class Observer<T extends object> {
     this._contextLabel = contextLabel;
   }
 
-  observe(fn: EffectFn<T> | undefined) {
+  observe(fn: EffectFn<T> | undefined = undefined) {
     return new Promise<Effect<T>>((resolve, _) => {
       if (this._provider) {
         const effect = new Effect<T>(this._provider, fn);

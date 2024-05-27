@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
-import { Tour, Destination } from "ts-models";
-import tours from "../services/tours";
+import { Destination, Tour } from "../models";
+import tours from "../services/tour-svc";
 
 const router = express.Router();
 
@@ -22,9 +22,7 @@ router.get("/:id", (req: Request, res: Response) => {
       if (!tour) throw "Not found";
       else res.json(tour);
     })
-    .catch((err) =>
-      res.status(404).end(`Tour ${id} not found.`)
-    );
+    .catch((err) => res.status(404).end());
 });
 
 router.put("/:id", (req: Request, res: Response) => {

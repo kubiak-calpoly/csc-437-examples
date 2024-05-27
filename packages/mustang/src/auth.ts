@@ -7,7 +7,7 @@ import { ApplyMap, replace } from "./update";
 const TOKEN_KEY = "mu:auth:jwt";
 
 interface AuthModel {
-  user?: APIUser;
+  user?: APIUser | AuthenticatedUser;
   token?: string;
 }
 
@@ -31,7 +31,7 @@ class AuthService extends Service<AuthMsg, AuthModel> {
     redirectForLogin: string | undefined
   ) {
     super(
-      (m, a) => this.update(m, a),
+      (msg, apply) => this.update(msg, apply),
       context,
       AuthService.EVENT_TYPE
     );
@@ -41,8 +41,7 @@ class AuthService extends Service<AuthMsg, AuthModel> {
   update(message: AuthMsg, apply: ApplyMap<AuthModel>) {
     switch (message[0]) {
       case "auth/signin":
-        const { token, redirect } =
-          message[1] as AuthSuccessful;
+        const { token, redirect } = message[1];
         apply(signIn(token));
         return redirection(redirect);
       case "auth/signout":
@@ -167,11 +166,38 @@ function signOut() {
   };
 }
 
+function authHeaders(user: APIUser | AuthenticatedUser): {
+  Authorization?: string;
+} {
+  if (user.authenticated) {
+    const authUser = user as AuthenticatedUser;
+    return {
+      Authorization: `Bearer ${authUser.token || "NO_TOKEN"}`
+    };
+  } else {
+    return {};
+  }
+}
+
+function tokenPayload(
+  user: APIUser | AuthenticatedUser
+): object {
+  if (user.authenticated) {
+    const authUser = user as AuthenticatedUser;
+    return jwtDecode(authUser.token || "");
+  } else {
+    return {};
+  }
+}
+
 export {
   AuthenticatedUser,
   AuthProvider as Provider,
   APIUser as User,
+  authHeaders as headers,
+  tokenPayload as payload,
   type AuthSuccessful,
   type AuthModel as Model,
-  type AuthMsg as Msg
+  type AuthMsg as Msg,
+  type AuthService as Service
 };

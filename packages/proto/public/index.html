@@ -16,13 +16,20 @@
     <link rel="stylesheet" href="/styles/tokens.css" />
     <link rel="stylesheet" href="/styles/page.css" />
     <link rel="stylesheet" href="/styles/itinerary.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "@calpoly/mustang": "/node_modules/@calpoly/mustang/dist/mustang.mjs"
+        }
+      }
+    </script>
     <script type="module" src="/js/drop-down.js"></script>
     <script type="module" src="/js/html-loader.js"></script>
     <script type="module" src="/js/hello-world.js"></script>
     <script type="module">
-      import { relayEvent } from "/js/relay-event.js";
+      import { Events } from "@calpoly/mustang";
 
-      window.relayEvent = relayEvent;
+      window.relayEvent = Events.relay;
     </script>
     <script type="module">
       function toggleDarkMode(page, checked) {
@@ -43,10 +50,11 @@
       <drop-down>
         <label
           onchange="relayEvent(
-          event, 
-          'dark-mode', 
+          event,
+          'dark-mode',
           {checked: event.target.checked})">
-          <input type="checkbox" autocomplete="off" /> Dark mode
+          <input type="checkbox" autocomplete="off" />
+          Dark mode
         </label>
       </drop-down>
     </header>
@@ -56,14 +64,10 @@
         12 days in
         <a href="place.html">Italy</a>
       </h2>
-      <p>
-        <label>
-          <input type="checkbox" /> This is unrelated
-        </label>
-      </p>
       <dl class="itinerary">
         <dt>
-          <time datetime="2024-10-13">13 Oct</time> -
+          <time datetime="2024-10-13">13 Oct</time>
+          -
           <time datetime="2024-10-14">14 Oct</time>
         </dt>
         <dd class="transportation">
@@ -122,18 +126,19 @@
         </dd>
 
         <dt>
-          <time datetime="2024-10-14">14 Oct</time> -
+          <time datetime="2024-10-14">14 Oct</time>
+          -
           <time datetime="2024-10-18">18 Oct</time>
         </dt>
         <dd class="destination">
           <html-fragment href="destination/venice.html">
-            <h3
-              ><a
+            <h3>
+              <a
                 href="#"
                 onclick="relayEvent(event, 'html-fragment:open')">
                 Venice
-              </a></h3
-            >
+              </a>
+            </h3>
           </html-fragment>
         </dd>
 
@@ -162,12 +167,14 @@
         </dd>
 
         <dt>
-          <time datetime="2024-10-18">18 Oct</time> -
+          <time datetime="2024-10-18">18 Oct</time>
+          -
           <time datetime="2024-10-21">21 Oct</time>
         </dt>
         <dd class="destination">
-          <html-fragment open href="destination/florence.html">
-          </html-fragment>
+          <html-fragment
+            open
+            href="destination/florence.html"></html-fragment>
         </dd>
 
         <dt><time datetime="2024-10-21">21 Oct</time></dt>
@@ -195,18 +202,19 @@
         </dd>
 
         <dt>
-          <time datetime="2024-10-21">21 Oct</time> -
+          <time datetime="2024-10-21">21 Oct</time>
+          -
           <time datetime="2024-10-25">25 Oct</time>
         </dt>
         <dd class="destination">
           <html-fragment href="destination/rome.html">
-            <h3
-              ><a
+            <h3>
+              <a
                 href="#"
                 onclick="relayEvent(event, 'html-fragment:open')">
                 Rome
-              </a></h3
-            >
+              </a>
+            </h3>
           </html-fragment>
         </dd>
 
@@ -216,7 +224,7 @@
             <summary>FCO &rarr; SFO via FRA</summary>
             <ol>
               <li>
-                <h4> Lufthansa LH233</h4>
+                <h4>Lufthansa LH233</h4>
                 <dl>
                   <dt>Date</dt>
                   <dd>

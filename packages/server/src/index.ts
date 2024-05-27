@@ -1,7 +1,9 @@
 import express, { Request, Response } from "express";
+import fs from "node:fs/promises";
 import path from "path";
 import auth, { authenticateUser } from "./routes/auth";
 import profiles from "./routes/profiles";
+import tours from "./routes/tours";
 import { connect } from "./services/mongo";
 
 // Mongo Connection
@@ -31,6 +33,7 @@ app.use("/node_modules", express.static(nodeModules));
 
 // API Routes:
 app.use("/api/profiles", authenticateUser, profiles);
+app.use("/api/tours", authenticateUser, tours);
 
 // HTML Routes:
 app.get("/hello", (_: Request, res: Response) => {
@@ -39,6 +42,14 @@ app.get("/hello", (_: Request, res: Response) => {
      <p>Server is up and running.</p>
      <p>Serving static files from <code>${staticDir}</code>.</p>
     `
+  );
+});
+
+// SPA Routes: /app/...
+app.use("/app", (req: Request, res: Response) => {
+  const indexHtml = path.resolve(staticDir, "index.html");
+  fs.readFile(indexHtml, { encoding: "utf8" }).then((html) =>
+    res.send(html)
   );
 });
 
