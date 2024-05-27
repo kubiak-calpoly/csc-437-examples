@@ -187,9 +187,6 @@ export class ProfileViewElement extends View<Model, Msg> {
 
   constructor() {
     super("blazing:model");
-    // this.addEventListener("mu-form:submit", (event) =>
-    //   this._handleSubmit(event as Form.SubmitEvent<Profile>)
-    // );
   }
 
   attributeChangedCallback(
