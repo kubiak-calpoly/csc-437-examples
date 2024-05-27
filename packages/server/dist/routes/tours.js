@@ -34,6 +34,14 @@ module.exports = __toCommonJS(tours_exports);
 var import_express = __toESM(require("express"));
 var import_tour_svc = __toESM(require("../services/tour-svc"));
 const router = import_express.default.Router();
+router.get("/", (req, res) => {
+  import_tour_svc.default.index().then(
+    (list) => res.status(200).send({
+      count: list.length,
+      data: list
+    })
+  ).catch((err) => res.status(500).send(err));
+});
 router.post("/", (req, res) => {
   const newTour = req.body;
   import_tour_svc.default.create(newTour).then((tour) => res.status(201).send(tour)).catch((err) => res.status(500).send(err));

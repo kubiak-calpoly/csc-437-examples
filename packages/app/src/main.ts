@@ -10,6 +10,7 @@ import { BlazingHeaderElement } from "./components/blazing-header";
 import { Msg } from "./messages";
 import { Model, init } from "./model";
 import update from "./update";
+import { HomeViewElement } from "./views/home-view";
 import { ProfileViewElement } from "./views/profile-view";
 import { TourViewElement } from "./views/tour-view";
 
@@ -35,7 +36,7 @@ const routes = [
   {
     path: "/app",
     view: () => html`
-      <landing-view></landing-view>
+      <home-view></home-view>
     `
   },
   {
@@ -61,6 +62,7 @@ define({
     }
   },
   "blazing-header": BlazingHeaderElement,
-  "tour-view": TourViewElement,
-  "profile-view": ProfileViewElement
+  "home-view": HomeViewElement,
+  "profile-view": ProfileViewElement,
+  "tour-view": TourViewElement
 });

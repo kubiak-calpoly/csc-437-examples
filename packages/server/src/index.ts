@@ -4,6 +4,7 @@ import path from "path";
 import auth, { authenticateUser } from "./routes/auth";
 import profiles from "./routes/profiles";
 import tours from "./routes/tours";
+import { getFile, saveFile } from "./services/filesystem";
 import { connect } from "./services/mongo";
 
 // Mongo Connection
@@ -18,10 +19,15 @@ console.log("Serving static files from ", staticDir);
 app.use(express.static(staticDir));
 
 // Middleware:
-app.use(express.json());
+app.use(express.raw({ type: "image/*", limit: "32Mb" }));
+app.use(express.json({ limit: "500kb" }));
 
 // Auth routes
 app.use("/auth", auth);
+
+// Images routes
+app.post("/images", saveFile);
+app.get("/images/:id", getFile);
 
 // NPM Packages
 const nodeModules = path.resolve(

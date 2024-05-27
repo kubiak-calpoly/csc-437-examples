@@ -56,7 +56,7 @@ export class BlazingHeaderElement extends View<Model, Msg> {
 
     return html`
       <header>
-        <h1>Blazing Travels</h1>
+        <h1><a href="/app">Blazing Travels</a></h1>
         <drop-down>
           <a href="#" slot="actuator">
             <slot name="greeting">Hello, ${this.username}</slot>
@@ -104,8 +104,11 @@ export class BlazingHeaderElement extends View<Model, Msg> {
       background-color: var(--color-background-header);
       color: var(--color-text-inverted);
     }
-    header a[href] {
+    a[href] {
       color: var(--color-link-inverted);
+    }
+    drop-down a[href]:not([slot="actuator"]) {
+      color: var(--color-link);
     }
     h1 {
       font-family: var(--font-family-display);
@@ -114,6 +117,10 @@ export class BlazingHeaderElement extends View<Model, Msg> {
       font-style: oblique;
       line-height: 1;
       font-weight: var(--font-weight-bold);
+    }
+    h1 a[href] {
+      text-decoration: none;
+      color: inherit;
     }
     h3 {
       font-family: var(--font-family-display);

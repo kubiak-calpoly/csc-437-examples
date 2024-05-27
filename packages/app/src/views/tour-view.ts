@@ -15,14 +15,14 @@ import {
 import { Msg } from "../messages";
 import { Model } from "../model";
 
-define({
-  "calendar-widget": CalendarWidget,
-  "entourage-table": EntourageTable,
-  "itinerary-destination": ItineraryDestinationElement,
-  "itinerary-transportation": ItineraryTransportationElement
-});
-
 export class TourViewElement extends View<Model, Msg> {
+  static uses = define({
+    "calendar-widget": CalendarWidget,
+    "entourage-table": EntourageTable,
+    "itinerary-destination": ItineraryDestinationElement,
+    "itinerary-transportation": ItineraryTransportationElement
+  });
+
   @property({ attribute: "tour-id", reflect: true })
   tourid = "";
 

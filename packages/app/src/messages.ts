@@ -11,4 +11,5 @@ export type Msg =
     }
   ]
   | ["profile/select", { userid: string }]
+  | ["tour/index"]
   | ["tour/select", { tourid: string }];

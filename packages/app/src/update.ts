@@ -14,7 +14,6 @@ export default function update(
   apply: Update.ApplyMap<Model>,
   user: Auth.User
 ) {
-  console.log(`Updating for message:`, message);
   switch (message[0]) {
     case "profile/save":
       saveProfile(message[1], user)
@@ -35,6 +34,11 @@ export default function update(
         apply((model) => ({ ...model, profile }))
       );
       break;
+    case "tour/index":
+      indexTours(user).then((tourIndex: Tour[]) =>
+        apply((model) => ({ ...model, tourIndex }))
+      );
+      break;
     case "tour/select":
       selectTour(message[1], user).then(
         (tour: Tour | undefined) =>
@@ -43,7 +47,7 @@ export default function update(
       break;
     default:
       const unhandled: never = message[0];
-      throw new Error(`Unhandled Auth message "${unhandled}"`);
+      throw new Error(`Unhandled message "${unhandled}"`);
   }
 }
 
@@ -92,6 +96,27 @@ function selectProfile(
       if (json) {
         console.log("Profile:", json);
         return json as Profile;
+      }
+    });
+}
+
+function indexTours(user: Auth.User) {
+  return fetch("/api/tours", {
+    headers: Auth.headers(user)
+  })
+    .then((response: Response) => {
+      if (response.status !== 200)
+        throw `Failed to load index of tours`;
+      return response.json();
+    })
+    .then((json: unknown) => {
+      if (json) {
+        const { data } = json as {
+          data: Tour[];
+        };
+        return data.map((t: Tour) =>
+          convertStartEndDates<Tour>(t)
+        );
       }
     });
 }
