@@ -29,6 +29,7 @@ var import_profiles = __toESM(require("./routes/profiles"));
 var import_tours = __toESM(require("./routes/tours"));
 var import_filesystem = require("./services/filesystem");
 var import_mongo = require("./services/mongo");
+var import_websockets = __toESM(require("./services/websockets"));
 (0, import_mongo.connect)("blazing");
 const app = (0, import_express.default)();
 const port = process.env.PORT || 3e3;
@@ -56,12 +57,13 @@ app.get("/hello", (_, res) => {
     `
   );
 });
-app.use("/app", (req, res) => {
+app.use("/app", (_, res) => {
   const indexHtml = import_path.default.resolve(staticDir, "index.html");
   import_promises.default.readFile(indexHtml, { encoding: "utf8" }).then(
     (html) => res.send(html)
   );
 });
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
+(0, import_websockets.default)(server);

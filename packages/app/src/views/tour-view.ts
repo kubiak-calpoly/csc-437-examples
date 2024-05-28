@@ -14,7 +14,6 @@ import {
 } from "../components/itinerary-items";
 import { Msg } from "../messages";
 import { Model } from "../model";
-import { formatDate } from "../utils/dates";
 
 export class TourViewElement extends View<Model, Msg> {
   static uses = define({
@@ -206,7 +205,9 @@ export class TourViewElement extends View<Model, Msg> {
           ${destinations.map(renderDestAndTrans)}
         </section>
 
-        <entourage-table .using=${entourage}></entourage-table>
+        <entourage-table
+          href="/app/entourage/${this.tourid}"
+          .using=${entourage}></entourage-table>
       </main>
     `;
   }

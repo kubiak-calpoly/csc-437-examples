@@ -11,6 +11,7 @@ import { Msg } from "./messages";
 import { Model, init } from "./model";
 import update from "./update";
 import { DestinationViewElement } from "./views/destination-view";
+import { EntourageViewElement } from "./views/entourage-view";
 import { HomeViewElement } from "./views/home-view";
 import { ProfileViewElement } from "./views/profile-view";
 import { TourViewElement } from "./views/tour-view";
@@ -52,6 +53,12 @@ const routes = [
     `
   },
   {
+    path: "/app/entourage/:id",
+    view: (params: Switch.Params) => html`
+      <entourage-view tour-id=${params.id}></entourage-view>
+    `
+  },
+  {
     path: "/app",
     view: () => html`
       <home-view></home-view>
@@ -81,6 +88,7 @@ define({
   },
   "blazing-header": BlazingHeaderElement,
   "destination-view": DestinationViewElement,
+  "entourage-view": EntourageViewElement,
   "home-view": HomeViewElement,
   "profile-view": ProfileViewElement,
   "tour-view": TourViewElement
