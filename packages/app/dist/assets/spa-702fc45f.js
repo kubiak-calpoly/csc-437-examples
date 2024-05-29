@@ -1,12 +1,8 @@
-import{u as ce,f as ue,i as g,s as x,x as o,d as $,a as pe,V as T,O as Z,e as V,b as E,c as ee,h as Y,g as he,j as me,_ as ge}from"./lit-element-cee05e3b.js";/**
+import{i as g,s as x,x as o,d as $,a as ce,V as T,O as Z,e as V,b as E,f as ee,h as q,c as ue,g as pe,_ as he}from"./lit-element-f3126ddb.js";import{n as d}from"./property-9fa586ae.js";/**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */const fe={attribute:!0,type:String,converter:ce,reflect:!1,hasChanged:ue},ve=(i=fe,e,t)=>{const{kind:a,metadata:r}=t;let n=globalThis.litPropertyMetadata.get(r);if(n===void 0&&globalThis.litPropertyMetadata.set(r,n=new Map),n.set(t.name,i),a==="accessor"){const{name:s}=t;return{set(l){const c=e.get.call(this);e.set.call(this,l),this.requestUpdate(s,c,i)},init(l){return l!==void 0&&this.P(s,void 0,i),l}}}if(a==="setter"){const{name:s}=t;return function(l){const c=this[s];e.call(this,l),this.requestUpdate(s,c,i)}}throw Error("Unsupported decorator location: "+a)};function d(i){return(e,t)=>typeof t=="object"?ve(i,e,t):((a,r,n)=>{const s=r.hasOwnProperty(n);return r.constructor.createProperty(n,s?{...a,wrapped:!0}:a),s?Object.getOwnPropertyDescriptor(r,n):void 0})(i,e,t)}/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */function v(i){return d({...i,state:!0,attribute:!1})}var be=Object.defineProperty,ye=Object.getOwnPropertyDescriptor,W=(i,e,t,a)=>{for(var r=a>1?void 0:a?ye(e,t):e,n=i.length-1,s;n>=0;n--)(s=i[n])&&(r=(a?s(e,t,r):s(r))||r);return a&&r&&be(e,t,r),r};class _ extends x{constructor(){super(...arguments),this.color="white"}render(){return o`
+ */function v(i){return d({...i,state:!0,attribute:!1})}var me=Object.defineProperty,ge=Object.getOwnPropertyDescriptor,W=(i,e,t,r)=>{for(var a=r>1?void 0:r?ge(e,t):e,n=i.length-1,s;n>=0;n--)(s=i[n])&&(a=(r?s(e,t,a):s(a))||a);return r&&a&&me(e,t,a),a};class _ extends x{constructor(){super(...arguments),this.color="white"}render(){return o`
       <div
         class="avatar"
         style="
@@ -37,7 +33,7 @@ import{u as ce,f as ue,i as g,s as x,x as o,d as $,a as pe,V as T,O as Z,e as V,
       color: var(--color-link-inverted);
       overflow: hidden;
     }
-  `;W([d()],_.prototype,"color",2);W([d()],_.prototype,"src",2);W([d()],_.prototype,"initial",2);var $e=Object.defineProperty,we=Object.getOwnPropertyDescriptor,te=(i,e,t,a)=>{for(var r=a>1?void 0:a?we(e,t):e,n=i.length-1,s;n>=0;n--)(s=i[n])&&(r=(a?s(e,t,r):s(r))||r);return a&&r&&$e(e,t,r),r};class M extends T{constructor(){super("blazing:model"),this.username="anonymous",this._authObserver=new Z(this,"blazing:auth")}get profile(){return this.model.profile}connectedCallback(){super.connectedCallback(),this._authObserver.observe(({user:e})=>{e&&e.username!==this.username&&(this.username=e.username,this.dispatchMessage(["profile/select",{userid:this.username}]))})}render(){const{avatar:e,name:t,nickname:a,userid:r,color:n}=this.profile||{},s=(a||t||r||"?").slice(0,1),l=`/app/profile/${r}/edit`;return o`
+  `;W([d()],_.prototype,"color",2);W([d()],_.prototype,"src",2);W([d()],_.prototype,"initial",2);var fe=Object.defineProperty,ve=Object.getOwnPropertyDescriptor,te=(i,e,t,r)=>{for(var a=r>1?void 0:r?ve(e,t):e,n=i.length-1,s;n>=0;n--)(s=i[n])&&(a=(r?s(e,t,a):s(a))||a);return r&&a&&fe(e,t,a),a};class I extends T{constructor(){super("blazing:model"),this.username="anonymous",this._authObserver=new Z(this,"blazing:auth")}get profile(){return this.model.profile}connectedCallback(){super.connectedCallback(),this._authObserver.observe(({user:e})=>{e&&e.username!==this.username&&(this.username=e.username,this.dispatchMessage(["profile/select",{userid:this.username}]))})}render(){const{avatar:e,name:t,nickname:r,userid:a,color:n}=this.profile||{},s=(r||t||a||"?").slice(0,1),l=`/app/profile/${a}/edit`;return o`
       <header>
         <h1><a href="/app">Blazing Travels</a></h1>
         <drop-down>
@@ -51,9 +47,9 @@ import{u as ce,f as ue,i as g,s as x,x as o,d as $,a as pe,V as T,O as Z,e as V,
                 src=${e}
                 initial="${s}"></profile-avatar>
             </li>
-            <li><h3>${t||a||r}</h3></li>
+            <li><h3>${t||r||a}</h3></li>
             <li>
-              <label @change=${De}>
+              <label @change=${be}>
                 <input type="checkbox" autocomplete="off" />
                 Dark mode
               </label>
@@ -62,12 +58,12 @@ import{u as ce,f as ue,i as g,s as x,x as o,d as $,a as pe,V as T,O as Z,e as V,
               <a href=${l}>Edit Profile</a>
             </li>
             <li>
-              <a href="#" @click=${xe}>Sign out</a>
+              <a href="#" @click=${ye}>Sign out</a>
             </li>
           </ul>
         </drop-down>
       </header>
-    `}}M.uses=$({"drop-down":pe.Element,"profile-avatar":_});M.styles=g`
+    `}}I.uses=$({"drop-down":ce.Element,"profile-avatar":_});I.styles=g`
     :host {
       display: contents;
     }
@@ -117,7 +113,7 @@ import{u as ce,f as ue,i as g,s as x,x as o,d as $,a as pe,V as T,O as Z,e as V,
       list-style: none;
       padding: var(--size-spacing-medium);
     }
-  `;te([d()],M.prototype,"username",2);te([v()],M.prototype,"profile",1);function De(i){const t=i.target.checked;V.relay(i,"dark-mode",{checked:t})}function xe(i){V.relay(i,"auth:message",["auth/signout"])}const _e={},Ce=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],O=i=>{const e=(typeof i=="string"?new Date(i):i)||new Date,t=Ce[e.getUTCMonth()];return`${e.getUTCDate()} ${t}`};function B(i){const e=new Date(Date.parse(i)),t=e.getUTCDate(),a=e.getUTCMonth(),r=e.getUTCFullYear();return new Date(Date.UTC(r,a,t))}function A(i){const e=i;let t=i;return t.startDate=B(e.startDate),t.endDate=e.endDate?B(e.endDate):void 0,t}function Pe(i,e,t){switch(i[0]){case"profile/save":ze(i[1],t).then(r=>e(n=>({...n,profile:r}))).then(()=>{const{onSuccess:r}=i[1];r&&r()}).catch(r=>{const{onFailure:n}=i[1];n&&n(r)});break;case"profile/select":Oe(i[1],t).then(r=>e(n=>({...n,profile:r})));break;case"tour/index":Te(t).then(r=>e(n=>({...n,tourIndex:r})));break;case"tour/select":Ee(i[1],t).then(r=>e(n=>({...n,tour:r})));break;case"tour/save-destination":Se(i[1],t).then(r=>{const{index:n}=i[1];e(s=>{const l=s.tour;if(l&&r){let c=l.destinations.slice();return c.splice(n,1,r),{...s,tour:{...l,destinations:c}}}else return s})}).then(()=>{const{onSuccess:r}=i[1];r&&r()}).catch(r=>{const{onFailure:n}=i[1];n&&n(r)});break;default:const a=i[0];throw new Error(`Unhandled message "${a}"`)}}function ze(i,e){return fetch(`/api/profiles/${i.userid}`,{method:"PUT",headers:{"Content-Type":"application/json",...E.headers(e)},body:JSON.stringify(i.profile)}).then(t=>{if(t.status===200)return t.json();throw new Error(`Failed to save profile for ${i.userid}`)}).then(t=>{if(t)return t})}function Oe(i,e){return fetch(`/api/profiles/${i.userid}`,{headers:E.headers(e)}).then(t=>{if(t.status===200)return t.json()}).then(t=>{if(t)return console.log("Profile:",t),t})}function Te(i){return fetch("/api/tours",{headers:E.headers(i)}).then(e=>{if(e.status!==200)throw"Failed to load index of tours";return e.json()}).then(e=>{if(e){const{data:t}=e;return t.map(a=>A(a))}})}function Ee(i,e){return fetch(`/api/tours/${i.tourid}`,{headers:E.headers(e)}).then(t=>{if(t.status===200)return t.json()}).then(t=>{if(t){console.log("Tour:",t);let a=A(t);return a.destinations=a.destinations.map(A),a.transportation=a.transportation.map(A),a}})}function Se(i,e){return fetch(`/api/tours/${i.tourid}/destinations/${i.index}`,{method:"PUT",headers:{"Content-Type":"application/json",...E.headers(e)},body:JSON.stringify(i.destination)}).then(t=>{if(t.status===200)return t.json();throw new Error(`Failed to save destination ${i.index}`)}).then(t=>{if(t)return A(t)})}const C=g`
+  `;te([d()],I.prototype,"username",2);te([v()],I.prototype,"profile",1);function be(i){const t=i.target.checked;V.relay(i,"dark-mode",{checked:t})}function ye(i){V.relay(i,"auth:message",["auth/signout"])}const $e={},we=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],O=i=>{const e=(typeof i=="string"?new Date(i):i)||new Date,t=we[e.getUTCMonth()];return`${e.getUTCDate()} ${t}`};function Y(i){const e=new Date(Date.parse(i)),t=e.getUTCDate(),r=e.getUTCMonth(),a=e.getUTCFullYear();return new Date(Date.UTC(a,r,t))}function A(i){const e=i;let t=i;return t.startDate=Y(e.startDate),t.endDate=e.endDate?Y(e.endDate):void 0,t}function De(i,e,t){switch(i[0]){case"profile/save":xe(i[1],t).then(a=>e(n=>({...n,profile:a}))).then(()=>{const{onSuccess:a}=i[1];a&&a()}).catch(a=>{const{onFailure:n}=i[1];n&&n(a)});break;case"profile/select":_e(i[1],t).then(a=>e(n=>({...n,profile:a})));break;case"tour/index":Ce(t).then(a=>e(n=>({...n,tourIndex:a})));break;case"tour/select":ze(i[1],t).then(a=>e(n=>({...n,tour:a})));break;case"tour/save-destination":Pe(i[1],t).then(a=>{const{index:n}=i[1];e(s=>{const l=s.tour;if(l&&a){let c=l.destinations.slice();return c.splice(n,1,a),{...s,tour:{...l,destinations:c}}}else return s})}).then(()=>{const{onSuccess:a}=i[1];a&&a()}).catch(a=>{const{onFailure:n}=i[1];n&&n(a)});break;default:const r=i[0];throw new Error(`Unhandled message "${r}"`)}}function xe(i,e){return fetch(`/api/profiles/${i.userid}`,{method:"PUT",headers:{"Content-Type":"application/json",...E.headers(e)},body:JSON.stringify(i.profile)}).then(t=>{if(t.status===200)return t.json();throw new Error(`Failed to save profile for ${i.userid}`)}).then(t=>{if(t)return t})}function _e(i,e){return fetch(`/api/profiles/${i.userid}`,{headers:E.headers(e)}).then(t=>{if(t.status===200)return t.json()}).then(t=>{if(t)return console.log("Profile:",t),t})}function Ce(i){return fetch("/api/tours",{headers:E.headers(i)}).then(e=>{if(e.status!==200)throw"Failed to load index of tours";return e.json()}).then(e=>{if(e){const{data:t}=e;return t.map(r=>A(r))}})}function ze(i,e){return fetch(`/api/tours/${i.tourid}`,{headers:E.headers(e)}).then(t=>{if(t.status===200)return t.json()}).then(t=>{if(t){console.log("Tour:",t);let r=A(t);return r.destinations=r.destinations.map(A),r.transportation=r.transportation.map(A),r}})}function Pe(i,e){return fetch(`/api/tours/${i.tourid}/destinations/${i.index}`,{method:"PUT",headers:{"Content-Type":"application/json",...E.headers(e)},body:JSON.stringify(i.destination)}).then(t=>{if(t.status===200)return t.json();throw new Error(`Failed to save destination ${i.index}`)}).then(t=>{if(t)return A(t)})}const C=g`
   * {
     margin: 0;
     box-sizing: border-box;
@@ -132,7 +128,7 @@ import{u as ce,f as ue,i as g,s as x,x as o,d as $,a as pe,V as T,O as Z,e as V,
     list-style: none;
     padding: 0;
   }
-`;var je=Object.defineProperty,Ue=Object.getOwnPropertyDescriptor,S=(i,e,t,a)=>{for(var r=a>1?void 0:a?Ue(e,t):e,n=i.length-1,s;n>=0;n--)(s=i[n])&&(r=(a?s(e,t,r):s(r))||r);return a&&r&&je(e,t,r),r};class y extends T{constructor(){var e;super("blazing:model"),this.tourid="",this.index=0,this.edit=!1,this.image=(e=this.destination)==null?void 0:e.featuredImage}get tour(){return this.model.tour}get destination(){var e;return(e=this.tour)==null?void 0:e.destinations[this.index]}attributeChangedCallback(e,t,a){super.attributeChangedCallback(e,t,a),e==="tour-id"&&t!==a&&a&&(console.log("Tour Page:",a),this.dispatchMessage(["tour/select",{tourid:a}]))}render(){var c;const{name:e,startDate:t,endDate:a,featuredImage:r}=this.destination||{},n=(c=this.tour)==null?void 0:c.name,s=this.image||r;console.log("Destination:",this.destination);const l=()=>this.edit?o`
+`;var Oe=Object.defineProperty,Te=Object.getOwnPropertyDescriptor,S=(i,e,t,r)=>{for(var a=r>1?void 0:r?Te(e,t):e,n=i.length-1,s;n>=0;n--)(s=i[n])&&(a=(r?s(e,t,a):s(a))||a);return r&&a&&Oe(e,t,a),a};class y extends T{constructor(){var e;super("blazing:model"),this.tourid="",this.index=0,this.edit=!1,this.image=(e=this.destination)==null?void 0:e.featuredImage}get tour(){return this.model.tour}get destination(){var e;return(e=this.tour)==null?void 0:e.destinations[this.index]}attributeChangedCallback(e,t,r){super.attributeChangedCallback(e,t,r),e==="tour-id"&&t!==r&&r&&(console.log("Tour Page:",r),this.dispatchMessage(["tour/select",{tourid:r}]))}render(){var c;const{name:e,startDate:t,endDate:r,featuredImage:a}=this.destination||{},n=(c=this.tour)==null?void 0:c.name,s=this.image||a;console.log("Destination:",this.destination);const l=()=>this.edit?o`
           <mu-form
             .init=${this.destination}
             @mu-form:submit=${this._handleSubmit}>
@@ -164,8 +160,8 @@ import{u as ce,f as ue,i as g,s as x,x as o,d as $,a as pe,V as T,O as Z,e as V,
             <h2>${e}</h2>
             <p>
               from ${O(t)} to
-              ${O(a)}
-              ${a&&a.getFullYear()}
+              ${O(r)}
+              ${r&&r.getFullYear()}
             </p>
             <a
               class="edit"
@@ -178,7 +174,7 @@ import{u as ce,f as ue,i as g,s as x,x as o,d as $,a as pe,V as T,O as Z,e as V,
       <main class="page${this.edit?" editing":""}">
         ${l()}
       </main>
-    `}_handleSubmit(e){if(console.log("Submitting form",e),this.destination&&this.tour){let t=e.detail;this.image&&(t.featuredImage=this.image),this.dispatchMessage(["tour/save-destination",{tourid:this.tourid,index:this.index,destination:t,onSuccess:()=>Y.dispatch(this,"history/navigate",{href:`/app/tour/${this.tourid}/destination/${this.index}`}),onFailure:a=>{console.log("Error saving destination",a)}}])}}_handleFileSelected(e){const a=e.target.files[0];new Promise((n,s)=>{const l=new FileReader;l.onload=()=>n(l.result),l.onerror=c=>s(c),l.readAsArrayBuffer(a)}).then(n=>{const{name:s,size:l,type:c}=a,b=new URLSearchParams({filename:s}),f=new URL("/images",document.location.origin);f.search=b.toString(),console.log("Uploading file:",a),fetch(f,{method:"POST",headers:{"Content-Type":c,"Content-Length":l.toString()},body:n}).then(u=>{if(u.status===201)return u.json();throw u.status}).then(u=>{if(u)console.log("Image has been uploaded to",u.url),this.image=u.url;else throw"No JSON response"}).catch(u=>{console.log("Upload failed",u)})})}}y.uses=$({"mu-form":ee.Element});y.styles=[C,g`
+    `}_handleSubmit(e){if(console.log("Submitting form",e),this.destination&&this.tour){let t=e.detail;this.image&&(t.featuredImage=this.image),this.dispatchMessage(["tour/save-destination",{tourid:this.tourid,index:this.index,destination:t,onSuccess:()=>q.dispatch(this,"history/navigate",{href:`/app/tour/${this.tourid}/destination/${this.index}`}),onFailure:r=>{console.log("Error saving destination",r)}}])}}_handleFileSelected(e){const r=e.target.files[0];new Promise((n,s)=>{const l=new FileReader;l.onload=()=>n(l.result),l.onerror=c=>s(c),l.readAsArrayBuffer(r)}).then(n=>{const{name:s,size:l,type:c}=r,b=new URLSearchParams({filename:s}),f=new URL("/images",document.location.origin);f.search=b.toString(),console.log("Uploading file:",r),fetch(f,{method:"POST",headers:{"Content-Type":c,"Content-Length":l.toString()},body:n}).then(u=>{if(u.status===201)return u.json();throw u.status}).then(u=>{if(u)console.log("Image has been uploaded to",u.url),this.image=u.url;else throw"No JSON response"}).catch(u=>{console.log("Upload failed",u)})})}}y.uses=$({"mu-form":ee.Element});y.styles=[C,g`
       :host {
         display: contents;
       }
@@ -224,7 +220,7 @@ import{u as ce,f as ue,i as g,s as x,x as o,d as $,a as pe,V as T,O as Z,e as V,
       input {
         grid-column: input;
       }
-    `];S([d({attribute:"tour-id"})],y.prototype,"tourid",2);S([d({type:Number})],y.prototype,"index",2);S([d({type:Boolean})],y.prototype,"edit",2);S([v()],y.prototype,"tour",1);S([v()],y.prototype,"destination",1);S([v()],y.prototype,"image",2);const Fe=window.location.host,Ae="/ws";function Me(i,e){const t=new WebSocket(`ws://${Fe}${Ae}?channel=${i}`);return t.onmessage=a=>{console.log("Received message:",a.data);const r=JSON.parse(a.data);e(r)},{channel:i,socket:t}}function ke(i,e){i.socket.send(JSON.stringify(e))}var Ie=Object.defineProperty,Ne=Object.getOwnPropertyDescriptor,G=(i,e,t,a)=>{for(var r=a>1?void 0:a?Ne(e,t):e,n=i.length-1,s;n>=0;n--)(s=i[n])&&(r=(a?s(e,t,r):s(r))||r);return a&&r&&Ie(e,t,r),r};class k extends x{constructor(){super(...arguments),this.messages=[],this.username="anonymous",this._authObserver=new Z(this,"blazing:auth")}firstUpdated(){!this.connection&&this.tourid&&(this.connection=Me(`chatroom${this.tourid}`,e=>this._handleMessage(e)),console.log("Connection created",this.connection))}connectedCallback(){super.connectedCallback(),this._authObserver.observe(({user:e})=>{e&&e.username!==this.username&&(this.username=e.username)})}render(){return o`
+    `];S([d({attribute:"tour-id"})],y.prototype,"tourid",2);S([d({type:Number})],y.prototype,"index",2);S([d({type:Boolean})],y.prototype,"edit",2);S([v()],y.prototype,"tour",1);S([v()],y.prototype,"destination",1);S([v()],y.prototype,"image",2);const Ee=window.location.host,Se="/ws";function je(i,e){const t=new WebSocket(`ws://${Ee}${Se}?channel=${i}`);return t.onmessage=r=>{console.log("Received message:",r.data);const a=JSON.parse(r.data);e(a)},{channel:i,socket:t}}function Ue(i,e){i.socket.send(JSON.stringify(e))}var Fe=Object.defineProperty,Ae=Object.getOwnPropertyDescriptor,G=(i,e,t,r)=>{for(var a=r>1?void 0:r?Ae(e,t):e,n=i.length-1,s;n>=0;n--)(s=i[n])&&(a=(r?s(e,t,a):s(a))||a);return r&&a&&Fe(e,t,a),a};class M extends x{constructor(){super(...arguments),this.messages=[],this.username="anonymous",this._authObserver=new Z(this,"blazing:auth")}firstUpdated(){!this.connection&&this.tourid&&(this.connection=je(`chatroom${this.tourid}`,e=>this._handleMessage(e)),console.log("Connection created",this.connection))}connectedCallback(){super.connectedCallback(),this._authObserver.observe(({user:e})=>{e&&e.username!==this.username&&(this.username=e.username)})}render(){return o`
       <ul>
         ${this.messages.map(e=>o`
               <li>${e.username}: ${e.text}</li>
@@ -234,9 +230,9 @@ import{u as ce,f as ue,i as g,s as x,x as o,d as $,a as pe,V as T,O as Z,e as V,
         <input name="text" placeholder="Type a message..." />
         <input type="submit" value="Send"></input>
       </form>
-    `}_handleSubmit(e){var t;if(e.preventDefault(),this.tourid&&this.username&&this.connection){const a=e.target,n=((t=new FormData(a).get("text"))==null?void 0:t.toString())||"";ke(this.connection,{username:this.username,tourid:this.tourid,text:n}),a.reset()}}_handleMessage(e){console.log("Received message",e),this.messages=this.messages.concat([e])}}k.styles=[C,g``];G([d({attribute:"tour-id"})],k.prototype,"tourid",2);G([v()],k.prototype,"messages",2);G([d()],k.prototype,"username",2);var Re=Object.defineProperty,Je=Object.getOwnPropertyDescriptor,re=(i,e,t,a)=>{for(var r=a>1?void 0:a?Je(e,t):e,n=i.length-1,s;n>=0;n--)(s=i[n])&&(r=(a?s(e,t,r):s(r))||r);return a&&r&&Re(e,t,r),r};class j extends x{get entourage(){return this.using||{}}render(){const{name:e,people:t}=this.entourage,a=t||[],r=this.href?o`
+    `}_handleSubmit(e){var t;if(e.preventDefault(),this.tourid&&this.username&&this.connection){const r=e.target,n=((t=new FormData(r).get("text"))==null?void 0:t.toString())||"";Ue(this.connection,{username:this.username,tourid:this.tourid,text:n}),r.reset()}}_handleMessage(e){console.log("Received message",e),this.messages=this.messages.concat([e])}}M.styles=[C,g``];G([d({attribute:"tour-id"})],M.prototype,"tourid",2);G([v()],M.prototype,"messages",2);G([d()],M.prototype,"username",2);var Ie=Object.defineProperty,Me=Object.getOwnPropertyDescriptor,ae=(i,e,t,r)=>{for(var a=r>1?void 0:r?Me(e,t):e,n=i.length-1,s;n>=0;n--)(s=i[n])&&(a=(r?s(e,t,a):s(a))||a);return r&&a&&Ie(e,t,a),a};class j extends x{get entourage(){return this.using||{}}render(){const{name:e,people:t}=this.entourage,r=t||[],a=this.href?o`
           <a href=${this.href}>Chat Now...</a>
-        `:"",n=s=>{const{userid:l,avatar:c,name:b="** NO NAME **",nickname:f,color:u}=s,L=(f||b||l).slice(0,1),q=o`
+        `:"",n=s=>{const{userid:l,avatar:c,name:b="** NO NAME **",nickname:f,color:u}=s,L=(f||b||l).slice(0,1),B=o`
         <profile-avatar
           color=${u}
           src=${c}
@@ -245,7 +241,7 @@ import{u as ce,f as ue,i as g,s as x,x as o,d as $,a as pe,V as T,O as Z,e as V,
       `;return o`
         <tr>
           <td>
-            <a href="/app/profile/${l}">${q}</a>
+            <a href="/app/profile/${l}">${B}</a>
           </td>
           <td class="name">
             <a href="/app/profile/${l}">${b}</a>
@@ -254,9 +250,9 @@ import{u as ce,f as ue,i as g,s as x,x as o,d as $,a as pe,V as T,O as Z,e as V,
       `};return o`
       <section>
         <h3>${e||"Entourage"}</h3>
-        ${r}
+        ${a}
         <table>
-          <tbody>${a.map(n)}</tbody>
+          <tbody>${r.map(n)}</tbody>
         </table>
       </section>
     `}}j.uses=$({"profile-avatar":_});j.styles=g`
@@ -287,7 +283,7 @@ import{u as ce,f as ue,i as g,s as x,x as o,d as $,a as pe,V as T,O as Z,e as V,
     img {
       width: 100%;
     }
-  `;re([d({attribute:!1})],j.prototype,"using",2);re([d()],j.prototype,"href",2);var He=Object.defineProperty,Le=Object.getOwnPropertyDescriptor,ae=(i,e,t,a)=>{for(var r=a>1?void 0:a?Le(e,t):e,n=i.length-1,s;n>=0;n--)(s=i[n])&&(r=(a?s(e,t,r):s(r))||r);return a&&r&&He(e,t,r),r};class I extends T{constructor(){super("blazing:model")}get tour(){return this.model.tour}attributeChangedCallback(e,t,a){super.attributeChangedCallback(e,t,a),console.log("ATTRIBUTE CHANGED",e,t,a),e==="tour-id"&&t!==a&&a&&(console.log("Tour Page:",a),this.dispatchMessage(["tour/select",{tourid:a}]))}render(){var a;const{entourage:e}=this.tour||{},t=(a=this.tour)==null?void 0:a.name;return console.log("RENDER",this.tourid,this.tour),e?o`
+  `;ae([d({attribute:!1})],j.prototype,"using",2);ae([d()],j.prototype,"href",2);var ke=Object.defineProperty,Ne=Object.getOwnPropertyDescriptor,re=(i,e,t,r)=>{for(var a=r>1?void 0:r?Ne(e,t):e,n=i.length-1,s;n>=0;n--)(s=i[n])&&(a=(r?s(e,t,a):s(a))||a);return r&&a&&ke(e,t,a),a};class k extends T{constructor(){super("blazing:model")}get tour(){return this.model.tour}attributeChangedCallback(e,t,r){super.attributeChangedCallback(e,t,r),console.log("ATTRIBUTE CHANGED",e,t,r),e==="tour-id"&&t!==r&&r&&(console.log("Tour Page:",r),this.dispatchMessage(["tour/select",{tourid:r}]))}render(){var r;const{entourage:e}=this.tour||{},t=(r=this.tour)==null?void 0:r.name;return console.log("RENDER",this.tourid,this.tour),e?o`
         <main class="page">
           <aside>
             <a
@@ -302,7 +298,7 @@ import{u as ce,f as ue,i as g,s as x,x as o,d as $,a as pe,V as T,O as Z,e as V,
             <chat-room tour-id=${this.tourid}></chat-room>
           </section>
         </main>
-      `:o``}}I.uses=$({"chat-room":k,"entourage-table":j});I.styles=[C,g`
+      `:o``}}k.uses=$({"chat-room":M,"entourage-table":j});k.styles=[C,g`
       :host {
         display: contents;
       }
@@ -317,13 +313,13 @@ import{u as ce,f as ue,i as g,s as x,x as o,d as $,a as pe,V as T,O as Z,e as V,
       .chat {
         grid-area: chat;
       }
-    `];ae([d({attribute:"tour-id",reflect:!0})],I.prototype,"tourid",2);ae([v()],I.prototype,"tour",1);var qe=Object.defineProperty,Be=Object.getOwnPropertyDescriptor,Ye=(i,e,t,a)=>{for(var r=a>1?void 0:a?Be(e,t):e,n=i.length-1,s;n>=0;n--)(s=i[n])&&(r=(a?s(e,t,r):s(r))||r);return a&&r&&qe(e,t,r),r};class K extends T{get tourIndex(){return this.model.tourIndex||[]}constructor(){super("blazing:model")}connectedCallback(){super.connectedCallback(),this.dispatchMessage(["tour/index"])}render(){const e=t=>{const{name:a,startDate:r,endDate:n}=t,{_id:s}=t;return o`
+    `];re([d({attribute:"tour-id",reflect:!0})],k.prototype,"tourid",2);re([v()],k.prototype,"tour",1);var Re=Object.defineProperty,Je=Object.getOwnPropertyDescriptor,He=(i,e,t,r)=>{for(var a=r>1?void 0:r?Je(e,t):e,n=i.length-1,s;n>=0;n--)(s=i[n])&&(a=(r?s(e,t,a):s(a))||a);return r&&a&&Re(e,t,a),a};class K extends T{get tourIndex(){return this.model.tourIndex||[]}constructor(){super("blazing:model")}connectedCallback(){super.connectedCallback(),this.dispatchMessage(["tour/index"])}render(){const e=t=>{const{name:r,startDate:a,endDate:n}=t,{_id:s}=t;return o`
         <dt>
-          ${r.getUTCFullYear()}
+          ${a.getUTCFullYear()}
         </dt>
         <dt>from
-          <time datetime=${r}>
-            ${O(r)}
+          <time datetime=${a}>
+            ${O(a)}
           </time>
         </dt>
         <dt> to
@@ -332,7 +328,7 @@ import{u as ce,f as ue,i as g,s as x,x as o,d as $,a as pe,V as T,O as Z,e as V,
           </time>
         </dt>
         <dd>
-          <a href="/app/tour/${s}">${a}</a>
+          <a href="/app/tour/${s}">${r}</a>
         </dt>
       `};return o`
       <main class="page">
@@ -382,7 +378,7 @@ import{u as ce,f as ue,i as g,s as x,x as o,d as $,a as pe,V as T,O as Z,e as V,
       time {
         white-space: nowrap;
       }
-    `];Ye([v()],K.prototype,"tourIndex",1);var We=Object.defineProperty,Ge=Object.getOwnPropertyDescriptor,P=(i,e,t,a)=>{for(var r=a>1?void 0:a?Ge(e,t):e,n=i.length-1,s;n>=0;n--)(s=i[n])&&(r=(a?s(e,t,r):s(r))||r);return a&&r&&We(e,t,r),r};const ie=g`
+    `];He([v()],K.prototype,"tourIndex",1);var Le=Object.defineProperty,Be=Object.getOwnPropertyDescriptor,z=(i,e,t,r)=>{for(var a=r>1?void 0:r?Be(e,t):e,n=i.length-1,s;n>=0;n--)(s=i[n])&&(a=(r?s(e,t,a):s(a))||a);return r&&a&&Le(e,t,a),a};const ie=g`
   slot[name="avatar"] {
     display: block;
     grid-row: 1 / span 4;
@@ -449,7 +445,7 @@ import{u as ce,f as ue,i as g,s as x,x as o,d as $,a as pe,V as T,O as Z,e as V,
         display: flex;
         gap: var(--size-spacing-medium);
       }
-    `];P([d()],Q.prototype,"username",2);class N extends x{render(){return o`
+    `];z([d()],Q.prototype,"username",2);class N extends x{render(){return o`
       <section>
         <h1><slot name="name"></slot></h1>
         <nav>
@@ -493,7 +489,7 @@ import{u as ce,f as ue,i as g,s as x,x as o,d as $,a as pe,V as T,O as Z,e as V,
           </label>
         </mu-form>
       </section>
-    `}_handleAvatarSelected(e){const a=e.target.files[0];new Promise((n,s)=>{const l=new FileReader;l.onload=()=>n(l.result),l.onerror=c=>s(c),l.readAsDataURL(a)}).then(n=>{this.dispatchEvent(new CustomEvent("profile:new-avatar",{bubbles:!0,composed:!0,detail:n}))})}}N.uses=$({"mu-form":ee.Element,"input-array":he.Element});N.styles=[C,ie,g`
+    `}_handleAvatarSelected(e){const r=e.target.files[0];new Promise((n,s)=>{const l=new FileReader;l.onload=()=>n(l.result),l.onerror=c=>s(c),l.readAsDataURL(r)}).then(n=>{this.dispatchEvent(new CustomEvent("profile:new-avatar",{bubbles:!0,composed:!0,detail:n}))})}}N.uses=$({"mu-form":ee.Element,"input-array":ue.Element});N.styles=[C,ie,g`
       mu-form {
         grid-column: key / end;
       }
@@ -503,7 +499,7 @@ import{u as ce,f as ue,i as g,s as x,x as o,d as $,a as pe,V as T,O as Z,e as V,
       mu-form label:has(input[type="file"]) {
         grid-row-end: span 4;
       }
-    `];P([d()],N.prototype,"username",2);P([d({attribute:!1})],N.prototype,"init",2);class z extends T{constructor(){super("blazing:model"),this.edit=!1,this.userid="",this.addEventListener("profile:new-avatar",e=>{this.newAvatar=e.detail})}get profile(){return this.model.profile}attributeChangedCallback(e,t,a){super.attributeChangedCallback(e,t,a),e==="user-id"&&t!==a&&a&&(console.log("Profiler Page:",a),this.dispatchMessage(["profile/select",{userid:a}]))}render(){const{color:e,avatar:t,name:a,userid:r,nickname:n,home:s,airports:l=[]}=this.profile||{},c=(a||n||r||"?").slice(0,1),b=l.map(u=>o`
+    `];z([d()],N.prototype,"username",2);z([d({attribute:!1})],N.prototype,"init",2);class P extends T{constructor(){super("blazing:model"),this.edit=!1,this.userid="",this.addEventListener("profile:new-avatar",e=>{this.newAvatar=e.detail})}get profile(){return this.model.profile}attributeChangedCallback(e,t,r){super.attributeChangedCallback(e,t,r),e==="user-id"&&t!==r&&r&&(console.log("Profiler Page:",r),this.dispatchMessage(["profile/select",{userid:r}]))}render(){const{color:e,avatar:t,name:r,userid:a,nickname:n,home:s,airports:l=[]}=this.profile||{},c=(r||n||a||"?").slice(0,1),b=l.map(u=>o`
           <li>${u}</li>
         `),f=o`
       <profile-avatar
@@ -513,23 +509,23 @@ import{u as ce,f as ue,i as g,s as x,x as o,d as $,a as pe,V as T,O as Z,e as V,
         initial=${c}></profile-avatar>
     `;return this.edit?o`
           <profile-editor
-            username=${r}
+            username=${a}
             .init=${this.profile}
             @mu-form:submit=${u=>this._handleSubmit(u)}>
             ${f}
           </profile-editor>
         `:o`
-          <profile-viewer username=${r}>
+          <profile-viewer username=${a}>
             ${f}
-            <span slot="name">${a}</span>
-            <span slot="userid">${r}</span>
+            <span slot="name">${r}</span>
+            <span slot="userid">${a}</span>
             <span slot="nickname">${n}</span>
             <span slot="home">${s}</span>
             <ul slot="airports">
               ${b}
             </ul>
           </profile-viewer>
-        `}_handleSubmit(e){console.log("Handling submit of mu-form");const t=this.newAvatar?{...e.detail,avatar:this.newAvatar}:e.detail;this.dispatchMessage(["profile/save",{userid:this.userid,profile:t,onSuccess:()=>Y.dispatch(this,"history/navigate",{href:`/app/profile/${this.userid}`}),onFailure:a=>console.log("ERROR:",a)}])}}z.uses=$({"profile-viewer":Q,"profile-editor":N,"profile-avatar":_});z.styles=[C];P([d({type:Boolean,reflect:!0})],z.prototype,"edit",2);P([d({attribute:"user-id",reflect:!0})],z.prototype,"userid",2);P([v()],z.prototype,"profile",1);P([v()],z.prototype,"newAvatar",2);var Ke=Object.defineProperty,Qe=Object.getOwnPropertyDescriptor,ne=(i,e,t,a)=>{for(var r=a>1?void 0:a?Qe(e,t):e,n=i.length-1,s;n>=0;n--)(s=i[n])&&(r=(a?s(e,t,r):s(r))||r);return a&&r&&Ke(e,t,r),r};class H extends x{constructor(){super(...arguments),this.startDate=Date.now().toString(),this.endDate=Date.now().toString()}_handleChange(e){const t=new CustomEvent("calendar-widget:select",{bubbles:!0,composed:!0,detail:{date:e&&B(e)}});this.dispatchEvent(t)}_handleClear(){var a;const e=(a=this.shadowRoot)==null?void 0:a.querySelector("input:checked");e&&(e.checked=!1);const t=new CustomEvent("calendar-widget:clear",{bubbles:!0,composed:!0});this.dispatchEvent(t)}render(){const e=new Date(this.startDate),t=new Date(this.endDate),a=Xe(e,t),r=n=>{const s={d:n.getUTCDate(),m:n.getUTCMonth()+1,y:n.getUTCFullYear(),day:n.getUTCDay()},l=({y:c,m:b,d:f})=>[c,b,f].join("-");return o`
+        `}_handleSubmit(e){console.log("Handling submit of mu-form");const t=this.newAvatar?{...e.detail,avatar:this.newAvatar}:e.detail;this.dispatchMessage(["profile/save",{userid:this.userid,profile:t,onSuccess:()=>q.dispatch(this,"history/navigate",{href:`/app/profile/${this.userid}`}),onFailure:r=>console.log("ERROR:",r)}])}}P.uses=$({"profile-viewer":Q,"profile-editor":N,"profile-avatar":_});P.styles=[C];z([d({type:Boolean,reflect:!0})],P.prototype,"edit",2);z([d({attribute:"user-id",reflect:!0})],P.prototype,"userid",2);z([v()],P.prototype,"profile",1);z([v()],P.prototype,"newAvatar",2);var Ye=Object.defineProperty,qe=Object.getOwnPropertyDescriptor,ne=(i,e,t,r)=>{for(var a=r>1?void 0:r?qe(e,t):e,n=i.length-1,s;n>=0;n--)(s=i[n])&&(a=(r?s(e,t,a):s(a))||a);return r&&a&&Ye(e,t,a),a};class H extends x{constructor(){super(...arguments),this.startDate=Date.now().toString(),this.endDate=Date.now().toString()}_handleChange(e){const t=new CustomEvent("calendar-widget:select",{bubbles:!0,composed:!0,detail:{date:e&&Y(e)}});this.dispatchEvent(t)}_handleClear(){var r;const e=(r=this.shadowRoot)==null?void 0:r.querySelector("input:checked");e&&(e.checked=!1);const t=new CustomEvent("calendar-widget:clear",{bubbles:!0,composed:!0});this.dispatchEvent(t)}render(){const e=new Date(this.startDate),t=new Date(this.endDate),r=We(e,t),a=n=>{const s={d:n.getUTCDate(),m:n.getUTCMonth()+1,y:n.getUTCFullYear(),day:n.getUTCDay()},l=({y:c,m:b,d:f})=>[c,b,f].join("-");return o`
         <label style="grid-column: ${s.day+1}">
           <span>${s.d}</span>
           <input
@@ -548,7 +544,7 @@ import{u as ce,f as ue,i as g,s as x,x as o,d as $,a as pe,V as T,O as Z,e as V,
           <h6>Th</h6>
           <h6>Fr</h6>
           <h6>Sa</h6>
-          ${a.map(r)}
+          ${r.map(a)}
         </fieldset>
         <button
           id="clear"
@@ -619,7 +615,7 @@ import{u as ce,f as ue,i as g,s as x,x as o,d as $,a as pe,V as T,O as Z,e as V,
       display: block;
       margin: 0 auto;
     }
-  `;ne([d({attribute:"start-date",type:Date})],H.prototype,"startDate",2);ne([d({attribute:"end-date",type:Date})],H.prototype,"endDate",2);function Xe(i,e){const t=e?e.getTime():i.getTime();let a=[],r=new Date(i);for(;r.getTime()<=t;)a.push(new Date(r)),r.setUTCDate(r.getUTCDate()+1);return a}var Ze=Object.defineProperty,Ve=Object.getOwnPropertyDescriptor,R=(i,e,t,a)=>{for(var r=a>1?void 0:a?Ve(e,t):e,n=i.length-1,s;n>=0;n--)(s=i[n])&&(r=(a?s(e,t,r):s(r))||r);return a&&r&&Ze(e,t,r),r};class U extends x{constructor(){super(...arguments),this.startDate="1970-01-01"}render(){const e=this.renderItem();return o`
+  `;ne([d({attribute:"start-date",type:Date})],H.prototype,"startDate",2);ne([d({attribute:"end-date",type:Date})],H.prototype,"endDate",2);function We(i,e){const t=e?e.getTime():i.getTime();let r=[],a=new Date(i);for(;a.getTime()<=t;)r.push(new Date(a)),a.setUTCDate(a.getUTCDate()+1);return r}var Ge=Object.defineProperty,Ke=Object.getOwnPropertyDescriptor,R=(i,e,t,r)=>{for(var a=r>1?void 0:r?Ke(e,t):e,n=i.length-1,s;n>=0;n--)(s=i[n])&&(a=(r?s(e,t,a):s(a))||a);return r&&a&&Ge(e,t,a),a};class U extends x{constructor(){super(...arguments),this.startDate="1970-01-01"}render(){const e=this.renderItem();return o`
       <span id="dates">
         <time datetime=${this.startDate}>
           ${O(this.startDate)}
@@ -727,8 +723,8 @@ import{u as ce,f as ue,i as g,s as x,x as o,d as $,a as pe,V as T,O as Z,e as V,
       <slot></slot>
     `,t=this.href?o`
           <a class="itemLink" href="${this.href}">${e}</a>
-        `:e,a=this.imgSrc?`background-image: url(${this.imgSrc})`:"";return o`
-      <section class="destination" style=${a}>
+        `:e,r=this.imgSrc?`background-image: url(${this.imgSrc})`:"";return o`
+      <section class="destination" style=${r}>
         <h3>${t}</h3>
       </section>
     `}}R([d({attribute:"img-src"})],se.prototype,"imgSrc",2);class oe extends U{renderItem(){const e={air:"icon-airplane",rail:"icon-train"},t=this.type?e[this.type]:"icon-default";return o`
@@ -746,7 +742,7 @@ import{u as ce,f as ue,i as g,s as x,x as o,d as $,a as pe,V as T,O as Z,e as V,
           </span>
         </h3>
       </section>
-    `}}R([d()],oe.prototype,"type",2);var et=Object.defineProperty,tt=Object.getOwnPropertyDescriptor,X=(i,e,t,a)=>{for(var r=a>1?void 0:a?tt(e,t):e,n=i.length-1,s;n>=0;n--)(s=i[n])&&(r=(a?s(e,t,r):s(r))||r);return a&&r&&et(e,t,r),r};class F extends T{constructor(){super("blazing:model"),this.tourid="",this.addEventListener("calendar-widget:select",e=>{const{detail:t}=e,{date:a}=t;this.selectedDate=a}),this.addEventListener("calendar-widget:clear",()=>{this.selectedDate=void 0})}get tour(){return this.model.tour}attributeChangedCallback(e,t,a){super.attributeChangedCallback(e,t,a),e==="tour-id"&&t!==a&&a&&(console.log("Tour Page:",a),this.dispatchMessage(["tour/select",{tourid:a}]))}render(){const{endDate:e,destinations:t=[],transportation:a=[],entourage:r,name:n,startDate:s}=this.tour||{},l=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],c=h=>{const m=h||new Date,p=l[m.getUTCMonth()];return`${m.getUTCDate()} ${p}`},b=(h,m)=>{const{startDate:p,endDate:w,name:D,featuredImage:J}=h;return o`
+    `}}R([d()],oe.prototype,"type",2);var Qe=Object.defineProperty,Xe=Object.getOwnPropertyDescriptor,X=(i,e,t,r)=>{for(var a=r>1?void 0:r?Xe(e,t):e,n=i.length-1,s;n>=0;n--)(s=i[n])&&(a=(r?s(e,t,a):s(a))||a);return r&&a&&Qe(e,t,a),a};class F extends T{constructor(){super("blazing:model"),this.tourid="",this.addEventListener("calendar-widget:select",e=>{const{detail:t}=e,{date:r}=t;this.selectedDate=r}),this.addEventListener("calendar-widget:clear",()=>{this.selectedDate=void 0})}get tour(){return this.model.tour}attributeChangedCallback(e,t,r){super.attributeChangedCallback(e,t,r),e==="tour-id"&&t!==r&&r&&(console.log("Tour Page:",r),this.dispatchMessage(["tour/select",{tourid:r}]))}render(){const{endDate:e,destinations:t=[],transportation:r=[],entourage:a,name:n,startDate:s}=this.tour||{},l=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],c=h=>{const m=h||new Date,p=l[m.getUTCMonth()];return`${m.getUTCDate()} ${p}`},b=(h,m)=>{const{startDate:p,endDate:w,name:D,featuredImage:J}=h;return o`
         <itinerary-destination
           start-date=${p}
           end-date=${w}
@@ -779,7 +775,7 @@ import{u as ce,f as ue,i as g,s as x,x as o,d as $,a as pe,V as T,O as Z,e as V,
             ${c(e)}
             ${e&&e.getFullYear()}
           </p>
-        `,q=(h,m)=>{const p=this.selectedDate;if(p&&(h.startDate>p||h.endDate<p))return"";const D=a[m],J=a[m+1],le=p&&(D.endDate||D.startDate).valueOf()!==p.valueOf(),de=p&&J.startDate.valueOf()!==p.valueOf();return o`
+        `,B=(h,m)=>{const p=this.selectedDate;if(p&&(h.startDate>p||h.endDate<p))return"";const D=r[m],J=r[m+1],le=p&&(D.endDate||D.startDate).valueOf()!==p.valueOf(),de=p&&J.startDate.valueOf()!==p.valueOf();return o`
         ${m||le?"":u(D)}
         ${b(h,m)}
         ${de?"":u(J)}
@@ -795,12 +791,12 @@ import{u as ce,f as ue,i as g,s as x,x as o,d as $,a as pe,V as T,O as Z,e as V,
           end-date=${e}></calendar-widget>
 
         <section class="itinerary">
-          ${t.map(q)}
+          ${t.map(B)}
         </section>
 
         <entourage-table
           href="/app/entourage/${this.tourid}"
-          .using=${r}></entourage-table>
+          .using=${a}></entourage-table>
       </main>
     `}}F.uses=$({"calendar-widget":H,"entourage-table":j,"itinerary-destination":se,"itinerary-transportation":oe});F.styles=[g`
       :host {
@@ -849,7 +845,7 @@ import{u as ce,f as ue,i as g,s as x,x as o,d as $,a as pe,V as T,O as Z,e as V,
       entourage-table {
         grid-area: en;
       }
-    `];X([d({attribute:"tour-id",reflect:!0})],F.prototype,"tourid",2);X([v()],F.prototype,"tour",1);X([v()],F.prototype,"selectedDate",2);const rt=[{path:"/app/tour/:id/destination/:index/edit",view:i=>o`
+    `];X([d({attribute:"tour-id",reflect:!0})],F.prototype,"tourid",2);X([v()],F.prototype,"tour",1);X([v()],F.prototype,"selectedDate",2);const Ze=[{path:"/app/tour/:id/destination/:index/edit",view:i=>o`
       <destination-view
         edit
         tour-id=${i.id}
@@ -868,4 +864,4 @@ import{u as ce,f as ue,i as g,s as x,x as o,d as $,a as pe,V as T,O as Z,e as V,
       <entourage-view tour-id=${i.id}></entourage-view>
     `},{path:"/app",view:()=>o`
       <home-view></home-view>
-    `},{path:"/",redirect:"/app"}];$({"mu-auth":E.Provider,"mu-history":Y.Provider,"mu-store":class extends me.Provider{constructor(){super(Pe,_e,"blazing:auth")}},"mu-switch":class extends ge.Element{constructor(){super(rt,"blazing:history")}},"blazing-header":M,"destination-view":y,"entourage-view":I,"home-view":K,"profile-view":z,"tour-view":F});function at(i,e){i.classList.toggle("dark-mode",e)}document.body.addEventListener("dark-mode",i=>at(i.currentTarget,i.detail.checked));
+    `},{path:"/",redirect:"/app"}];$({"mu-auth":E.Provider,"mu-history":q.Provider,"mu-store":class extends pe.Provider{constructor(){super(De,$e,"blazing:auth")}},"mu-switch":class extends he.Element{constructor(){super(Ze,"blazing:history")}},"blazing-header":I,"destination-view":y,"entourage-view":k,"home-view":K,"profile-view":P,"tour-view":F});function Ve(i,e){i.classList.toggle("dark-mode",e)}document.body.addEventListener("dark-mode",i=>Ve(i.currentTarget,i.detail.checked));
