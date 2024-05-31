@@ -1,7 +1,8 @@
 import { define, Form, History, View } from "@calpoly/mustang";
 import { css, html } from "lit";
 import { property, state } from "lit/decorators.js";
-import { Destination, Tour } from "server/models";
+import { Destination, Excursion, Tour } from "server/models";
+import { ExcursionCardElement } from "../components/excursion-card.ts";
 import resetCSS from "../css/reset";
 import { Msg } from "../messages";
 import { Model } from "../model";
@@ -9,7 +10,8 @@ import { formatDate } from "../utils/dates";
 
 export class DestinationViewElement extends View<Model, Msg> {
   static uses = define({
-    "mu-form": Form.Element
+    "mu-form": Form.Element,
+    "excursion-card": ExcursionCardElement
   });
 
   @property({ attribute: "tour-id" })
@@ -58,8 +60,13 @@ export class DestinationViewElement extends View<Model, Msg> {
   }
 
   render() {
-    const { name, startDate, endDate, featuredImage } =
-      this.destination || ({} as Destination);
+    const {
+      name,
+      startDate,
+      endDate,
+      featuredImage,
+      excursions = []
+    } = this.destination || ({} as Destination);
     const tourName = this.tour?.name;
     const imageUrl = this.image || featuredImage;
 
@@ -111,7 +118,19 @@ export class DestinationViewElement extends View<Model, Msg> {
               Edit
             </a>
           </header>
-          <img src=${imageUrl} />
+          <img class="hero" src=${imageUrl} />
+          <ul class="excursions">
+            ${excursions.map(
+              (x: Excursion) =>
+                html`
+                  <li>
+                    <excursion-card type="${x.type}">
+                      ${x.name}
+                    </excursion-card>
+                  </li>
+                `
+            )}
+          </ul>
         `;
       }
     };
@@ -130,46 +149,71 @@ export class DestinationViewElement extends View<Model, Msg> {
         display: contents;
       }
       header {
-        display: contents;
+        grid-column: 1 / span 3;
       }
       main.page {
+        --page-grids: 8;
+
         display: grid;
         grid-column: 1/-1;
-        padding: var(--size-spacing-small)
+        grid-template-columns: repeat(var(--page-grids), 1fr);
+        gap: var(--size-spacing-small)
           var(--size-spacing-medium);
-        grid-template-columns: subgrid;
-        grid-template-rows: auto auto auto 1fr;
-        grid-template-areas:
-          "bc bc xx xx xx xx xx ed"
-          "h2 h2 im im im im im im"
-          "p  p  im im im im im im"
-          "yy yy im im im im im im";
+        padding: var(--size-spacing-medium);
+        grid-template-rows: auto auto 1fr auto;
         gap: var(--size-spacing-medium)
           var(--size-spacing-large);
       }
       main.page.editing {
         grid-template-areas: "fm fm fm fm im im im im";
       }
-      img {
-        grid-area: im;
-      }
-      .breadcrumb {
-        grid-area: bc;
-      }
-      h2 {
-        grid-area: h2;
-      }
-      p {
-        grid-area: p;
-      }
-      .edit {
-        grid-area: ed;
-      }
       mu-form {
         grid-area: fm;
       }
       input {
         grid-column: input;
+      }
+      .excursions {
+        display: contents;
+      }
+      .page > .hero {
+        grid-column: span min(5, var(--page-grids)) / -1;
+      }
+      .page > .excursions {
+        display: contents;
+        list-style: none;
+        padding: 0;
+      }
+      .excursions > * {
+        grid-column: auto / span 2;
+      }
+      @media screen and (max-width: 50rem) {
+        main.page {
+          --page-grids: 4;
+        }
+      }
+      @media screen and (max-width: 30rem) {
+        main.page {
+          --page-grids: 2;
+        }
+      }
+      @media screen and (min-width: 75rem) and (max-width: 100rem) {
+        main.page {
+          --page-grids: 12;
+        }
+        .page > .hero {
+          grid-column-start: span 8;
+          grid-row: auto / span 2;
+        }
+      }
+      @media screen and (min-width: 100rem) {
+        main.page {
+          --page-grids: 16;
+        }
+        .page > .hero {
+          grid-column: 5 / span 8;
+          grid-row: auto / span 3;
+        }
       }
     `
   ];
