@@ -10,10 +10,30 @@ import { BlazingHeaderElement } from "./components/blazing-header";
 import { Msg } from "./messages";
 import { Model, init } from "./model";
 import update from "./update";
+import { DestinationViewElement } from "./views/destination-view";
+import { EntourageViewElement } from "./views/entourage-view";
+import { HomeViewElement } from "./views/home-view";
 import { ProfileViewElement } from "./views/profile-view";
 import { TourViewElement } from "./views/tour-view";
 
 const routes = [
+  {
+    path: "/app/tour/:id/destination/:index/edit",
+    view: (params: Switch.Params) => html`
+      <destination-view
+        edit
+        tour-id=${params.id}
+        index=${params.index}></destination-view>
+    `
+  },
+  {
+    path: "/app/tour/:id/destination/:index",
+    view: (params: Switch.Params) => html`
+      <destination-view
+        tour-id=${params.id}
+        index=${params.index}></destination-view>
+    `
+  },
   {
     path: "/app/tour/:id",
     view: (params: Switch.Params) => html`
@@ -33,9 +53,15 @@ const routes = [
     `
   },
   {
+    path: "/app/entourage/:id",
+    view: (params: Switch.Params) => html`
+      <entourage-view tour-id=${params.id}></entourage-view>
+    `
+  },
+  {
     path: "/app",
     view: () => html`
-      <landing-view></landing-view>
+      <home-view></home-view>
     `
   },
   {
@@ -61,6 +87,9 @@ define({
     }
   },
   "blazing-header": BlazingHeaderElement,
-  "tour-view": TourViewElement,
-  "profile-view": ProfileViewElement
+  "destination-view": DestinationViewElement,
+  "entourage-view": EntourageViewElement,
+  "home-view": HomeViewElement,
+  "profile-view": ProfileViewElement,
+  "tour-view": TourViewElement
 });

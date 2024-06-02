@@ -489,6 +489,9 @@ function populateForm$1(json, formBody) {
           const checkbox = input;
           checkbox.checked = Boolean(val);
           break;
+        case "date":
+          input.value = val.toISOString().substr(0, 10);
+          break;
         default:
           input.value = val;
           break;
@@ -698,6 +701,19 @@ const _FormElement2 = class _FormElement3 extends HTMLElement {
                 }
               });
               this.dispatchEvent(event22);
+            }).catch((error) => {
+              const customType = "mu-rest-form:error";
+              const event22 = new CustomEvent(customType, {
+                bubbles: true,
+                composed: true,
+                detail: {
+                  method,
+                  error,
+                  url: src,
+                  request: this._state
+                }
+              });
+              this.dispatchEvent(event22);
             });
           }
         }
@@ -740,7 +756,7 @@ const _FormElement2 = class _FormElement3 extends HTMLElement {
     this._authObserver.observe(({ user }) => {
       if (user) {
         this._user = user;
-        if (this.src) {
+        if (this.src && !this.isNew) {
           fetchData(this.src, this.authorization).then(
             (json) => {
               this._state = json;
@@ -843,7 +859,7 @@ function submitForm(src, json, method = "PUT", authorization = {}) {
     if (res.status != 200 && res.status != 201)
       throw `Form submission failed: Status ${res.status}`;
     return res.json();
-  }).catch((err) => console.log("Error submitting form:", err));
+  });
 }
 const rest = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,

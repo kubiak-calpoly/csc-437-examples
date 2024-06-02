@@ -4,6 +4,18 @@ import tours from "../services/tour-svc";
 
 const router = express.Router();
 
+router.get("/", (req: Request, res: Response) => {
+  tours
+    .index()
+    .then((list: Tour[]) =>
+      res.status(200).send({
+        count: list.length,
+        data: list
+      })
+    )
+    .catch((err) => res.status(500).send(err));
+});
+
 router.post("/", (req: Request, res: Response) => {
   const newTour = req.body;
 

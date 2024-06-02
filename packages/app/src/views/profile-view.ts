@@ -111,7 +111,6 @@ class ProfileEditor extends LitElement {
   render() {
     return html`
       <section>
-        <slot name="avatar"></slot>
         <h1><slot name="name"></slot></h1>
         <nav>
           <a class="close" href="../${this.username}">Close</a>
@@ -122,6 +121,14 @@ class ProfileEditor extends LitElement {
             <span>Username</span>
             <input disabled name="userid" />
           </label>
+          <label>
+            <span>Avatar</span>
+            <input
+              name="avatar"
+              type="file"
+              @change=${this._handleAvatarSelected} />
+          </label>
+          <slot name="avatar"></slot>
           <label>
             <span>Name</span>
             <input name="name" />
@@ -144,10 +151,6 @@ class ProfileEditor extends LitElement {
             <span>Color</span>
             <input type="color" name="color" />
           </label>
-          <label>
-            <span>Avatar</span>
-            <input name="avatar" />
-          </label>
         </mu-form>
       </section>
     `;
@@ -163,8 +166,35 @@ class ProfileEditor extends LitElement {
       mu-form input {
         grid-column: input;
       }
+      mu-form label:has(input[type="file"]) {
+        grid-row-end: span 4;
+      }
     `
   ];
+
+  _handleAvatarSelected(ev: Event) {
+    const target = ev.target as HTMLInputElement;
+    const selectedFile = (target.files as FileList)[0];
+
+    const reader: Promise<string> = new Promise(
+      (resolve, reject) => {
+        const fr = new FileReader();
+        fr.onload = () => resolve(fr.result as string);
+        fr.onerror = (err) => reject(err);
+        fr.readAsDataURL(selectedFile);
+      }
+    );
+
+    reader.then((url: string) => {
+      this.dispatchEvent(
+        new CustomEvent("profile:new-avatar", {
+          bubbles: true,
+          composed: true,
+          detail: url
+        })
+      );
+    });
+  }
 }
 
 export class ProfileViewElement extends View<Model, Msg> {
@@ -185,11 +215,19 @@ export class ProfileViewElement extends View<Model, Msg> {
     return this.model.profile;
   }
 
+  @state()
+  newAvatar?: string;
+
   constructor() {
     super("blazing:model");
-    // this.addEventListener("mu-form:submit", (event) =>
-    //   this._handleSubmit(event as Form.SubmitEvent<Profile>)
-    // );
+
+    this.addEventListener(
+      "profile:new-avatar",
+      (event: Event) => {
+        this.newAvatar = (event as CustomEvent)
+          .detail as string;
+      }
+    );
   }
 
   attributeChangedCallback(
@@ -236,7 +274,7 @@ export class ProfileViewElement extends View<Model, Msg> {
       <profile-avatar
         slot="avatar"
         color=${color}
-        src=${avatar}
+        src=${this.newAvatar || avatar}
         initial=${initial}></profile-avatar>
     `;
 
@@ -267,11 +305,14 @@ export class ProfileViewElement extends View<Model, Msg> {
 
   _handleSubmit(event: Form.SubmitEvent<Profile>) {
     console.log("Handling submit of mu-form");
+    const profile = this.newAvatar
+      ? { ...event.detail, avatar: this.newAvatar }
+      : event.detail;
     this.dispatchMessage([
       "profile/save",
       {
         userid: this.userid,
-        profile: event.detail,
+        profile,
         onSuccess: () =>
           History.dispatch(this, "history/navigate", {
             href: `/app/profile/${this.userid}`

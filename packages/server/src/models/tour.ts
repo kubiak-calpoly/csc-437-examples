@@ -33,7 +33,7 @@ export interface Excursion {
   type: ExcursionType;
 }
 
-type ExcursionType =
+export type ExcursionType =
   | "boat"
   | "bus"
   | "metro"

@@ -15,14 +15,14 @@ import {
 import { Msg } from "../messages";
 import { Model } from "../model";
 
-define({
-  "calendar-widget": CalendarWidget,
-  "entourage-table": EntourageTable,
-  "itinerary-destination": ItineraryDestinationElement,
-  "itinerary-transportation": ItineraryTransportationElement
-});
-
 export class TourViewElement extends View<Model, Msg> {
+  static uses = define({
+    "calendar-widget": CalendarWidget,
+    "entourage-table": EntourageTable,
+    "itinerary-destination": ItineraryDestinationElement,
+    "itinerary-transportation": ItineraryTransportationElement
+  });
+
   @property({ attribute: "tour-id", reflect: true })
   tourid = "";
 
@@ -100,15 +100,17 @@ export class TourViewElement extends View<Model, Msg> {
       return `${d} ${m}`;
     };
 
-    const renderDestination = (dest: Destination) => {
-      const { startDate, endDate, link, name, featuredImage } =
-        dest;
+    const renderDestination = (
+      dest: Destination,
+      i: number
+    ) => {
+      const { startDate, endDate, name, featuredImage } = dest;
       return html`
         <itinerary-destination
           start-date=${startDate}
           end-date=${endDate}
           img-src=${featuredImage}
-          href=${link}>
+          href="./${this.tourid}/destination/${i}">
           ${name}
         </itinerary-destination>
       `;
@@ -181,7 +183,7 @@ export class TourViewElement extends View<Model, Msg> {
 
       return html`
         ${i || t0Filter ? "" : renderTransportation(t0)}
-        ${renderDestination(d)}
+        ${renderDestination(d, i)}
         ${tnFilter ? "" : renderTransportation(tn)}
       `;
     };
@@ -203,7 +205,9 @@ export class TourViewElement extends View<Model, Msg> {
           ${destinations.map(renderDestAndTrans)}
         </section>
 
-        <entourage-table .using=${entourage}></entourage-table>
+        <entourage-table
+          href="/app/entourage/${this.tourid}"
+          .using=${entourage}></entourage-table>
       </main>
     `;
   }

@@ -97,6 +97,20 @@ export class FormElement extends HTMLElement {
                   }
                 });
                 this.dispatchEvent(event);
+              })
+              .catch((error) => {
+                const customType = "mu-rest-form:error";
+                const event = new CustomEvent(customType, {
+                  bubbles: true,
+                  composed: true,
+                  detail: {
+                    method,
+                    error,
+                    url: src,
+                    request: this._state
+                  }
+                });
+                this.dispatchEvent(event);
               });
           }
         }
@@ -132,7 +146,7 @@ export class FormElement extends HTMLElement {
     this._authObserver.observe(({ user }) => {
       if (user) {
         this._user = user;
-        if (this.src) {
+        if (this.src && !this.isNew) {
           fetchData(this.src, this.authorization).then(
             (json) => {
               this._state = json;
@@ -225,11 +239,9 @@ function submitForm(
       ...authorization
     },
     body: JSON.stringify(json)
-  })
-    .then((res) => {
-      if (res.status != 200 && res.status != 201)
-        throw `Form submission failed: Status ${res.status}`;
-      return res.json();
-    })
-    .catch((err) => console.log("Error submitting form:", err));
+  }).then((res) => {
+    if (res.status != 200 && res.status != 201)
+      throw `Form submission failed: Status ${res.status}`;
+    return res.json();
+  });
 }
