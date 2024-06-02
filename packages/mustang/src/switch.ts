@@ -1,6 +1,7 @@
 import { css, html, LitElement, TemplateResult } from "lit";
-import { property } from "lit/decorators.js";
+import { state } from "lit/decorators.js";
 import Route from "route-parser";
+import * as Auth from "./auth";
 import * as History from "./history";
 import { Observer } from "./observer";
 
@@ -27,6 +28,7 @@ interface SwitchPath {
 
 interface ViewCase {
   view: RouteView;
+  auth?: "public" | "protected";
 }
 
 interface RedirectCase {
@@ -40,15 +42,23 @@ type Match = MatchPath & (ViewCase | RedirectCase);
 export class Switch extends LitElement {
   _cases: Case[] = [];
   _historyObserver: Observer<History.Model>;
+  _authObserver: Observer<Auth.Model>;
+
+  @state()
+  _user?: Auth.User;
   _fallback: RouteView = () =>
     html`
       <h1>Not Found</h1>
     `;
 
-  @property()
+  @state()
   _match?: Match;
 
-  constructor(routes: SwitchRoute[], historyContext: string) {
+  constructor(
+    routes: SwitchRoute[],
+    historyContext: string,
+    authContext: string = ""
+  ) {
     super();
     this._cases = routes.map((r) => ({
       ...r,
@@ -58,6 +68,10 @@ export class Switch extends LitElement {
       this,
       historyContext
     );
+    this._authObserver = new Observer<Auth.Model>(
+      this,
+      authContext
+    );
   }
 
   override connectedCallback() {
@@ -65,17 +79,39 @@ export class Switch extends LitElement {
       console.log("New location", location);
       if (location) this._match = this.matchRoute(location);
     });
+    this._authObserver.observe(({ user }) => {
+      this._user = user;
+    });
     super.connectedCallback();
   }
 
   override render() {
-    console.log("Rendering for match", this._match);
+    console.log("Rendering for match", this._match, this._user);
     const renderView = () => {
-      if (this._match) {
-        if ("view" in this._match)
-          return this._match.view(this._match.params || {});
-        if ("redirect" in this._match) {
-          const redirect = this._match.redirect;
+      const m = this._match;
+      if (m) {
+        if ("view" in m) {
+          if (!this._user) {
+            return html`
+              <h1>Authenticating</h1>
+            `;
+          }
+          if (
+            m.auth &&
+            m.auth !== "public" &&
+            this._user &&
+            !this._user.authenticated
+          ) {
+            Auth.dispatch(this, "auth/redirect");
+            return html`
+              <h1>Redirecting for Login</h1>
+            `;
+          } else {
+            return m.view(m.params || {});
+          }
+        }
+        if ("redirect" in m) {
+          const redirect = m.redirect;
           if (typeof redirect === "string") {
             this.redirect(redirect);
             return html`

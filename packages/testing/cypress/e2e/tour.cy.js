@@ -2,7 +2,7 @@ import { loginSequence } from "./login.js";
 
 const opts = { includeShadowDom: true };
 const tourid = "65c7e92ea837ff7c15b669e5";
-const creds = { username: "blaze", pwd: "1234" };
+const creds = { username: "blaze", pwd: "123" };
 const dest = "Rome";
 
 describe("tour page", () => {
@@ -11,13 +11,13 @@ describe("tour page", () => {
   });
 
   it("is accessible after login", () => {
-    cy.visit(`/app/${tourid}`);
+    cy.visit(`/app/tour/${tourid}`);
 
     cy.get("main.page", opts).should("be.visible");
   });
 
   it("can navigate to destination", () => {
-    cy.visit(`/app/${tourid}`);
+    cy.visit(`/app/tour/${tourid}`);
 
     cy.get("itinerary-destination", opts)
       .contains(dest)
@@ -33,10 +33,10 @@ describe("tour page", () => {
   });
 
   it("can filter destinations by date", () => {
-    cy.visit(`/app/${tourid}`);
+    cy.visit(`/app/tour/${tourid}`);
 
     cy.get("calendar-widget", opts)
-      .contains("label > span", "16", opts)
+      .contains("label > span", "18", opts)
       .next()
       .click({ force: true });
 
@@ -48,11 +48,10 @@ describe("tour page", () => {
     cy.get("itinerary-destination", opts)
       .contains("Florence")
       .find("section", opts)
-      .should("not.be.visible");
+      .should("be.visible");
 
     cy.get("itinerary-destination", opts)
       .contains("Rome")
-      .find("section", opts)
-      .should("not.be.visible");
+      .should("not.exist");
   });
 });

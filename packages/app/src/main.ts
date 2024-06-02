@@ -16,8 +16,9 @@ import { HomeViewElement } from "./views/home-view";
 import { ProfileViewElement } from "./views/profile-view";
 import { TourViewElement } from "./views/tour-view";
 
-const routes = [
+const routes: Switch.Route[] = [
   {
+    auth: "protected",
     path: "/app/tour/:id/destination/:index/edit",
     view: (params: Switch.Params) => html`
       <destination-view
@@ -27,6 +28,7 @@ const routes = [
     `
   },
   {
+    auth: "protected",
     path: "/app/tour/:id/destination/:index",
     view: (params: Switch.Params) => html`
       <destination-view
@@ -35,30 +37,35 @@ const routes = [
     `
   },
   {
+    auth: "protected",
     path: "/app/tour/:id",
     view: (params: Switch.Params) => html`
       <tour-view tour-id=${params.id}></tour-view>
     `
   },
   {
+    auth: "protected",
     path: "/app/profile/:id/edit",
     view: (params: Switch.Params) => html`
       <profile-view edit user-id=${params.id}></profile-view>
     `
   },
   {
+    auth: "protected",
     path: "/app/profile/:id",
     view: (params: Switch.Params) => html`
       <profile-view user-id=${params.id}></profile-view>
     `
   },
   {
+    auth: "protected",
     path: "/app/entourage/:id",
     view: (params: Switch.Params) => html`
       <entourage-view tour-id=${params.id}></entourage-view>
     `
   },
   {
+    auth: "protected",
     path: "/app",
     view: () => html`
       <home-view></home-view>
@@ -83,7 +90,7 @@ define({
   },
   "mu-switch": class AppSwitch extends Switch.Element {
     constructor() {
-      super(routes, "blazing:history");
+      super(routes, "blazing:history", "blazing:auth");
     }
   },
   "blazing-header": BlazingHeaderElement,

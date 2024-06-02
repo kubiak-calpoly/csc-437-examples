@@ -173,11 +173,11 @@
   function dispatcher(eventType = "mu:message") {
     return (target, ...msg) => target.dispatchEvent(new Dispatch(msg, eventType));
   }
-  const dispatch$1 = dispatcher();
+  const dispatch$2 = dispatcher();
   const message = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
     __proto__: null,
     Dispatch,
-    dispatch: dispatch$1,
+    dispatch: dispatch$2,
     dispatcher
   }, Symbol.toStringTag, { value: "Module" }));
   class Service {
@@ -260,7 +260,6 @@
           apply(signOut());
           return redirection(this._redirectForLogin);
         case "auth/redirect":
-          apply(signOut());
           return redirection(this._redirectForLogin, {
             next: window.location.href
           });
@@ -273,8 +272,8 @@
     }
   };
   _AuthService.EVENT_TYPE = "auth:message";
-  _AuthService.dispatch = dispatcher(_AuthService.EVENT_TYPE);
   let AuthService = _AuthService;
+  const dispatch$1 = dispatcher(AuthService.EVENT_TYPE);
   function redirection(redirect2, query = {}) {
     if (!redirect2)
       return void 0;
@@ -374,6 +373,7 @@
     AuthenticatedUser,
     Provider: AuthProvider,
     User: APIUser,
+    dispatch: dispatch$1,
     headers: authHeaders,
     payload: tokenPayload
   }, Symbol.toStringTag, { value: "Module" }));
@@ -937,7 +937,7 @@
       return this.cssText;
     }
   };
-  const r$4 = (t2) => new n$3("string" == typeof t2 ? t2 : t2 + "", void 0, s$2), i$2 = (t2, ...e2) => {
+  const r$5 = (t2) => new n$3("string" == typeof t2 ? t2 : t2 + "", void 0, s$2), i$2 = (t2, ...e2) => {
     const o2 = 1 === t2.length ? t2[0] : e2.reduce((e3, s2, o3) => e3 + ((t3) => {
       if (true === t3._$cssResult$)
         return t3.cssText;
@@ -958,14 +958,14 @@
     let e2 = "";
     for (const s2 of t3.cssRules)
       e2 += s2.cssText;
-    return r$4(e2);
+    return r$5(e2);
   })(t2) : t2;
   /**
    * @license
    * Copyright 2017 Google LLC
    * SPDX-License-Identifier: BSD-3-Clause
    */
-  const { is: i$1, defineProperty: e$1, getOwnPropertyDescriptor: r$3, getOwnPropertyNames: h$1, getOwnPropertySymbols: o$2, getPrototypeOf: n$2 } = Object, a$1 = globalThis, c$1 = a$1.trustedTypes, l$1 = c$1 ? c$1.emptyScript : "", p$1 = a$1.reactiveElementPolyfillSupport, d$1 = (t2, s2) => t2, u$1 = { toAttribute(t2, s2) {
+  const { is: i$1, defineProperty: e$1, getOwnPropertyDescriptor: r$4, getOwnPropertyNames: h$1, getOwnPropertySymbols: o$2, getPrototypeOf: n$2 } = Object, a$1 = globalThis, c$1 = a$1.trustedTypes, l$1 = c$1 ? c$1.emptyScript : "", p$1 = a$1.reactiveElementPolyfillSupport, d$1 = (t2, s2) => t2, u$1 = { toAttribute(t2, s2) {
     switch (s2) {
       case Boolean:
         t2 = t2 ? l$1 : null;
@@ -1009,7 +1009,7 @@
       }
     }
     static getPropertyDescriptor(t2, s2, i2) {
-      const { get: e2, set: h2 } = r$3(this.prototype, t2) ?? { get() {
+      const { get: e2, set: h2 } = r$4(this.prototype, t2) ?? { get() {
         return this[s2];
       }, set(t3) {
         this[s2] = t3;
@@ -1212,8 +1212,8 @@
    * Copyright 2017 Google LLC
    * SPDX-License-Identifier: BSD-3-Clause
    */
-  const t = globalThis, i = t.trustedTypes, s$1 = i ? i.createPolicy("lit-html", { createHTML: (t2) => t2 }) : void 0, e = "$lit$", h = `lit$${Math.random().toFixed(9).slice(2)}$`, o$1 = "?" + h, n$1 = `<${o$1}>`, r$2 = document, l = () => r$2.createComment(""), c = (t2) => null === t2 || "object" != typeof t2 && "function" != typeof t2, a = Array.isArray, u = (t2) => a(t2) || "function" == typeof (t2 == null ? void 0 : t2[Symbol.iterator]), d = "[ 	\n\f\r]", f = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, v = /-->/g, _ = />/g, m = RegExp(`>|${d}(?:([^\\s"'>=/]+)(${d}*=${d}*(?:[^ 	
-\f\r"'\`<>=]|("|')|))|$)`, "g"), p = /'/g, g = /"/g, $ = /^(?:script|style|textarea|title)$/i, y = (t2) => (i2, ...s2) => ({ _$litType$: t2, strings: i2, values: s2 }), x = y(1), w = Symbol.for("lit-noChange"), T = Symbol.for("lit-nothing"), A = /* @__PURE__ */ new WeakMap(), E = r$2.createTreeWalker(r$2, 129);
+  const t = globalThis, i = t.trustedTypes, s$1 = i ? i.createPolicy("lit-html", { createHTML: (t2) => t2 }) : void 0, e = "$lit$", h = `lit$${Math.random().toFixed(9).slice(2)}$`, o$1 = "?" + h, n$1 = `<${o$1}>`, r$3 = document, l = () => r$3.createComment(""), c = (t2) => null === t2 || "object" != typeof t2 && "function" != typeof t2, a = Array.isArray, u = (t2) => a(t2) || "function" == typeof (t2 == null ? void 0 : t2[Symbol.iterator]), d = "[ 	\n\f\r]", f = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, v = /-->/g, _ = />/g, m = RegExp(`>|${d}(?:([^\\s"'>=/]+)(${d}*=${d}*(?:[^ 	
+\f\r"'\`<>=]|("|')|))|$)`, "g"), p = /'/g, g = /"/g, $ = /^(?:script|style|textarea|title)$/i, y = (t2) => (i2, ...s2) => ({ _$litType$: t2, strings: i2, values: s2 }), x = y(1), w = Symbol.for("lit-noChange"), T = Symbol.for("lit-nothing"), A = /* @__PURE__ */ new WeakMap(), E = r$3.createTreeWalker(r$3, 129);
   function C(t2, i2) {
     if (!Array.isArray(t2) || !t2.hasOwnProperty("raw"))
       throw Error("invalid template strings array");
@@ -1272,7 +1272,7 @@
       }
     }
     static createElement(t2, i2) {
-      const s2 = r$2.createElement("template");
+      const s2 = r$3.createElement("template");
       return s2.innerHTML = t2, s2;
     }
   }
@@ -1295,7 +1295,7 @@
       return this._$AM._$AU;
     }
     u(t2) {
-      const { el: { content: i2 }, parts: s2 } = this._$AD, e2 = ((t2 == null ? void 0 : t2.creationScope) ?? r$2).importNode(i2, true);
+      const { el: { content: i2 }, parts: s2 } = this._$AD, e2 = ((t2 == null ? void 0 : t2.creationScope) ?? r$3).importNode(i2, true);
       E.currentNode = e2;
       let h2 = E.nextNode(), o2 = 0, n2 = 0, l2 = s2[0];
       for (; void 0 !== l2; ) {
@@ -1305,7 +1305,7 @@
         }
         o2 !== (l2 == null ? void 0 : l2.index) && (h2 = E.nextNode(), o2++);
       }
-      return E.currentNode = r$2, e2;
+      return E.currentNode = r$3, e2;
     }
     p(t2) {
       let i2 = 0;
@@ -1342,7 +1342,7 @@
       this._$AH !== t2 && (this._$AR(), this._$AH = this.S(t2));
     }
     _(t2) {
-      this._$AH !== T && c(this._$AH) ? this._$AA.nextSibling.data = t2 : this.T(r$2.createTextNode(t2)), this._$AH = t2;
+      this._$AH !== T && c(this._$AH) ? this._$AA.nextSibling.data = t2 : this.T(r$3.createTextNode(t2)), this._$AH = t2;
     }
     $(t2) {
       var _a2;
@@ -1489,15 +1489,15 @@
     }
   }
   s._$litElement$ = true, s["finalized"] = true, (_a = globalThis.litElementHydrateSupport) == null ? void 0 : _a.call(globalThis, { LitElement: s });
-  const r$1 = globalThis.litElementPolyfillSupport;
-  r$1 == null ? void 0 : r$1({ LitElement: s });
+  const r$2 = globalThis.litElementPolyfillSupport;
+  r$2 == null ? void 0 : r$2({ LitElement: s });
   (globalThis.litElementVersions ?? (globalThis.litElementVersions = [])).push("4.0.5");
   /**
    * @license
    * Copyright 2017 Google LLC
    * SPDX-License-Identifier: BSD-3-Clause
    */
-  const o = { attribute: true, type: String, converter: u$1, reflect: false, hasChanged: f$1 }, r = (t2 = o, e2, r2) => {
+  const o = { attribute: true, type: String, converter: u$1, reflect: false, hasChanged: f$1 }, r$1 = (t2 = o, e2, r2) => {
     const { kind: n2, metadata: i2 } = r2;
     let s2 = globalThis.litPropertyMetadata.get(i2);
     if (void 0 === s2 && globalThis.litPropertyMetadata.set(i2, s2 = /* @__PURE__ */ new Map()), s2.set(r2.name, t2), "accessor" === n2) {
@@ -1519,10 +1519,18 @@
     throw Error("Unsupported decorator location: " + n2);
   };
   function n(t2) {
-    return (e2, o2) => "object" == typeof o2 ? r(t2, e2, o2) : ((t3, e3, o3) => {
+    return (e2, o2) => "object" == typeof o2 ? r$1(t2, e2, o2) : ((t3, e3, o3) => {
       const r2 = e3.hasOwnProperty(o3);
       return e3.constructor.createProperty(o3, r2 ? { ...t3, wrapped: true } : t3), r2 ? Object.getOwnPropertyDescriptor(e3, o3) : void 0;
     })(t2, e2, o2);
+  }
+  /**
+   * @license
+   * Copyright 2017 Google LLC
+   * SPDX-License-Identifier: BSD-3-Clause
+   */
+  function r(r2) {
+    return n({ ...r2, state: true, attribute: false });
   }
   function getDefaultExportFromCjs(x2) {
     return x2 && x2.__esModule && Object.prototype.hasOwnProperty.call(x2, "default") ? x2["default"] : x2;
@@ -2234,7 +2242,7 @@
     return result;
   };
   class Switch extends s {
-    constructor(routes, historyContext) {
+    constructor(routes, historyContext, authContext = "") {
       super();
       this._cases = [];
       this._fallback = () => x`
@@ -2248,6 +2256,10 @@
         this,
         historyContext
       );
+      this._authObserver = new Observer(
+        this,
+        authContext
+      );
     }
     connectedCallback() {
       this._historyObserver.observe(({ location }) => {
@@ -2255,16 +2267,33 @@
         if (location)
           this._match = this.matchRoute(location);
       });
+      this._authObserver.observe(({ user }) => {
+        this._user = user;
+      });
       super.connectedCallback();
     }
     render() {
-      console.log("Rendering for match", this._match);
+      console.log("Rendering for match", this._match, this._user);
       const renderView = () => {
-        if (this._match) {
-          if ("view" in this._match)
-            return this._match.view(this._match.params || {});
-          if ("redirect" in this._match) {
-            const redirect2 = this._match.redirect;
+        const m2 = this._match;
+        if (m2) {
+          if ("view" in m2) {
+            if (!this._user) {
+              return x`
+              <h1>Authenticating</h1>
+            `;
+            }
+            if (m2.auth && m2.auth !== "public" && this._user && !this._user.authenticated) {
+              dispatch$1(this, "auth/redirect");
+              return x`
+              <h1>Redirecting for Login</h1>
+            `;
+            } else {
+              return m2.view(m2.params || {});
+            }
+          }
+          if ("redirect" in m2) {
+            const redirect2 = m2.redirect;
             if (typeof redirect2 === "string") {
               this.redirect(redirect2);
               return x`
@@ -2312,7 +2341,10 @@
     }
   `;
   __decorateClass$1([
-    n()
+    r()
+  ], Switch.prototype, "_user", 2);
+  __decorateClass$1([
+    r()
   ], Switch.prototype, "_match", 2);
   const _switch = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
     __proto__: null,
