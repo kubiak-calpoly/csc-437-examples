@@ -16,6 +16,7 @@ declare namespace Auth {
         AuthenticatedUser,
         AuthProvider as Provider,
         APIUser as User,
+        dispatch,
         authHeaders as headers,
         tokenPayload as payload,
         AuthSuccessful,
@@ -57,7 +58,6 @@ declare class AuthService extends Service<AuthMsg, AuthModel> {
     _redirectForLogin: string | undefined;
     constructor(context: Context<AuthModel>, redirectForLogin: string | undefined);
     update(message: AuthMsg, apply: ApplyMap<AuthModel>): (() => void) | undefined;
-    static dispatch: (target: HTMLElement, ...msg: Base) => boolean;
 }
 
 declare interface AuthSuccessful {
@@ -89,9 +89,11 @@ declare class Dispatch<Msg extends Base> extends CustomEvent<Msg> {
     constructor(msg: Msg, eventType?: string);
 }
 
-declare const dispatch: (target: HTMLElement, ...msg: Base) => boolean;
+declare const dispatch: (target: HTMLElement, ...msg: AuthMsg) => boolean;
 
-declare const dispatch_2: (target: HTMLElement, ...msg: HistoryMsg) => boolean;
+declare const dispatch_2: (target: HTMLElement, ...msg: Base) => boolean;
+
+declare const dispatch_3: (target: HTMLElement, ...msg: HistoryMsg) => boolean;
 
 declare function dispatcher<Msg extends Base>(eventType?: string): (target: HTMLElement, ...msg: Msg) => boolean;
 
@@ -185,7 +187,7 @@ declare namespace History_2 {
         HistoryProvider,
         HistoryProvider as Provider,
         HistoryService as Service,
-        dispatch_2 as dispatch,
+        dispatch_3 as dispatch,
         HistoryModel as Model,
         HistoryMsg as Msg
     }
@@ -259,7 +261,7 @@ declare namespace Message {
         Type,
         Base,
         Dispatch,
-        dispatch
+        dispatch_2 as dispatch
     }
 }
 export { Message }
@@ -363,9 +365,11 @@ export { Switch }
 declare class Switch_2 extends LitElement {
     _cases: Case[];
     _historyObserver: Observer<History_2.Model>;
+    _authObserver: Observer<Auth.Model>;
+    _user?: Auth.User;
     _fallback: RouteView;
     _match?: Match;
-    constructor(routes: SwitchRoute[], historyContext: string);
+    constructor(routes: SwitchRoute[], historyContext: string, authContext?: string);
     connectedCallback(): void;
     render(): TemplateResult<1>;
     updated(changedProperties: Map<PropertyKey, unknown>): void;
@@ -412,6 +416,7 @@ export declare class View<M extends object, Msg extends Message.Base> extends Li
 
 declare interface ViewCase {
     view: RouteView;
+    auth?: "public" | "protected";
 }
 
 export { }

@@ -48,7 +48,6 @@ class AuthService extends Service<AuthMsg, AuthModel> {
         apply(signOut());
         return redirection(this._redirectForLogin);
       case "auth/redirect":
-        apply(signOut());
         return redirection(this._redirectForLogin, {
           next: window.location.href
         });
@@ -59,9 +58,9 @@ class AuthService extends Service<AuthMsg, AuthModel> {
         );
     }
   }
-
-  static dispatch = dispatcher(AuthService.EVENT_TYPE);
 }
+
+const dispatch = dispatcher<AuthMsg>(AuthService.EVENT_TYPE);
 
 function redirection(
   redirect: string | undefined,
@@ -194,6 +193,7 @@ export {
   AuthenticatedUser,
   AuthProvider as Provider,
   APIUser as User,
+  dispatch,
   authHeaders as headers,
   tokenPayload as payload,
   type AuthSuccessful,
