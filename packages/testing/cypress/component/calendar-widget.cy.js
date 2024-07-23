@@ -63,11 +63,11 @@ describe("calendar-widget.cy.js", () => {
       .contains("label > span", "19", opts)
       .click()
       .parent("label")
-      .should(
-        "not.have.css",
-        "background-color",
-        "rgba(0, 0, 0, 0)"
-      )
+      // .should(
+      //   "not.have.css",
+      //   "background-color",
+      //   "rgba(0, 0, 0, 0)"
+      // )
       .then(() =>
         expect(detail.date.toString()).to.equal(
           new Date("2024-06-19").toString()

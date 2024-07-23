@@ -100,11 +100,11 @@ export class RestfulFormElement extends HTMLElement {
       obs.setEffect(({ user }) => {
         this._user = user;
         if (this.src) {
-          loadJSON(
-            this.src,
-            this,
-            renderSlots,
-            this.authorization
+          fetchData(this.src, this.authorization).then(
+            (json) => {
+              this._state = json;
+              populateForm(json, this);
+            }
           );
         }
       });

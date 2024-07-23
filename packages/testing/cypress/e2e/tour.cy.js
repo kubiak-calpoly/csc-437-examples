@@ -37,8 +37,8 @@ describe("tour page", () => {
 
     cy.get("calendar-widget", opts)
       .contains("label > span", "18", opts)
-      .next()
-      .click({ force: true });
+      .parent()
+      .click();
 
     cy.get("itinerary-destination", opts)
       .contains("Venice")
