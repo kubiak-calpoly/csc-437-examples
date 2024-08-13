@@ -1,8 +1,5 @@
 # Examples for CSC 437
 
-> _NOTE:_ The `main` branch of this repo is a work in progress
-> as I am refactoring the exercises from last quarter.
->
 > If you are enrolled in CSC 437 in the Spring of 2024, I
 > suggest you follow the module-by-module links below to make
 > sure you are looking at the proper branch.
@@ -27,15 +24,21 @@ Each module (week) of the course builds on the previous ones. In
 this repo, there is a branch for each module so we can track the
 progress:
 
-- [Module 1](https://github.com/kubiak-calpoly/csc-437-examples/tree/mod-1):
+- [Module 1](https://github.com/kubiak-calpoly/csc-437-examples/tree/sp24/mod-1):
   Information Architecture and HTML
-- [Module 2](https://github.com/kubiak-calpoly/csc-437-examples/tree/mod-2):
+- [Module 2](https://github.com/kubiak-calpoly/csc-437-examples/tree/sp24/mod-2):
   Styling and Layout with CSS
-- [Module 3](https://github.com/kubiak-calpoly/csc-437-examples/tree/mod-3):
+- [Module 3](https://github.com/kubiak-calpoly/csc-437-examples/tree/sp24/mod-3):
   Adding Interactions with Javascript
-- [Module 4](https://github.com/kubiak-calpoly/csc-437-examples/tree/mod-4):
+- [Module 4](https://github.com/kubiak-calpoly/csc-437-examples/tree/sp24/mod-4):
   MVC Architecture
-- [Module 5](https://github.com/kubiak-calpoly/csc-437-examples/tree/mod-5):
+- [Module 5](https://github.com/kubiak-calpoly/csc-437-examples/tree/sp24/mod-5):
   Client-Server Communication with REST
-- [Module 6](https://github.com/kubiak-calpoly/csc-437-examples/tree/mod-6):
+- [Module 6](https://github.com/kubiak-calpoly/csc-437-examples/tree/sp24/mod-6):
   Security and Handling Large Files
+- [Module 7](https://github.com/kubiak-calpoly/csc-437-examples/tree/sp24/mod-7):
+  Client-side Rendering
+- [Module 8](https://github.com/kubiak-calpoly/csc-437-examples/tree/sp24/mod-8):
+  Single-page Apps
+- [Module 9](https://github.com/kubiak-calpoly/csc-437-examples/tree/sp24/mod-9):
+  Special Topics
