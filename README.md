@@ -1,11 +1,8 @@
 # Examples for CSC 437
 
-> _NOTE:_ The `main` branch of this repo is a work in progress
-> as I am refactoring the exercises from last quarter.
->
-> If you are enrolled in CSC 437 in the Spring of 2024, I
-> suggest you follow the module-by-module links below to make
-> sure you are looking at the proper branch.
+> If you are enrolled in CSC 437 in the Fall of 2024, I suggest
+> you follow the module-by-module links below to make sure you
+> are looking at the proper branch.
 
 This repo contains the code for an the app, Blazing Travel, used
 as an example of a client-rendered web app for CSC 437.
@@ -22,6 +19,8 @@ which is developed as a separate workspace in this monorepo:
 - [Mustang](packages/mustang/README.md) is a lightweight
   frontend framework which we use to demonstrate what frameworks
   do and how they can improve developer experience.
+- [Testing](packages/testing/README.md) demonstrates different
+  approaches to testing a web app.
 
 Each module (week) of the course builds on the previous ones. In
 this repo, there is a branch for each module so we can track the
@@ -30,12 +29,20 @@ progress:
 - [Module 1](https://github.com/kubiak-calpoly/csc-437-examples/tree/mod-1):
   Information Architecture and HTML
 - [Module 2](https://github.com/kubiak-calpoly/csc-437-examples/tree/mod-2):
-  Styling and Layout with CSS
+  Styling with CSS
 - [Module 3](https://github.com/kubiak-calpoly/csc-437-examples/tree/mod-3):
-  Adding Interactions with Javascript
+  CSS Layout and Introduction to Javascript
 - [Module 4](https://github.com/kubiak-calpoly/csc-437-examples/tree/mod-4):
-  MVC Architecture
+  Web Components
 - [Module 5](https://github.com/kubiak-calpoly/csc-437-examples/tree/mod-5):
-  Client-Server Communication with REST
+  Server Programming
 - [Module 6](https://github.com/kubiak-calpoly/csc-437-examples/tree/mod-6):
-  Security and Handling Large Files
+  Accessing and Securing Data
+- [Module 7](https://github.com/kubiak-calpoly/csc-437-examples/tree/mod-7):
+  Cloud Data and Storage
+- [Module 8](https://github.com/kubiak-calpoly/csc-437-examples/tree/mod-8):
+  Frontend Frameworks
+- [Module 9](https://github.com/kubiak-calpoly/csc-437-examples/tree/mod-9):
+  MVU Architecture
+- [Module 10](https://github.com/kubiak-calpoly/csc-437-examples/tree/mod-10):
+  Reactive Programming
