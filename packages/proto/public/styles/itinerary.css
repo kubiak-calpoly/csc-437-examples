@@ -1,0 +1,15 @@
+.itinerary > .destination {
+  aspect-ratio: 16/9;
+  background-size: cover;
+  color: var(--color-text-inverted);
+
+  & h3 {
+    color: currentColor;
+    text-align: right;
+    text-shadow: 1px 2px 1px rgb(0 0 0 / 50%);
+  }
+
+  & a[href] {
+    color: currentColor;
+  }
+}
