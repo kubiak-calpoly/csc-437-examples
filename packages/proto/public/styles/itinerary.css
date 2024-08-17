@@ -1,24 +1,35 @@
 .itinerary {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: [start] auto [header] 2fr [highlights] 1fr [end];
   gap: var(--size-spacing-medium) var(--size-spacing-large);
   align-items: baseline;
   margin: var(--size-spacing-small);
+
+  > dt {
+    grid-column: start;
+  }
+
+  > dd {
+    grid-column: header / end;
+  }
 }
 
 .itinerary > .destination {
-  aspect-ratio: 16/9;
-  background-size: cover;
-  color: var(--color-text-inverted);
+  display: contents;
 
-  h3 {
-    color: currentColor;
-    text-align: right;
-    text-shadow: 1px 2px 1px rgb(0 0 0 / 50%);
-  }
+  header {
+    aspect-ratio: 16/9;
+    background-size: cover;
 
-  a[href] {
-    color: currentColor;
+    h3 {
+      color: currentColor;
+      text-align: right;
+      text-shadow: 1px 2px 1px rgb(0 0 0 / 50%);
+    }
+
+    a[href] {
+      color: currentColor;
+    }
   }
 }
 
