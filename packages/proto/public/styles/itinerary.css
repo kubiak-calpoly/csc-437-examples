@@ -3,13 +3,35 @@
   background-size: cover;
   color: var(--color-text-inverted);
 
-  & h3 {
+  h3 {
     color: currentColor;
     text-align: right;
     text-shadow: 1px 2px 1px rgb(0 0 0 / 50%);
   }
 
-  & a[href] {
+  a[href] {
     color: currentColor;
+  }
+}
+
+.itinerary > .transportation summary {
+  font-weight: var(--font-weight-bold);
+  .icon {
+    --size-icon: var(--size-icon-large);
+  }
+  span:first-child::after {
+    content: " →";
+  }
+  .icon + span::before {
+    content: "→ ";
+  }
+  span.via {
+    font-style: italic;
+    &::before {
+      content: "(via ";
+    }
+    &::after {
+      content: ")";
+    }
   }
 }
