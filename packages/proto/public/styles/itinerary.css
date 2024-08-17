@@ -1,5 +1,9 @@
 .itinerary {
-  margin: var(--size-spacing-medium);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--size-spacing-medium) var(--size-spacing-large);
+  align-items: baseline;
+  margin: var(--size-spacing-small);
 }
 
 .itinerary > .destination {
