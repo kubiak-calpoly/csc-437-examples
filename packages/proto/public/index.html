@@ -20,6 +20,22 @@
     <link rel="stylesheet" href="/styles/page.css" />
     <link rel="stylesheet" href="/styles/itinerary.css" />
     <link rel="stylesheet" href="/styles/entourage.css" />
+    <style>
+      main.page {
+        --page-grids: 8;
+        grid-template-areas:
+          "itn itn itn itn itn itn ent ent"
+          "itn itn itn itn itn itn -   - ";
+      }
+      @media screen and (max-width: 48rem) {
+        main.page {
+          --page-grids: 6;
+          grid-template-areas:
+            "itn itn itn itn itn itn"
+            "ent ent ent ent ent ent";
+        }
+      }
+    </style>
   </head>
   <body>
     <header>
@@ -32,9 +48,9 @@
     </header>
 
     <main class="page">
-      <section>
+      <section class="itinerary">
         <h2>Itinerary</h2>
-        <dl class="itinerary">
+        <dl>
           <dt>13 Oct - 14 Oct</dt>
           <dd class="transportation">
             <h3>
@@ -314,9 +330,9 @@
         </dl>
       </section>
 
-      <section>
+      <section class="entourage">
         <h2>Entourage</h2>
-        <ul class="entourage">
+        <ul>
           <li><a href="person.html">Blaze Pasquale</a></li>
           <li><a href="person.html">Isabel Nootin</a></li>
           <li><a href="person.html">Pi Mondrian</a></li>

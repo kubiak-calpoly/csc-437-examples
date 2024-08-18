@@ -1,12 +1,15 @@
 .entourage {
   display: grid;
-  grid-column: auto / span 8;
+  grid-area: ent;
   grid-template-columns: subgrid;
   gap: var(--size-spacing-medium);
   list-style: none;
   padding: 0;
 
-  > * {
-    grid-column: auto / span 2;
+  > ul {
+    display: contents;
+    > * {
+      grid-column: auto / span 2;
+    }
   }
 }

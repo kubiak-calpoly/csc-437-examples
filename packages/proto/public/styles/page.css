@@ -17,21 +17,6 @@ header a {
 header ~ * {
   margin: var(--size-spacing-medium);
 }
-.page {
-  --page-grids: 8;
-
-  display: grid;
-  grid-template-columns: [start] repeat(var(--page-grids), 1fr) [end];
-  gap: var(--size-spacing-large) var(--size-spacing-medium);
-
-  > section {
-    display: contents;
-
-    > h2 {
-      grid-column: auto / span 2;
-    }
-  }
-}
 h1,
 h2,
 h3,
@@ -86,4 +71,23 @@ svg.icon {
   width: var(--size-icon);
   vertical-align: calc(0.5em - 0.5 * var(--size-icon));
   fill: currentColor;
+}
+
+/* Responsive Page Grid */
+
+.page {
+  --page-grids: 12;
+
+  display: grid;
+  grid-template-columns: [start] repeat(var(--page-grids), 1fr) [end];
+  gap: var(--size-spacing-large) var(--size-spacing-medium);
+}
+
+.page > * {
+  display: grid;
+  grid-template-columns: subgrid;
+
+  > h2 {
+    grid-column: 1 / -1;
+  }
 }
