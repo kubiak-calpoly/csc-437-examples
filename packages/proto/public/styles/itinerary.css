@@ -1,6 +1,12 @@
+@import "timings.css";
+
 .itinerary {
   display: grid;
-  grid-template-columns: [start] auto [header] 2fr [highlights] 1fr [end];
+  grid-template-columns:
+    [start] auto
+    [header] 3fr [timings] 1fr 2fr
+    [highlights] 1fr 2fr
+    [end];
   gap: var(--size-spacing-medium) var(--size-spacing-large);
   align-items: baseline;
   margin: var(--size-spacing-small);
@@ -20,6 +26,7 @@
   header {
     aspect-ratio: 16/9;
     background-size: cover;
+    grid-column: header / highlights;
 
     h3 {
       color: currentColor;
@@ -31,26 +38,52 @@
       color: currentColor;
     }
   }
+
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-spacing-medium);
+    grid-column: highlights / end;
+    list-style: none;
+    padding: 0;
+    line-height: var(--font-line-height-compact);
+  }
 }
 
-.itinerary > .transportation summary {
-  font-weight: var(--font-weight-bold);
-  .icon {
-    --size-icon: var(--size-icon-large);
-  }
-  span:first-child::after {
-    content: " →";
-  }
-  .icon + span::before {
-    content: "→ ";
-  }
-  span.via {
-    font-style: italic;
-    &::before {
-      content: "(via ";
+.itinerary > .transportation {
+  display: contents;
+
+  details {
+    display: contents;
+
+    summary {
+      grid-column: header;
     }
-    &::after {
-      content: ")";
+  }
+
+  .timings {
+    grid-column: timings / end;
+    grid-template-columns: subgrid;
+  }
+
+  h3 {
+    grid-column: header / highlights;
+    font-weight: var(--font-weight-bold);
+
+    span:first-child::after {
+      content: " →";
+    }
+    .icon + span::before {
+      content: "→ ";
+    }
+    span.via {
+      font-style: italic;
+      &::before {
+        content: "(via ";
+      }
+      &::after {
+        content: ")";
+      }
     }
   }
 }
