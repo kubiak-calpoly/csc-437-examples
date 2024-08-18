@@ -17,7 +17,20 @@ header a {
 header ~ * {
   margin: var(--size-spacing-medium);
 }
-body > section {
+.page {
+  --page-grids: 8;
+
+  display: grid;
+  grid-template-columns: [start] repeat(var(--page-grids), 1fr) [end];
+  gap: var(--size-spacing-large) var(--size-spacing-medium);
+
+  > section {
+    display: contents;
+
+    > h2 {
+      grid-column: auto / span 2;
+    }
+  }
 }
 h1,
 h2,
