@@ -1,39 +1,135 @@
 <!DOCTYPE html>
-<section>
-  <header>
-    <a href="../index.html">&larr; Tour: 12 Days in Italy</a>
-    <h3><a href="guide/venice.html">Venice</a></h3>
-    <p>4 nights</p>
-  </header>
-  <section>
-    <h3><a href="hotel.html">Locanda San Barnaba</a></h3>
-    <dl>
-      <dt>Check-in</dt>
-      <dd><time datetime="2024-10-14">14 Oct</time></dd>
-      <dt>Check-out</dt>
-      <dd><time datetime="2024-10-17">17 Oct</time></dd>
-      <dt>Room Type</dt>
-      <dd>2 Queen</dd>
-      <dt>Sleeps</dt>
-      <dd>4</dd>
-      <dt>Rate</dt>
-      <dd>190€</dd>
-    </dl>
-  </section>
-  <nav class="transportation">
-    <a href="../flight/oubound.html">
-      <dl>
-        <dt>Arrive from SFO</dt>
-        <dd>Oct 14, 6:30PM</dd>
-        <dd>VCE</dd>
-      </dl>
-    </a>
-    <a href="florence.html">
-      <dl>
-        <dt>Depart for Florence</dt>
-        <dd>Oct 18, 9:25PM</dd>
-        <dd>Venezia S. Lucia</dd>
-      </dl>
-    </a>
-  </nav>
-</section>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com"
+    />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,200;0,400;0,700;1,700&family=Merriweather:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles/reset.css" />
+    <link rel="stylesheet" href="/styles/tokens.css" />
+    <link rel="stylesheet" href="/styles/page.css" />
+    <link rel="stylesheet" href="/styles/destination.css" />
+    <style>
+      main.page {
+        --page-grids: 8;
+        grid-template-areas:
+          "hdr hdr img img img img img img"
+          "acc acc img img img img img img"
+          "-- -- img img img img img img"
+          "exc exc exc exc exc exc exc exc"
+          "ftr ftr ftr ftr ftr ftr ftr ftr";
+      }
+      @media screen and (max-width: 48rem) {
+        main.page {
+          --page-grids: 6;
+          grid-template-areas:
+            "hdr hdr acc acc acc acc"
+            "img img img img img img"
+            "exc exc exc exc exc exc";
+            "ftr ftr ftr ftr ftr ftr";
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Blazing Travels</h1>
+      <nav>
+        <a href="../index.html"
+          >&larr; Tour: 12 Days in Italy</a
+        >
+      </nav>
+    </header>
+
+    <main class="page">
+      <section class="destination">
+        <header>
+          <h2><a href="/guide/venice.html">Venice</a></h2>
+          <p>4 nights</p>
+        </header>
+        <img
+          src="/images/full/Canal_Grande_Chiesa_della_Salute_e_Dogana_dal_ponte_dell_Accademia.jpg"
+        />
+        <section class="accommodation">
+          <h3>
+            <svg class="icon">
+              <use
+                xlink:href="/icons/destination.svg#icon-hotel"
+              />
+            </svg>
+            Locanda San Barnaba
+          </h3>
+          <dl>
+            <dt>Check-in</dt>
+            <dd><time datetime="2024-10-14">14 Oct</time></dd>
+            <dt>Check-out</dt>
+            <dd><time datetime="2024-10-17">17 Oct</time></dd>
+            <dt>Room Type</dt>
+            <dd>2 Queen</dd>
+            <dt>Sleeps</dt>
+            <dd>4</dd>
+            <dt>Rate</dt>
+            <dd>190€</dd>
+          </dl>
+        </section>
+        <ul class="excursions">
+          <li>
+            <svg class="icon">
+              <use
+                xlink:href="/icons/destination.svg#icon-boat"
+              />
+            </svg>
+            <span>Vaporetto trip to Murano</span>
+          </li>
+          <li>
+            <svg class="icon">
+              <use
+                xlink:href="/icons/destination.svg#icon-walk"
+              />
+            </svg>
+            <span>Walking tour of Piazza San Marco</span>
+          </li>
+        </ul>
+        <footer>
+          <a
+            class="arrive flight"
+            href="../flight/outbound.html"
+          >
+            <svg class="icon">
+              <use
+                xlink:href="/icons/transportation.svg#icon-airplane"
+              />
+            </svg>
+            <dl>
+              <dt>Arrive from SFO</dt>
+              <dd>Oct 14, 6:30PM</dd>
+              <dd>VCE</dd>
+            </dl>
+          </a>
+          <a class="depart train" href="./florence.html">
+            <svg class="icon">
+              <use
+                xlink:href="/icons/transportation.svg#icon-train"
+              />
+            </svg>
+            <dl>
+              <dt>Depart for Florence</dt>
+              <dd>Oct 18, 9:25PM</dd>
+              <dd>Venezia S. Lucia</dd>
+            </dl>
+          </a>
+        </footer>
+      </section>
+    </main>
+  </body>
+</html>
