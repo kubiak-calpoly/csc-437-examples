@@ -1,0 +1,24 @@
+{
+  "name": "@calpoly/mustang",
+  "version": "0.1.13",
+  "description": "",
+  "main": "dist/mustang.js",
+  "type": "module",
+  "types": "./dist/mustang.d.ts",
+  "repository": "https://github.com/kubiak-calpoly/csc-437-examples/tree/main/packages/mustang",
+  "scripts": {
+    "build": "npx vite build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "kubiak@calpoly.edu",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "jwt-decode": "^4.0.0",
+    "lit": "^3.1.3",
+    "route-parser": "^0.0.5"
+  },
+  "devDependencies": {
+    "@types/route-parser": "^0.1.7",
+    "vite-plugin-dts": "^3.9.1"
+  }
+}
