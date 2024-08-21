@@ -4,7 +4,7 @@
   header {
     grid-area: hdr;
     background: none;
-    color: var(--color-accent);
+    color: var(--color-text);
     height: min-content;
 
     a[href] {
@@ -25,7 +25,9 @@
       display: grid;
       grid-template-columns: subgrid;
       grid-column: auto / span calc(var(--page-grids) / 2);
-      grid-template-areas: "city time stat icon";
+      grid-template-areas:
+        "icon city stat stat"
+        "icon city time time";
       align-items: center;
       border: 1px solid var(--color-accent);
       text-decoration: none;
@@ -39,27 +41,13 @@
       }
       dt {
         grid-area: city;
-        justify-self: end;
       }
       dd {
         grid-area: time;
-        justify-self: start;
+        justify-self: end;
       }
       dd + dd {
         grid-area: stat;
-        justify-self: end;
-      }
-    }
-
-    a.depart {
-      grid-template-areas: "icon stat city time";
-
-      svg.icon {
-        justify-self: end;
-      }
-
-      dd + dd {
-        justify-self: start;
       }
     }
   }
@@ -77,9 +65,9 @@
 
   h3 {
     display: flex;
-    align-items: center;
-
     grid-column: 1 / -1;
+    align-items: center;
+    gap: var(--size-spacing-medium);
   }
   dl {
     display: contents;
@@ -91,6 +79,7 @@
 
   dd {
     grid-column: dd / -1;
+    justify-self: end;
   }
 }
 
