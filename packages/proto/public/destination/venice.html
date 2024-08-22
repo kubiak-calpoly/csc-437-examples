@@ -4,17 +4,14 @@
     <meta charset="utf-8" />
     <link
       rel="preconnect"
-      href="https://fonts.googleapis.com"
-    />
+      href="https://fonts.googleapis.com" />
     <link
       rel="preconnect"
       href="https://fonts.gstatic.com"
-      crossorigin
-    />
+      crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,200;0,400;0,700;1,700&family=Merriweather:wght@400;700&display=swap"
-      rel="stylesheet"
-    />
+      rel="stylesheet" />
     <link rel="stylesheet" href="/styles/reset.css" />
     <link rel="stylesheet" href="/styles/tokens.css" />
     <link rel="stylesheet" href="/styles/page.css" />
@@ -40,6 +37,21 @@
         }
       }
     </style>
+    <script type="importmap">
+      {
+        "imports": {
+          "@calpoly/mustang": "https://unpkg.com/@calpoly/mustang"
+        }
+      }
+    </script>
+    <script type="module">
+      import { define } from "@calpoly/mustang";
+      import { AccommodationElement } from "/scripts/accommodation.js";
+
+      define({
+        "blz-accommodation": AccommodationElement
+      });
+    </script>
   </head>
   <body>
     <header>
@@ -58,44 +70,32 @@
           <p>4 nights</p>
         </header>
         <img
-          src="/images/full/Canal_Grande_Chiesa_della_Salute_e_Dogana_dal_ponte_dell_Accademia.jpg"
-        />
-        <section class="accommodation">
-          <h3>
-            <svg class="icon">
-              <use
-                xlink:href="/icons/destination.svg#icon-hotel"
-              />
-            </svg>
-            Locanda San Barnaba
-          </h3>
-          <dl>
-            <dt>Check-in</dt>
-            <dd><time datetime="2024-10-14">14 Oct</time></dd>
-            <dt>Check-out</dt>
-            <dd><time datetime="2024-10-17">17 Oct</time></dd>
-            <dt>Room Type</dt>
-            <dd>2 Queen</dd>
-            <dt>Sleeps</dt>
-            <dd>4</dd>
-            <dt>Rate</dt>
-            <dd>190€</dd>
-          </dl>
-        </section>
+          src="/images/full/Canal_Grande_Chiesa_della_Salute_e_Dogana_dal_ponte_dell_Accademia.jpg" />
+        <blz-accommodation>
+          <span slot="name">Locanda San Barnaba</span>
+          <time slot="check-in" datetime="2024-10-14"
+            >14 Oct</time
+          >
+          <time slot="check-out" datetime="2024-10-17"
+            >17 Oct</time
+          >
+          <span slot="room-type">2 Queen</span>
+          <span slot="persons">4</span>
+          <span slot="room-rate">190</span>
+          <span slot="currency">€</span>
+        </blz-accommodation>
         <ul class="excursions">
           <li>
             <svg class="icon">
               <use
-                xlink:href="/icons/destination.svg#icon-boat"
-              />
+                xlink:href="/icons/destination.svg#icon-boat" />
             </svg>
             <span>Vaporetto trip to Murano</span>
           </li>
           <li>
             <svg class="icon">
               <use
-                xlink:href="/icons/destination.svg#icon-walk"
-              />
+                xlink:href="/icons/destination.svg#icon-walk" />
             </svg>
             <span>Walking tour of Piazza San Marco</span>
           </li>
@@ -103,12 +103,10 @@
         <footer>
           <a
             class="arrive flight"
-            href="../flight/outbound.html"
-          >
+            href="../flight/outbound.html">
             <svg class="icon">
               <use
-                xlink:href="/icons/transportation.svg#icon-airplane"
-              />
+                xlink:href="/icons/transportation.svg#icon-airplane" />
             </svg>
             <dl>
               <dt>Arrive from SFO</dt>
@@ -119,8 +117,7 @@
           <a class="depart train" href="./florence.html">
             <svg class="icon">
               <use
-                xlink:href="/icons/transportation.svg#icon-train"
-              />
+                xlink:href="/icons/transportation.svg#icon-train" />
             </svg>
             <dl>
               <dt>Depart for Florence</dt>

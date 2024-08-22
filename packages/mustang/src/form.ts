@@ -1,5 +1,6 @@
 import { relay } from "./event";
-import { html, shadow } from "./html";
+import { html } from "./html";
+import { shadow } from "./shadow";
 
 type FormValues = { [key: string]: unknown };
 
@@ -48,7 +49,7 @@ class FormElement extends HTMLElement {
 
   constructor() {
     super();
-    shadow(FormElement.template).attach(this);
+    shadow(this).template(FormElement.template);
 
     this.addEventListener("change", (event) => {
       const target = event.target as HTMLInputElement;

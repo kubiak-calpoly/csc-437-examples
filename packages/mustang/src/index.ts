@@ -8,6 +8,13 @@ import * as Store from "./store";
 import * as Switch from "./switch";
 import * as Update from "./update";
 
+export * from "./components";
+export { css } from "./css";
+export * from "./define";
+export { html } from "./html";
+export * from "./observer";
+export { shadow } from "./shadow";
+export { View } from "./view";
 export {
   Auth,
   Events,
@@ -19,9 +26,3 @@ export {
   Switch,
   Update
 };
-
-export * from "./components";
-export * from "./define";
-export { html, shadow } from "./html";
-export * from "./observer";
-export { View } from "./view";

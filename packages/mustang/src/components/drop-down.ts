@@ -1,4 +1,5 @@
-import { html, shadow } from "../html";
+import { html } from "../html";
+import { shadow } from "../shadow";
 
 class DropdownElement extends HTMLElement {
   static template = html`
@@ -38,7 +39,7 @@ class DropdownElement extends HTMLElement {
   constructor() {
     super();
 
-    shadow(DropdownElement.template).attach(this);
+    shadow(this).template(DropdownElement.template);
 
     if (this.shadowRoot) {
       const actuator = this.shadowRoot.querySelector(

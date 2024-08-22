@@ -1,5 +1,6 @@
 import { originalTarget, relay } from "../event";
-import { html, shadow } from "../html";
+import { html } from "../html";
+import { shadow } from "../shadow";
 
 class InputArrayElement extends HTMLElement {
   static template = html`
@@ -44,7 +45,7 @@ class InputArrayElement extends HTMLElement {
 
   constructor() {
     super();
-    shadow(InputArrayElement.template).attach(this);
+    shadow(this).template(InputArrayElement.template);
 
     this.addEventListener("input-array:add", (event) => {
       event.stopPropagation();

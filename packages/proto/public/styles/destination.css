@@ -53,36 +53,6 @@
   }
 }
 
-.accommodation {
-  display: grid;
-  grid-area: acc;
-  grid-template-columns: subgrid [dt] [dd];
-  align-content: start;
-
-  svg.icon {
-    --size-icon: var(--size-icon-large);
-  }
-
-  h3 {
-    display: flex;
-    grid-column: 1 / -1;
-    align-items: center;
-    gap: var(--size-spacing-medium);
-  }
-  dl {
-    display: contents;
-  }
-
-  dt {
-    grid-column: dt;
-  }
-
-  dd {
-    grid-column: dd / -1;
-    justify-self: end;
-  }
-}
-
 .excursions {
   display: grid;
   grid-area: exc;

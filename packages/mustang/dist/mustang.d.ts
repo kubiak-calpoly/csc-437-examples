@@ -16,7 +16,7 @@ declare namespace Auth {
         AuthenticatedUser,
         AuthProvider as Provider,
         APIUser as User,
-        dispatch,
+        dispatch_2 as dispatch,
         authHeaders as headers,
         tokenPayload as payload,
         AuthSuccessful,
@@ -83,15 +83,17 @@ declare class Context<T extends object> {
     apply(mapFn: (t: T) => T): void;
 }
 
+export declare function css(template: TemplateStringsArray, ...params: string[]): CSSStyleSheet;
+
 export declare function define(defns: ElementDefinitions): CustomElementRegistry;
 
 declare class Dispatch<Msg extends Base> extends CustomEvent<Msg> {
     constructor(msg: Msg, eventType?: string);
 }
 
-declare const dispatch: (target: HTMLElement, ...msg: AuthMsg) => boolean;
+declare const dispatch: (target: HTMLElement, ...msg: Base) => boolean;
 
-declare const dispatch_2: (target: HTMLElement, ...msg: Base) => boolean;
+declare const dispatch_2: (target: HTMLElement, ...msg: AuthMsg) => boolean;
 
 declare const dispatch_3: (target: HTMLElement, ...msg: HistoryMsg) => boolean;
 
@@ -261,7 +263,7 @@ declare namespace Message {
         Type,
         Base,
         Dispatch,
-        dispatch_2 as dispatch
+        dispatch
     }
 }
 export { Message }
@@ -323,8 +325,9 @@ declare class Service<Msg extends Base, T extends object> {
     process(message: Msg): void;
 }
 
-export declare function shadow(fragment: DocumentFragment): {
-    attach: (el: HTMLElement, options?: ShadowRootInit) => ShadowRoot;
+export declare function shadow(el: HTMLElement, options?: ShadowRootInit): {
+    template: (fragment: DocumentFragment) => any;
+    styles: (...sheets: CSSStyleSheet[]) => void;
 };
 
 declare namespace Store {
