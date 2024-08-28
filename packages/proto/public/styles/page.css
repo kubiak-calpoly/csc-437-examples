@@ -2,21 +2,6 @@ body {
   font-family: var(--font-family-body);
   background-color: var(--color-background-page);
 }
-header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  padding: var(--size-spacing-medium);
-  background-color: var(--color-background-header);
-  color: var(--color-text-inverted);
-}
-header a {
-  color: var(--color-link-inverted);
-}
-header ~ * {
-  margin: var(--size-spacing-medium);
-}
 h1,
 h2,
 h3,
@@ -59,9 +44,11 @@ h6 {
 dt {
   font-weight: var(--size-type-body);
 }
-h3,
-a {
+h3 {
   color: var(--color-accent);
+}
+a {
+  color: var(--color-link);
 }
 svg.icon {
   --size-icon: var(--size-icon-normal);

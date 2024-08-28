@@ -47,21 +47,18 @@
     <script type="module">
       import { define } from "@calpoly/mustang";
       import { AccommodationElement } from "/scripts/accommodation.js";
+      import { HeaderElement } from "/scripts/header.js";
 
       define({
-        "blz-accommodation": AccommodationElement
+        "blz-accommodation": AccommodationElement,
+        "blz-header": HeaderElement
       });
     </script>
   </head>
   <body>
-    <header>
-      <h1>Blazing Travels</h1>
-      <nav>
-        <a href="../index.html"
-          >&larr; Tour: 12 Days in Italy</a
-        >
-      </nav>
-    </header>
+    <blz-header>
+      <a href="../index.html">&larr; Tour: 12 Days in Italy</a>
+    </blz-header>
 
     <main class="page">
       <section class="destination">
