@@ -66,14 +66,14 @@
 
   svg.icon {
     --size-icon: var(--size-icon-large);
+    color: var(--color-accent);
   }
 
   > li {
     display: flex;
     align-items: center;
     grid-column: auto / span 2;
-    background-color: var(--color-accent);
-    color: var(--color-text-inverted);
+    background-color: var(--color-background-card);
     padding: var(--size-spacing-medium);
     gap: var(--size-spacing-medium);
   }

@@ -33,10 +33,10 @@
     grid-column: header / span 5;
     color: var(--color-text-inverted);
     text-align: right;
+    text-shadow: var(--shadow-medium);
 
     h3 {
       color: currentColor;
-      text-shadow: 1px 2px 1px rgb(0 0 0 / 50%);
     }
 
     a[href] {

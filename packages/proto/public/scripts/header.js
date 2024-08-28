@@ -3,7 +3,8 @@ import {
   define,
   html,
   shadow,
-  Dropdown
+  Dropdown,
+  Events
 } from "@calpoly/mustang";
 import reset from "./styles/reset.css.js";
 import headings from "./styles/headings.css.js";
@@ -18,7 +19,17 @@ export class HeaderElement extends HTMLElement {
       <h1>Blazing Travels</h1>
       <nav>
         <p><slot> Unnamed Tour </slot></p>
-        <mu-dropdown></mu-dropdown>
+        <mu-dropdown>
+          <menu>
+            <li>Hello, traveler</li>
+            <li>
+              <label class="dark-mode-switch">
+                <input type="checkbox" />
+                Dark Mode
+              </label>
+            </li>
+          </menu>
+        </mu-dropdown>
       </nav>
     </header>
   </template>`;
@@ -58,5 +69,25 @@ export class HeaderElement extends HTMLElement {
         headings.styles,
         HeaderElement.styles
       );
+
+    const dm = this.shadowRoot.querySelector(
+      ".dark-mode-switch"
+    );
+
+    dm.addEventListener("click", (event) =>
+      Events.relay(event, "dark-mode", {
+        checked: event.target.checked
+      })
+    );
+  }
+
+  static initializeOnce() {
+    function toggleDarkMode(page, checked) {
+      page.classList.toggle("dark-mode", checked);
+    }
+
+    document.body.addEventListener("dark-mode", (event) =>
+      toggleDarkMode(event.currentTarget, event.detail.checked)
+    );
   }
 }
