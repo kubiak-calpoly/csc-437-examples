@@ -76,7 +76,61 @@ function getDestination(_) {
         name: "Walking tour of Piazza San Marco",
         type: "walking"
       }
-    ]
+    ],
+    inbound: {
+      type: "air",
+      startDate: /* @__PURE__ */ new Date("2024-10-13"),
+      endDate: /* @__PURE__ */ new Date("2024-10-14"),
+      segments: [
+        {
+          provider: "United",
+          name: "UA926",
+          departure: {
+            name: "San Francisco",
+            station: "SFO",
+            time: /* @__PURE__ */ new Date("2024-10-13 19:05:00-0800")
+          },
+          arrival: {
+            name: "Frankfurt",
+            station: "FRA",
+            time: /* @__PURE__ */ new Date("2024-10-14 14:55:00+0100")
+          }
+        },
+        {
+          provider: "Lufthansa",
+          name: "LH330",
+          departure: {
+            name: "Frankfurt",
+            station: "FRA",
+            time: /* @__PURE__ */ new Date("2024-10-14 17:15:00+0100")
+          },
+          arrival: {
+            name: "Venice",
+            station: "VCE",
+            time: /* @__PURE__ */ new Date("2024-10-14 18:30:00+0100")
+          }
+        }
+      ]
+    },
+    outbound: {
+      type: "rail",
+      startDate: /* @__PURE__ */ new Date("2024-10-18"),
+      segments: [
+        {
+          name: "9407 Frecciarossa",
+          departure: {
+            name: "Venice",
+            station: "Venezia S. Lucia",
+            time: /* @__PURE__ */ new Date("2024-10-18 09:25:00+0100")
+          },
+          arrival: {
+            name: "Florence",
+            station: "Firenze S.M.N.",
+            time: /* @__PURE__ */ new Date("2024-10-18 11:30:00+0100")
+          }
+        }
+      ]
+    }
   };
 }
 app.listen(port, () => {

@@ -1,7 +1,8 @@
 import {
   Accommodation,
   Destination,
-  Excursion
+  Excursion,
+  Transportation
 } from "../models";
 
 const staticParts = {
@@ -42,10 +43,21 @@ const staticParts = {
 const secondsPerDay = 24 * 60 * 60 * 1000;
 export class DestinationPage {
   static render(
-    dest: Destination & { tour: { name: string } }
+    dest: Destination & {
+      tour: { name: string };
+      inbound: Transportation;
+      outbound: Transportation;
+    }
   ) {
-    const { name, startDate, endDate, featuredImage, tour } =
-      dest;
+    const {
+      name,
+      startDate,
+      endDate,
+      featuredImage,
+      tour,
+      inbound,
+      outbound
+    } = dest;
     const nights =
       endDate.valueOf() / secondsPerDay -
       startDate.valueOf() / secondsPerDay;
@@ -57,7 +69,10 @@ export class DestinationPage {
         ${dest.excursions.map(renderExcursion).join("\n")}
         </ul>`
       : "";
-    const transportationFooter = `<footer></footer>`;
+    const transportationFooter = `<footer>
+      ${renderTransportation(inbound, "in")}
+      ${renderTransportation(outbound, "out")}
+    </footer>`;
     return {
       ...staticParts,
       body: `<body>
@@ -129,7 +144,7 @@ const excursionIcons = {
   boat: "icon-boat",
   bus: "icon-bus",
   metro: "icon-metro",
-  train: "icon-rail",
+  train: "icon-train",
   walking: "icon-walk",
   tour: "icon-camera"
 };
@@ -144,4 +159,51 @@ function renderExcursion(exc: Excursion) {
     </svg>
     <span>${name}</span>
   </li>`;
+}
+
+const transportationIcons = {
+  air: "icon-airplane",
+  rail: "icon-train",
+  ship: "icon-boat",
+  bus: "icon-bus"
+};
+
+function renderTransportation(
+  trn: Transportation,
+  dir: "in" | "out"
+) {
+  const { type, segments } = trn;
+  const icon = transportationIcons[type] || "icon-travel";
+  const dirClass = dir === "in" ? "arrive" : "depart";
+  const name =
+    dir === "in"
+      ? segments[0]?.departure.name
+      : segments.at(-1)?.arrival.name;
+  const endpoint =
+    dir === "in"
+      ? segments.at(-1)?.arrival
+      : segments[0]?.departure;
+
+  return `<a class="${dirClass} ${type}" href="#">
+      <svg class="icon">
+        <use
+          xlink:href="/icons/transportation.svg#${icon}" />
+      </svg>
+      <dl>
+        <dt>
+    ${dir === "in" ? "Arrive" : "Depart"}
+    ${name
+      ? dir === "in"
+        ? `from ${name}`
+        : `for ${name}`
+      : ""
+    }
+        </dt>
+    ${endpoint
+      ? `<dd>${endpoint.time.toUTCString()}</dd>
+         <dd>${endpoint.station}</dd>`
+      : ""
+    }
+      </dl>
+    </a>`;
 }

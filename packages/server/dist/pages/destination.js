@@ -75,13 +75,24 @@ const staticParts = {
 const secondsPerDay = 24 * 60 * 60 * 1e3;
 class DestinationPage {
   static render(dest) {
-    const { name, startDate, endDate, featuredImage, tour } = dest;
+    const {
+      name,
+      startDate,
+      endDate,
+      featuredImage,
+      tour,
+      inbound,
+      outbound
+    } = dest;
     const nights = endDate.valueOf() / secondsPerDay - startDate.valueOf() / secondsPerDay;
     const accommodationComponent = (dest.accommodations || []).map(renderAccommodation).join("\n");
     const excursionList = dest.excursions ? `<ul class="excursions">
         ${dest.excursions.map(renderExcursion).join("\n")}
         </ul>` : "";
-    const transportationFooter = `<footer></footer>`;
+    const transportationFooter = `<footer>
+      ${renderTransportation(inbound, "in")}
+      ${renderTransportation(outbound, "out")}
+    </footer>`;
     return __spreadProps(__spreadValues({}, staticParts), {
       body: `<body>
       <blz-header>
@@ -145,7 +156,7 @@ const excursionIcons = {
   boat: "icon-boat",
   bus: "icon-bus",
   metro: "icon-metro",
-  train: "icon-rail",
+  train: "icon-train",
   walking: "icon-walk",
   tour: "icon-camera"
 };
@@ -158,6 +169,34 @@ function renderExcursion(exc) {
     </svg>
     <span>${name}</span>
   </li>`;
+}
+const transportationIcons = {
+  air: "icon-airplane",
+  rail: "icon-train",
+  ship: "icon-boat",
+  bus: "icon-bus"
+};
+function renderTransportation(trn, dir) {
+  var _a, _b, _c, _d;
+  const { type, segments } = trn;
+  const icon = transportationIcons[type] || "icon-travel";
+  const dirClass = dir === "in" ? "arrive" : "depart";
+  const name = dir === "in" ? (_a = segments[0]) == null ? void 0 : _a.departure.name : (_b = segments.at(-1)) == null ? void 0 : _b.arrival.name;
+  const endpoint = dir === "in" ? (_c = segments.at(-1)) == null ? void 0 : _c.arrival : (_d = segments[0]) == null ? void 0 : _d.departure;
+  return `<a class="${dirClass} ${type}" href="#">
+      <svg class="icon">
+        <use
+          xlink:href="/icons/transportation.svg#${icon}" />
+      </svg>
+      <dl>
+        <dt>
+    ${dir === "in" ? "Arrive" : "Depart"}
+    ${name ? dir === "in" ? `from ${name}` : `for ${name}` : ""}
+        </dt>
+    ${endpoint ? `<dd>${endpoint.time.toUTCString()}</dd>
+         <dd>${endpoint.station}</dd>` : ""}
+      </dl>
+    </a>`;
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
