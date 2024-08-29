@@ -1,25 +1,38 @@
+import { Currency } from "./currency";
 import { Point } from "./geo";
 
 export interface Destination {
   name: string;
-  link: string;
   startDate: Date;
   endDate: Date;
   location: Point;
-  featuredImage: string | undefined;
+  featuredImage?: string;
   accommodations: Array<Accommodation>;
   excursions: Array<Excursion>;
 }
 
 export interface Accommodation {
   name: string;
-  link: string | undefined;
-  nights: number;
+  checkIn: Date;
+  checkOut: Date;
+  roomType: RoomType;
+  persons: 1 | 2 | 3 | 4;
+  rate: Currency;
 }
+
+export type RoomType =
+  | "S"
+  | "D"
+  | "Q"
+  | "K"
+  | "2T"
+  | "2D"
+  | "2Q"
+  | "Dorm"
+  | "Other";
 
 export interface Excursion {
   name: string;
-  link: string | undefined;
   type: ExcursionType;
 }
 
