@@ -65,16 +65,15 @@ app.get(
     });
   }
 );
-const TOUR_OID = "65c7e92ea837ff7c15b669e5";
 function getDestination(tourId, destIndex) {
   return import_tour_svc.default.get(tourId).then((tour) => {
-    const dest = tour.destinations[destIndex]._doc;
+    const dest = tour.destinations[destIndex].toObject();
     return __spreadProps(__spreadValues({}, dest), {
       tour: {
         name: tour.name
       },
-      inbound: tour.transportation[destIndex]._doc,
-      outbound: tour.transportation[destIndex + 1]._doc
+      inbound: tour.transportation[destIndex].toObject(),
+      outbound: tour.transportation[destIndex + 1].toObject()
     });
   });
 }
