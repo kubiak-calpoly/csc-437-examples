@@ -26,14 +26,15 @@
       grid-template-columns: subgrid;
       grid-column: auto / span calc(var(--page-grids) / 2);
       grid-template-areas:
-        "icon city stat stat"
-        "icon city time time";
+        "city stat stat icon"
+        "city time time icon";
       align-items: center;
       border: 1px solid var(--color-accent);
       text-decoration: none;
 
       svg.icon {
         grid-area: icon;
+        justify-self: end;
       }
 
       dl {
@@ -44,10 +45,25 @@
       }
       dd {
         grid-area: time;
-        justify-self: end;
+        text-align: center;
       }
       dd + dd {
         grid-area: stat;
+      }
+    }
+
+    > a:last-child {
+      grid-template-areas:
+        "icon stat stat city"
+        "icon time time city";
+
+      svg.icon {
+        justify-self: start;
+      }
+
+      dt {
+        justify-self: end;
+        text-align: right;
       }
     }
   }

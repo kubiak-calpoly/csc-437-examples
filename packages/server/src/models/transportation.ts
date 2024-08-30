@@ -1,7 +1,6 @@
 export interface Transportation {
   type: TransportationType;
   provider?: string;
-  routing: string[];
   startDate: Date;
   endDate?: Date;
   segments: Array<Segment>;
@@ -20,4 +19,5 @@ export interface Endpoint {
   name: string;
   station: string;
   time: Date;
+  tzoffset: Number;
 }

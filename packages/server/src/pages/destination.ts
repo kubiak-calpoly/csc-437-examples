@@ -192,17 +192,19 @@ function renderTransportation(
       <dl>
         <dt>
     ${dir === "in" ? "Arrive" : "Depart"}
-    ${name
-      ? dir === "in"
-        ? `from ${name}`
-        : `for ${name}`
-      : ""
+    ${
+      name
+        ? dir === "in"
+          ? `from ${name}`
+          : `for ${name}`
+        : ""
     }
         </dt>
-    ${endpoint
-      ? `<dd>${endpoint.time.toUTCString()}</dd>
+    ${
+      endpoint
+        ? `<dd>${endpoint.time.toUTCString()}</dd>
          <dd>${endpoint.station}</dd>`
-      : ""
+        : ""
     }
       </dl>
     </a>`;
