@@ -3,6 +3,8 @@ import { Destination } from "./models";
 import { DestinationPage, renderPage } from "./pages/index";
 import { connect } from "./services/mongo";
 import Tours from "./services/tour-svc";
+import travelers from "./routes/travelers";
+import tours from "./routes/tours";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -14,6 +16,13 @@ connect("blazing");
 const staticDir = process.env.STATIC || "public";
 console.log("Serving static files from ", staticDir);
 app.use(express.static(staticDir));
+
+// Middleware:
+app.use(express.json());
+
+// API Routes:
+app.use("/api/travelers", travelers);
+app.use("/api/tours", tours);
 
 // HTML Routes:
 app.get("/hello", (_: Request, res: Response) => {

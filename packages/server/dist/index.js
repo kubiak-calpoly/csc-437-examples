@@ -42,12 +42,17 @@ var import_express = __toESM(require("express"));
 var import_pages = require("./pages/index");
 var import_mongo = require("./services/mongo");
 var import_tour_svc = __toESM(require("./services/tour-svc"));
+var import_travelers = __toESM(require("./routes/travelers"));
+var import_tours = __toESM(require("./routes/tours"));
 const app = (0, import_express.default)();
 const port = process.env.PORT || 3e3;
 (0, import_mongo.connect)("blazing");
 const staticDir = process.env.STATIC || "public";
 console.log("Serving static files from ", staticDir);
 app.use(import_express.default.static(staticDir));
+app.use(import_express.default.json());
+app.use("/api/travelers", import_travelers.default);
+app.use("/api/tours", import_tours.default);
 app.get("/hello", (_, res) => {
   res.send(
     `<h1>Hello!</h1>
