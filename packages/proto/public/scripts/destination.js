@@ -19,7 +19,20 @@ const byToIcon = {
   rail: "icon-train"
 };
 
-const XLINK_NS = "http://www.w3.org/1999/xlink";
+const months = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec"
+];
 
 export class ConnectionElement extends HTMLElement {
   static observedAttributes = ["dir, by"];
@@ -132,6 +145,48 @@ export class ConnectionElement extends HTMLElement {
       "href",
       `/icons/transportation.svg#${icon}`
     );
+
+    this.formatTimeSlot("time");
+  }
+
+  formatTimeSlot(name) {
+    const slot = this.shadowRoot.querySelector(
+      `slot[name="${name}"]`
+    );
+    const timeEl = slot.assignedElements()[0];
+    const offset = this.getAttribute("offset");
+
+    const convertTime = (datetime) => {
+      const timeGMT = new Date(datetime);
+
+      if (offset) {
+        return new Date(
+          timeGMT.valueOf() + 60000 * parseInt(offset)
+        );
+      }
+
+      return timeGMT;
+    };
+
+    const formatTime = (datetime) => {
+      const dt = convertTime(datetime);
+      const mon = months[dt.getUTCMonth()];
+      const d = dt.getUTCDate();
+      const h = dt.getUTCHours();
+      const m = dt.getUTCMinutes();
+      const ampm = h >= 12 ? "pm" : "am";
+      const h12 = h % 12;
+
+      return `${d} ${mon},
+        ${h12 === 0 ? 12 : h12}:${m}
+        ${ampm}`;
+    };
+
+    if (timeEl) {
+      const dt = timeEl.getAttribute("datetime");
+
+      if (dt) timeEl.textContent = formatTime(dt);
+    }
   }
 }
 

@@ -3,6 +3,21 @@ import reset from "./styles/reset.css.js";
 import icon from "./styles/icon.css.js";
 import headings from "./styles/headings.css.js";
 
+const months = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec"
+];
+
 export class AccommodationElement extends HTMLElement {
   static template = html`<template>
     <section>
@@ -83,5 +98,31 @@ export class AccommodationElement extends HTMLElement {
         headings.styles,
         AccommodationElement.styles
       );
+  }
+
+  connectedCallback() {
+    this.formatTimeSlot("check-in");
+    this.formatTimeSlot("check-out");
+  }
+
+  formatTimeSlot(name) {
+    const slot = this.shadowRoot.querySelector(
+      `slot[name="${name}"]`
+    );
+    const timeEl = slot.assignedElements()[0];
+
+    const formatDate = (date) => {
+      const dt = new Date(date);
+      const m = months[dt.getUTCMonth()];
+      const d = dt.getUTCDate();
+
+      return `${d} ${m}`;
+    };
+
+    if (timeEl) {
+      const dt = timeEl.getAttribute("datetime");
+
+      if (dt) timeEl.textContent = formatDate(dt);
+    }
   }
 }

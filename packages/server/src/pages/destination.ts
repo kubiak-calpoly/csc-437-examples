@@ -91,59 +91,22 @@ export class DestinationPage {
           ${excursionList}
           ${transportationFooter}
         </blz-destination>
-        <!--
-        <section class="destination">
-          <header>
-            <h2>${name}</h2>
-            <p>${nights} nights</p>
-          </header>
-          <img src="${featuredImage}" />
-          ${accommodationComponent}
-          ${excursionList}
-          ${transportationFooter}
-        </section>
-        -->
       </main>
     </body>`
     };
   }
 }
 
-const months = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec"
-];
-
 function renderAccommodation(acc: Accommodation) {
   const { name, checkIn, checkOut, roomType, persons, rate } =
     acc;
-
-  const formatDate = (date: Date | undefined) => {
-    const dt = date || new Date();
-    const m = months[dt.getUTCMonth()];
-    const d = dt.getUTCDate();
-
-    return `${d} ${m}`;
-  };
 
   return `
     <blz-accommodation slot="accommodation">
       <span slot="name">${name}</span>
       <time slot="check-in" datetime="${checkIn}">
-        ${formatDate(checkIn)}
       </time>
       <time slot="check-out" datetime="${checkOut}">
-        ${formatDate(checkOut)}
       </time>
       <span slot="room-type">${roomType}</span>
       <span slot="persons">${persons}</span>
@@ -176,11 +139,15 @@ function renderTransportation(
       ? segments.at(-1)?.arrival
       : segments[0]?.departure;
 
-  return `<blz-connection dir="${dir}" by="${type}" slot="${slotName}">
+  return `
+    <blz-connection
+      dir="${dir}"
+      by="${type}"
+      offset="${endpoint?.tzoffset || 0}"
+      slot="${slotName}"
+    >
       <span slot="name">${name}</span>
-      <time slot="time" datetime="${endpoint?.time.toISOString()}">
-        ${endpoint?.time.toUTCString()}
-      </time>
+      <time slot="time" datetime="${endpoint?.time}"></time>
       <span slot="station">${endpoint?.station}</span>
     </blz-connection>
     `;

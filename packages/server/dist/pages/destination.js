@@ -110,53 +110,19 @@ class DestinationPage {
           ${excursionList}
           ${transportationFooter}
         </blz-destination>
-        <!--
-        <section class="destination">
-          <header>
-            <h2>${name}</h2>
-            <p>${nights} nights</p>
-          </header>
-          <img src="${featuredImage}" />
-          ${accommodationComponent}
-          ${excursionList}
-          ${transportationFooter}
-        </section>
-        -->
       </main>
     </body>`
     });
   }
 }
-const months = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec"
-];
 function renderAccommodation(acc) {
   const { name, checkIn, checkOut, roomType, persons, rate } = acc;
-  const formatDate = (date) => {
-    const dt = date || /* @__PURE__ */ new Date();
-    const m = months[dt.getUTCMonth()];
-    const d = dt.getUTCDate();
-    return `${d} ${m}`;
-  };
   return `
     <blz-accommodation slot="accommodation">
       <span slot="name">${name}</span>
       <time slot="check-in" datetime="${checkIn}">
-        ${formatDate(checkIn)}
       </time>
       <time slot="check-out" datetime="${checkOut}">
-        ${formatDate(checkOut)}
       </time>
       <span slot="room-type">${roomType}</span>
       <span slot="persons">${persons}</span>
@@ -178,11 +144,15 @@ function renderTransportation(trn, dir) {
   const slotName = dir === "in" ? "arrival" : "departure";
   const name = dir === "in" ? (_a = segments[0]) == null ? void 0 : _a.departure.name : (_b = segments.at(-1)) == null ? void 0 : _b.arrival.name;
   const endpoint = dir === "in" ? (_c = segments.at(-1)) == null ? void 0 : _c.arrival : (_d = segments[0]) == null ? void 0 : _d.departure;
-  return `<blz-connection dir="${dir}" by="${type}" slot="${slotName}">
+  return `
+    <blz-connection
+      dir="${dir}"
+      by="${type}"
+      offset="${(endpoint == null ? void 0 : endpoint.tzoffset) || 0}"
+      slot="${slotName}"
+    >
       <span slot="name">${name}</span>
-      <time slot="time" datetime="${endpoint == null ? void 0 : endpoint.time.toISOString()}">
-        ${endpoint == null ? void 0 : endpoint.time.toUTCString()}
-      </time>
+      <time slot="time" datetime="${endpoint == null ? void 0 : endpoint.time}"></time>
       <span slot="station">${endpoint == null ? void 0 : endpoint.station}</span>
     </blz-connection>
     `;
