@@ -74,6 +74,7 @@ svg.icon {
 .page > * {
   display: grid;
   grid-template-columns: subgrid;
+  gap: inherit;
 
   > h2 {
     grid-column: 1 / -1;

@@ -65,9 +65,14 @@ const staticParts = {
     `
       import { define } from "@calpoly/mustang";
       import { AccommodationElement } from "/scripts/accommodation.js";
+      import { ConnectionElement,
+        DestinationElement, ExcursionElement } from "/scripts/destination.js";
 
       define({
-        "blz-accommodation": AccommodationElement
+        "blz-accommodation": AccommodationElement,
+        "blz-connection": ConnectionElement,
+        "blz-destination": DestinationElement,
+        "blz-excursion" : ExcursionElement
       });
       `
   ]
@@ -86,19 +91,26 @@ class DestinationPage {
     } = dest;
     const nights = endDate.valueOf() / secondsPerDay - startDate.valueOf() / secondsPerDay;
     const accommodationComponent = (dest.accommodations || []).map(renderAccommodation).join("\n");
-    const excursionList = dest.excursions ? `<ul class="excursions">
-        ${dest.excursions.map(renderExcursion).join("\n")}
-        </ul>` : "";
-    const transportationFooter = `<footer>
+    const excursionList = dest.excursions.map(renderExcursion).join("\n");
+    const transportationFooter = `
       ${renderTransportation(inbound, "in")}
       ${renderTransportation(outbound, "out")}
-    </footer>`;
+    `;
     return __spreadProps(__spreadValues({}, staticParts), {
       body: `<body>
       <blz-header>
         <a href="../">&larr; Tour: ${tour.name}</a>
       </blz-header>
       <main class="page">
+        <blz-destination>
+          <span slot="name">${name}</span>
+          <span slot="nights">${nights}</span>
+          <img slot="image" src="${featuredImage}" />
+          ${accommodationComponent}
+          ${excursionList}
+          ${transportationFooter}
+        </blz-destination>
+        <!--
         <section class="destination">
           <header>
             <h2>${name}</h2>
@@ -109,6 +121,7 @@ class DestinationPage {
           ${excursionList}
           ${transportationFooter}
         </section>
+        -->
       </main>
     </body>`
     });
@@ -137,7 +150,7 @@ function renderAccommodation(acc) {
     return `${d} ${m}`;
   };
   return `
-    <blz-accommodation>
+    <blz-accommodation slot="accommodation">
       <span slot="name">${name}</span>
       <time slot="check-in" datetime="${checkIn}">
         ${formatDate(checkIn)}
@@ -163,40 +176,25 @@ const excursionIcons = {
 function renderExcursion(exc) {
   const { name, type } = exc;
   const icon = excursionIcons[type || "tour"];
-  return `<li>
-    <svg class="icon">
-      <use xlink:href="/icons/destination.svg#${icon}" />
-    </svg>
-    <span>${name}</span>
-  </li>`;
+  return `<blz-excursion slot="excursions" type="$type">
+    ${name}
+  </blz-excursion>
+  `;
 }
-const transportationIcons = {
-  air: "icon-airplane",
-  rail: "icon-train",
-  ship: "icon-boat",
-  bus: "icon-bus"
-};
 function renderTransportation(trn, dir) {
   var _a, _b, _c, _d;
   const { type, segments } = trn;
-  const icon = transportationIcons[type] || "icon-travel";
-  const dirClass = dir === "in" ? "arrive" : "depart";
+  const slotName = dir === "in" ? "arrival" : "departure";
   const name = dir === "in" ? (_a = segments[0]) == null ? void 0 : _a.departure.name : (_b = segments.at(-1)) == null ? void 0 : _b.arrival.name;
   const endpoint = dir === "in" ? (_c = segments.at(-1)) == null ? void 0 : _c.arrival : (_d = segments[0]) == null ? void 0 : _d.departure;
-  return `<a class="${dirClass} ${type}" href="#">
-      <svg class="icon">
-        <use
-          xlink:href="/icons/transportation.svg#${icon}" />
-      </svg>
-      <dl>
-        <dt>
-    ${dir === "in" ? "Arrive" : "Depart"}
-    ${name ? dir === "in" ? `from ${name}` : `for ${name}` : ""}
-        </dt>
-    ${endpoint ? `<dd>${endpoint.time.toUTCString()}</dd>
-         <dd>${endpoint.station}</dd>` : ""}
-      </dl>
-    </a>`;
+  return `<blz-connection dir="${dir}" by="${type}" slot="${slotName}">
+      <span slot="name">${name}</span>
+      <time slot="time" datetime="${endpoint == null ? void 0 : endpoint.time.toISOString()}">
+        ${endpoint == null ? void 0 : endpoint.time.toUTCString()}
+      </time>
+      <span slot="station">${endpoint == null ? void 0 : endpoint.station}</span>
+    </blz-connection>
+    `;
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
