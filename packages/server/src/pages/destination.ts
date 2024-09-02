@@ -153,29 +153,12 @@ function renderAccommodation(acc: Accommodation) {
     `;
 }
 
-const excursionIcons = {
-  boat: "icon-boat",
-  bus: "icon-bus",
-  metro: "icon-metro",
-  train: "icon-train",
-  walking: "icon-walk",
-  tour: "icon-camera"
-};
-
 function renderExcursion(exc: Excursion) {
   const { name, type } = exc;
-  const icon = excursionIcons[type || "tour"];
-
-  return `<blz-excursion slot="excursions" type="$type">
+  return `<blz-excursion slot="excursions" type="${type}">
     ${name}
   </blz-excursion>
   `;
-  // return `<li slot="excursions">
-  //   <svg class="icon">
-  //     <use xlink:href="/icons/destination.svg#${icon}" />
-  //   </svg>
-  //   <span>${name}</span>
-  // </li>`;
 }
 
 function renderTransportation(

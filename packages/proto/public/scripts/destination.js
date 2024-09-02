@@ -4,19 +4,37 @@ import icon from "./styles/icon.css.js";
 import headings from "./styles/headings.css.js";
 import { AccommodationElement } from "./accommodation.js";
 
+const dirToClass = {
+  in: "arrive",
+  out: "depart"
+};
+
+const dirToText = {
+  in: "Arrive from",
+  out: "Depart for"
+};
+
+const byToIcon = {
+  air: "icon-airplane",
+  rail: "icon-train"
+};
+
+const XLINK_NS = "http://www.w3.org/1999/xlink";
+
 export class ConnectionElement extends HTMLElement {
   static observedAttributes = ["dir, by"];
 
   static template = html`
     <template>
-      <a class="arrive air" href="#">
+      <a href="#">
         <svg class="icon">
           <use
-            xlink:href="/icons/transportation.svg#icon-airplane" />
+            id="useicon"
+            href="/icons/transportation.svg#icon-airplane" />
         </svg>
         <dl>
-          <dt
-            >Arrive from
+          <dt>
+            <span id="dirtext">Arrive from </span>
             <slot name="name">San Francisco</slot></dt
           >
           <dd
@@ -97,8 +115,34 @@ export class ConnectionElement extends HTMLElement {
         headings.styles,
         ConnectionElement.styles
       );
+
+    this._top = this.shadowRoot.firstElementChild;
+    this._dirtext = this.shadowRoot.querySelector("#dirtext");
+    this._useicon = this.shadowRoot.querySelector("#useicon");
+  }
+
+  connectedCallback() {
+    const dir = this.getAttribute("dir");
+    this._top.classList.add(dirToClass[dir]);
+    this._dirtext.textContent = dirToText[dir];
+
+    const by = this.getAttribute("by");
+    const icon = byToIcon[by];
+    this._useicon.setAttribute(
+      "href",
+      `/icons/transportation.svg#${icon}`
+    );
   }
 }
+
+const excursionIcons = {
+  boat: "icon-boat",
+  bus: "icon-bus",
+  metro: "icon-metro",
+  train: "icon-train",
+  walking: "icon-walk",
+  tour: "icon-camera"
+};
 
 export class ExcursionElement extends HTMLElement {
   static observedAttributes = ["type"];
@@ -106,7 +150,9 @@ export class ExcursionElement extends HTMLElement {
   static template = html`<template>
     <li>
       <svg class="icon">
-        <use xlink:href="/icons/destination.svg#icon-walk" />
+        <use
+          id="useicon"
+          href="/icons/destination.svg#icon-walk" />
       </svg>
       <span><slot>${name}</slot></span>
     </li>
@@ -139,6 +185,18 @@ export class ExcursionElement extends HTMLElement {
         headings.styles,
         ExcursionElement.styles
       );
+
+    this._useicon = this.shadowRoot.querySelector("#useicon");
+  }
+
+  connectedCallback() {
+    const type = this.getAttribute("type");
+    const icon = excursionIcons[type];
+
+    this._useicon.setAttribute(
+      "href",
+      `/icons/destination.svg#${icon}`
+    );
   }
 }
 
