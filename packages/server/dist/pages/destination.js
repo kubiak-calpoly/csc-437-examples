@@ -65,97 +65,30 @@ const staticParts = {
     `
       import { define } from "@calpoly/mustang";
       import { AccommodationElement } from "/scripts/accommodation.js";
-      import { ConnectionElement,
-        DestinationElement, ExcursionElement } from "/scripts/destination.js";
+      import { DestinationView } from "/scripts/destination-view.js";
 
       define({
-        "blz-accommodation": AccommodationElement,
-        "blz-connection": ConnectionElement,
-        "blz-destination": DestinationElement,
-        "blz-excursion" : ExcursionElement
+        "destination-view": DestinationView,
       });
       `
   ]
 };
-const secondsPerDay = 24 * 60 * 60 * 1e3;
 class DestinationPage {
-  static render(dest) {
-    const {
-      name,
-      startDate,
-      endDate,
-      featuredImage,
-      tour,
-      inbound,
-      outbound
-    } = dest;
-    const nights = endDate.valueOf() / secondsPerDay - startDate.valueOf() / secondsPerDay;
-    const accommodationComponent = (dest.accommodations || []).map(renderAccommodation).join("\n");
-    const excursionList = dest.excursions.map(renderExcursion).join("\n");
-    const transportationFooter = `
-      ${renderTransportation(inbound, "in")}
-      ${renderTransportation(outbound, "out")}
-    `;
+  static render(tourId, destIndex) {
     return __spreadProps(__spreadValues({}, staticParts), {
       body: `<body>
       <blz-header>
-        <a href="../">&larr; Tour: ${tour.name}</a>
+        <a href="../">&larr; Tour</a>
       </blz-header>
       <main class="page">
-        <blz-destination>
-          <span slot="name">${name}</span>
-          <span slot="nights">${nights}</span>
-          <img slot="image" src="${featuredImage}" />
-          ${accommodationComponent}
-          ${excursionList}
-          ${transportationFooter}
-        </blz-destination>
+        <destination-view
+          src-tour="/api/tours/${tourId}"
+          destination-index="${destIndex}">
+        </destination-view>
       </main>
     </body>`
     });
   }
-}
-function renderAccommodation(acc) {
-  const { name, checkIn, checkOut, roomType, persons, rate } = acc;
-  return `
-    <blz-accommodation slot="accommodation">
-      <span slot="name">${name}</span>
-      <time slot="check-in" datetime="${checkIn}">
-      </time>
-      <time slot="check-out" datetime="${checkOut}">
-      </time>
-      <span slot="room-type">${roomType}</span>
-      <span slot="persons">${persons}</span>
-      <span slot="room-rate"> ${rate.amount}</span>
-      <span slot="currency">${rate.currency}</span>
-    </blz-accommodation>
-    `;
-}
-function renderExcursion(exc) {
-  const { name, type } = exc;
-  return `<blz-excursion slot="excursions" type="${type}">
-    ${name}
-  </blz-excursion>
-  `;
-}
-function renderTransportation(trn, dir) {
-  var _a, _b, _c, _d;
-  const { type, segments } = trn;
-  const slotName = dir === "in" ? "arrival" : "departure";
-  const name = dir === "in" ? (_a = segments[0]) == null ? void 0 : _a.departure.name : (_b = segments.at(-1)) == null ? void 0 : _b.arrival.name;
-  const endpoint = dir === "in" ? (_c = segments.at(-1)) == null ? void 0 : _c.arrival : (_d = segments[0]) == null ? void 0 : _d.departure;
-  return `
-    <blz-connection
-      dir="${dir}"
-      by="${type}"
-      offset="${(endpoint == null ? void 0 : endpoint.tzoffset) || 0}"
-      slot="${slotName}"
-    >
-      <span slot="name">${name}</span>
-      <time slot="time" datetime="${endpoint == null ? void 0 : endpoint.time}"></time>
-      <span slot="station">${endpoint == null ? void 0 : endpoint.station}</span>
-    </blz-connection>
-    `;
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {

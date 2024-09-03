@@ -264,50 +264,17 @@ export class DestinationElement extends HTMLElement {
 
   static template = html`<template>
     <header>
-      <h2><slot name="name">Venice</slot></h2>
-      <p><slot name="nights">4</slot> nights</p>
+      <h2><slot name="name">Destination</slot></h2>
+      <p><slot name="nights">#</slot> nights</p>
     </header>
-    <slot name="image">
-      <img
-        src="/images/full/Canal_Grande_Chiesa_della_Salute_e_Dogana_dal_ponte_dell_Accademia.jpg" />
-    </slot>
-    <slot name="accommodation">
-      <blz-accommodation>
-        <span slot="name">Locanda San Barnaba</span>
-        <time slot="check-in" datetime="2024-10-14"
-          >14 Oct</time
-        >
-        <time slot="check-out" datetime="2024-10-17"
-          >17 Oct</time
-        >
-        <span slot="room-type">2 Queen</span>
-        <span slot="persons">4</span>
-        <span slot="room-rate">190</span>
-        <span slot="currency">€</span>
-      </blz-accommodation>
-    </slot>
+    <slot name="image"> </slot>
+    <slot name="accommodation"> </slot>
     <ul class="excursions">
       <slot name="excursions"></slot>
     </ul>
     <footer>
-      <slot name="arrival">
-        <blz-connection dir="in" by="air">
-          <span slot="name">San Francisco</span>
-          <time slot="time" datetime="2024-10-14T17:30:00Z">
-            Oct 14, 6:30PM
-          </time>
-          <span slot="station">VCE</span>
-        </blz-connection>
-      </slot>
-      <slot name="departure">
-        <blz-connection dir="out" by="rail">
-          <span slot="name">Florence</span>
-          <time slot="time" datetime="2024-10-18T08:25:00Z">
-            Oct 18, 9:25PM
-          </time>
-          <span slot="station">Venezia S. Lucia</span>
-        </blz-connection>
-      </slot>
+      <slot name="arrival"> </slot>
+      <slot name="departure"> </slot>
     </footer>
   </template>`;
 
@@ -316,6 +283,7 @@ export class DestinationElement extends HTMLElement {
       display: grid;
       grid-template-columns: subgrid;
       grid-template-areas: inherit;
+      gap: inherit;
     }
 
     header {

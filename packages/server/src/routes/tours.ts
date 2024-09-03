@@ -34,7 +34,7 @@ router.get("/:id", (req: Request, res: Response) => {
       if (!tour) throw "Not found";
       else res.json(tour);
     })
-    .catch((err) => res.status(404).end());
+    .catch(() => res.status(404).end());
 });
 
 router.put("/:id", (req: Request, res: Response) => {

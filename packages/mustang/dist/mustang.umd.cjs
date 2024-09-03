@@ -419,7 +419,7 @@
         case "string":
         case "number":
         default:
-          return v2.toString();
+          return escapeParam(v2);
       }
       console.log("Processing HTML template parameter:", v2);
       switch (v2.constructor) {
@@ -428,8 +428,11 @@
         case DocumentFragment:
           return Array.from(v2.children).map((child) => child.outerHTML).join("\n");
         default:
-          return v2.toString();
+          return escapeParam(v2);
       }
+    }
+    function escapeParam(v2) {
+      return v2.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
     }
   }
   function shadow(el, options = { mode: "open" }) {
