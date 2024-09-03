@@ -1,11 +1,9 @@
 import express, { Request, Response } from "express";
-import { Destination } from "./models";
 import { DestinationPage, renderPage } from "./pages/index";
+import auth, { authenticateUser } from "./routes/auth";
 import tours from "./routes/tours";
 import travelers from "./routes/travelers";
 import { connect } from "./services/mongo";
-import Tours from "./services/tour-svc";
-
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -20,9 +18,12 @@ app.use(express.static(staticDir));
 // Middleware:
 app.use(express.json());
 
+// Auth routes
+app.use("/auth", auth);
+
 // API Routes:
-app.use("/api/travelers", travelers);
-app.use("/api/tours", tours);
+app.use("/api/travelers", authenticateUser, travelers);
+app.use("/api/tours", authenticateUser, tours);
 
 // HTML Routes:
 app.get("/hello", (_: Request, res: Response) => {

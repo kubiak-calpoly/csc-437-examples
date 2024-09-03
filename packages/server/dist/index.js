@@ -23,6 +23,7 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 ));
 var import_express = __toESM(require("express"));
 var import_pages = require("./pages/index");
+var import_auth = __toESM(require("./routes/auth"));
 var import_tours = __toESM(require("./routes/tours"));
 var import_travelers = __toESM(require("./routes/travelers"));
 var import_mongo = require("./services/mongo");
@@ -33,8 +34,9 @@ const staticDir = process.env.STATIC || "public";
 console.log("Serving static files from ", staticDir);
 app.use(import_express.default.static(staticDir));
 app.use(import_express.default.json());
-app.use("/api/travelers", import_travelers.default);
-app.use("/api/tours", import_tours.default);
+app.use("/auth", import_auth.default);
+app.use("/api/travelers", import_auth.authenticateUser, import_travelers.default);
+app.use("/api/tours", import_auth.authenticateUser, import_tours.default);
 app.get("/hello", (_, res) => {
   res.send(
     `<h1>Hello!</h1>

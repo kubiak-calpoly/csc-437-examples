@@ -71,7 +71,7 @@ router.post("/login", (req, res) => {
   if (!username || !password) {
     res.status(400).send("Bad request: Invalid input data.");
   } else {
-    import_credential_svc.default.verify(username, password).then((goodUser) => generateAccessToken(goodUser)).then((token) => res.status(200).send({ token })).catch((error) => res.status(401).send("Unauthorized"));
+    import_credential_svc.default.verify(username, password).then((goodUser) => generateAccessToken(goodUser)).then((token) => res.status(200).send({ token })).catch(() => res.status(401).send("Unauthorized"));
   }
 });
 function authenticateUser(req, res, next) {
@@ -80,7 +80,7 @@ function authenticateUser(req, res, next) {
   if (!token) {
     res.status(401).end();
   } else {
-    import_jsonwebtoken.default.verify(token, TOKEN_SECRET, (error, decoded) => {
+    import_jsonwebtoken.default.verify(token, TOKEN_SECRET, (_, decoded) => {
       if (decoded) {
         next();
       } else {
