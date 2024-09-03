@@ -398,38 +398,63 @@ const event = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePropert
 const parser$1 = new DOMParser();
 function html(template, ...values) {
   const params = values.map(processParam);
-  const htmlString = template.map((s2, i2) => i2 ? [params[i2 - 1], s2] : [s2]).flat().join("");
+  const htmlString = template.map((s2, i2) => {
+    if (i2 === 0) return [s2];
+    const node = params[i2 - 1];
+    if (node instanceof Node)
+      return [`<ins id="mu-html-${i2 - 1}"></ins>`, s2];
+    return [node, s2];
+  }).flat().join("");
   const doc = parser$1.parseFromString(htmlString, "text/html");
   const collection = doc.head.childElementCount ? doc.head.children : doc.body.children;
   const fragment = new DocumentFragment();
   fragment.replaceChildren(...collection);
+  params.forEach((node, i2) => {
+    if (node instanceof Node) {
+      const pos = fragment.querySelector(`ins#mu-html-${i2}`);
+      if (pos) {
+        const parent = pos.parentNode;
+        parent == null ? void 0 : parent.replaceChild(node, pos);
+      } else {
+        console.log(
+          "Missing insertion point:",
+          `ins#mu-html-${i2}`
+        );
+      }
+    }
+  });
   return fragment;
   function processParam(v2, _2) {
     if (v2 === null) return "";
+    console.log("Processing parameter:", v2);
     switch (typeof v2) {
+      case "string":
+        return escapeHtml(v2);
+      case "bigint":
+      case "boolean":
+      case "number":
+      case "symbol":
+        return escapeHtml(v2.toString());
       case "object":
         if (Array.isArray(v2)) {
-          return v2.map(processParam).join("\n");
+          const frag = new DocumentFragment();
+          const elements = v2.map(
+            processParam
+          );
+          frag.replaceChildren(...elements);
+          return frag;
         }
-        break;
-      case "string":
-      case "number":
+        if (v2 instanceof Node) return v2;
+        return new Text(v2.toString());
       default:
-        return escapeParam(v2);
-    }
-    console.log("Processing HTML template parameter:", v2);
-    switch (v2.constructor) {
-      case HTMLElement:
-        return v2.outerHTML;
-      case DocumentFragment:
-        return Array.from(v2.children).map((child) => child.outerHTML).join("\n");
-      default:
-        return escapeParam(v2);
+        return new Comment(
+          `[invalid parameter of type "${typeof v2}"]`
+        );
     }
   }
-  function escapeParam(v2) {
-    return v2.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
-  }
+}
+function escapeHtml(v2) {
+  return v2.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 }
 function shadow(el, options = { mode: "open" }) {
   const shadowRoot = el.attachShadow(options);
