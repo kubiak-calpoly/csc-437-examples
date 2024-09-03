@@ -396,13 +396,37 @@ const event = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePropert
   relay
 }, Symbol.toStringTag, { value: "Module" }));
 const parser$1 = new DOMParser();
-function html(template, ...params) {
+function html(template, ...values) {
+  const params = values.map(processParam);
   const htmlString = template.map((s2, i2) => i2 ? [params[i2 - 1], s2] : [s2]).flat().join("");
   const doc = parser$1.parseFromString(htmlString, "text/html");
   const collection = doc.head.childElementCount ? doc.head.children : doc.body.children;
   const fragment = new DocumentFragment();
   fragment.replaceChildren(...collection);
   return fragment;
+  function processParam(v2, _2) {
+    if (v2 === null) return "";
+    switch (typeof v2) {
+      case "object":
+        if (Array.isArray(v2)) {
+          return v2.map(processParam).join("\n");
+        }
+        break;
+      case "string":
+      case "number":
+      default:
+        return v2.toString();
+    }
+    console.log("Processing HTML template parameter:", v2);
+    switch (v2.constructor) {
+      case HTMLElement:
+        return v2.outerHTML;
+      case DocumentFragment:
+        return Array.from(v2.children).map((child) => child.outerHTML).join("\n");
+      default:
+        return v2.toString();
+    }
+  }
 }
 function shadow(el, options = { mode: "open" }) {
   const shadowRoot = el.attachShadow(options);

@@ -226,7 +226,7 @@ declare class HistoryService extends Service<HistoryMsg, HistoryModel> {
     update(message: HistoryMsg, apply: ApplyMap<HistoryModel>): void;
 }
 
-export declare function html(template: TemplateStringsArray, ...params: string[]): DocumentFragment;
+export declare function html(template: TemplateStringsArray, ...values: unknown[]): DocumentFragment;
 
 declare function identity<M>(model: M): M;
 
