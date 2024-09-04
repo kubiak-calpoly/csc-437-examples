@@ -41,306 +41,313 @@
       }
     </script>
     <script type="module">
-      import { define } from "@calpoly/mustang";
+      import { define, Auth } from "@calpoly/mustang";
       import { HeaderElement } from "/scripts/header.js";
 
       define({
-        "blz-header": HeaderElement
+        "blz-header": HeaderElement,
+        "mu-auth": Auth.Provider
       });
 
       HeaderElement.initializeOnce();
     </script>
   </head>
   <body>
-    <blz-header>
-      12 days in
-      <a href="/guide/italy.html">Italy</a>
-    </blz-header>
+    <mu-auth provides="blazing:auth">
+      <blz-header>
+        12 days in
+        <a href="/guide/italy.html">Italy</a>
+      </blz-header>
 
-    <main class="page">
-      <section class="itinerary">
-        <h2>Itinerary</h2>
-        <dl>
-          <dt>13 Oct - 14 Oct</dt>
-          <dd class="transportation">
-            <h3>
-              <span>SFO</span>
-              <svg class="icon">
-                <use
-                  xlink:href="/icons/transportation.svg#icon-airplane" />
-              </svg>
-              <span>VCE</span>
-              <span class="via">FRA</span>
-            </h3>
-            <details>
-              <summary>United UA926</summary>
-              <dl class="timings">
-                <dt>Depart</dt>
-                <dd>San Francisco (SFO)</dd>
-                <dd>
-                  <time datetime="2024-10-13 19:05:00-0800">
-                    7:05 PM
-                  </time>
-                </dd>
-                <dt>Arrive</dt>
-                <dd>Frankfurt (FRA)</dd>
-                <dd>
-                  <time datetime="2024-10-14 14:55:00+0100">
-                    2:55 PM
-                    <sub>+1 day</sub>
-                  </time>
-                </dd>
-              </dl>
-            </details>
-            <details>
-              <summary>Lufthansa LH330</summary>
-              <dl class="timings">
-                <dt>Depart</dt>
-                <dd>Frankfurt (FRA)</dd>
-                <dd>
-                  <time datetime="2024-10-14 17:15:00+0100">
-                    5:15 PM
-                  </time>
-                </dd>
-                <dt>Arrive</dt>
-                <dd>Venice (VCE)</dd>
-                <dd>
-                  <time datetime="2024-10-14 18:30:00+0100">
-                    6:30 PM
-                  </time>
-                </dd>
-              </dl>
-            </details>
-          </dd>
-
-          <dt>14 Oct - 18 Oct</dt>
-          <dd class="destination">
-            <header
-              style="
-                background-image: url(/images/preview/Canal_Grande_Chiesa_della_Salute_e_Dogana_dal_ponte_dell_Accademia.jpg);
-              ">
+      <main class="page">
+        <section class="itinerary">
+          <h2>Itinerary</h2>
+          <dl>
+            <dt>13 Oct - 14 Oct</dt>
+            <dd class="transportation">
               <h3>
-                <a href="/destination/venice">Venice</a>
+                <span>SFO</span>
+                <svg class="icon">
+                  <use
+                    xlink:href="/icons/transportation.svg#icon-airplane" />
+                </svg>
+                <span>VCE</span>
+                <span class="via">FRA</span>
               </h3>
-              <p>4 nights</p>
-            </header>
-            <ul class="highlights">
-              <li>
-                Stay at
-                <a
-                  href="/destination/venice#locanda-san-barnaba"
-                  >Locanda San Barnaba</a
-                >
-              </li>
-              <li>
-                Vaporetto trip to
-                <a href="/destination/venice#murano">Murano</a>
-              </li>
-              <li>
-                Walking tour of
-                <a href="/destination/venice@piazza-san-marco"
-                  >Pizza San Marco</a
-                >
-              </li>
-            </ul>
-          </dd>
+              <details>
+                <summary>United UA926</summary>
+                <dl class="timings">
+                  <dt>Depart</dt>
+                  <dd>San Francisco (SFO)</dd>
+                  <dd>
+                    <time datetime="2024-10-13 19:05:00-0800">
+                      7:05 PM
+                    </time>
+                  </dd>
+                  <dt>Arrive</dt>
+                  <dd>Frankfurt (FRA)</dd>
+                  <dd>
+                    <time datetime="2024-10-14 14:55:00+0100">
+                      2:55 PM
+                      <sub>+1 day</sub>
+                    </time>
+                  </dd>
+                </dl>
+              </details>
+              <details>
+                <summary>Lufthansa LH330</summary>
+                <dl class="timings">
+                  <dt>Depart</dt>
+                  <dd>Frankfurt (FRA)</dd>
+                  <dd>
+                    <time datetime="2024-10-14 17:15:00+0100">
+                      5:15 PM
+                    </time>
+                  </dd>
+                  <dt>Arrive</dt>
+                  <dd>Venice (VCE)</dd>
+                  <dd>
+                    <time datetime="2024-10-14 18:30:00+0100">
+                      6:30 PM
+                    </time>
+                  </dd>
+                </dl>
+              </details>
+            </dd>
 
-          <dt>18 Oct</dt>
-          <dd class="transportation">
-            <h3>
-              <span>Venice</span>
-              <svg class="icon">
-                <use
-                  xlink:href="/icons/transportation.svg#icon-train" /></svg
-              ><span>Florence</span>
-            </h3>
-            <details>
-              <summary>9407 Frecciarossa</summary>
-              <dl class="timings">
-                <dt>Depart</dt>
-                <dd>Venezia S. Lucia</dd>
-                <dd>
-                  <time datetime="2024-10-18 09:25:00+0100">
-                    9:25 AM
-                  </time>
-                </dd>
-                <dt>Arrive</dt>
-                <dd>Firenze S.M.N.</dd>
-                <dd>
-                  <time datetime="2024-10-18 11:30:00+0100">
-                    11:30 AM
-                  </time>
-                </dd>
-              </dl>
-            </details>
-          </dd>
+            <dt>14 Oct - 18 Oct</dt>
+            <dd class="destination">
+              <header
+                style="
+                  background-image: url(/images/preview/Canal_Grande_Chiesa_della_Salute_e_Dogana_dal_ponte_dell_Accademia.jpg);
+                ">
+                <h3>
+                  <a href="/destination/venice">Venice</a>
+                </h3>
+                <p>4 nights</p>
+              </header>
+              <ul class="highlights">
+                <li>
+                  Stay at
+                  <a
+                    href="/destination/venice#locanda-san-barnaba"
+                    >Locanda San Barnaba</a
+                  >
+                </li>
+                <li>
+                  Vaporetto trip to
+                  <a href="/destination/venice#murano"
+                    >Murano</a
+                  >
+                </li>
+                <li>
+                  Walking tour of
+                  <a href="/destination/venice@piazza-san-marco"
+                    >Pizza San Marco</a
+                  >
+                </li>
+              </ul>
+            </dd>
 
-          <dt>18 Oct - 21 Oct</dt>
-          <dd class="destination">
-            <header
-              style="
-                background-image: url(/images/preview/Firenze_-_Vista_dal_Piazzale_Michelangelo.jpg);
-              ">
+            <dt>18 Oct</dt>
+            <dd class="transportation">
               <h3>
-                <a href="destination/florence.html">Florence</a>
+                <span>Venice</span>
+                <svg class="icon">
+                  <use
+                    xlink:href="/icons/transportation.svg#icon-train" /></svg
+                ><span>Florence</span>
               </h3>
-              <p>3 nights</p>
-            </header>
-            <ul>
-              <li>
-                Stay at
-                <a href="destination/florence#hotel-perseo"
-                  >Hotel Perseo</a
-                >
-              </li>
-              <li>
-                Walking tour of
-                <a href="destination/florence/duomo-campanile"
-                  >Duomo and Campanile</a
-                >
-              </li>
-              <li>
-                Rail excursion to
-                <a href="destination/florence#lucca">Lucca</a>
-              </li>
-              <li>
-                Trip to
-                <a href="destination/florence#fiesole"
-                  >Fiesole</a
-                >
-                via city bus.
-              </li>
-            </ul>
-          </dd>
+              <details>
+                <summary>9407 Frecciarossa</summary>
+                <dl class="timings">
+                  <dt>Depart</dt>
+                  <dd>Venezia S. Lucia</dd>
+                  <dd>
+                    <time datetime="2024-10-18 09:25:00+0100">
+                      9:25 AM
+                    </time>
+                  </dd>
+                  <dt>Arrive</dt>
+                  <dd>Firenze S.M.N.</dd>
+                  <dd>
+                    <time datetime="2024-10-18 11:30:00+0100">
+                      11:30 AM
+                    </time>
+                  </dd>
+                </dl>
+              </details>
+            </dd>
 
-          <dt>21 Oct</dt>
-          <dd class="transportation">
-            <h3>
-              <span>Florence</span>
-              <svg class="icon">
-                <use
-                  xlink:href="/icons/transportation.svg#icon-train" />
-              </svg>
-              <span>Rome</span>
-            </h3>
-            <details>
-              <summary>9435 Frecciarossa</summary>
-              <dl class="timings">
-                <dt>Depart</dt>
-                <dd>Firenze S.M.N.</dd>
-                <dd>
-                  <time datetime="2024-10-21 15:38:00+0100">
-                    3:38 PM
-                  </time>
-                </dd>
-                <dt>Arrive</dt>
-                <dd>Roma Termini</dd>
-                <dd>
-                  <time datetime="2024-10-21 17:10:00+0100">
-                    5:10 PM
-                  </time>
-                </dd>
-              </dl>
-            </details>
-          </dd>
+            <dt>18 Oct - 21 Oct</dt>
+            <dd class="destination">
+              <header
+                style="
+                  background-image: url(/images/preview/Firenze_-_Vista_dal_Piazzale_Michelangelo.jpg);
+                ">
+                <h3>
+                  <a href="destination/florence.html"
+                    >Florence</a
+                  >
+                </h3>
+                <p>3 nights</p>
+              </header>
+              <ul>
+                <li>
+                  Stay at
+                  <a href="destination/florence#hotel-perseo"
+                    >Hotel Perseo</a
+                  >
+                </li>
+                <li>
+                  Walking tour of
+                  <a href="destination/florence/duomo-campanile"
+                    >Duomo and Campanile</a
+                  >
+                </li>
+                <li>
+                  Rail excursion to
+                  <a href="destination/florence#lucca">Lucca</a>
+                </li>
+                <li>
+                  Trip to
+                  <a href="destination/florence#fiesole"
+                    >Fiesole</a
+                  >
+                  via city bus.
+                </li>
+              </ul>
+            </dd>
 
-          <dt>21 Oct - 25 Oct</dt>
-          <dd class="destination">
-            <header
-              style="
-                background-image: url(/images/preview/Colosseum_in_Rome,_Italy_-_April_2007.jpg);
-              ">
+            <dt>21 Oct</dt>
+            <dd class="transportation">
               <h3>
-                <a href="destination/rome.html">Rome</a>
+                <span>Florence</span>
+                <svg class="icon">
+                  <use
+                    xlink:href="/icons/transportation.svg#icon-train" />
+                </svg>
+                <span>Rome</span>
               </h3>
-              <p>4 nights</p>
-            </header>
-            <ul class="highlights">
-              <li>
-                Stay at
-                <a href="destination/rome/la-piccola-maison"
-                  >La Piccola Maison</a
-                >
-              </li>
-              <li>
-                Tour of
-                <a
-                  href="destination/rome/forum-colosseum-palatino-hill"
-                  >Forum, Colosseum, Palatino Hill</a
-                >
-                via Metro
-              </li>
-              <li>
-                Tour of
-                <a href="destination/rome/vatican"
-                  >Vatican, St Peter's</a
-                >
-                via Metro
-              </li>
-            </ul>
-          </dd>
+              <details>
+                <summary>9435 Frecciarossa</summary>
+                <dl class="timings">
+                  <dt>Depart</dt>
+                  <dd>Firenze S.M.N.</dd>
+                  <dd>
+                    <time datetime="2024-10-21 15:38:00+0100">
+                      3:38 PM
+                    </time>
+                  </dd>
+                  <dt>Arrive</dt>
+                  <dd>Roma Termini</dd>
+                  <dd>
+                    <time datetime="2024-10-21 17:10:00+0100">
+                      5:10 PM
+                    </time>
+                  </dd>
+                </dl>
+              </details>
+            </dd>
 
-          <dt>25 Oct</dt>
-          <dd class="transportation">
-            <h3>
-              <span>FCO</span>
-              <svg class="icon">
-                <use
-                  xlink:href="/icons/transportation.svg#icon-airplane" />
-              </svg>
-              <span>SFO</span>
-              <span class="via">FRA</span>
-            </h3>
-            <details>
-              <summary>Lufthansa LH233</summary>
-              <dl class="timings">
-                <dt>Depart</dt>
-                <dd>Rome (FCO)</dd>
-                <dd>
-                  <time datetime="2024-10-25 13:25:00+0100">
-                    1:25 PM
-                  </time>
-                </dd>
-                <dt>Arrive</dt>
-                <dd>Frankfurt (FRA)</dd>
-                <dd>
-                  <time datetime="2024-10-25 15:20:00+0100">
-                    3:20 PM
-                  </time>
-                </dd>
-              </dl>
-            </details>
-            <details>
-              <summary>United UA927</summary>
-              <dl class="timings">
-                <dt>Depart</dt>
-                <dd>Frankfurt (FRA)</dd>
-                <dd>
-                  <time datetime="2024-10-25 17:25:00-0800">
-                    5:25 PM
-                  </time>
-                </dd>
-                <dt>Arrive</dt>
-                <dd>San Francisco (SFO)</dd>
-                <dd>
-                  <time datetime="2024-10-25 9:45:00+0100">
-                    7:45 PM
-                  </time>
-                </dd>
-              </dl>
-            </details>
-          </dd>
-        </dl>
-      </section>
+            <dt>21 Oct - 25 Oct</dt>
+            <dd class="destination">
+              <header
+                style="
+                  background-image: url(/images/preview/Colosseum_in_Rome,_Italy_-_April_2007.jpg);
+                ">
+                <h3>
+                  <a href="destination/rome.html">Rome</a>
+                </h3>
+                <p>4 nights</p>
+              </header>
+              <ul class="highlights">
+                <li>
+                  Stay at
+                  <a href="destination/rome/la-piccola-maison"
+                    >La Piccola Maison</a
+                  >
+                </li>
+                <li>
+                  Tour of
+                  <a
+                    href="destination/rome/forum-colosseum-palatino-hill"
+                    >Forum, Colosseum, Palatino Hill</a
+                  >
+                  via Metro
+                </li>
+                <li>
+                  Tour of
+                  <a href="destination/rome/vatican"
+                    >Vatican, St Peter's</a
+                  >
+                  via Metro
+                </li>
+              </ul>
+            </dd>
 
-      <section class="entourage">
-        <h2>Entourage</h2>
-        <ul>
-          <li><a href="person.html">Blaze Pasquale</a></li>
-          <li><a href="person.html">Isabel Nootin</a></li>
-          <li><a href="person.html">Pi Mondrian</a></li>
-        </ul>
-      </section>
-    </main>
+            <dt>25 Oct</dt>
+            <dd class="transportation">
+              <h3>
+                <span>FCO</span>
+                <svg class="icon">
+                  <use
+                    xlink:href="/icons/transportation.svg#icon-airplane" />
+                </svg>
+                <span>SFO</span>
+                <span class="via">FRA</span>
+              </h3>
+              <details>
+                <summary>Lufthansa LH233</summary>
+                <dl class="timings">
+                  <dt>Depart</dt>
+                  <dd>Rome (FCO)</dd>
+                  <dd>
+                    <time datetime="2024-10-25 13:25:00+0100">
+                      1:25 PM
+                    </time>
+                  </dd>
+                  <dt>Arrive</dt>
+                  <dd>Frankfurt (FRA)</dd>
+                  <dd>
+                    <time datetime="2024-10-25 15:20:00+0100">
+                      3:20 PM
+                    </time>
+                  </dd>
+                </dl>
+              </details>
+              <details>
+                <summary>United UA927</summary>
+                <dl class="timings">
+                  <dt>Depart</dt>
+                  <dd>Frankfurt (FRA)</dd>
+                  <dd>
+                    <time datetime="2024-10-25 17:25:00-0800">
+                      5:25 PM
+                    </time>
+                  </dd>
+                  <dt>Arrive</dt>
+                  <dd>San Francisco (SFO)</dd>
+                  <dd>
+                    <time datetime="2024-10-25 9:45:00+0100">
+                      7:45 PM
+                    </time>
+                  </dd>
+                </dl>
+              </details>
+            </dd>
+          </dl>
+        </section>
+
+        <section class="entourage">
+          <h2>Entourage</h2>
+          <ul>
+            <li><a href="person.html">Blaze Pasquale</a></li>
+            <li><a href="person.html">Isabel Nootin</a></li>
+            <li><a href="person.html">Pi Mondrian</a></li>
+          </ul>
+        </section>
+      </main>
+    </mu-auth>
   </body>
 </html>

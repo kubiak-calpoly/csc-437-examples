@@ -37,13 +37,18 @@ app.use(import_express.default.json());
 app.use("/auth", import_auth.default);
 app.use("/api/travelers", import_auth.authenticateUser, import_travelers.default);
 app.use("/api/tours", import_auth.authenticateUser, import_tours.default);
-app.get("/hello", (_, res) => {
+app.get("/ping", (_, res) => {
   res.send(
     `<h1>Hello!</h1>
      <p>Server is up and running.</p>
      <p>Serving static files from <code>${staticDir}</code>.</p>
     `
   );
+});
+app.get("/login", (req, res) => {
+  res.set("Content-Type", "text/html").send((0, import_pages.renderPage)(import_pages.LoginPage.render()));
+});
+app.get("/register", (req, res) => {
 });
 app.get(
   "/destination/:tourId/:destIndex",

@@ -32,6 +32,7 @@ __export(pages_exports, {
   renderPage: () => renderPage
 });
 module.exports = __toCommonJS(pages_exports);
+__reExport(pages_exports, require("./auth"), module.exports);
 __reExport(pages_exports, require("./destination"), module.exports);
 var import_renderPage = __toESM(require("./renderPage"));
 const defaults = {
@@ -55,8 +56,8 @@ const defaults = {
   ],
   googleFontURL: "https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,200;0,400;0,700;1,700&family=Merriweather:wght@400;700&display=swap",
   imports: {
-    // "@calpoly/mustang": "https://unpkg.com/@calpoly/mustang"
-    "@calpoly/mustang": "/unpkg/mustang.js"
+    "@calpoly/mustang": "https://unpkg.com/@calpoly/mustang"
+    // "@calpoly/mustang": "/unpkg/mustang.js"
   }
 };
 function renderPage(page) {
@@ -65,5 +66,6 @@ function renderPage(page) {
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   renderPage,
+  ...require("./auth"),
   ...require("./destination")
 });

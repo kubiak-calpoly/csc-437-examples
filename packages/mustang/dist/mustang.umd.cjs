@@ -373,19 +373,17 @@
     headers: authHeaders,
     payload: tokenPayload
   }, Symbol.toStringTag, { value: "Module" }));
-  function relay(event2, customType, detail) {
-    const relay2 = event2.target;
+  function dispatchCustom(target, customType, detail) {
     const customEvent = new CustomEvent(customType, {
       bubbles: true,
       composed: true,
       detail
     });
-    console.log(
-      `Relaying event from ${event2.type}:`,
-      customEvent
-    );
-    relay2.dispatchEvent(customEvent);
-    event2.stopPropagation();
+    target.dispatchEvent(customEvent);
+  }
+  function relay(event2, customType, detail) {
+    const target = event2.target;
+    dispatchCustom(target, customType, detail);
   }
   function originalTarget(event2, selector = "*") {
     const path = event2.composedPath();
@@ -396,6 +394,7 @@
   }
   const event = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
     __proto__: null,
+    dispatchCustom,
     originalTarget,
     relay
   }, Symbol.toStringTag, { value: "Module" }));

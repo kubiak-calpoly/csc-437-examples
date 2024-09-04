@@ -1,9 +1,15 @@
 import express, { Request, Response } from "express";
-import { DestinationPage, renderPage } from "./pages/index";
+import {
+  DestinationPage,
+  LoginPage,
+  RegistrationPage,
+  renderPage
+} from "./pages/index";
 import auth, { authenticateUser } from "./routes/auth";
 import tours from "./routes/tours";
 import travelers from "./routes/travelers";
 import { connect } from "./services/mongo";
+
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -26,7 +32,7 @@ app.use("/api/travelers", authenticateUser, travelers);
 app.use("/api/tours", authenticateUser, tours);
 
 // HTML Routes:
-app.get("/hello", (_: Request, res: Response) => {
+app.get("/ping", (_: Request, res: Response) => {
   res.send(
     `<h1>Hello!</h1>
      <p>Server is up and running.</p>
@@ -34,6 +40,14 @@ app.get("/hello", (_: Request, res: Response) => {
     `
   );
 });
+
+app.get("/login", (req: Request, res: Response) => {
+  res
+    .set("Content-Type", "text/html")
+    .send(renderPage(LoginPage.render()));
+});
+
+app.get("/register", (req: Request, res: Response) => { });
 
 app.get(
   "/destination/:tourId/:destIndex",
