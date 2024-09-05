@@ -32,8 +32,11 @@ export class HeaderElement extends HTMLElement {
                 Dark Mode
               </label>
             </li>
-            <li>
-              <button id="signout" disabled>Sign Out</button>
+            <li class="when-signed-in">
+              <a id="signout">Sign Out</a>
+            </li>
+            <li class="when-signed-out">
+              <a href="/login">Sign In</a>
             </li>
           </menu>
         </mu-dropdown>
@@ -46,8 +49,6 @@ export class HeaderElement extends HTMLElement {
       display: contents;
     }
     header {
-      --color-link: var(--color-link-inverted);
-
       display: flex;
       flex-wrap: wrap;
       align-items: bottom;
@@ -58,6 +59,9 @@ export class HeaderElement extends HTMLElement {
     }
     header ~ * {
       margin: var(--size-spacing-medium);
+    }
+    header p {
+      --color-link: var(--color-link-inverted);
     }
     nav {
       display: flex;
@@ -71,6 +75,15 @@ export class HeaderElement extends HTMLElement {
     }
     #userid:empty::before {
       content: "traveler";
+    }
+    menu a {
+      color: var(--color-link);
+      cursor: pointer;
+      text-decoration: underline;
+    }
+    a:has(#userid:empty) ~ menu > .when-signed-in,
+    a:has(#userid:not(:empty)) ~ menu > .when-signed-out {
+      display: none;
     }
   `;
 

@@ -47,7 +47,11 @@ app.get("/login", (req: Request, res: Response) => {
     .send(renderPage(LoginPage.render()));
 });
 
-app.get("/register", (req: Request, res: Response) => { });
+app.get("/register", (req: Request, res: Response) => {
+  res
+    .set("Content-Type", "text/html")
+    .send(renderPage(RegistrationPage.render()));
+});
 
 app.get(
   "/destination/:tourId/:destIndex",

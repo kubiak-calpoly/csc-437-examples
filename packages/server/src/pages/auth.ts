@@ -18,26 +18,15 @@ const staticParts = {
         flex-basis: 100%;
       }
 
-      login-form {
+      login-form, registration-form {
         grid-area: fm;
       }
 
-      p.register {
+      p.register, p.login {
         display: block;
         grid-area: rq;
         text-align: center;
       }
-    `
-  ],
-  scripts: [
-    `
-    import { define, Auth } from "@calpoly/mustang";
-    import { LoginForm } from "/scripts/login-form.js";
-
-    define({
-      "mu-auth": Auth.Provider,
-      "login-form": LoginForm
-    })
     `
   ]
 };
@@ -46,19 +35,30 @@ export class LoginPage {
   static render() {
     return {
       ...staticParts,
+      scripts: [
+        `
+        import { define, Auth } from "@calpoly/mustang";
+        import { LoginForm } from "/scripts/login-form.js";
+
+        define({
+          "mu-auth": Auth.Provider,
+          "login-form": LoginForm
+        })
+        `
+      ],
       body: `<body>
         <mu-auth provides="blazing:auth">
           <article>
-          <blz-header> </blz-header>
-          <main class="page">
-            <login-form api="/auth/login">
-              <h3 slot="title">Sign in and Go Places!</h3>
-            </login-form>
-            <p class="register">
-              Or did you want to
-              <a href="./register"> register as a new user </a>?
-            </p>
-          </main>
+            <blz-header> </blz-header>
+            <main class="page">
+              <login-form api="/auth/login">
+                <h3 slot="title">Sign in and go places!</h3>
+              </login-form>
+              <p class="register">
+                Or did you want to
+                <a href="./register"> register as a new user </a>?
+              </p>
+            </main>
           </article>
         </mu-auth>
       </body> `
@@ -66,4 +66,37 @@ export class LoginPage {
   }
 }
 
-export class RegistrationPage { }
+export class RegistrationPage {
+  static render() {
+    return {
+      ...staticParts,
+      scripts: [
+        `
+        import { define, Auth } from "@calpoly/mustang";
+        import { RegistrationForm } from "/scripts/registration-form.js";
+
+        define({
+          "mu-auth": Auth.Provider,
+          "registration-form": RegistrationForm
+        })
+        `
+      ],
+      body: `<body>
+        <mu-auth provides="blazing:auth">
+          <article>
+            <blz-header> </blz-header>
+            <main class="page">
+              <registration-form api="/auth/register">
+                <h3 slot="title">Sign up to plan your next trip!</h3>
+              </registration-form>
+              <p class="login">
+                Already signed up? You can
+                <a href="./login">log in</a> instead.
+              </p>
+            </main>
+          </article>
+        </mu-auth>
+      </body> `
+    };
+  }
+}
