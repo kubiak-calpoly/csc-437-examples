@@ -63,12 +63,13 @@ const staticParts = {
   ],
   scripts: [
     `
-      import { define } from "@calpoly/mustang";
+      import { define, Auth } from "@calpoly/mustang";
       import { AccommodationElement } from "/scripts/accommodation.js";
       import { DestinationView } from "/scripts/destination-view.js";
 
       define({
         "destination-view": DestinationView,
+        "mu-auth": Auth.Provider
       });
       `
   ]
@@ -77,15 +78,19 @@ class DestinationPage {
   static render(tourId, destIndex) {
     return __spreadProps(__spreadValues({}, staticParts), {
       body: `<body>
-      <blz-header>
-        <a href="../">&larr; Tour</a>
-      </blz-header>
-      <main class="page">
-        <destination-view
-          src-tour="/api/tours/${tourId}"
-          destination-index="${destIndex}">
-        </destination-view>
-      </main>
+      <mu-auth provides="blazing:auth">
+        <article>
+          <blz-header>
+            <a href="../">&larr; Tour</a>
+          </blz-header>
+          <main class="page">
+            <destination-view
+              src-tour="/api/tours/${tourId}"
+              destination-index="${destIndex}">
+            </destination-view>
+          </main>
+        </article>
+      </mu-auth>
     </body>`
     });
   }

@@ -1,4 +1,10 @@
-import { css, define, html, shadow } from "@calpoly/mustang";
+import {
+  css,
+  define,
+  html,
+  shadow,
+  Observer
+} from "@calpoly/mustang";
 import { AccommodationElement } from "./accommodation.js";
 import {
   ConnectionElement,
@@ -22,29 +28,57 @@ export class DestinationView extends HTMLElement {
     this.style.display = "contents";
   }
 
-  connectedCallback() {
-    this._src = this.getAttribute("src-tour");
-    this._dest = parseInt(
-      this.getAttribute("destination-index")
-    );
+  _authObserver = new Observer(this, "blazing:auth");
 
-    this.loadData()
-      .then((res) => {
-        if (res.status === 200) return res.json();
-        throw "Not found";
-      })
-      .then((tour) =>
-        this.render({
-          tour: { name: tour.name },
-          ...tour.destinations[this._dest],
-          inbound: tour.transportation[this._dest],
-          outbound: tour.transportation[this._dest + 1]
+  get src() {
+    return this.getAttribute("src-tour");
+  }
+
+  get destinationIndex() {
+    const di = this.getAttribute("destination-index");
+    return di ? parseInt(di) : 0;
+  }
+
+  connectedCallback() {
+    this._authObserver.observe(({ user }) => {
+      console.log("Observing auth, user=", user);
+      this._user = user;
+      this.loadData()
+        .then((res) => {
+          if (res.status === 200) return res.json();
+          throw `Server responded with status ${res.status}`;
         })
-      );
+        .catch((err) =>
+          console.log("Failed to load destination data:", err)
+        )
+        .then((tour) =>
+          this.render({
+            tour: { name: tour.name },
+            ...tour.destinations[this.destinationIndex],
+            inbound: tour.transportation[this.destinationIndex],
+            outbound:
+              tour.transportation[this.destinationIndex + 1]
+          })
+        )
+        .catch((err) =>
+          console.log("Failed to render destination data:", err)
+        );
+    });
+  }
+
+  get authorization() {
+    console.log("Authorization for user, ", this._user);
+    return (
+      this._user?.authenticated && {
+        Authorization: `Bearer ${this._user.token}`
+      }
+    );
   }
 
   loadData() {
-    return fetch(this._src);
+    return fetch(this.src, {
+      headers: this.authorization
+    });
   }
 
   render(data) {
@@ -73,8 +107,8 @@ export class DestinationView extends HTMLElement {
         <img slot="image" src="${featuredImage}" />
         ${renderAccommodation(accommodations[0] || {})}
         ${excursions.map(renderExcursion)}
-        ${renderConnection(inbound, "in")}
-        ${renderConnection(outbound, "out")}
+        ${inbound && renderConnection(inbound, "in")}
+        ${outbound && renderConnection(outbound, "out")}
       </blz-destination>
     `;
 

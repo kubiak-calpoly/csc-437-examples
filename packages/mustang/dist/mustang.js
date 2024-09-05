@@ -425,7 +425,6 @@ function html(template, ...values) {
   return fragment;
   function processParam(v2, _2) {
     if (v2 === null) return "";
-    console.log("Processing parameter:", v2);
     switch (typeof v2) {
       case "string":
         return escapeHtml(v2);
