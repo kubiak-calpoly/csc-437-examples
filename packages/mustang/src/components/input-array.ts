@@ -10,21 +10,21 @@ class InputArrayElement extends HTMLElement {
       </ul>
       <button class="add">
         <slot name="label-add">Add one</slot>
-        <style>
-          :host {
-            display: contents;
-          }
-          ul {
-            display: contents;
-          }
-          button.add {
-            grid-column: input / input-end;
-          }
-          ::slotted(label) {
-            display: contents;
-          }
-        </style>
       </button>
+      <style>
+        :host {
+          display: contents;
+        }
+        ul {
+          display: contents;
+        }
+        button.add {
+          grid-column: input / input-end;
+        }
+        ::slotted(label) {
+          display: contents;
+        }
+      </style>
     </template>
   `;
 
@@ -105,13 +105,15 @@ function populateArray(
 }
 
 function renderItem(value: string | undefined, _: number) {
-  const valueAttr =
-    value === undefined ? "" : `value="${value}"`;
+  const input =
+    value === undefined
+      ? html`<input />`
+      : html`<input value="${value}" />`;
 
   return html`
     <label>
-      <input ${valueAttr} />
-      <button class="remove" type="button">Remove</button>
+      ${input}
+      <button class="remove" type="button"> Remove </button>
     </label>
   `;
 }

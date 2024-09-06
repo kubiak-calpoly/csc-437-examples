@@ -519,6 +519,12 @@ let FormElement$1 = (_a = class extends HTMLElement {
           grid-template-columns: subgrid;
           gap: var(--size-spacing-medium);
         }
+        ::slotted(fieldset) {
+          display: grid;
+          grid-column: start / end;
+          grid-template-columns: subgrid;
+          gap: var(--size-spacing-medium);
+        }
         button[type="submit"] {
           grid-column: input;
           justify-self: start;
@@ -2472,21 +2478,21 @@ _InputArrayElement.template = html`
       </ul>
       <button class="add">
         <slot name="label-add">Add one</slot>
-        <style>
-          :host {
-            display: contents;
-          }
-          ul {
-            display: contents;
-          }
-          button.add {
-            grid-column: input / input-end;
-          }
-          ::slotted(label) {
-            display: contents;
-          }
-        </style>
       </button>
+      <style>
+        :host {
+          display: contents;
+        }
+        ul {
+          display: contents;
+        }
+        button.add {
+          grid-column: input / input-end;
+        }
+        ::slotted(label) {
+          display: contents;
+        }
+      </style>
     </template>
   `;
 let InputArrayElement = _InputArrayElement;
@@ -2495,11 +2501,11 @@ function populateArray(array, container) {
   array.forEach((s2, i2) => container.append(renderItem(s2)));
 }
 function renderItem(value, _2) {
-  const valueAttr = value === void 0 ? "" : `value="${value}"`;
+  const input = value === void 0 ? html`<input />` : html`<input value="${value}" />`;
   return html`
     <label>
-      <input ${valueAttr} />
-      <button class="remove" type="button">Remove</button>
+      ${input}
+      <button class="remove" type="button"> Remove </button>
     </label>
   `;
 }

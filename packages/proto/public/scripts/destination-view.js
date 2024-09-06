@@ -11,6 +11,7 @@ import {
   DestinationElement,
   ExcursionElement
 } from "./destination.js";
+import { DestinationEditor } from "./destination-editor.js";
 
 const secondsPerDay = 24 * 60 * 60 * 1000;
 
@@ -19,6 +20,7 @@ export class DestinationView extends HTMLElement {
     "blz-accommodation": AccommodationElement,
     "blz-connection": ConnectionElement,
     "blz-destination": DestinationElement,
+    "blz-destination-editor": DestinationEditor,
     "blz-excursion": ExcursionElement
   });
 
@@ -29,6 +31,12 @@ export class DestinationView extends HTMLElement {
   }
 
   _authObserver = new Observer(this, "blazing:auth");
+
+  get mode() {
+    const query = document.location.search;
+    const params = new URLSearchParams(query);
+    return params.get("mode");
+  }
 
   get src() {
     return this.getAttribute("src-tour");
@@ -100,17 +108,32 @@ export class DestinationView extends HTMLElement {
       end.valueOf() / secondsPerDay -
       start.valueOf() / secondsPerDay;
 
-    const fragment = html`
-      <blz-destination>
-        <span slot="name">${name}</span>
-        <span slot="nights">${nights}</span>
-        <img slot="image" src="${featuredImage}" />
-        ${renderAccommodation(accommodations[0] || {})}
-        ${excursions.map(renderExcursion)}
-        ${inbound && renderConnection(inbound, "in")}
-        ${outbound && renderConnection(outbound, "out")}
-      </blz-destination>
-    `;
+    const fragment = this.mode
+      ? html`<blz-destination-editor
+          mode="${this.mode}"
+          name="${name}"
+          startDate="${startDate}"
+          endDate="${endDate}"
+          featuredImage="${featuredImage}"
+          accommodation="
+            ${JSON.stringify(accommodations[0] || {})}
+            "
+          excursions="
+            ${JSON.stringify(excursions || [])}
+
+            ">
+        </blz-destination-editor>`
+      : html`
+          <blz-destination>
+            <span slot="name">${name}</span>
+            <span slot="nights">${nights}</span>
+            <img slot="image" src="${featuredImage}" />
+            ${renderAccommodation(accommodations[0] || {})}
+            ${excursions.map(renderExcursion)}
+            ${inbound && renderConnection(inbound, "in")}
+            ${outbound && renderConnection(outbound, "out")}
+          </blz-destination>
+        `;
 
     this.replaceChildren(fragment);
 
