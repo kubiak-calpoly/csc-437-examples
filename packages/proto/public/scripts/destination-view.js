@@ -11,7 +11,7 @@ import {
   DestinationElement,
   ExcursionElement
 } from "./destination.js";
-import { DestinationEditor } from "./destination-editor.js";
+import { DestinationForm } from "./destination-form.js";
 
 const secondsPerDay = 24 * 60 * 60 * 1000;
 
@@ -20,7 +20,7 @@ export class DestinationView extends HTMLElement {
     "blz-accommodation": AccommodationElement,
     "blz-connection": ConnectionElement,
     "blz-destination": DestinationElement,
-    "blz-destination-editor": DestinationEditor,
+    "blz-destination-form": DestinationForm,
     "blz-excursion": ExcursionElement
   });
 
@@ -109,19 +109,20 @@ export class DestinationView extends HTMLElement {
       start.valueOf() / secondsPerDay;
 
     const fragment = this.mode
-      ? html`<blz-destination-editor
+      ? html`<blz-destination-form
+          api="${this.src}/destinations/${
+          this.destinationIndex
+        }"
+          redirect="${document.location.pathname}"
           mode="${this.mode}"
           name="${name}"
           startDate="${startDate}"
           endDate="${endDate}"
           featuredImage="${featuredImage}"
           accommodation="
-            ${JSON.stringify(accommodations[0] || {})}
-            "
+            ${JSON.stringify(accommodations[0] || {})}"
           excursions="
-            ${JSON.stringify(excursions || [])}
-
-            ">
+            ${JSON.stringify(excursions || [])}">
         </blz-destination-editor>`
       : html`
           <blz-destination>

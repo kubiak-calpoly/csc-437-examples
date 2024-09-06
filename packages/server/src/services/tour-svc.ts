@@ -1,9 +1,5 @@
 import { Document, Model, Schema, model } from "mongoose";
-import {
-  Destination,
-  Tour,
-  Transportation
-} from "../models/tour";
+import { Destination, Tour, Transportation } from "../models";
 import "./entourage-svc"; // to load schema
 
 const tourSchema = new Schema<Tour>(
@@ -124,4 +120,41 @@ function update(id: String, tour: Tour): Promise<Tour> {
   });
 }
 
-export default { index, get, create, update };
+function updateDestination(
+  id: String,
+  n: number,
+  newDest: Destination
+): Promise<Destination> {
+  return new Promise((resolve, reject) => {
+    const path = `destinations.${n}`;
+
+    console.log("update path", path);
+
+    tourModel
+      .findByIdAndUpdate(
+        id,
+        {
+          $set: { [path]: newDest }
+        },
+        { new: true }
+      )
+      .then((doc: unknown) => {
+        if (doc) {
+          const tour = doc as Tour;
+          resolve(tour.destinations[n]);
+        } else reject(`Tour ${id} not found`);
+      })
+      .catch((error) => {
+        console.log("Cannot update Destination:", error);
+        reject(error);
+      });
+  });
+}
+
+export default {
+  index,
+  get,
+  create,
+  update,
+  updateDestination
+};

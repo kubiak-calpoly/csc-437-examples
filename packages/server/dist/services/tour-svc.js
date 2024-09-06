@@ -125,4 +125,31 @@ function update(id, tour) {
     });
   });
 }
-var tour_svc_default = { index, get, create, update };
+function updateDestination(id, n, newDest) {
+  return new Promise((resolve, reject) => {
+    const path = `destinations.${n}`;
+    console.log("update path", path);
+    tourModel.findByIdAndUpdate(
+      id,
+      {
+        $set: { [path]: newDest }
+      },
+      { new: true }
+    ).then((doc) => {
+      if (doc) {
+        const tour = doc;
+        resolve(tour.destinations[n]);
+      } else reject(`Tour ${id} not found`);
+    }).catch((error) => {
+      console.log("Cannot update Destination:", error);
+      reject(error);
+    });
+  });
+}
+var tour_svc_default = {
+  index,
+  get,
+  create,
+  update,
+  updateDestination
+};

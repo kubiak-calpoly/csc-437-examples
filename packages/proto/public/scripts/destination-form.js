@@ -4,12 +4,13 @@ import {
   html,
   shadow,
   Form,
-  InputArray
+  InputArray,
+  Observer
 } from "@calpoly/mustang";
 import reset from "./styles/reset.css.js";
 import headings from "./styles/headings.css.js";
 
-export class DestinationEditor extends HTMLElement {
+export class DestinationForm extends HTMLElement {
   static uses = define({
     "mu-form": Form.Element,
     "input-array": InputArray.Element
@@ -104,12 +105,21 @@ export class DestinationEditor extends HTMLElement {
     super();
 
     shadow(this)
-      .template(DestinationEditor.template)
+      .template(DestinationForm.template)
       .styles(
         reset.styles,
         headings.styles,
-        DestinationEditor.styles
+        DestinationForm.styles
       );
+
+    this.addEventListener("mu-form:submit", (event) => {
+      submitDestinationForm(
+        event,
+        this.getAttribute("api"),
+        this.authorization,
+        this.getAttribute("redirect") || "?mode=view"
+      );
+    });
   }
 
   get mode() {
@@ -120,7 +130,22 @@ export class DestinationEditor extends HTMLElement {
     return this.shadowRoot.querySelector("mu-form");
   }
 
+  _authObserver = new Observer(this, "blazing:auth");
+
+  get authorization() {
+    console.log("Authorization for user, ", this._user);
+    return (
+      this._user?.authenticated && {
+        Authorization: `Bearer ${this._user.token}`
+      }
+    );
+  }
+
   connectedCallback() {
+    this._authObserver.observe(({ user }) => {
+      this._user = user;
+    });
+
     if (this.mode === "new") return;
 
     const acc = JSON.parse(this.getAttribute("accommodation"));
@@ -136,14 +161,63 @@ export class DestinationEditor extends HTMLElement {
       "acc-checkOut": new Date(acc.checkOut),
       "acc-roomType": acc.roomType,
       "acc-rate-amount": parseFloat(acc.rate.amount),
-      "acc-rate-currency": acc.rate.currency
+      "acc-rate-currency": acc.rate.currency,
+      excursions: exc.map((x) => x.name)
     };
-
-    if (exc && exc.length) {
-      const names = exc.map((x) => x.name);
-      const array = this.form.querySelector("input-array");
-
-      array.value = names;
-    }
   }
+}
+
+function submitDestinationForm(
+  event,
+  endpoint,
+  auth,
+  redirect
+) {
+  const method = "PUT";
+  const headers = {
+    "Content-Type": "application/json",
+    ...auth
+  };
+  let json = event.detail;
+
+  const ex = (n) => {
+    const value = json[n];
+
+    delete json[n];
+    return value;
+  };
+
+  json.accommodations = [
+    {
+      name: ex("acc-name"),
+      checkIn: ex("acc-checkIn"),
+      checkOut: ex("acc-checkOut"),
+      roomType: ex("acc-roomType"),
+      rate: {
+        amount: ex("acc-rate-amount"),
+        currency: ex("acc-rate-currency")
+      }
+    }
+  ];
+
+  json.excursions = json.excursions.map((name) => ({
+    name,
+    type: "tour"
+  }));
+
+  fetch(endpoint, {
+    method,
+    headers,
+    body: JSON.stringify(json)
+  })
+    .then((res) => {
+      if (res.status !== 200)
+        throw `Form submission failed: Status ${res.status}`;
+      return res.json();
+    })
+    .then((payload) => {
+      console.log("New destination value:", payload);
+      document.location.assign(redirect);
+    })
+    .catch((err) => console.log("Error submitting form:", err));
 }

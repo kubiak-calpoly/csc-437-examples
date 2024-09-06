@@ -196,7 +196,7 @@ const excursionIcons = {
   metro: "icon-metro",
   train: "icon-train",
   walking: "icon-walk",
-  tour: "icon-camera"
+  tour: "icon-walk"
 };
 
 export class ExcursionElement extends HTMLElement {

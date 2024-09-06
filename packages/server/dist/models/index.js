@@ -17,10 +17,12 @@ var models_exports = {};
 module.exports = __toCommonJS(models_exports);
 __reExport(models_exports, require("./destination"), module.exports);
 __reExport(models_exports, require("./geo"), module.exports);
+__reExport(models_exports, require("./tour"), module.exports);
 __reExport(models_exports, require("./transportation"), module.exports);
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   ...require("./destination"),
   ...require("./geo"),
+  ...require("./tour"),
   ...require("./transportation")
 });
