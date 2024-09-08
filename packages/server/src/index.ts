@@ -1,4 +1,6 @@
 import express, { Request, Response } from "express";
+import fs from "node:fs/promises";
+import path from "path";
 import {
   DestinationPage,
   LoginPage,
@@ -58,20 +60,13 @@ app.get("/register", (req: Request, res: Response) => {
     .send(renderPage(RegistrationPage.render()));
 });
 
-app.get(
-  "/destination/:tourId/:destIndex",
-  (req: Request, res: Response) => {
-    const { tourId, destIndex } = req.params;
-
-    res
-      .set("Content-Type", "text/html")
-      .send(
-        renderPage(
-          DestinationPage.render(tourId, parseInt(destIndex))
-        )
-      );
-  }
-);
+// SPA Routes: /app/...
+app.use("/app", (_: Request, res: Response) => {
+  const indexHtml = path.resolve(staticDir, "index.html");
+  fs.readFile(indexHtml, { encoding: "utf8" }).then((html) =>
+    res.send(html)
+  );
+});
 
 // Start the server
 app.listen(port, () => {

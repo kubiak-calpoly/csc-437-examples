@@ -23,10 +23,6 @@ export class EntourageTable extends LitElement {
     const { name, people } = this.entourage;
     const rows = people || [];
 
-    const link = this.href
-      ? html` <a href=${this.href}>Chat Now...</a> `
-      : "";
-
     const renderRow = (row: Traveler) => {
       const {
         userid,
@@ -59,7 +55,6 @@ export class EntourageTable extends LitElement {
     return html`
       <section>
         <h3>${name || "Entourage"}</h3>
-        ${link}
         <table>
           <tbody>${rows.map(renderRow)}</tbody>
         </table>
