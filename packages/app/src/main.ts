@@ -1,24 +1,50 @@
-import { Auth, define } from "@calpoly/mustang";
-import { html, LitElement } from "lit";
+import {
+  Auth,
+  define,
+  History,
+  Switch
+} from "@calpoly/mustang";
+import { html } from "lit";
 import { HeaderElement } from "./components/blazing-header";
+import { HomeViewElement } from "./views/home-view";
 import { TourViewElement } from "./views/tour-view";
 
-class AppElement extends LitElement {
-  static uses = define({
-    "blazing-header": HeaderElement,
-    "tour-view": TourViewElement
-  });
-
-  protected render(): unknown {
-    return html`define({ "mu-auth": Auth.Provider,
-      "blazing-app": AppElement });
-      <article>
-        <blazing-header></blazing-header>
-      </article> `;
+const routes: Switch.Route[] = [
+  {
+    auth: "protected",
+    path: "/app/tour/:id",
+    view: (params: Switch.Params) => html`
+      <tour-view tour-id=${params.id}></tour-view>
+    `
+  },
+  {
+    auth: "protected",
+    path: "/app/entourage/:id",
+    view: (params: Switch.Params) => html`
+      <entourage-view
+        entourage-id=${params.id}></entourage-view>
+    `
+  },
+  {
+    auth: "protected",
+    path: "/app",
+    view: () => html` <home-view></home-view> `
+  },
+  {
+    path: "/",
+    redirect: "/app"
   }
-}
+];
 
 define({
   "mu-auth": Auth.Provider,
-  "blazing-app": AppElement
+  "mu-history": History.Provider,
+  "mu-switch": class AppSwitch extends Switch.Element {
+    constructor() {
+      super(routes, "blazing:history", "blazing:auth");
+    }
+  },
+  "blazing-header": HeaderElement,
+  "home-view": HomeViewElement,
+  "tour-view": TourViewElement
 });
