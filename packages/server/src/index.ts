@@ -8,6 +8,7 @@ import {
 import auth, { authenticateUser } from "./routes/auth";
 import tours from "./routes/tours";
 import travelers from "./routes/travelers";
+import { getFile, saveFile } from "./services/filesystem";
 import { connect } from "./services/mongo";
 
 const app = express();
@@ -30,6 +31,10 @@ app.use("/auth", auth);
 // API Routes:
 app.use("/api/travelers", authenticateUser, travelers);
 app.use("/api/tours", authenticateUser, tours);
+
+// Images routes
+app.post("/images", saveFile);
+app.get("/images/:id", getFile);
 
 // HTML Routes:
 app.get("/ping", (_: Request, res: Response) => {

@@ -54,9 +54,8 @@ function saveFile(req, res) {
 }
 function getFile(req, res) {
   const { id } = req.params;
-  import_promises.default.open(`${IMAGES}/${id}`).then((file) => {
-    const stream = file.createReadStream();
-    res.send(stream);
+  import_promises.default.readFile(`${IMAGES}/${id}`).then((buf) => {
+    res.send(buf);
   }).catch((error) => {
     res.status(404).send({
       message: `Not Found: ${id}`,

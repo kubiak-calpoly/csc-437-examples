@@ -32,7 +32,7 @@ const TravelerSchema = new import_mongoose.Schema(
     avatar: String,
     color: String
   },
-  { collection: "user_travelers" }
+  { collection: "user_profiles" }
 );
 const TravelerModel = (0, import_mongoose.model)(
   "Traveler",
