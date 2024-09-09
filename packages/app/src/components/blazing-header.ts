@@ -20,7 +20,6 @@ export class HeaderElement extends LitElement {
       <header>
         <h1>Blazing Travels</h1>
         <nav>
-          <p><slot> Unnamed Tour </slot></p>
           <mu-dropdown>
             <a slot="actuator">
               Hello,
@@ -70,7 +69,7 @@ export class HeaderElement extends LitElement {
       header {
         display: flex;
         flex-wrap: wrap;
-        align-items: bottom;
+        align-items: baseline;
         justify-content: space-between;
         padding: var(--size-spacing-medium);
         background-color: var(--color-background-header);
@@ -78,9 +77,6 @@ export class HeaderElement extends LitElement {
       }
       header ~ * {
         margin: var(--size-spacing-medium);
-      }
-      header p {
-        --color-link: var(--color-link-inverted);
       }
       nav {
         display: flex;
