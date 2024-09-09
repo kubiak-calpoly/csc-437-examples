@@ -25,6 +25,7 @@ console.log("Serving static files from ", staticDir);
 app.use(express.static(staticDir));
 
 // Middleware:
+app.use(express.raw({ type: "image/*", limit: "32Mb" }));
 app.use(express.json());
 
 // Auth routes
@@ -34,11 +35,11 @@ app.use("/auth", auth);
 app.use("/api/travelers", authenticateUser, travelers);
 app.use("/api/tours", authenticateUser, tours);
 
-// Images routes
+// Image routes
 app.post("/images", saveFile);
 app.get("/images/:id", getFile);
 
-// HTML Routes:
+// Page Routes:
 app.get("/ping", (_: Request, res: Response) => {
   res.send(
     `<h1>Hello!</h1>

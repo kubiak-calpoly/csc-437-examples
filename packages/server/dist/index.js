@@ -36,6 +36,7 @@ const port = process.env.PORT || 3e3;
 const staticDir = process.env.STATIC || "public";
 console.log("Serving static files from ", staticDir);
 app.use(import_express.default.static(staticDir));
+app.use(import_express.default.raw({ type: "image/*", limit: "32Mb" }));
 app.use(import_express.default.json());
 app.use("/auth", import_auth.default);
 app.use("/api/travelers", import_auth.authenticateUser, import_travelers.default);
