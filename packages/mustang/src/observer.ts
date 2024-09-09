@@ -44,6 +44,7 @@ export class Observer<T extends object> {
       ev,
       this._effects
     );
+    ev.stopPropagation();
     this._effects.forEach((obs) => obs.runEffect());
   }
 }
