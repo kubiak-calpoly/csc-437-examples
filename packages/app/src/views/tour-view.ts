@@ -1,5 +1,5 @@
-import { Auth, define, Observer } from "@calpoly/mustang";
-import { css, html, LitElement, TemplateResult } from "lit";
+import { define, View } from "@calpoly/mustang";
+import { css, html, TemplateResult } from "lit";
 import { property, state } from "lit/decorators.js";
 import {
   Destination,
@@ -12,12 +12,11 @@ import {
   ItineraryDestinationElement,
   ItineraryTransportationElement
 } from "../components/itinerary-items";
-import {
-  convertStartEndDates,
-  formatDate
-} from "../utils/dates";
+import { Msg } from "../messages";
+import { Model } from "../model";
+import { formatDate } from "../utils/dates";
 
-export class TourViewElement extends LitElement {
+export class TourViewElement extends View<Model, Msg> {
   static uses = define({
     "entourage-table": EntourageTable,
     "itinerary-destination": ItineraryDestinationElement,
@@ -28,51 +27,23 @@ export class TourViewElement extends LitElement {
   tourid = "";
 
   @state()
-  tour?: Tour;
-
-  _authObserver = new Observer<Auth.Model>(
-    this,
-    "blazing:auth"
-  );
-
-  _user = new Auth.User();
-
-  connectedCallback() {
-    super.connectedCallback();
-    this._authObserver.observe(({ user }) => {
-      if (user) {
-        this._user = user;
-      }
-      this.loadData();
-    });
+  get tour(): Tour | undefined {
+    return this.model.tour;
   }
 
-  loadData() {
-    const src = `/api/tours/${this.tourid}`;
+  constructor() {
+    super("blazing:model");
+  }
 
-    fetch(src, {
-      headers: Auth.headers(this._user)
-    })
-      .then((res: Response) => {
-        if (res.status === 200) return res.json();
-        throw `Server responded with status ${res.status}`;
-      })
-      .catch((err) =>
-        console.log("Failed to load tour data:", err)
-      )
-      .then((json: unknown) => {
-        if (json) {
-          console.log("Tour:", json);
-          let tour: Tour = convertStartEndDates<Tour>(json);
-          tour.destinations = tour.destinations.map(
-            convertStartEndDates<Destination>
-          );
-          this.tour = tour;
-        }
-      })
-      .catch((err) =>
-        console.log("Failed to convert tour data:", err)
-      );
+  attributeChangedCallback(
+    name: string,
+    old: string | null,
+    value: string | null
+  ): void {
+    super.attributeChangedCallback(name, old, value);
+
+    if (name === "tour-id" && old !== value && value)
+      this.dispatchMessage(["tour/select", { tourid: value }]);
   }
 
   render(): TemplateResult {

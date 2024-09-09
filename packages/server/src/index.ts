@@ -2,7 +2,6 @@ import express, { Request, Response } from "express";
 import fs from "node:fs/promises";
 import path from "path";
 import {
-  DestinationPage,
   LoginPage,
   RegistrationPage,
   renderPage

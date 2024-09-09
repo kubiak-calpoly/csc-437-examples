@@ -54,7 +54,9 @@ export class EntourageTable extends LitElement {
 
     return html`
       <section>
-        <h3>${name || "Entourage"}</h3>
+        <a href="${this.href}"
+          ><h3>${name || "Entourage"}</h3></a
+        >
         <table>
           <tbody>${rows.map(renderRow)}</tbody>
         </table>
