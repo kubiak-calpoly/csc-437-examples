@@ -29,6 +29,11 @@ export class DestinationForm extends HTMLElement {
         to
         <input type="date" name="endDate" />
       </label>
+      <label>
+        <span>Featured Image</span>
+        <input type="file"/>
+        <img src=""/>
+      </label>
       <fieldset>
         <h3>Accommodation</h3>
         <label>
@@ -114,12 +119,23 @@ export class DestinationForm extends HTMLElement {
 
     this.addEventListener("mu-form:submit", (event) => {
       submitDestinationForm(
-        event,
+        { ...event.detail, featuredImage: this.imageUrl },
         this.getAttribute("api"),
         this.authorization,
         this.getAttribute("redirect") || "?mode=view"
       );
     });
+
+    this._imgInput = this.shadowRoot.querySelector(
+      'input[type="file"]'
+    );
+    this._imgPreview = this.shadowRoot.querySelector(
+      'input[type="file"] + img'
+    );
+
+    this._imgInput.addEventListener("change", (event) =>
+      this._handleFileSelected(event)
+    );
   }
 
   get mode() {
@@ -128,6 +144,16 @@ export class DestinationForm extends HTMLElement {
 
   get form() {
     return this.shadowRoot.querySelector("mu-form");
+  }
+
+  _imageUrl = "";
+  get imageUrl() {
+    return this._imageUrl;
+  }
+
+  set imageUrl(url) {
+    this._imageUrl = url;
+    this._imgPreview.setAttribute("src", url);
   }
 
   _authObserver = new Observer(this, "blazing:auth");
@@ -155,7 +181,6 @@ export class DestinationForm extends HTMLElement {
       name: this.getAttribute("name"),
       startDate: new Date(this.getAttribute("startDate")),
       endDate: new Date(this.getAttribute("endDate")),
-      featuredImage: this.getAttribute("featuredImage"),
       "acc-name": acc.name,
       "acc-checkIn": new Date(acc.checkIn),
       "acc-checkOut": new Date(acc.checkOut),
@@ -164,21 +189,53 @@ export class DestinationForm extends HTMLElement {
       "acc-rate-currency": acc.rate.currency,
       excursions: exc.map((x) => x.name)
     };
+
+    this.imageUrl = this.getAttribute("featuredImage");
+  }
+
+  _handleFileSelected(event) {
+    const target = event.target;
+    const selectedFile = target.files[0];
+
+    const reader = new Promise((resolve, reject) => {
+      const fr = new FileReader();
+      fr.onload = () => resolve(fr.result);
+      fr.onerror = (err) => reject(err);
+      fr.readAsArrayBuffer(selectedFile);
+    });
+
+    reader.then((buffer) => {
+      const { name, size, type } = selectedFile;
+      const query = new URLSearchParams({ filename: name });
+      let url = new URL("/images", document.location.origin);
+      url.search = query.toString();
+
+      fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": type,
+          "Content-Length": size.toString()
+        },
+        body: buffer
+      })
+        .then((res) => {
+          if (res.status === 201) return res.json();
+          else throw res.status;
+        })
+        .then((json) => {
+          if (json) this.imageUrl = json.url;
+          else throw "No JSON response";
+        });
+    });
   }
 }
 
-function submitDestinationForm(
-  event,
-  endpoint,
-  auth,
-  redirect
-) {
+function submitDestinationForm(json, endpoint, auth, redirect) {
   const method = "PUT";
   const headers = {
     "Content-Type": "application/json",
     ...auth
   };
-  let json = event.detail;
 
   const ex = (n) => {
     const value = json[n];

@@ -8,6 +8,7 @@ import {
 import auth, { authenticateUser } from "./routes/auth";
 import tours from "./routes/tours";
 import travelers from "./routes/travelers";
+import { getFile, saveFile } from "./services/filesystem";
 import { connect } from "./services/mongo";
 
 const app = express();
@@ -22,6 +23,7 @@ console.log("Serving static files from ", staticDir);
 app.use(express.static(staticDir));
 
 // Middleware:
+app.use(express.raw({ type: "image/*", limit: "32Mb" }));
 app.use(express.json());
 
 // Auth routes
@@ -31,7 +33,11 @@ app.use("/auth", auth);
 app.use("/api/travelers", authenticateUser, travelers);
 app.use("/api/tours", authenticateUser, tours);
 
-// HTML Routes:
+// Images routes
+app.post("/images", saveFile);
+app.get("/images/:id", getFile);
+
+// Page Routes:
 app.get("/ping", (_: Request, res: Response) => {
   res.send(
     `<h1>Hello!</h1>
