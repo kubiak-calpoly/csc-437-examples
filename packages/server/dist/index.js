@@ -22,6 +22,9 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 var import_express = __toESM(require("express"));
+var import_promises = __toESM(require("node:fs/promises"));
+var import_path = __toESM(require("path"));
+var import_pages = require("./pages/index");
 var import_auth = __toESM(require("./routes/auth"));
 var import_tours = __toESM(require("./routes/tours"));
 var import_travelers = __toESM(require("./routes/travelers"));
@@ -38,7 +41,7 @@ app.use(import_express.default.json());
 app.use("/auth", import_auth.default);
 app.use("/api/travelers", import_auth.authenticateUser, import_travelers.default);
 app.use("/api/tours", import_auth.authenticateUser, import_tours.default);
-app.post("/images", import_auth.authenticateUser, import_filesystem.saveFile);
+app.post("/images", import_filesystem.saveFile);
 app.get("/images/:id", import_filesystem.getFile);
 app.get("/ping", (_, res) => {
   res.send(
@@ -46,6 +49,18 @@ app.get("/ping", (_, res) => {
      <p>Server is up and running.</p>
      <p>Serving static files from <code>${staticDir}</code>.</p>
     `
+  );
+});
+app.get("/login", (req, res) => {
+  res.set("Content-Type", "text/html").send((0, import_pages.renderPage)(import_pages.LoginPage.render()));
+});
+app.get("/register", (req, res) => {
+  res.set("Content-Type", "text/html").send((0, import_pages.renderPage)(import_pages.RegistrationPage.render()));
+});
+app.use("/app", (_, res) => {
+  const indexHtml = import_path.default.resolve(staticDir, "index.html");
+  import_promises.default.readFile(indexHtml, { encoding: "utf8" }).then(
+    (html) => res.send(html)
   );
 });
 app.listen(port, () => {
