@@ -1,61 +1,44 @@
-import { Auth, Observer } from "@calpoly/mustang";
-import { css, html, LitElement, TemplateResult } from "lit";
+import { Auth, Observer, View } from "@calpoly/mustang";
+import { css, html, TemplateResult } from "lit";
 import { state } from "lit/decorators.js";
 import { Tour } from "server/models";
+import { Msg } from "../messages";
+import { Model } from "../model";
 import resetCSS from "../styles/reset.css";
-import {
-  convertStartEndDates,
-  formatDate
-} from "../utils/dates";
+import { formatDate } from "../utils/dates";
 
-export class HomeViewElement extends LitElement {
+export class HomeViewElement extends View<Model, Msg> {
   @state()
-  tourIndex = new Array<Tour>();
+  get tourIndex() {
+    return this.model.tourIndex;
+  }
+
+  constructor() {
+    super("blazing:model");
+  }
 
   _authObserver = new Observer<Auth.Model>(
     this,
     "blazing:auth"
   );
 
-  _user = new Auth.User();
-
   connectedCallback() {
     super.connectedCallback();
+    console.log("ConnectedCallback", this);
     this._authObserver.observe(({ user }) => {
       if (user) {
-        this._user = user;
+        console.log("requesting index", user);
+        this.dispatchMessage([
+          "tour/index",
+          { userid: user.username }
+        ]);
       }
-      this.loadData();
     });
   }
 
-  loadData() {
-    const src = "/api/tours";
-
-    fetch(src, {
-      headers: Auth.headers(this._user)
-    })
-      .then((res: Response) => {
-        if (res.status === 200) return res.json();
-        throw `Server responded with status ${res.status}`;
-      })
-      .catch((err) =>
-        console.log("Failed to load tour data:", err)
-      )
-      .then((json: unknown) => {
-        if (json) {
-          console.log("Tours:", json);
-          const { data } = json as { data: Array<Tour> };
-          const tours = data.map(convertStartEndDates<Tour>);
-          this.tourIndex = tours;
-        }
-      })
-      .catch((err) =>
-        console.log("Failed to convert tour data:", err)
-      );
-  }
-
   render(): TemplateResult {
+    const index = this.tourIndex || [];
+
     const renderItem = (t: Tour) => {
       const { name, startDate, endDate } = t;
       const { _id } = t as unknown as { _id: string };
@@ -85,7 +68,7 @@ export class HomeViewElement extends LitElement {
         <header>
           <h2>Your Trips</h2>
         </header>
-        <dl>${this.tourIndex.map(renderItem)}</dl>
+        <dl>${index.map(renderItem)}</dl>
       </main>
     `;
   }

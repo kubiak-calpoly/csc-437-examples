@@ -29,7 +29,6 @@ export class EntourageViewElement extends View<Model, Msg> {
     newValue: string
   ) {
     super.attributeChangedCallback(name, oldValue, newValue);
-    console.log("ATTRIBUTE CHANGED", name, oldValue, newValue);
     if (
       name === "tour-id" &&
       oldValue !== newValue &&
@@ -48,8 +47,6 @@ export class EntourageViewElement extends View<Model, Msg> {
   render() {
     const { entourage } = this.tour || {};
     const tourName = this.tour?.name;
-
-    console.log("RENDER", this.tourid, this.tour);
 
     if (entourage) {
       return html`

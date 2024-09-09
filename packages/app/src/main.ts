@@ -26,8 +26,7 @@ const routes: Switch.Route[] = [
     auth: "protected",
     path: "/app/entourage/:id",
     view: (params: Switch.Params) => html`
-      <entourage-view
-        entourage-id=${params.id}></entourage-view>
+      <entourage-view tour-id=${params.id}></entourage-view>
     `
   },
   {
