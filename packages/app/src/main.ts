@@ -10,11 +10,31 @@ import { HeaderElement } from "./components/blazing-header";
 import { Msg } from "./messages";
 import { init, Model } from "./model";
 import update from "./update";
+import { DestinationViewElement } from "./views/destination-view";
 import { EntourageViewElement } from "./views/entourage-view";
 import { HomeViewElement } from "./views/home-view";
 import { TourViewElement } from "./views/tour-view";
 
 const routes: Switch.Route[] = [
+  {
+    auth: "protected",
+    path: "/app/destination/:tourid/:index/edit",
+    view: (params: Switch.Params) => html`
+      <destination-view
+        edit
+        tour-id=${params.tourid}
+        index=${params.index}></destination-view>
+    `
+  },
+  {
+    auth: "protected",
+    path: "/app/destination/:tourid/:index",
+    view: (params: Switch.Params) => html`
+      <destination-view
+        tour-id=${params.tourid}
+        index=${params.index}></destination-view>
+    `
+  },
   {
     auth: "protected",
     path: "/app/tour/:id",
@@ -57,6 +77,7 @@ define({
     }
   },
   "blazing-header": HeaderElement,
+  "destination-view": DestinationViewElement,
   "entourage-view": EntourageViewElement,
   "home-view": HomeViewElement,
   "tour-view": TourViewElement

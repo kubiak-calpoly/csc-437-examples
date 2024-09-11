@@ -14,11 +14,11 @@ declare type ApplyMap<M> = (fn: MapFn<M>) => void;
 declare namespace Auth {
     export {
         AuthenticatedUser,
-        AuthProvider as Provider,
-        APIUser as User,
         dispatch_2 as dispatch,
         authHeaders as headers,
         tokenPayload as payload,
+        AuthProvider as Provider,
+        APIUser as User,
         AuthSuccessful,
         AuthModel as Model,
         AuthMsg as Msg,

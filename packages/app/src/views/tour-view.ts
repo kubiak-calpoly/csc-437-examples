@@ -66,7 +66,7 @@ export class TourViewElement extends View<Model, Msg> {
           start-date=${startDate}
           end-date=${endDate}
           img-src=${featuredImage}
-          href="/destination/${this.tourid}/${i}">
+          href="/app/destination/${this.tourid}/${i}">
           ${name}
         </itinerary-destination>
       `;

@@ -25,6 +25,33 @@ export default function update(
           apply((model) => ({ ...model, tour }))
       );
       break;
+    case "tour/save-destination":
+      saveDestination(message[1], user)
+        .then((dest: Destination | undefined) => {
+          const { index } = message[1];
+          apply((model) => {
+            const tour = model.tour;
+            if (tour && dest) {
+              let destinations = tour.destinations.slice();
+              destinations.splice(index, 1, dest);
+              return {
+                ...model,
+                tour: { ...tour, destinations }
+              };
+            } else {
+              return model;
+            }
+          });
+        })
+        .then(() => {
+          const { onSuccess } = message[1];
+          if (onSuccess) onSuccess();
+        })
+        .catch((error: Error) => {
+          const { onFailure } = message[1];
+          if (onFailure) onFailure(error);
+        });
+      break;
     default:
       const unhandled: never = message[0];
       throw new Error(`Unhandled message "${unhandled}"`);
@@ -76,5 +103,41 @@ function selectTour(msg: { tourid: string }, user: Auth.User) {
         );
         return tour;
       }
+    });
+}
+
+function saveDestination(
+  msg: {
+    tourid: string;
+    index: number;
+    destination: Destination;
+  },
+  user: Auth.User
+) {
+  return fetch(
+    `/api/tours/${msg.tourid}/destinations/${msg.index}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        ...Auth.headers(user)
+      },
+      body: JSON.stringify(msg.destination)
+    }
+  )
+    .then((response: Response) => {
+      if (response.status === 200) return response.json();
+      else
+        throw new Error(
+          `Failed to save destination ${msg.index}`
+        );
+    })
+    .then((json: unknown) => {
+      if (json) {
+        return convertStartEndDates<Destination>(
+          json as Destination
+        );
+      }
+      return undefined;
     });
 }

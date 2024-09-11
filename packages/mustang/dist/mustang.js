@@ -284,8 +284,10 @@ class AuthProvider extends Provider {
     return this.getAttribute("redirect") || void 0;
   }
   constructor() {
+    const user = AuthenticatedUser.authenticateFromLocalStorage();
     super({
-      user: AuthenticatedUser.authenticateFromLocalStorage()
+      user,
+      token: user.authenticated ? user.token : void 0
     });
   }
   connectedCallback() {
@@ -511,12 +513,13 @@ let FormElement$1 = (_a = class extends HTMLElement {
         form {
           display: grid;
           gap: var(--size-spacing-medium);
-          grid-template-columns: [start] 1fr [label] 1fr [input] 3fr 1fr [end];
+          grid-template-columns: [start label] 2fr [input] 3fr 1fr [end];
         }
         ::slotted(label) {
           display: grid;
           grid-column: label / end;
           grid-template-columns: subgrid;
+          align-items: baseline;
           gap: var(--size-spacing-medium);
         }
         ::slotted(fieldset) {
@@ -536,7 +539,7 @@ function populateForm$1(json, formBody) {
   const entries = Object.entries(json);
   for (const [key, val] of entries) {
     const el = formBody.querySelector(`[name="${key}"]`);
-    if (el) {
+    if (el && typeof val !== "undefined") {
       const input = el;
       switch (input.type) {
         case "checkbox":
@@ -690,6 +693,7 @@ class Observer {
       ev,
       this._effects
     );
+    ev.stopPropagation();
     this._effects.forEach((obs) => obs.runEffect());
   }
 }

@@ -25,12 +25,13 @@ class FormElement extends HTMLElement {
         form {
           display: grid;
           gap: var(--size-spacing-medium);
-          grid-template-columns: [start] 1fr [label] 1fr [input] 3fr 1fr [end];
+          grid-template-columns: [start label] 2fr [input] 3fr 1fr [end];
         }
         ::slotted(label) {
           display: grid;
           grid-column: label / end;
           grid-template-columns: subgrid;
+          align-items: baseline;
           gap: var(--size-spacing-medium);
         }
         ::slotted(fieldset) {
@@ -82,7 +83,7 @@ function populateForm(json: object, formBody: HTMLElement) {
   for (const [key, val] of entries) {
     const el = formBody.querySelector(`[name="${key}"]`);
 
-    if (el) {
+    if (el && typeof val !== "undefined") {
       const input = el as HTMLInputElement;
       switch (input.type) {
         case "checkbox":
