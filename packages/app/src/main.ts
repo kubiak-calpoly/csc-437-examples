@@ -13,6 +13,7 @@ import update from "./update";
 import { DestinationViewElement } from "./views/destination-view";
 import { EntourageViewElement } from "./views/entourage-view";
 import { HomeViewElement } from "./views/home-view";
+import { ProfileViewElement } from "./views/profile-view";
 import { TourViewElement } from "./views/tour-view";
 
 const routes: Switch.Route[] = [
@@ -35,11 +36,26 @@ const routes: Switch.Route[] = [
         index=${params.index}></destination-view>
     `
   },
+
   {
     auth: "protected",
     path: "/app/tour/:id",
     view: (params: Switch.Params) => html`
       <tour-view tour-id=${params.id}></tour-view>
+    `
+  },
+  {
+    auth: "protected",
+    path: "/app/profile/:id/edit",
+    view: (params: Switch.Params) => html`
+      <profile-view edit user-id=${params.id}></profile-view>
+    `
+  },
+  {
+    auth: "protected",
+    path: "/app/profile/:id",
+    view: (params: Switch.Params) => html`
+      <profile-view user-id=${params.id}></profile-view>
     `
   },
   {
@@ -80,5 +96,6 @@ define({
   "destination-view": DestinationViewElement,
   "entourage-view": EntourageViewElement,
   "home-view": HomeViewElement,
+  "profile-view": ProfileViewElement,
   "tour-view": TourViewElement
 });

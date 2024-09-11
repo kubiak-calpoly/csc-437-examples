@@ -1,6 +1,16 @@
-import { Destination } from "server/models";
+import { Destination, Traveler } from "server/models";
 
 export type Msg =
+  | ["profile/select", { userid: string }]
+  | [
+    "profile/save",
+    {
+      userid: string;
+      profile: Traveler;
+      onSuccess?: () => void;
+      onFailure?: (err: Error) => void;
+    }
+  ]
   | ["tour/index", { userid: string }]
   | ["tour/select", { tourid: string }]
   | [
