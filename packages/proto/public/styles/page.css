@@ -53,6 +53,7 @@ h6 {
 dt {
   font-weight: var(--size-type-body);
 }
+summary,
 h3,
 a {
   color: var(--color-accent);
