@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <script type="importmap">
+      {
+        "imports": {
+          "@calpoly/mustang": "https://unpkg.com/@calpoly/mustang"
+        }
+      }
+    </script>
+    <script type="module">
+      import { html } from "@calpoly/mustang";
+
+      function sayHello(element) {
+        const fragment = html`
+          <h1>Hello, <em>world!</em></h1>
+          How do you do?
+        `;
+
+        element.append(fragment);
+      }
+
+      window.fns = { sayHello };
+    </script>
+  </head>
+  <body>
+    <p>
+      <button onclick="fns.sayHello(event.target.closest('p'))">
+        Say it!
+      </button>
+    </p>
+  </body>
+</html>
