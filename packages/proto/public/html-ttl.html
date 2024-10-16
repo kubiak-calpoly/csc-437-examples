@@ -10,7 +10,12 @@
       }
     </script>
     <script type="module">
-      import { html } from "@calpoly/mustang";
+      import {
+        define,
+        html,
+        shadow,
+        css
+      } from "@calpoly/mustang";
 
       function sayHello(element) {
         const fragment = html`
@@ -22,9 +27,49 @@
       }
 
       window.fns = { sayHello };
+
+      class HelloWorldElement extends HTMLElement {
+        static template = html`
+          <template>
+            <h1>
+              Hello, <slot class="fancy"><em>World</em></slot
+              >!</h1
+            >
+          </template>
+        `;
+        static styles = css`
+          h1 {
+            font: var(--size-type-xlarge)
+              var(--font-family-display);
+          }
+
+          .fancy {
+            font-family: var(--font-family-body);
+            font-style: italic;
+            color: var(--color-accent);
+          }
+
+          ::slotted(*) {
+            display: inline;
+          }
+        `; // see next slide
+
+        constructor() {
+          super();
+          shadow(this)
+            .template(HelloWorldElement.template)
+            .styles(HelloWorldElement.styles);
+        }
+      }
+
+      define({ "hello-world": HelloWorldElement });
     </script>
+    <link rel="stylesheet" href="./styles/tokens.css" />
   </head>
   <body>
+    <hello-world>
+      <h2>CSC 437</h2>
+    </hello-world>
     <p>
       <button onclick="fns.sayHello(event.target.closest('p'))">
         Say it!
