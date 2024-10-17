@@ -1,5 +1,9 @@
 @import "timings.css";
 
+a[onclick] {
+  cursor: pointer;
+}
+
 .itinerary {
   display: grid;
   grid-template-columns: [start] auto [header] 3fr [highlights] 2fr [end];
