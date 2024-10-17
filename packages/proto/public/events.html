@@ -73,6 +73,7 @@
       const page = document.body;
 
       page.addEventListener("change", (event) => {
+        console.log("Changed:", event.target);
         const checked = event.target.checked;
         page.classList.toggle("dark-mode", checked);
       });
@@ -297,6 +298,14 @@
           <li><a href="person.html">Isabel Nootin</a></li>
           <li><a href="person.html">Pi Mondrian</a></li>
         </ul>
+      </section>
+
+      <section>
+        <label>Where do you want to go today?
+          <input />
+        </label>
+      </section>
+
       </section>
     </main>
   </body>
