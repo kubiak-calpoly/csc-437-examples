@@ -72,11 +72,20 @@
     <script>
       const page = document.body;
 
-      page.addEventListener("change", (event) => {
-        console.log("Changed:", event.target);
-        const checked = event.target.checked;
+      page.addEventListener("dark-mode:toggle", (event) => {
+        const checked = event.detail.checked;
         page.classList.toggle("dark-mode", checked);
       });
+
+      function toggleDarkMode(target, checked) {
+       const customEvent = new CustomEvent(
+         "dark-mode:toggle", {
+          bubbles: true,
+          detail: { checked },
+          });
+
+          target.dispatchEvent(customEvent);
+      }
     </script>
     <header>
       <h1>Blazing Travels</h1>
