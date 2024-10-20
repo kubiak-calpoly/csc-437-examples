@@ -1,10 +1,20 @@
 {
   "name": "@calpoly/mustang",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "",
   "main": "dist/mustang.js",
   "type": "module",
-  "types": "./dist/mustang.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/mustang.js",
+      "types": "./dist/mustang.d.ts"
+    },
+    "./server": {
+      "require": "./dist/server.cjs",
+      "import": "./dist/server.js",
+      "types": "./dist/server.d.ts"
+    }
+  },
   "repository": "https://github.com/kubiak-calpoly/csc-437-examples/tree/main/packages/mustang",
   "scripts": {
     "build": "npx vite build",

@@ -22,6 +22,7 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 var import_express = __toESM(require("express"));
+var import_mockdata = require("./mockdata");
 var import_pages = require("./pages");
 const app = (0, import_express.default)();
 const port = process.env.PORT || 3e3;
@@ -40,99 +41,10 @@ app.get(
   "/destination/:destId",
   (req, res) => {
     const { destId } = req.params;
-    const destination = getDestination(destId);
-    res.set("Content-Type", "text/html").send((0, import_pages.renderPage)(import_pages.DestinationPage.render(destination)));
+    const data = (0, import_mockdata.getDestination)(destId);
+    res.set("Content-Type", "text/html").send(import_pages.DestinationPage.render(data));
   }
 );
-function getDestination(_) {
-  return {
-    tour: {
-      name: "12 Days in Italy"
-    },
-    name: "Venice",
-    startDate: /* @__PURE__ */ new Date("2024-10-14"),
-    endDate: /* @__PURE__ */ new Date("2024-10-17"),
-    location: { lat: 45.4375, lon: 12.335833 },
-    featuredImage: "/images/full/Canal_Grande_Chiesa_della_Salute_e_Dogana_dal_ponte_dell_Accademia.jpg",
-    accommodations: [
-      {
-        name: "Locanda San Barnaba",
-        checkIn: /* @__PURE__ */ new Date("2024-10-14"),
-        checkOut: /* @__PURE__ */ new Date("2024-10-17"),
-        persons: 4,
-        roomType: "2Q",
-        rate: {
-          amount: 190,
-          currency: "EUR"
-        }
-      }
-    ],
-    excursions: [
-      {
-        name: "Vaporetto trip to Murano",
-        type: "boat"
-      },
-      {
-        name: "Walking tour of Piazza San Marco",
-        type: "walking"
-      }
-    ],
-    inbound: {
-      type: "air",
-      startDate: /* @__PURE__ */ new Date("2024-10-13"),
-      endDate: /* @__PURE__ */ new Date("2024-10-14"),
-      segments: [
-        {
-          provider: "United",
-          name: "UA926",
-          departure: {
-            name: "San Francisco",
-            station: "SFO",
-            time: /* @__PURE__ */ new Date("2024-10-13 19:05:00-0800")
-          },
-          arrival: {
-            name: "Frankfurt",
-            station: "FRA",
-            time: /* @__PURE__ */ new Date("2024-10-14 14:55:00+0100")
-          }
-        },
-        {
-          provider: "Lufthansa",
-          name: "LH330",
-          departure: {
-            name: "Frankfurt",
-            station: "FRA",
-            time: /* @__PURE__ */ new Date("2024-10-14 17:15:00+0100")
-          },
-          arrival: {
-            name: "Venice",
-            station: "VCE",
-            time: /* @__PURE__ */ new Date("2024-10-14 18:30:00+0100")
-          }
-        }
-      ]
-    },
-    outbound: {
-      type: "rail",
-      startDate: /* @__PURE__ */ new Date("2024-10-18"),
-      segments: [
-        {
-          name: "9407 Frecciarossa",
-          departure: {
-            name: "Venice",
-            station: "Venezia S. Lucia",
-            time: /* @__PURE__ */ new Date("2024-10-18 09:25:00+0100")
-          },
-          arrival: {
-            name: "Florence",
-            station: "Firenze S.M.N.",
-            time: /* @__PURE__ */ new Date("2024-10-18 11:30:00+0100")
-          }
-        }
-      ]
-    }
-  };
-}
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
