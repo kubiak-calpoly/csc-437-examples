@@ -1,14 +1,16 @@
+import { css, html } from "@calpoly/mustang/server";
 import {
   Accommodation,
   Destination,
   Excursion,
   Transportation
 } from "../models";
+import renderPage from "./renderPage";
 
 const staticParts = {
   stylesheets: ["/styles/destination.css"],
   styles: [
-    `main.page {
+    css`main.page {
         --page-grids: 8;
         grid-template-areas:
           "hdr hdr img img img img img img"
@@ -41,14 +43,14 @@ const staticParts = {
 };
 
 const secondsPerDay = 24 * 60 * 60 * 1000;
+
+export type DestinationPageData = Destination & {
+  tour: { name: string };
+  inbound: Transportation;
+  outbound: Transportation;
+};
 export class DestinationPage {
-  static render(
-    dest: Destination & {
-      tour: { name: string };
-      inbound: Transportation;
-      outbound: Transportation;
-    }
-  ) {
+  static render(data: DestinationPageData) {
     const {
       name,
       startDate,
@@ -57,42 +59,43 @@ export class DestinationPage {
       tour,
       inbound,
       outbound
-    } = dest;
+    } = data;
     const nights =
       endDate.valueOf() / secondsPerDay -
       startDate.valueOf() / secondsPerDay;
-    const accommodationComponent = (dest.accommodations || [])
-      .map(renderAccommodation)
-      .join("\n");
-    const excursionList = dest.excursions
-      ? `<ul class="excursions">
-        ${dest.excursions.map(renderExcursion).join("\n")}
+    const accommodationComponent = (
+      data.accommodations || []
+    ).map(renderAccommodation);
+    const excursionList = data.excursions
+      ? html`<ul class="excursions">
+          ${data.excursions.map(renderExcursion)}
         </ul>`
       : "";
-    const transportationFooter = `<footer>
+    const transportationFooter = html`<footer>
       ${renderTransportation(inbound, "in")}
       ${renderTransportation(outbound, "out")}
     </footer>`;
-    return {
-      ...staticParts,
-      body: `<body>
-      <blz-header>
-        <a href="../">&larr; Tour: ${tour.name}</a>
-      </blz-header>
-      <main class="page">
-        <section class="destination">
-          <header>
-            <h2>${name}</h2>
-            <p>${nights} nights</p>
-          </header>
-          <img src="${featuredImage}" />
-          ${accommodationComponent}
-          ${excursionList}
-          ${transportationFooter}
-        </section>
-      </main>
-    </body>`
-    };
+    return renderPage({
+      body: html`<body>
+        <blz-header>
+          <a href="../">&larr; Tour: ${tour.name}</a>
+        </blz-header>
+        <main class="page">
+          <section class="destination">
+            <header>
+              <h2>${name}</h2>
+              <p>${nights} nights</p>
+            </header>
+            ${featuredImage
+          ? html`<img src="${featuredImage}" />`
+          : ""}
+            ${accommodationComponent} ${excursionList}
+            ${transportationFooter}
+          </section>
+        </main>
+      </body>`,
+      ...staticParts
+    });
   }
 }
 
@@ -123,13 +126,13 @@ function renderAccommodation(acc: Accommodation) {
     return `${d} ${m}`;
   };
 
-  return `
+  return html`
     <blz-accommodation>
       <span slot="name">${name}</span>
-      <time slot="check-in" datetime="${checkIn}">
+      <time slot="check-in" datetime="${checkIn.toString()}">
         ${formatDate(checkIn)}
       </time>
-      <time slot="check-out" datetime="${checkOut}">
+      <time slot="check-out" datetime="${checkOut.toString()}">
         ${formatDate(checkOut)}
       </time>
       <span slot="room-type">${roomType}</span>
@@ -137,7 +140,7 @@ function renderAccommodation(acc: Accommodation) {
       <span slot="room-rate"> ${rate.amount}</span>
       <span slot="currency">${rate.currency}</span>
     </blz-accommodation>
-    `;
+  `;
 }
 
 const excursionIcons = {
@@ -153,7 +156,7 @@ function renderExcursion(exc: Excursion) {
   const { name, type } = exc;
   const icon = excursionIcons[type || "tour"];
 
-  return `<li>
+  return html`<li>
     <svg class="icon">
       <use xlink:href="/icons/destination.svg#${icon}" />
     </svg>
@@ -184,28 +187,23 @@ function renderTransportation(
       ? segments.at(-1)?.arrival
       : segments[0]?.departure;
 
-  return `<a class="${dirClass} ${type}" href="#">
-      <svg class="icon">
-        <use
-          xlink:href="/icons/transportation.svg#${icon}" />
-      </svg>
-      <dl>
-        <dt>
-    ${dir === "in" ? "Arrive" : "Depart"}
-    ${
-      name
-        ? dir === "in"
-          ? `from ${name}`
-          : `for ${name}`
-        : ""
-    }
-        </dt>
-    ${
-      endpoint
-        ? `<dd>${endpoint.time.toUTCString()}</dd>
-         <dd>${endpoint.station}</dd>`
-        : ""
-    }
-      </dl>
-    </a>`;
+  return html`<a class="${dirClass} ${type}" href="#">
+    <svg class="icon">
+      <use xlink:href="/icons/transportation.svg#${icon}" />
+    </svg>
+    <dl>
+      <dt>
+        ${dir === "in" ? "Arrive" : "Depart"}
+        ${name
+      ? dir === "in"
+        ? `from ${name}`
+        : `for ${name}`
+      : ""}
+      </dt>
+      ${endpoint
+      ? html`<dd>${endpoint.time.toUTCString()}</dd>
+            <dd>${endpoint.station}</dd>`
+      : ""}
+    </dl>
+  </a>`;
 }

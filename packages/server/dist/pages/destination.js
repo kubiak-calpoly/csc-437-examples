@@ -1,25 +1,10 @@
 "use strict";
+var __create = Object.create;
 var __defProp = Object.defineProperty;
-var __defProps = Object.defineProperties;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
 var __getOwnPropNames = Object.getOwnPropertyNames;
-var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __propIsEnum = Object.prototype.propertyIsEnumerable;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __spreadValues = (a, b) => {
-  for (var prop in b || (b = {}))
-    if (__hasOwnProp.call(b, prop))
-      __defNormalProp(a, prop, b[prop]);
-  if (__getOwnPropSymbols)
-    for (var prop of __getOwnPropSymbols(b)) {
-      if (__propIsEnum.call(b, prop))
-        __defNormalProp(a, prop, b[prop]);
-    }
-  return a;
-};
-var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
 var __export = (target, all) => {
   for (var name in all)
     __defProp(target, name, { get: all[name], enumerable: true });
@@ -32,16 +17,26 @@ var __copyProps = (to, from, except, desc) => {
   }
   return to;
 };
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var destination_exports = {};
 __export(destination_exports, {
   DestinationPage: () => DestinationPage
 });
 module.exports = __toCommonJS(destination_exports);
+var import_server = require("@calpoly/mustang/server");
+var import_renderPage = __toESM(require("./renderPage"));
 const staticParts = {
   stylesheets: ["/styles/destination.css"],
   styles: [
-    `main.page {
+    import_server.css`main.page {
         --page-grids: 8;
         grid-template-areas:
           "hdr hdr img img img img img img"
@@ -74,7 +69,7 @@ const staticParts = {
 };
 const secondsPerDay = 24 * 60 * 60 * 1e3;
 class DestinationPage {
-  static render(dest) {
+  static render(data) {
     const {
       name,
       startDate,
@@ -83,34 +78,34 @@ class DestinationPage {
       tour,
       inbound,
       outbound
-    } = dest;
+    } = data;
     const nights = endDate.valueOf() / secondsPerDay - startDate.valueOf() / secondsPerDay;
-    const accommodationComponent = (dest.accommodations || []).map(renderAccommodation).join("\n");
-    const excursionList = dest.excursions ? `<ul class="excursions">
-        ${dest.excursions.map(renderExcursion).join("\n")}
+    const accommodationComponent = (data.accommodations || []).map(renderAccommodation);
+    const excursionList = data.excursions ? import_server.html`<ul class="excursions">
+          ${data.excursions.map(renderExcursion)}
         </ul>` : "";
-    const transportationFooter = `<footer>
+    const transportationFooter = import_server.html`<footer>
       ${renderTransportation(inbound, "in")}
       ${renderTransportation(outbound, "out")}
     </footer>`;
-    return __spreadProps(__spreadValues({}, staticParts), {
-      body: `<body>
-      <blz-header>
-        <a href="../">&larr; Tour: ${tour.name}</a>
-      </blz-header>
-      <main class="page">
-        <section class="destination">
-          <header>
-            <h2>${name}</h2>
-            <p>${nights} nights</p>
-          </header>
-          <img src="${featuredImage}" />
-          ${accommodationComponent}
-          ${excursionList}
-          ${transportationFooter}
-        </section>
-      </main>
-    </body>`
+    return (0, import_renderPage.default)({
+      body: import_server.html`<body>
+        <blz-header>
+          <a href="../">&larr; Tour: ${tour.name}</a>
+        </blz-header>
+        <main class="page">
+          <section class="destination">
+            <header>
+              <h2>${name}</h2>
+              <p>${nights} nights</p>
+            </header>
+            ${featuredImage ? import_server.html`<img src="${featuredImage}" />` : ""}
+            ${accommodationComponent} ${excursionList}
+            ${transportationFooter}
+          </section>
+        </main>
+      </body>`,
+      ...staticParts
     });
   }
 }
@@ -136,13 +131,13 @@ function renderAccommodation(acc) {
     const d = dt.getUTCDate();
     return `${d} ${m}`;
   };
-  return `
+  return import_server.html`
     <blz-accommodation>
       <span slot="name">${name}</span>
-      <time slot="check-in" datetime="${checkIn}">
+      <time slot="check-in" datetime="${checkIn.toString()}">
         ${formatDate(checkIn)}
       </time>
-      <time slot="check-out" datetime="${checkOut}">
+      <time slot="check-out" datetime="${checkOut.toString()}">
         ${formatDate(checkOut)}
       </time>
       <span slot="room-type">${roomType}</span>
@@ -150,7 +145,7 @@ function renderAccommodation(acc) {
       <span slot="room-rate"> ${rate.amount}</span>
       <span slot="currency">${rate.currency}</span>
     </blz-accommodation>
-    `;
+  `;
 }
 const excursionIcons = {
   boat: "icon-boat",
@@ -163,7 +158,7 @@ const excursionIcons = {
 function renderExcursion(exc) {
   const { name, type } = exc;
   const icon = excursionIcons[type || "tour"];
-  return `<li>
+  return import_server.html`<li>
     <svg class="icon">
       <use xlink:href="/icons/destination.svg#${icon}" />
     </svg>
@@ -177,26 +172,24 @@ const transportationIcons = {
   bus: "icon-bus"
 };
 function renderTransportation(trn, dir) {
-  var _a, _b, _c, _d;
   const { type, segments } = trn;
   const icon = transportationIcons[type] || "icon-travel";
   const dirClass = dir === "in" ? "arrive" : "depart";
-  const name = dir === "in" ? (_a = segments[0]) == null ? void 0 : _a.departure.name : (_b = segments.at(-1)) == null ? void 0 : _b.arrival.name;
-  const endpoint = dir === "in" ? (_c = segments.at(-1)) == null ? void 0 : _c.arrival : (_d = segments[0]) == null ? void 0 : _d.departure;
-  return `<a class="${dirClass} ${type}" href="#">
-      <svg class="icon">
-        <use
-          xlink:href="/icons/transportation.svg#${icon}" />
-      </svg>
-      <dl>
-        <dt>
-    ${dir === "in" ? "Arrive" : "Depart"}
-    ${name ? dir === "in" ? `from ${name}` : `for ${name}` : ""}
-        </dt>
-    ${endpoint ? `<dd>${endpoint.time.toUTCString()}</dd>
-         <dd>${endpoint.station}</dd>` : ""}
-      </dl>
-    </a>`;
+  const name = dir === "in" ? segments[0]?.departure.name : segments.at(-1)?.arrival.name;
+  const endpoint = dir === "in" ? segments.at(-1)?.arrival : segments[0]?.departure;
+  return import_server.html`<a class="${dirClass} ${type}" href="#">
+    <svg class="icon">
+      <use xlink:href="/icons/transportation.svg#${icon}" />
+    </svg>
+    <dl>
+      <dt>
+        ${dir === "in" ? "Arrive" : "Depart"}
+        ${name ? dir === "in" ? `from ${name}` : `for ${name}` : ""}
+      </dt>
+      ${endpoint ? import_server.html`<dd>${endpoint.time.toUTCString()}</dd>
+            <dd>${endpoint.station}</dd>` : ""}
+    </dl>
+  </a>`;
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {

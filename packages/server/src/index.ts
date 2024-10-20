@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import { Destination } from "./models";
-import { DestinationPage, renderPage } from "./pages/index";
+import { DestinationPage } from "./pages";
 import { connect } from "./services/mongo";
 import Tours from "./services/tour-svc";
 
@@ -31,11 +31,9 @@ app.get(
     const { tourId, destIndex } = req.params;
 
     getDestination(tourId, parseInt(destIndex)).then((data) => {
-      // console.log("data to render:", JSON.stringify(data));
-
       res
         .set("Content-Type", "text/html")
-        .send(renderPage(DestinationPage.render(data)));
+        .send(DestinationPage.render(data));
     });
   }
 );
@@ -44,19 +42,18 @@ app.get(
 
 function getDestination(tourId: string, destIndex: number) {
   return Tours.get(tourId).then((tour) => {
-    const dest = tour.destinations[destIndex].toObject();
+    const dest = tour.destinations[destIndex];
 
     return {
       ...dest,
       tour: {
         name: tour.name
       },
-      inbound: tour.transportation[destIndex].toObject(),
-      outbound: tour.transportation[destIndex + 1].toObject()
+      inbound: tour.transportation[destIndex],
+      outbound: tour.transportation[destIndex + 1]
     };
   });
 }
-
 // Start the server
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
