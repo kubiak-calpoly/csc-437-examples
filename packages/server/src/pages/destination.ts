@@ -100,7 +100,7 @@ export class DestinationPage {
           ${featuredImage
         ? html`<img src="${featuredImage}" />`
         : ""}
-          ${accommodationComponent} ${excursionList}
+          ${accommodationList} ${excursionList}
           ${transportationFooter}
         </section>
       </main>

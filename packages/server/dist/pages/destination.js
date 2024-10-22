@@ -110,7 +110,7 @@ class DestinationPage {
             <p>${nights} nights</p>
           </header>
           ${featuredImage ? import_server.html`<img src="${featuredImage}" />` : ""}
-          ${accommodationComponent} ${excursionList}
+          ${accommodationList} ${excursionList}
           ${transportationFooter}
         </section>
       </main>
