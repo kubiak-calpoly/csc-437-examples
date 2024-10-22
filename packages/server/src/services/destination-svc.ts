@@ -1,7 +1,7 @@
 import { DestinationPageData } from "pages";
 
-export function getDestination(_: string) {
-  return {
+const destinations = {
+  venice: {
     tour: {
       name: "12 Days in Italy"
     },
@@ -88,5 +88,11 @@ export function getDestination(_: string) {
         }
       ]
     }
-  } as DestinationPageData;
+  },
+  florence: {},
+  rome: {}
+};
+
+export function getDestination(_: string): DestinationPageData {
+  return destinations["venice"] as DestinationPageData;
 }

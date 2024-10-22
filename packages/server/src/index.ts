@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
-import { getDestination } from "./mockdata";
 import { DestinationPage } from "./pages";
+import { getDestination } from "./services/destination-svc";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -25,10 +25,9 @@ app.get(
   (req: Request, res: Response) => {
     const { destId } = req.params;
     const data = getDestination(destId);
+    const page = new DestinationPage(data);
 
-    res
-      .set("Content-Type", "text/html")
-      .send(DestinationPage.render(data));
+    res.set("Content-Type", "text/html").send(page.render());
   }
 );
 
