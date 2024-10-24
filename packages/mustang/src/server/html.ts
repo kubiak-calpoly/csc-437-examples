@@ -15,12 +15,21 @@ export class HtmlString {
 export function html(
   template: TemplateStringsArray,
   ...params: Array<
-    string | number | HtmlString | HtmlString[] | CssString
+    | string
+    | number
+    | HtmlString
+    | HtmlString[]
+    | CssString
+    | undefined
+    | null
+    | boolean
   >
 ): HtmlString {
   const escapedParams = params.map((p) => {
     if (typeof p === "string") return escaped(p);
     if (Array.isArray(p)) return p.join("");
+    if (typeof p === "undefined" || p === null || p === false)
+      return "";
     return p;
   });
 

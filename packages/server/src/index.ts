@@ -31,9 +31,9 @@ app.get(
     const { tourId, destIndex } = req.params;
 
     getDestination(tourId, parseInt(destIndex)).then((data) => {
-      res
-        .set("Content-Type", "text/html")
-        .send(DestinationPage.render(data));
+      const page = new DestinationPage(data);
+
+      res.set("Content-Type", "text/html").send(page.render());
     });
   }
 );
@@ -42,15 +42,15 @@ app.get(
 
 function getDestination(tourId: string, destIndex: number) {
   return Tours.get(tourId).then((tour) => {
-    const dest = tour.destinations[destIndex];
+    const dest = tour.destinations[destIndex].toObject();
 
     return {
       ...dest,
       tour: {
         name: tour.name
       },
-      inbound: tour.transportation[destIndex],
-      outbound: tour.transportation[destIndex + 1]
+      inbound: tour.transportation[destIndex].toObject(),
+      outbound: tour.transportation[destIndex + 1].toObject()
     };
   });
 }

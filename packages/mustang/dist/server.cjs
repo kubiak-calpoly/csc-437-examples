@@ -24,6 +24,8 @@ function html(template, ...params) {
   const escapedParams = params.map((p) => {
     if (typeof p === "string") return escaped(p);
     if (Array.isArray(p)) return p.join("");
+    if (typeof p === "undefined" || p === null || p === false)
+      return "";
     return p;
   });
   const htmlString = template.map(

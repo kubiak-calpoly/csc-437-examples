@@ -14,7 +14,7 @@ export declare interface DefaultParts {
     imports?: object;
 }
 
-export declare function html(template: TemplateStringsArray, ...params: Array<string | number | HtmlString | HtmlString[] | CssString>): HtmlString;
+export declare function html(template: TemplateStringsArray, ...params: Array<string | number | HtmlString | HtmlString[] | CssString | undefined | null | boolean>): HtmlString;
 
 export declare class HtmlString {
     html: String;

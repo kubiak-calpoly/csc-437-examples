@@ -126,6 +126,8 @@ export class DestinationPage {
     const { name, checkIn, checkOut, roomType, persons, rate } =
       acc;
 
+    console.log("Accommodation:", JSON.stringify(acc));
+
     const formatDate = (date: Date | undefined) => {
       const dt = date || new Date();
       const m = DestinationPage.months[dt.getUTCMonth()];
@@ -133,6 +135,12 @@ export class DestinationPage {
 
       return `${d} ${m}`;
     };
+
+    console.log("name:", name);
+    console.log("checkIn:", checkIn.toString());
+    console.log("formatted Date:", formatDate(checkIn));
+    console.log("checkOut:", checkOut.toString());
+    console.log("formatted Date:", formatDate(checkOut));
 
     return html`
       <blz-accommodation>
@@ -145,8 +153,10 @@ export class DestinationPage {
           datetime="${checkOut.toString()}">
           ${formatDate(checkOut)}
         </time>
-        <span slot="room-type">${roomType}</span>
-        <span slot="persons">${persons}</span>
+        ${roomType &&
+      html` <span slot="room-type">${roomType}</span> `}
+        ${persons &&
+      html`<span slot="persons">${persons}</span>`}
         <span slot="room-rate"> ${rate.amount}</span>
         <span slot="currency">${rate.currency}</span>
       </blz-accommodation>
