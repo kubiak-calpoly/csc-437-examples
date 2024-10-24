@@ -33,10 +33,18 @@ __export(destination_exports, {
 module.exports = __toCommonJS(destination_exports);
 var import_server = require("@calpoly/mustang/server");
 var import_renderPage = __toESM(require("./renderPage"));
-const staticParts = {
-  stylesheets: ["/styles/destination.css"],
-  styles: [
-    import_server.css`main.page {
+const secondsPerDay = 24 * 60 * 60 * 1e3;
+class DestinationPage {
+  data;
+  constructor(data) {
+    this.data = data;
+  }
+  render() {
+    return (0, import_renderPage.default)({
+      body: this.renderBody(),
+      stylesheets: ["/styles/destination.css"],
+      styles: [
+        import_server.css`main.page {
         --page-grids: 8;
         grid-template-areas:
           "hdr hdr img img img img img img"
@@ -55,9 +63,9 @@ const staticParts = {
             "ftr ftr ftr ftr ftr ftr";
         }
       }`
-  ],
-  scripts: [
-    `
+      ],
+      scripts: [
+        `
       import { define } from "@calpoly/mustang";
       import { AccommodationElement } from "/scripts/accommodation.js";
 
@@ -65,131 +73,133 @@ const staticParts = {
         "blz-accommodation": AccommodationElement
       });
       `
-  ]
-};
-const secondsPerDay = 24 * 60 * 60 * 1e3;
-class DestinationPage {
-  static render(data) {
+      ]
+    });
+  }
+  renderBody() {
     const {
       name,
       startDate,
       endDate,
       featuredImage,
+      accommodations = [],
+      excursions,
       tour,
       inbound,
       outbound
-    } = data;
+    } = this.data;
     const nights = endDate.valueOf() / secondsPerDay - startDate.valueOf() / secondsPerDay;
-    const accommodationComponent = (data.accommodations || []).map(renderAccommodation);
-    const excursionList = data.excursions ? import_server.html`<ul class="excursions">
-          ${data.excursions.map(renderExcursion)}
+    const accommodationList = accommodations.map(
+      (acc) => this.renderAccommodation(acc)
+    );
+    const excursionList = excursions ? import_server.html`<ul class="excursions">
+          ${excursions.map(this.renderExcursion)}
         </ul>` : "";
     const transportationFooter = import_server.html`<footer>
-      ${renderTransportation(inbound, "in")}
-      ${renderTransportation(outbound, "out")}
+      ${this.renderTransportation(inbound, "in")}
+      ${this.renderTransportation(outbound, "out")}
     </footer>`;
-    return (0, import_renderPage.default)({
-      body: import_server.html`<body>
-        <blz-header>
-          <a href="../">&larr; Tour: ${tour.name}</a>
-        </blz-header>
-        <main class="page">
-          <section class="destination">
-            <header>
-              <h2>${name}</h2>
-              <p>${nights} nights</p>
-            </header>
-            ${featuredImage ? import_server.html`<img src="${featuredImage}" />` : ""}
-            ${accommodationComponent} ${excursionList}
-            ${transportationFooter}
-          </section>
-        </main>
-      </body>`,
-      ...staticParts
-    });
+    return import_server.html`<body>
+      <blz-header>
+        <a href="../">&larr; Tour: ${tour.name}</a>
+      </blz-header>
+      <main class="page">
+        <section class="destination">
+          <header>
+            <h2>${name}</h2>
+            <p>${nights} nights</p>
+          </header>
+          ${featuredImage ? import_server.html`<img src="${featuredImage}" />` : ""}
+          ${accommodationList} ${excursionList}
+          ${transportationFooter}
+        </section>
+      </main>
+    </body>`;
   }
-}
-const months = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec"
-];
-function renderAccommodation(acc) {
-  const { name, checkIn, checkOut, roomType, persons, rate } = acc;
-  const formatDate = (date) => {
-    const dt = date || /* @__PURE__ */ new Date();
-    const m = months[dt.getUTCMonth()];
-    const d = dt.getUTCDate();
-    return `${d} ${m}`;
+  static months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec"
+  ];
+  renderAccommodation(acc) {
+    const { name, checkIn, checkOut, roomType, persons, rate } = acc;
+    const formatDate = (date) => {
+      const dt = date || /* @__PURE__ */ new Date();
+      const m = DestinationPage.months[dt.getUTCMonth()];
+      const d = dt.getUTCDate();
+      return `${d} ${m}`;
+    };
+    return import_server.html`
+      <blz-accommodation>
+        <span slot="name">${name}</span>
+        <time slot="check-in" datetime="${checkIn.toString()}">
+          ${formatDate(checkIn)}
+        </time>
+        <time
+          slot="check-out"
+          datetime="${checkOut.toString()}">
+          ${formatDate(checkOut)}
+        </time>
+        <span slot="room-type">${roomType}</span>
+        <span slot="persons">${persons}</span>
+        <span slot="room-rate"> ${rate.amount}</span>
+        <span slot="currency">${rate.currency}</span>
+      </blz-accommodation>
+    `;
+  }
+  static excursionIcons = {
+    boat: "icon-boat",
+    bus: "icon-bus",
+    metro: "icon-metro",
+    train: "icon-train",
+    walking: "icon-walk",
+    tour: "icon-camera"
   };
-  return import_server.html`
-    <blz-accommodation>
-      <span slot="name">${name}</span>
-      <time slot="check-in" datetime="${checkIn.toString()}">
-        ${formatDate(checkIn)}
-      </time>
-      <time slot="check-out" datetime="${checkOut.toString()}">
-        ${formatDate(checkOut)}
-      </time>
-      <span slot="room-type">${roomType}</span>
-      <span slot="persons">${persons}</span>
-      <span slot="room-rate"> ${rate.amount}</span>
-      <span slot="currency">${rate.currency}</span>
-    </blz-accommodation>
-  `;
-}
-const excursionIcons = {
-  boat: "icon-boat",
-  bus: "icon-bus",
-  metro: "icon-metro",
-  train: "icon-train",
-  walking: "icon-walk",
-  tour: "icon-camera"
-};
-function renderExcursion(exc) {
-  const { name, type } = exc;
-  const icon = excursionIcons[type || "tour"];
-  return import_server.html`<li>
-    <svg class="icon">
-      <use xlink:href="/icons/destination.svg#${icon}" />
-    </svg>
-    <span>${name}</span>
-  </li>`;
-}
-const transportationIcons = {
-  air: "icon-airplane",
-  rail: "icon-train",
-  ship: "icon-boat",
-  bus: "icon-bus"
-};
-function renderTransportation(trn, dir) {
-  const { type, segments } = trn;
-  const icon = transportationIcons[type] || "icon-travel";
-  const dirClass = dir === "in" ? "arrive" : "depart";
-  const name = dir === "in" ? segments[0]?.departure.name : segments.at(-1)?.arrival.name;
-  const endpoint = dir === "in" ? segments.at(-1)?.arrival : segments[0]?.departure;
-  return import_server.html`<a class="${dirClass} ${type}" href="#">
-    <svg class="icon">
-      <use xlink:href="/icons/transportation.svg#${icon}" />
-    </svg>
-    <dl>
-      <dt>
-        ${dir === "in" ? "Arrive" : "Depart"}
-        ${name ? dir === "in" ? `from ${name}` : `for ${name}` : ""}
-      </dt>
-      ${endpoint ? import_server.html`<dd>${endpoint.time.toUTCString()}</dd>
-            <dd>${endpoint.station}</dd>` : ""}
-    </dl>
-  </a>`;
+  renderExcursion(exc) {
+    const { name, type } = exc;
+    const icon = DestinationPage.excursionIcons[type || "tour"];
+    return import_server.html`<li>
+      <svg class="icon">
+        <use xlink:href="/icons/destination.svg#${icon}" />
+      </svg>
+      <span>${name}</span>
+    </li>`;
+  }
+  static transportationIcons = {
+    air: "icon-airplane",
+    rail: "icon-train",
+    ship: "icon-boat",
+    bus: "icon-bus"
+  };
+  renderTransportation(trn, dir) {
+    const { type, segments } = trn;
+    const icon = DestinationPage.transportationIcons[type] || "icon-travel";
+    const dirClass = dir === "in" ? "arrive" : "depart";
+    const name = dir === "in" ? segments[0]?.departure.name : segments.at(-1)?.arrival.name;
+    const endpoint = dir === "in" ? segments.at(-1)?.arrival : segments[0]?.departure;
+    return import_server.html`<a class="${dirClass} ${type}" href="#">
+      <svg class="icon">
+        <use xlink:href="/icons/transportation.svg#${icon}" />
+      </svg>
+      <dl>
+        <dt>
+          ${dir === "in" ? "Arrive" : "Depart"}
+          ${name ? dir === "in" ? `from ${name}` : `for ${name}` : ""}
+        </dt>
+        ${endpoint ? import_server.html`<dd>${endpoint.time.toUTCString()}</dd>
+              <dd>${endpoint.station}</dd>` : ""}
+      </dl>
+    </a>`;
+  }
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {

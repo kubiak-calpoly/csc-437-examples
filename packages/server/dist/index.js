@@ -22,8 +22,8 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 var import_express = __toESM(require("express"));
-var import_mockdata = require("./mockdata");
 var import_pages = require("./pages");
+var import_destination_svc = require("./services/destination-svc");
 const app = (0, import_express.default)();
 const port = process.env.PORT || 3e3;
 const staticDir = process.env.STATIC || "public";
@@ -41,8 +41,9 @@ app.get(
   "/destination/:destId",
   (req, res) => {
     const { destId } = req.params;
-    const data = (0, import_mockdata.getDestination)(destId);
-    res.set("Content-Type", "text/html").send(import_pages.DestinationPage.render(data));
+    const data = (0, import_destination_svc.getDestination)(destId);
+    const page = new import_pages.DestinationPage(data);
+    res.set("Content-Type", "text/html").send(page.render());
   }
 );
 app.listen(port, () => {
