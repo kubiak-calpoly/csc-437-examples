@@ -11,7 +11,7 @@ const TravelerSchema = new Schema<Traveler>(
     avatar: String,
     color: String
   },
-  { collection: "user_travelers" }
+  { collection: "traveler_profiles" }
 );
 
 const TravelerModel = model<Traveler>(
