@@ -22,19 +22,15 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 var import_express = __toESM(require("express"));
-var import_pages = require("./pages/index");
-var import_tours = __toESM(require("./routes/tours"));
-var import_travelers = __toESM(require("./routes/travelers"));
+var import_pages = require("./pages");
 var import_mongo = require("./services/mongo");
+var import_tour_svc = __toESM(require("./services/tour-svc"));
 const app = (0, import_express.default)();
 const port = process.env.PORT || 3e3;
 (0, import_mongo.connect)("blazing");
 const staticDir = process.env.STATIC || "public";
 console.log("Serving static files from ", staticDir);
 app.use(import_express.default.static(staticDir));
-app.use(import_express.default.json());
-app.use("/api/travelers", import_travelers.default);
-app.use("/api/tours", import_tours.default);
 app.get("/hello", (_, res) => {
   res.send(
     `<h1>Hello!</h1>
@@ -47,13 +43,25 @@ app.get(
   "/destination/:tourId/:destIndex",
   (req, res) => {
     const { tourId, destIndex } = req.params;
-    res.set("Content-Type", "text/html").send(
-      (0, import_pages.renderPage)(
-        import_pages.DestinationPage.render(tourId, parseInt(destIndex))
-      )
-    );
+    getDestination(tourId, parseInt(destIndex)).then((data) => {
+      const page = new import_pages.DestinationPage(data);
+      res.set("Content-Type", "text/html").send(page.render());
+    });
   }
 );
+function getDestination(tourId, destIndex) {
+  return import_tour_svc.default.get(tourId).then((tour) => {
+    const dest = tour.destinations[destIndex].toObject();
+    return {
+      ...dest,
+      tour: {
+        name: tour.name
+      },
+      inbound: tour.transportation[destIndex].toObject(),
+      outbound: tour.transportation[destIndex + 1].toObject()
+    };
+  });
+}
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });

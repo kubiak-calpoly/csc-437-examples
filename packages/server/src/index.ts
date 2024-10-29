@@ -1,8 +1,6 @@
 import express, { Request, Response } from "express";
 import { Destination } from "./models";
-import { DestinationPage, renderPage } from "./pages/index";
-import tours from "./routes/tours";
-import travelers from "./routes/travelers";
+import { DestinationPage } from "./pages";
 import { connect } from "./services/mongo";
 import Tours from "./services/tour-svc";
 
@@ -16,13 +14,6 @@ connect("blazing");
 const staticDir = process.env.STATIC || "public";
 console.log("Serving static files from ", staticDir);
 app.use(express.static(staticDir));
-
-// Middleware:
-app.use(express.json());
-
-// API Routes:
-app.use("/api/travelers", travelers);
-app.use("/api/tours", tours);
 
 // HTML Routes:
 app.get("/hello", (_: Request, res: Response) => {
@@ -39,16 +30,30 @@ app.get(
   (req: Request, res: Response) => {
     const { tourId, destIndex } = req.params;
 
-    res
-      .set("Content-Type", "text/html")
-      .send(
-        renderPage(
-          DestinationPage.render(tourId, parseInt(destIndex))
-        )
-      );
+    getDestination(tourId, parseInt(destIndex)).then((data) => {
+      const page = new DestinationPage(data);
+
+      res.set("Content-Type", "text/html").send(page.render());
+    });
   }
 );
 
+// const TOUR_OID = "65c7e92ea837ff7c15b669e5";
+
+function getDestination(tourId: string, destIndex: number) {
+  return Tours.get(tourId).then((tour) => {
+    const dest = tour.destinations[destIndex].toObject();
+
+    return {
+      ...dest,
+      tour: {
+        name: tour.name
+      },
+      inbound: tour.transportation[destIndex].toObject(),
+      outbound: tour.transportation[destIndex + 1].toObject()
+    };
+  });
+}
 // Start the server
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);

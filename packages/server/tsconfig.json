@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "module": "NodeNext",
+    "target": "ESNext",
+    "module": "ESNext",
     "baseUrl": "./src",
     "outDir": "./dist",
     "strict": true,
     "esModuleInterop": true,
-    "moduleResolution": "NodeNext",
+    "moduleResolution": "bundler",
     "forceConsistentCasingInFileNames": true
   },
   "include": ["src/**/*.ts"],
