@@ -47,16 +47,8 @@ function get(userid) {
   });
 }
 function update(userid, traveler) {
-  return TravelerModel.findOne({ userid }).then((found) => {
-    if (!found) throw `${userid} Not Found`;
-    else
-      return TravelerModel.findByIdAndUpdate(
-        found._id,
-        traveler,
-        {
-          new: true
-        }
-      );
+  return TravelerModel.findOneAndUpdate({ userid }, traveler, {
+    new: true
   }).then((updated) => {
     if (!updated) throw `${userid} not updated`;
     else return updated;
@@ -67,8 +59,10 @@ function create(traveler) {
   return p.save();
 }
 function remove(userid) {
-  return travelerModel.findOneAndDelete({ userid }).then((deleted) => {
-    if (!deleted) throw `${userid} not deleted`;
-  });
+  return TravelerModel.findOneAndDelete({ userid }).then(
+    (deleted) => {
+      if (!deleted) throw `${userid} not deleted`;
+    }
+  );
 }
 var traveler_svc_default = { index, get, create, update, remove };

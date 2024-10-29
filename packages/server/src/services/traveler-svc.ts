@@ -35,22 +35,12 @@ function update(
   userid: String,
   traveler: Traveler
 ): Promise<Traveler> {
-  return TravelerModel.findOne({ userid })
-    .then((found) => {
-      if (!found) throw `${userid} Not Found`;
-      else
-        return TravelerModel.findByIdAndUpdate(
-          found._id,
-          traveler,
-          {
-            new: true
-          }
-        );
-    })
-    .then((updated) => {
-      if (!updated) throw `${userid} not updated`;
-      else return updated as Traveler;
-    });
+  return TravelerModel.findOneAndUpdate({ userid }, traveler, {
+    new: true
+  }).then((updated) => {
+    if (!updated) throw `${userid} not updated`;
+    else return updated as Traveler;
+  });
 }
 
 function create(traveler: Traveler): Promise<Traveler> {
@@ -59,11 +49,11 @@ function create(traveler: Traveler): Promise<Traveler> {
 }
 
 function remove(userid: String): Promise<void> {
-  return travelerModel
-    .findOneAndDelete({ userid })
-    .then((deleted) => {
+  return TravelerModel.findOneAndDelete({ userid }).then(
+    (deleted) => {
       if (!deleted) throw `${userid} not deleted`;
-    });
+    }
+  );
 }
 
 export default { index, get, create, update, remove };

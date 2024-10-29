@@ -1,13 +1,12 @@
 import express, { Request, Response } from "express";
 import { Traveler } from "../models/traveler";
 
-import travelers from "../services/traveler-svc";
+import Travelers from "../services/traveler-svc";
 
 const router = express.Router();
 
 router.get("/", (_, res: Response) => {
-  travelers
-    .index()
+  Travelers.index()
     .then((list: Traveler[]) => res.json(list))
     .catch((err) => res.status(500).send(err));
 });
@@ -15,8 +14,7 @@ router.get("/", (_, res: Response) => {
 router.get("/:userid", (req: Request, res: Response) => {
   const { userid } = req.params;
 
-  travelers
-    .get(userid)
+  Travelers.get(userid)
     .then((traveler: Traveler) => res.json(traveler))
     .catch((err) => res.status(404).send(err));
 });
@@ -25,8 +23,7 @@ router.put("/:userid", (req: Request, res: Response) => {
   const { userid } = req.params;
   const editedTraveler = req.body;
 
-  travelers
-    .update(userid, editedTraveler)
+  Travelers.update(userid, editedTraveler)
     .then((traveler: Traveler) => res.json(traveler))
     .catch((err) => res.status(404).send(err));
 });
@@ -34,8 +31,7 @@ router.put("/:userid", (req: Request, res: Response) => {
 router.post("/", (req: Request, res: Response) => {
   const newTraveler = req.body;
 
-  travelers
-    .create(newTraveler)
+  Travelers.create(newTraveler)
     .then((traveler: Traveler) =>
       res.status(201).send(traveler)
     )
@@ -45,8 +41,7 @@ router.post("/", (req: Request, res: Response) => {
 router.delete("/:userid", (req: Request, res: Response) => {
   const { userid } = req.params;
 
-  travelers
-    .remove(userid)
+  Travelers.remove(userid)
     .then(() => res.status(204).end())
     .catch((err) => res.status(404).send(err));
 });
