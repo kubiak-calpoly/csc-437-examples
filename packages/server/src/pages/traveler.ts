@@ -36,6 +36,7 @@ export class TravelerPage {
       color
     } = this.data;
     const hexcode = `#${color}`;
+    const api = `/api/travelers/${userid}`;
 
     return html`<body>
       <blz-header>
@@ -43,7 +44,7 @@ export class TravelerPage {
         <a href="/guide/italy.html">Italy</a>
       </blz-header>
       <main class="page">
-        <traveler-profile>
+        <traveler-profile src="${api}">
           <img slot="avatar" src="${avatar}" />
           <span slot="name">${name}</span>
           <span slot="userid">${userid}</span>

@@ -64,13 +64,14 @@ class TravelerPage {
       color
     } = this.data;
     const hexcode = `#${color}`;
+    const api = `/api/travelers/${userid}`;
     return import_server.html`<body>
       <blz-header>
         12 days in
         <a href="/guide/italy.html">Italy</a>
       </blz-header>
       <main class="page">
-        <traveler-profile>
+        <traveler-profile src="${api}">
           <img slot="avatar" src="${avatar}" />
           <span slot="name">${name}</span>
           <span slot="userid">${userid}</span>

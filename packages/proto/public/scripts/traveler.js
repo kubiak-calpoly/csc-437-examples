@@ -3,6 +3,10 @@ import reset from "./styles/reset.css.js";
 import headings from "./styles/headings.css.js";
 
 export class TravelerProfileElement extends HTMLElement {
+  get src() {
+    return this.getAttribute("src");
+  }
+
   static template = html`<template>
     <section>
       <slot name="avatar"></slot>
@@ -90,5 +94,32 @@ export class TravelerProfileElement extends HTMLElement {
         headings.styles,
         TravelerProfileElement.styles
       );
+  }
+
+  connectedCallback() {
+    if (this.src) this.hydrate(this.src);
+  }
+
+  hydrate(url) {
+    fetch(url)
+      .then((res) => {
+        if (res.status !== 200) throw `Status: ${res.status}`;
+        return res.json();
+      })
+      .then((json) => this.renderSlots(json))
+      .catch((error) =>
+        console.log(`Failed to render data ${url}:`, error)
+      );
+  }
+
+  renderSlots(json) {
+    const entries = Object.entries(json);
+    const toSlot = ([key, value]) => {
+      // default case for now:
+      return html`<span slot="${key}">${value}</span>`;
+    };
+    const fragment = entries.map(toSlot);
+
+    this.replaceChildren(...fragment);
   }
 }
