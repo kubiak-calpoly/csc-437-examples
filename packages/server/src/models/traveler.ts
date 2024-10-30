@@ -3,7 +3,7 @@ export interface Traveler {
   name: string;
   nickname: string | undefined;
   home: string;
-  airports: Array<String>;
+  airports: Array<string>;
   avatar: string | undefined;
   color: string | undefined;
 }
