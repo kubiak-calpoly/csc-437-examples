@@ -96,8 +96,11 @@ export class TravelerProfileElement extends HTMLElement {
       );
   }
 
-  connectedCallback() {
-    if (this.src) this.hydrate(this.src);
+  static observedAttributes = ["src"];
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === "src" && oldValue !== newValue && newValue)
+      this.hydrate(newValue);
   }
 
   hydrate(url) {
