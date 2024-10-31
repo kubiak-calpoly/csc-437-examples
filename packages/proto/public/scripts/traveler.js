@@ -115,8 +115,27 @@ export class TravelerProfileElement extends HTMLElement {
   renderSlots(json) {
     const entries = Object.entries(json);
     const toSlot = ([key, value]) => {
-      // default case for now:
-      return html`<span slot="${key}">${value}</span>`;
+      switch (key) {
+        case "color":
+          return html`
+            <span
+              slot="color-swatch"
+              style="background: #${value}"></span>
+            <span slot="color-name">#${value}</span>
+          `;
+        case "avatar":
+          return html`<img slot="${key}" src="${value}" />`;
+      }
+
+      switch (typeof value) {
+        case "object":
+          if (Array.isArray(value))
+            return html`<ul slot="${key}">
+              ${value.map((s) => html`<li>${s}</li>`)}
+            </ul>`;
+        default:
+          return html`<span slot="${key}">${value}</span>`;
+      }
     };
     const fragment = entries.map(toSlot);
 

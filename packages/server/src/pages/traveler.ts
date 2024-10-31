@@ -26,16 +26,7 @@ export class TravelerPage {
   }
 
   renderBody() {
-    const {
-      userid,
-      name,
-      nickname,
-      home,
-      airports,
-      avatar,
-      color
-    } = this.data;
-    const hexcode = `#${color}`;
+    const { userid } = this.data;
     const api = `/api/travelers/${userid}`;
 
     return html`<body>
@@ -44,20 +35,7 @@ export class TravelerPage {
         <a href="/guide/italy.html">Italy</a>
       </blz-header>
       <main class="page">
-        <traveler-profile src="${api}">
-          <img slot="avatar" src="${avatar}" />
-          <span slot="name">${name}</span>
-          <span slot="userid">${userid}</span>
-          <span slot="nickname">${nickname}</span>
-          <span slot="home">${home}</span>
-          <ul slot="airports">
-            ${airports.map((a) => html`<li>${a}</li>`)}
-          </ul>
-          <span
-            slot="color-swatch"
-            style="background: ${hexcode}"></span>
-          <span slot="color-name">${hexcode}</span>
-        </traveler-profile>
+        <traveler-profile src="${api}"></traveler-profile>
       </main>
     </body>`;
   }
