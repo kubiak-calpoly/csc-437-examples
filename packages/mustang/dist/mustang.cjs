@@ -438,6 +438,8 @@ function html(template, ...values) {
       case "symbol":
         return escapeHtml(v2.toString());
       case "object":
+        if (v2 instanceof Node || v2 instanceof DocumentFragment)
+          return v2;
         if (Array.isArray(v2)) {
           const frag = new DocumentFragment();
           const elements = v2.map(
@@ -446,7 +448,6 @@ function html(template, ...values) {
           frag.replaceChildren(...elements);
           return frag;
         }
-        if (v2 instanceof Node) return v2;
         return new Text(v2.toString());
       default:
         return new Comment(
