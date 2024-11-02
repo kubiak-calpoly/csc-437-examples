@@ -1,102 +1,35 @@
-export default renderPage;
+import {
+  PageParts,
+  renderWithDefaults
+} from "@calpoly/mustang/server";
 
-export interface DefaultParts {
-  stylesheets?: string[];
-  styles?: string[];
-  scripts?: string[];
-  googleFontURL?: string;
-  imports?: object;
-}
+const defaults = {
+  stylesheets: [
+    "/styles/reset.css",
+    "/styles/tokens.css",
+    "/styles/page.css"
+  ],
+  styles: [],
+  scripts: [
+    `
+    import { define } from "@calpoly/mustang";
+    import { HeaderElement } from "/scripts/header.js";
 
-export interface PageParts extends DefaultParts {
-  body: string;
-}
+    define({
+      "blz-header": HeaderElement
+    });
 
-function renderPage(unique: PageParts, defaults: DefaultParts) {
-  const { body } = unique;
-  let parts = !defaults
-    ? unique
-    : {
-      body,
-      stylesheets: (defaults.stylesheets || []).concat(
-        unique.stylesheets || []
-      ),
-      styles: (defaults.styles || []).concat(
-        unique.styles || []
-      ),
-      scripts: (defaults.scripts || []).concat(
-        unique.scripts || []
-      ),
-      googleFontURL:
-        unique.googleFontURL || defaults.googleFontURL,
-      imports: { ...defaults.imports, ...unique.imports }
-    };
-
-  return `<!DOCTYPE html>
-    <html lang="en">
-      <head>
-        <meta charset="utf-8" />
-        ${renderFonts(parts.googleFontURL)}
-        ${renderCssLinks(parts.stylesheets)}
-        ${renderStyles(parts.styles)}
-        ${renderImportMap(parts.imports)}
-        ${renderScripts(parts.scripts)}
-      </head>
-      ${parts.body}
-    </html>`;
-}
-
-function renderFonts(url: string | undefined) {
-  if (!url || !url.length) return "";
-
-  return `
-    <link
-      rel="preconnect"
-      href="https://fonts.googleapis.com" />
-    <link
-      rel="preconnect"
-      href="https://fonts.gstatic.com"
-      crossorigin />
-    <link
-      href="${url}"
-      rel="stylesheet" />
-  `;
-}
-
-function renderCssLinks(stylesheets: string[] | undefined) {
-  if (!stylesheets || !stylesheets.length) return "";
-
-  return stylesheets.map(renderOne).join("\n");
-
-  function renderOne(stylesheet: string) {
-    return `<link rel="stylesheet" href="${stylesheet}" />`;
+    HeaderElement.initializeOnce();
+    `
+  ],
+  googleFontURL:
+    "https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,200;0,400;0,700;1,700&family=Merriweather:wght@400;700&display=swap",
+  imports: {
+    // "@calpoly/mustang": "https://unpkg.com/@calpoly/mustang"
+    "@calpoly/mustang": "/unpkg/mustang.js"
   }
-}
+};
 
-function renderStyles(styles: string[] | undefined) {
-  if (!styles || !styles.length) return "";
-
-  return styles.map(renderOne).join("\n");
-
-  function renderOne(style: string) {
-    return `<style>${style}</style>`;
-  }
-}
-
-function renderImportMap(map: object | undefined) {
-  if (!map) return "";
-
-  const json = JSON.stringify({ imports: map });
-
-  return `<script type="importmap">${json}</script>`;
-}
-
-function renderScripts(scripts: string[] | undefined) {
-  if (!scripts || !scripts.length) return "";
-
-  return scripts.map(renderOne).join("\n");
-
-  function renderOne(script: string) {
-    return `<script type="module">${script}</script>`;
-  }
+export default function renderPage(page: PageParts) {
+  return renderWithDefaults(page, defaults);
 }

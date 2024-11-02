@@ -18,5 +18,5 @@ export type Role =
 export interface Credential {
   username: string;
   hashedPassword: string;
-  roles: [Role];
+  roles: Role[];
 }

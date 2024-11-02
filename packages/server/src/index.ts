@@ -3,13 +3,15 @@ import {
   DestinationPage,
   LoginPage,
   RegistrationPage,
-  renderPage
+  TravelerPage
 } from "./pages/index";
 import auth, { authenticateUser } from "./routes/auth";
 import tours from "./routes/tours";
 import travelers from "./routes/travelers";
 import { getFile, saveFile } from "./services/filesystem";
 import { connect } from "./services/mongo";
+import Tours from "./services/tour-svc";
+import Travelers from "./services/traveler-svc";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -48,29 +50,59 @@ app.get("/ping", (_: Request, res: Response) => {
 });
 
 app.get("/login", (req: Request, res: Response) => {
-  res
-    .set("Content-Type", "text/html")
-    .send(renderPage(LoginPage.render()));
+  res.set("Content-Type", "text/html").send(LoginPage.render());
 });
 
 app.get("/register", (req: Request, res: Response) => {
   res
     .set("Content-Type", "text/html")
-    .send(renderPage(RegistrationPage.render()));
+    .send(RegistrationPage.render());
+});
+
+app.get("/traveler/:userid", (req: Request, res: Response) => {
+  const { userid } = req.params;
+
+  Travelers.get(userid)
+    .then((data) => {
+      if (!data) throw `Not found: ${userid}`;
+
+      const page = new TravelerPage(data);
+      console.log("TraverlPage:", data);
+      res.set("Content-Type", "text/html").send(page.render());
+    })
+    .catch((error) => {
+      console.log(error);
+      res.status(404).end();
+    });
 });
 
 app.get(
   "/destination/:tourId/:destIndex",
   (req: Request, res: Response) => {
     const { tourId, destIndex } = req.params;
+    const di = parseInt(destIndex);
 
-    res
-      .set("Content-Type", "text/html")
-      .send(
-        renderPage(
-          DestinationPage.render(tourId, parseInt(destIndex))
-        )
-      );
+    Tours.get(tourId)
+      .then((tour) => {
+        const dest = tour.destinations[di];
+
+        // reshape destination and tour data for page
+        return {
+          ...dest,
+          tour: {
+            name: tour.name
+          },
+          inbound: tour.transportation[di],
+          outbound: tour.transportation[di + 1]
+        };
+      })
+      .then((data) => {
+        const page = new DestinationPage(data);
+
+        res
+          .set("Content-Type", "text/html")
+          .send(page.render());
+      });
   }
 );
 

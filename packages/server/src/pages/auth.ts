@@ -1,12 +1,14 @@
+import { css, html } from "@calpoly/mustang/server";
+import renderPage from "./renderPage";
+
 const staticParts = {
   styles: [
-    `
-    article {
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
+    css`
+      article {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
 
       main.page {
         --page-grids: 8;
@@ -18,11 +20,13 @@ const staticParts = {
         flex-basis: 100%;
       }
 
-      login-form, registration-form {
+      login-form,
+      registration-form {
         grid-area: fm;
       }
 
-      p.register, p.login {
+      p.register,
+      p.login {
         display: block;
         grid-area: rq;
         text-align: center;
@@ -33,7 +37,7 @@ const staticParts = {
 
 export class LoginPage {
   static render() {
-    return {
+    return renderPage({
       ...staticParts,
       scripts: [
         `
@@ -46,7 +50,7 @@ export class LoginPage {
         })
         `
       ],
-      body: `<body>
+      body: html`<body>
         <mu-auth provides="blazing:auth">
           <article>
             <blz-header> </blz-header>
@@ -56,19 +60,20 @@ export class LoginPage {
               </login-form>
               <p class="register">
                 Or did you want to
-                <a href="./register"> register as a new user </a>?
+                <a href="./register"> register as a new user </a
+                >?
               </p>
             </main>
           </article>
         </mu-auth>
       </body> `
-    };
+    });
   }
 }
 
 export class RegistrationPage {
   static render() {
-    return {
+    return renderPage({
       ...staticParts,
       scripts: [
         `
@@ -81,13 +86,15 @@ export class RegistrationPage {
         })
         `
       ],
-      body: `<body>
+      body: html`<body>
         <mu-auth provides="blazing:auth">
           <article>
             <blz-header> </blz-header>
             <main class="page">
               <registration-form api="/auth/register">
-                <h3 slot="title">Sign up to plan your next trip!</h3>
+                <h3 slot="title"
+                  >Sign up to plan your next trip!</h3
+                >
               </registration-form>
               <p class="login">
                 Already signed up? You can
@@ -97,6 +104,6 @@ export class RegistrationPage {
           </article>
         </mu-auth>
       </body> `
-    };
+    });
   }
 }
