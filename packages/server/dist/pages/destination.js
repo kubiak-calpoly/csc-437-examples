@@ -35,8 +35,9 @@ var import_server = require("@calpoly/mustang/server");
 var import_renderPage = __toESM(require("./renderPage"));
 const secondsPerDay = 24 * 60 * 60 * 1e3;
 const _DestinationPage = class _DestinationPage {
-  constructor(data) {
+  constructor(data, mode) {
     this.data = data;
+    this.mode = mode;
   }
   render() {
     return (0, import_renderPage.default)({
@@ -67,9 +68,11 @@ const _DestinationPage = class _DestinationPage {
         `
       import { define } from "@calpoly/mustang";
       import { AccommodationElement } from "/scripts/accommodation.js";
+      import { DestinationView } from "/scripts/destination-view.js";
 
       define({
         "blz-accommodation": AccommodationElement
+        "destination-view": DestinationForm
       });
       `
       ]
@@ -87,6 +90,7 @@ const _DestinationPage = class _DestinationPage {
       inbound,
       outbound
     } = this.data;
+    console.log("Dest:", this.data);
     const nights = endDate.valueOf() / secondsPerDay - startDate.valueOf() / secondsPerDay;
     const accommodationList = accommodations.map(
       (acc) => this.renderAccommodation(acc)
@@ -112,7 +116,8 @@ const _DestinationPage = class _DestinationPage {
           ${accommodationList} ${excursionList}
           ${transportationFooter}
         </section>
-      </main>
+        <destination-form>
+        </destination-form>
     </body>`;
   }
   renderAccommodation(acc) {

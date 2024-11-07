@@ -99,7 +99,7 @@ app.get(
     const { tourId, destIndex } = req.params;
     const di = parseInt(destIndex);
     import_tour_svc.default.get(tourId).then((tour) => {
-      const dest = tour.destinations[di];
+      const dest = tour.destinations[di].toObject();
       return __spreadProps(__spreadValues({}, dest), {
         tour: {
           name: tour.name

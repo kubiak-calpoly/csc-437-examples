@@ -15,11 +15,15 @@ export type DestinationPageData = Destination & {
   outbound: Transportation;
 };
 
+type Mode = "view" | "edit" | "new";
+
 export class DestinationPage {
   data: DestinationPageData;
+  mode: Mode;
 
-  constructor(data: DestinationPageData) {
+  constructor(data: DestinationPageData, mode: Mode) {
     this.data = data;
+    this.mode = mode;
   }
 
   render() {
@@ -51,9 +55,11 @@ export class DestinationPage {
         `
       import { define } from "@calpoly/mustang";
       import { AccommodationElement } from "/scripts/accommodation.js";
+      import { DestinationView } from "/scripts/destination-view.js";
 
       define({
         "blz-accommodation": AccommodationElement
+        "destination-view": DestinationForm
       });
       `
       ]
@@ -72,6 +78,7 @@ export class DestinationPage {
       inbound,
       outbound
     } = this.data;
+    console.log("Dest:", this.data);
     const nights =
       endDate.valueOf() / secondsPerDay -
       startDate.valueOf() / secondsPerDay;
@@ -99,11 +106,13 @@ export class DestinationPage {
           </header>
           ${featuredImage
         ? html`<img src="${featuredImage}" />`
-        : ""}
+        : ""
+      }
           ${accommodationList} ${excursionList}
           ${transportationFooter}
         </section>
-      </main>
+        <destination-form>
+        </destination-form>
     </body>`;
   }
 

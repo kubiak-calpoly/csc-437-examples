@@ -95,7 +95,7 @@ app.get(
 
     Tours.get(tourId)
       .then((tour) => {
-        const dest = tour.destinations[di];
+        const dest = tour.destinations[di].toObject();
 
         // reshape destination and tour data for page
         return {
