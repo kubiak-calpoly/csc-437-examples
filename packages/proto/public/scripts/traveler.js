@@ -47,6 +47,10 @@ export class TravelerProfileElement extends HTMLElement {
         <input name="userid" />
       </label>
       <label>
+        <span>Avatar</span>
+        <input type="file" name="_avatar" />
+      </label>
+      <label>
         <span>Name</span>
         <input name="name" />
       </label>
@@ -67,10 +71,6 @@ export class TravelerProfileElement extends HTMLElement {
       <label>
         <span>Color</span>
         <input type="color" name="color" />
-      </label>
-      <label>
-        <span>Avatar</span>
-        <input name="avatar" />
       </label>
     </mu-form>
   </template>`;
@@ -155,6 +155,14 @@ export class TravelerProfileElement extends HTMLElement {
     return this.shadowRoot.querySelector("mu-form.edit");
   }
 
+  get avatarInput() {
+    return this.shadowRoot.querySelector('input[type="file"]');
+  }
+
+  get editButton() {
+    return this.shadowRoot.getElementById("edit");
+  }
+
   constructor() {
     super();
     shadow(this)
@@ -165,14 +173,18 @@ export class TravelerProfileElement extends HTMLElement {
         TravelerProfileElement.styles
       );
 
-    const editButton = this.shadowRoot.getElementById("edit");
-    editButton.addEventListener("click", () => {
-      this.mode = "edit";
-    });
+    this.editButton.addEventListener(
+      "click",
+      () => (this.mode = "edit")
+    );
 
-    this.addEventListener("mu-form:submit", (event) => {
-      this.submit(this.src, event.detail);
-    });
+    this.avatarInput.addEventListener("change", (event) =>
+      this.handleAvatarSelected(event)
+    );
+
+    this.addEventListener("mu-form:submit", (event) =>
+      this.submit(this.src, event.detail)
+    );
   }
 
   _authObserver = new Observer(this, "blazing:auth");
@@ -255,6 +267,9 @@ export class TravelerProfileElement extends HTMLElement {
 
   submit(url, json) {
     const method = this.mode === "new" ? "POST" : "PUT";
+
+    if (this._avatar) json.avatar = this._avatar;
+
     fetch(url, {
       method,
       headers: {
@@ -276,5 +291,19 @@ export class TravelerProfileElement extends HTMLElement {
       .catch((error) => {
         console.log(`Failed to submit ${url}:`, error);
       });
+  }
+
+  handleAvatarSelected(ev) {
+    const target = ev.target;
+    const selectedFile = target.files[0];
+
+    const reader = new Promise((resolve, reject) => {
+      const fr = new FileReader();
+      fr.onload = () => resolve(fr.result);
+      fr.onerror = (err) => reject(err);
+      fr.readAsDataURL(selectedFile);
+    });
+
+    reader.then((result) => (this._avatar = result));
   }
 }

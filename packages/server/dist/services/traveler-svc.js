@@ -29,7 +29,10 @@ const TravelerSchema = new import_mongoose.Schema(
     nickname: { type: String, trim: true },
     home: { type: String, trim: true },
     airports: [String],
-    avatar: String,
+    avatar: {
+      data: Buffer,
+      contentType: String
+    },
     color: String
   },
   { collection: "traveler_profiles" }
