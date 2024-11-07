@@ -87,8 +87,6 @@ export class HeaderElement extends HTMLElement {
     }
   `;
 
-  _authObserver = new Observer(this, "blazing:auth");
-
   get userid() {
     return this._userid.textContent;
   }
@@ -96,10 +94,8 @@ export class HeaderElement extends HTMLElement {
   set userid(id) {
     if (id === "anonymous") {
       this._userid.textContent = "";
-      this._signout.disabled = true;
     } else {
       this._userid.textContent = id;
-      this._signout.disabled = false;
     }
   }
 
@@ -126,15 +122,19 @@ export class HeaderElement extends HTMLElement {
     this._userid = this.shadowRoot.querySelector("#userid");
     this._signout = this.shadowRoot.querySelector("#signout");
 
+    this._signout.addEventListener("click", (event) =>
+      Events.relay(event, "auth:message", ["auth/signout"])
+    );
+  }
+
+  _authObserver = new Observer(this, "blazing:auth");
+
+  connectedCallback() {
     this._authObserver.observe(({ user }) => {
       if (user && user.username !== this.userid) {
         this.userid = user.username;
       }
     });
-
-    this._signout.addEventListener("click", (event) =>
-      Events.relay(event, "auth:message", ["auth/signout"])
-    );
   }
 
   static initializeOnce() {

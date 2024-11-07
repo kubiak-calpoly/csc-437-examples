@@ -50,30 +50,41 @@ app.get("/ping", (_: Request, res: Response) => {
 });
 
 app.get("/login", (req: Request, res: Response) => {
-  res.set("Content-Type", "text/html").send(LoginPage.render());
+  const page = new LoginPage();
+  res.set("Content-Type", "text/html").send(page.render());
 });
 
 app.get("/register", (req: Request, res: Response) => {
-  res
-    .set("Content-Type", "text/html")
-    .send(RegistrationPage.render());
+  const page = new RegistrationPage();
+  res.set("Content-Type", "text/html").send(page.render());
 });
 
 app.get("/traveler/:userid", (req: Request, res: Response) => {
   const { userid } = req.params;
+  const mode =
+    req.query["new"] !== undefined
+      ? "new"
+      : req.query.edit !== undefined
+        ? "edit"
+        : "view";
 
-  Travelers.get(userid)
-    .then((data) => {
-      if (!data) throw `Not found: ${userid}`;
-
-      const page = new TravelerPage(data);
-      console.log("TraverlPage:", data);
-      res.set("Content-Type", "text/html").send(page.render());
-    })
-    .catch((error) => {
-      console.log(error);
-      res.status(404).end();
-    });
+  if (mode === "new") {
+    const page = new TravelerPage(null, mode);
+    res.set("Content-Type", "text/html").send(page.render());
+  } else {
+    Travelers.get(userid)
+      .then((data) => {
+        if (!data) throw `Not found: ${userid}`;
+        const page = new TravelerPage(data, mode);
+        res
+          .set("Content-Type", "text/html")
+          .send(page.render());
+      })
+      .catch((error) => {
+        console.log(error);
+        res.status(404).end();
+      });
+  }
 });
 
 app.get(

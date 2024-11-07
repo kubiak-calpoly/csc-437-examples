@@ -397,6 +397,12 @@ const event = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePropert
   originalTarget,
   relay
 }, Symbol.toStringTag, { value: "Module" }));
+function css(template, ...params) {
+  const cssString = template.map((s2, i2) => i2 ? [params[i2 - 1], s2] : [s2]).flat().join("");
+  let sheet = new CSSStyleSheet();
+  sheet.replaceSync(cssString);
+  return sheet;
+}
 const parser$1 = new DOMParser();
 function html(template, ...values) {
   const params = values.map(processParam);
@@ -479,7 +485,7 @@ let FormElement$1 = (_a = class extends HTMLElement {
   constructor() {
     super();
     this._state = {};
-    shadow(this).template(_a.template);
+    shadow(this).template(_a.template).styles(_a.styles);
     this.addEventListener("change", (event2) => {
       const target = event2.target;
       if (target) {
@@ -512,24 +518,27 @@ let FormElement$1 = (_a = class extends HTMLElement {
         </slot>
       </form>
       <slot name="delete"></slot>
-      <style>
-        form {
-          display: grid;
-          gap: var(--size-spacing-medium);
-          grid-template-columns: [start] 1fr [label] 1fr [input] 3fr 1fr [end];
-        }
-        ::slotted(label) {
-          display: grid;
-          grid-column: label / end;
-          grid-template-columns: subgrid;
-          gap: var(--size-spacing-medium);
-        }
-        button[type="submit"] {
-          grid-column: input;
-          justify-self: start;
-        }
-      </style>
+      <style></style>
     </template>
+  `, _a.styles = css`
+    form {
+      display: grid;
+      gap: var(--size-spacing-medium);
+      grid-column: 1/-1;
+      grid-template-columns:
+        subgrid
+        [start] [label] [input] [col2] [col3] [end];
+    }
+    ::slotted(label) {
+      display: grid;
+      grid-column: label / end;
+      grid-template-columns: subgrid;
+      gap: var(--size-spacing-medium);
+    }
+    button[type="submit"] {
+      grid-column: input;
+      justify-self: start;
+    }
   `, _a);
 function populateForm$1(json, formBody) {
   const entries = Object.entries(json);
@@ -2415,7 +2424,7 @@ const _InputArrayElement = class _InputArrayElement extends HTMLElement {
   constructor() {
     super();
     this._array = [];
-    shadow(this).template(_InputArrayElement.template);
+    shadow(this).template(_InputArrayElement.template).styles(_InputArrayElement.styles);
     this.addEventListener("input-array:add", (event2) => {
       event2.stopPropagation();
       this.append(renderItem("", this._array.length));
@@ -2477,22 +2486,25 @@ _InputArrayElement.template = html`
       </ul>
       <button class="add">
         <slot name="label-add">Add one</slot>
-        <style>
-          :host {
-            display: contents;
-          }
-          ul {
-            display: contents;
-          }
-          button.add {
-            grid-column: input / input-end;
-          }
-          ::slotted(label) {
-            display: contents;
-          }
-        </style>
+        <style></style>
       </button>
     </template>
+  `;
+_InputArrayElement.styles = css`
+    :host {
+      display: grid;
+      grid-template-columns: subgrid;
+      grid-column: input / end;
+    }
+    ul {
+      display: contents;
+    }
+    button.add {
+      grid-column: input / input-end;
+    }
+    ::slotted(label) {
+      grid-column: 1 / -1;
+    }
   `;
 let InputArrayElement = _InputArrayElement;
 function populateArray(array, container) {
@@ -2512,12 +2524,6 @@ const inputArray = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePr
   __proto__: null,
   Element: InputArrayElement
 }, Symbol.toStringTag, { value: "Module" }));
-function css(template, ...params) {
-  const cssString = template.map((s2, i2) => i2 ? [params[i2 - 1], s2] : [s2]).flat().join("");
-  let sheet = new CSSStyleSheet();
-  sheet.replaceSync(cssString);
-  return sheet;
-}
 function define(defns) {
   Object.entries(defns).map(([k2, v2]) => {
     if (!customElements.get(k2)) customElements.define(k2, v2);

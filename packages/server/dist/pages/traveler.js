@@ -34,8 +34,9 @@ module.exports = __toCommonJS(traveler_exports);
 var import_server = require("@calpoly/mustang/server");
 var import_renderPage = __toESM(require("./renderPage"));
 class TravelerPage {
-  constructor(data) {
+  constructor(data, mode) {
     this.data = data;
+    this.mode = mode;
   }
   render() {
     return (0, import_renderPage.default)({
@@ -50,11 +51,19 @@ class TravelerPage {
           "traveler-profile": TravelerProfileElement
         });
         `
+      ],
+      styles: [
+        import_server.css`
+          .page > traveler-profile {
+            grid-column: 2 / span 4;
+          }
+        `
       ]
     });
   }
   renderBody() {
-    const { userid } = this.data;
+    const base = "/api/travelers";
+    const api = this.data ? `${base}/${this.data.userid}` : base;
     return import_server.html`<body>
       <mu-auth provides="blazing:auth">
         <blz-header>
@@ -62,7 +71,7 @@ class TravelerPage {
           <a href="/guide/italy.html">Italy</a>
         </blz-header>
         <main class="page">
-          <traveler-profile src="/api/travelers/${userid}">
+          <traveler-profile mode="${this.mode}" src="${api}">
           </traveler-profile>
         </main>
       </mu-auth>

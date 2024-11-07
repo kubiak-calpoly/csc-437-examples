@@ -1,44 +1,42 @@
 import { css, html } from "@calpoly/mustang/server";
 import renderPage from "./renderPage";
 
-const staticParts = {
-  styles: [
-    css`
-      article {
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-      }
+const styles = [
+  css`
+    article {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-      main.page {
-        --page-grids: 8;
-        grid-template-areas:
-          "-- -- -- -- -- -- -- --"
-          "-1 -1 fm fm fm fm -2 -2"
-          "-1 -1 rq rq rq rq -2 -2";
-        grid-template-rows: 1fr auto 1fr;
-        flex-basis: 100%;
-      }
+    main.page {
+      --page-grids: 8;
+      grid-template-areas:
+        "-- -- -- -- -- -- -- --"
+        "-1 -1 fm fm fm fm -2 -2"
+        "-1 -1 rq rq rq rq -2 -2";
+      grid-template-rows: 1fr auto 1fr;
+      flex-basis: 100%;
+    }
 
-      login-form,
-      registration-form {
-        grid-area: fm;
-      }
+    login-form,
+    registration-form {
+      grid-area: fm;
+    }
 
-      p.register,
-      p.login {
-        display: block;
-        grid-area: rq;
-        text-align: center;
-      }
-    `
-  ]
-};
+    p.register,
+    p.login {
+      display: block;
+      grid-area: rq;
+      text-align: center;
+    }
+  `
+];
 
 export class LoginPage {
-  static render() {
+  render() {
     return renderPage({
-      ...staticParts,
+      styles,
       scripts: [
         `
         import { define, Auth } from "@calpoly/mustang";
@@ -72,9 +70,9 @@ export class LoginPage {
 }
 
 export class RegistrationPage {
-  static render() {
+  render() {
     return renderPage({
-      ...staticParts,
+      styles,
       scripts: [
         `
         import { define, Auth } from "@calpoly/mustang";

@@ -1,3 +1,4 @@
+import { css } from "./css";
 import { relay } from "./event";
 import { html } from "./html";
 import { shadow } from "./shadow";
@@ -21,24 +22,29 @@ class FormElement extends HTMLElement {
         </slot>
       </form>
       <slot name="delete"></slot>
-      <style>
-        form {
-          display: grid;
-          gap: var(--size-spacing-medium);
-          grid-template-columns: [start] 1fr [label] 1fr [input] 3fr 1fr [end];
-        }
-        ::slotted(label) {
-          display: grid;
-          grid-column: label / end;
-          grid-template-columns: subgrid;
-          gap: var(--size-spacing-medium);
-        }
-        button[type="submit"] {
-          grid-column: input;
-          justify-self: start;
-        }
-      </style>
+      <style></style>
     </template>
+  `;
+
+  static styles = css`
+    form {
+      display: grid;
+      gap: var(--size-spacing-medium);
+      grid-column: 1/-1;
+      grid-template-columns:
+        subgrid
+        [start] [label] [input] [col2] [col3] [end];
+    }
+    ::slotted(label) {
+      display: grid;
+      grid-column: label / end;
+      grid-template-columns: subgrid;
+      gap: var(--size-spacing-medium);
+    }
+    button[type="submit"] {
+      grid-column: input;
+      justify-self: start;
+    }
   `;
 
   get form() {
@@ -49,7 +55,9 @@ class FormElement extends HTMLElement {
 
   constructor() {
     super();
-    shadow(this).template(FormElement.template);
+    shadow(this)
+      .template(FormElement.template)
+      .styles(FormElement.styles);
 
     this.addEventListener("change", (event) => {
       const target = event.target as HTMLInputElement;

@@ -150,6 +150,7 @@ export { Form }
 declare class FormElement extends HTMLElement {
     set init(x: FormValues);
     static template: DocumentFragment;
+    static styles: CSSStyleSheet;
     get form(): HTMLFormElement | null | undefined;
     _state: FormValues;
     constructor();
@@ -239,6 +240,7 @@ export { InputArray }
 
 declare class InputArrayElement extends HTMLElement {
     static template: DocumentFragment;
+    static styles: CSSStyleSheet;
     _array: Array<string>;
     get name(): string | null;
     get value(): string[];

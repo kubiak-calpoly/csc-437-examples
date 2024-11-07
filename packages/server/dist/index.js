@@ -69,22 +69,29 @@ app.get("/ping", (_, res) => {
   );
 });
 app.get("/login", (req, res) => {
-  res.set("Content-Type", "text/html").send(import_pages.LoginPage.render());
+  const page = new import_pages.LoginPage();
+  res.set("Content-Type", "text/html").send(page.render());
 });
 app.get("/register", (req, res) => {
-  res.set("Content-Type", "text/html").send(import_pages.RegistrationPage.render());
+  const page = new import_pages.RegistrationPage();
+  res.set("Content-Type", "text/html").send(page.render());
 });
 app.get("/traveler/:userid", (req, res) => {
   const { userid } = req.params;
-  import_traveler_svc.default.get(userid).then((data) => {
-    if (!data) throw `Not found: ${userid}`;
-    const page = new import_pages.TravelerPage(data);
-    console.log("TraverlPage:", data);
+  const mode = req.query["new"] !== void 0 ? "new" : req.query.edit !== void 0 ? "edit" : "view";
+  if (mode === "new") {
+    const page = new import_pages.TravelerPage(null, mode);
     res.set("Content-Type", "text/html").send(page.render());
-  }).catch((error) => {
-    console.log(error);
-    res.status(404).end();
-  });
+  } else {
+    import_traveler_svc.default.get(userid).then((data) => {
+      if (!data) throw `Not found: ${userid}`;
+      const page = new import_pages.TravelerPage(data, mode);
+      res.set("Content-Type", "text/html").send(page.render());
+    }).catch((error) => {
+      console.log(error);
+      res.status(404).end();
+    });
+  }
 });
 app.get(
   "/destination/:tourId/:destIndex",

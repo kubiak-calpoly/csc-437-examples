@@ -2,11 +2,15 @@ import { css, html } from "@calpoly/mustang/server";
 import { Traveler } from "../models";
 import renderPage from "./renderPage";
 
-export class TravelerPage {
-  data: Traveler;
+type Mode = "view" | "new" | "edit";
 
-  constructor(data: Traveler) {
+export class TravelerPage {
+  data: Traveler | null;
+  mode: Mode;
+
+  constructor(data: Traveler | null, mode: Mode) {
     this.data = data;
+    this.mode = mode;
   }
 
   render() {
@@ -22,12 +26,22 @@ export class TravelerPage {
           "traveler-profile": TravelerProfileElement
         });
         `
+      ],
+      styles: [
+        css`
+          .page > traveler-profile {
+            grid-column: 2 / span 4;
+          }
+        `
       ]
     });
   }
 
   renderBody() {
-    const { userid } = this.data;
+    const base = "/api/travelers";
+    const api = this.data
+      ? `${base}/${this.data.userid}`
+      : base;
 
     return html`<body>
       <mu-auth provides="blazing:auth">
@@ -36,7 +50,7 @@ export class TravelerPage {
           <a href="/guide/italy.html">Italy</a>
         </blz-header>
         <main class="page">
-          <traveler-profile src="/api/travelers/${userid}">
+          <traveler-profile mode="${this.mode}" src="${api}">
           </traveler-profile>
         </main>
       </mu-auth>

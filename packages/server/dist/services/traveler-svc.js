@@ -47,18 +47,10 @@ function get(userid) {
   });
 }
 function update(userid, traveler) {
-  return TravelerModel.findOne({ userid }).then((found) => {
-    if (!found) throw `${userid} Not Found`;
-    else
-      return TravelerModel.findByIdAndUpdate(
-        found._id,
-        traveler,
-        {
-          new: true
-        }
-      );
+  return TravelerModel.findOneAndUpdate({ userid }, traveler, {
+    new: true
   }).then((updated) => {
-    if (!updated) throw `${userid} not updated`;
+    if (!updated) throw `${userid} Not Found`;
     else return updated;
   });
 }

@@ -3,15 +3,23 @@ import {
   define,
   html,
   shadow,
+  Form,
+  InputArray,
   Observer
 } from "@calpoly/mustang";
 import reset from "./styles/reset.css.js";
 import headings from "./styles/headings.css.js";
 
 export class TravelerProfileElement extends HTMLElement {
+  static uses = define({
+    "mu-form": Form.Element,
+    "input-array": InputArray.Element
+  });
+
   static template = html`<template>
-    <section>
+    <section class="view">
       <slot name="avatar"></slot>
+      <button id="edit">Edit</button>
       <h1><slot name="name"></slot></h1>
       <dl>
         <dt>Username</dt>
@@ -33,6 +41,38 @@ export class TravelerProfileElement extends HTMLElement {
         </dd>
       </dl>
     </section>
+    <mu-form class="edit">
+      <label>
+        <span>Username</span>
+        <input name="userid" />
+      </label>
+      <label>
+        <span>Name</span>
+        <input name="name" />
+      </label>
+      <label>
+        <span>Nickname</span>
+        <input name="nickname" />
+      </label>
+      <label>
+        <span>Home City</span>
+        <input name="home" />
+      </label>
+      <label>
+        <span>Airports</span>
+        <input-array name="airports">
+          <span slot="label-add">Add an airport</span>
+        </input-array>
+      </label>
+      <label>
+        <span>Color</span>
+        <input type="color" name="color" />
+      </label>
+      <label>
+        <span>Avatar</span>
+        <input name="avatar" />
+      </label>
+    </mu-form>
   </template>`;
 
   static styles = css`
@@ -40,8 +80,15 @@ export class TravelerProfileElement extends HTMLElement {
       display: contents;
       grid-column: 2/-2;
     }
-    section {
-      display: grid;
+    :host([mode="edit"]),
+    :host([mode="new"]) {
+      --display-view-none: none;
+    }
+    :host([mode="view"]) {
+      --display-editor-none: none;
+    }
+    section.view {
+      display: var(--display-view-none, grid);
       grid-template-columns: subgrid;
       gap: inherit;
       gap: var(--size-spacing-medium) var(--size-spacing-xlarge);
@@ -49,13 +96,13 @@ export class TravelerProfileElement extends HTMLElement {
       grid-column: 1 / -1;
     }
     h1 {
-      grid-row: 4;
+      grid-row: 2;
       grid-column: auto / span 2;
     }
     ::slotted(img[slot="avatar"]) {
       display: block;
       grid-column: auto / span 2;
-      grid-row: 1 / span 4;
+      grid-row: 1 / span 2;
     }
     .swatch,
     ::slotted([slot="color-swatch"]) {
@@ -85,10 +132,27 @@ export class TravelerProfileElement extends HTMLElement {
     dd {
       grid-column: 3 / -1;
     }
+    mu-form.edit {
+      display: var(--display-editor-none, grid);
+      grid-column: 1/-1;
+      grid-template-columns: subgrid;
+    }
   `;
 
   get src() {
     return this.getAttribute("src");
+  }
+
+  get mode() {
+    return this.getAttribute("mode");
+  }
+
+  set mode(m) {
+    this.setAttribute("mode", m);
+  }
+
+  get form() {
+    return this.shadowRoot.querySelector("mu-form.edit");
   }
 
   constructor() {
@@ -100,6 +164,15 @@ export class TravelerProfileElement extends HTMLElement {
         headings.styles,
         TravelerProfileElement.styles
       );
+
+    const editButton = this.shadowRoot.getElementById("edit");
+    editButton.addEventListener("click", () => {
+      this.mode = "edit";
+    });
+
+    this.addEventListener("mu-form:submit", (event) => {
+      this.submit(this.src, event.detail);
+    });
   }
 
   _authObserver = new Observer(this, "blazing:auth");
@@ -108,7 +181,8 @@ export class TravelerProfileElement extends HTMLElement {
     this._authObserver.observe(({ user }) => {
       console.log("Authenticated user:", user);
       this._user = user;
-      if (this.src) this.hydrate(this.src);
+      if (this.src && this.mode !== "new")
+        this.hydrate(this.src);
     });
   }
 
@@ -119,7 +193,8 @@ export class TravelerProfileElement extends HTMLElement {
       name === "src" &&
       oldValue !== newValue &&
       oldValue &&
-      newValue
+      newValue &&
+      this.mode !== "new"
     )
       this.hydrate(newValue);
   }
@@ -139,7 +214,10 @@ export class TravelerProfileElement extends HTMLElement {
         if (res.status !== 200) throw `Status: ${res.status}`;
         return res.json();
       })
-      .then((json) => this.renderSlots(json))
+      .then((json) => {
+        this.renderSlots(json);
+        this.form.init = json;
+      })
       .catch((error) => {
         console.log(`Failed to render data ${url}:`, error);
       });
@@ -173,5 +251,30 @@ export class TravelerProfileElement extends HTMLElement {
     const fragment = entries.map(toSlot);
 
     this.replaceChildren(...fragment);
+  }
+
+  submit(url, json) {
+    const method = this.mode === "new" ? "POST" : "PUT";
+    fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        ...this.authorization
+      },
+      body: JSON.stringify(json)
+    })
+      .then((res) => {
+        if (res.status !== (this.mode === "new" ? 201 : 200))
+          throw `Status: ${res.status}`;
+        return res.json();
+      })
+      .then((json) => {
+        this.renderSlots(json);
+        this.form.init = json;
+        this.mode = "view";
+      })
+      .catch((error) => {
+        console.log(`Failed to submit ${url}:`, error);
+      });
   }
 }
