@@ -1,14 +1,16 @@
 import { Auth, Observer } from "@calpoly/mustang";
-import { css, html, LitElement, TemplateResult } from "lit";
+import { css, html, LitElement } from "lit";
 import { state } from "lit/decorators.js";
 import { Tour } from "server/models";
-import resetCSS from "../styles/reset.css";
+import reset from "../styles/reset.css";
 import {
   convertStartEndDates,
   formatDate
 } from "../utils/dates";
 
 export class HomeViewElement extends LitElement {
+  src = "/api/tours";
+
   @state()
   tourIndex = new Array<Tour>();
 
@@ -25,14 +27,12 @@ export class HomeViewElement extends LitElement {
       if (user) {
         this._user = user;
       }
-      this.loadData();
+      this.hydrate(this.src);
     });
   }
 
-  loadData() {
-    const src = "/api/tours";
-
-    fetch(src, {
+  hydrate(url: string) {
+    fetch(url, {
       headers: Auth.headers(this._user)
     })
       .then((res: Response) => {
@@ -55,7 +55,7 @@ export class HomeViewElement extends LitElement {
       );
   }
 
-  render(): TemplateResult {
+  render() {
     const tourList = this.tourIndex.map(this.renderItem);
 
     return html`
@@ -93,7 +93,7 @@ export class HomeViewElement extends LitElement {
   }
 
   static styles = [
-    resetCSS.styles,
+    reset.styles,
     css`
       :host {
         display: contents;
