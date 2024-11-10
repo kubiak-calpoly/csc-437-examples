@@ -5,7 +5,6 @@ import { HomeViewElement } from "./views/home-view";
 
 class AppElement extends LitElement {
   static uses = define({
-    "blazing-header": HeaderElement,
     "home-view": HomeViewElement
   });
 
@@ -21,5 +20,6 @@ class AppElement extends LitElement {
 
 define({
   "mu-auth": Auth.Provider,
-  "blazing-app": AppElement
+  "blazing-app": AppElement,
+  "blazing-header": HeaderElement
 });
