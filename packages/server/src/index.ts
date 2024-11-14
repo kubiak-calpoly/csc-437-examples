@@ -89,6 +89,12 @@ app.get("/traveler/:userid", (req: Request, res: Response) => {
   }
 });
 
+app.get("/login", (req: Request, res: Response) => {
+  res
+    .set("Content-Type", "text/html")
+    .send(renderPage(LoginPage.render()));
+});
+
 // SPA Routes: /app/...
 app.use("/app", (_: Request, res: Response) => {
   const indexHtml = path.resolve(staticDir, "index.html");

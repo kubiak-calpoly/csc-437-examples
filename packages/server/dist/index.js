@@ -95,6 +95,9 @@ app.get("/traveler/:userid", (req, res) => {
     });
   }
 });
+app.get("/login", (req, res) => {
+  res.set("Content-Type", "text/html").send(renderPage(import_pages.LoginPage.render()));
+});
 app.use("/app", (_, res) => {
   const indexHtml = import_path.default.resolve(staticDir, "index.html");
   import_promises.default.readFile(indexHtml, { encoding: "utf8" }).then(
