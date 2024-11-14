@@ -525,7 +525,7 @@ Expecting `+Et.join(", ")+", got '"+(this.terminals_[A]||A)+"'":Ft="Parse error 
           start-date=${d}
           end-date=${m}
           img-src=${y}
-          href="./${this.tourid}/destination/${h}">
+          href="/destination/${this.tourid}/${h}">
           ${g}
         </itinerary-destination>
       `},a=c=>{const h=c.length+1,d=c[0].departure,m=c[c.length-1].arrival,g=h>2?v`
@@ -609,4 +609,5 @@ Expecting `+Et.join(", ")+", got '"+(this.terminals_[A]||A)+"'":Ft="Parse error 
       "blazing-app": AppElement });
       <article>
         <blazing-header></blazing-header>
+        You can > do that if you want, but in the examples,
       </article> `}};ve.uses=$t({"blazing-header":se,"tour-view":yt});let ie=ve;$t({"mu-auth":Xt.Provider,"blazing-app":ie});

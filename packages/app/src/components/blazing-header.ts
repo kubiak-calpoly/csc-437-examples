@@ -7,62 +7,60 @@ import {
 } from "@calpoly/mustang";
 import { css, html, LitElement } from "lit";
 import { state } from "lit/decorators.js";
-import headingsCSS from "../styles/headings.css";
-import resetCSS from "../styles/reset.css";
+import headings from "../styles/headings.css";
+import reset from "../styles/reset.css";
+
+function toggleDarkMode(ev: InputEvent) {
+  const target = ev.target as HTMLInputElement;
+  const checked = target.checked;
+
+  Events.relay(ev, "dark-mode", { checked });
+}
+
+function signOut(ev: MouseEvent) {
+  Events.relay(ev, "auth:message", ["auth/signout"]);
+}
 
 export class HeaderElement extends LitElement {
   static uses = define({
     "mu-dropdown": Dropdown.Element
   });
 
-  render() {
-    return html`
-      <header>
-        <h1>Blazing Travels</h1>
-        <nav>
-          <p><slot> Unnamed Tour </slot></p>
-          <mu-dropdown>
-            <a slot="actuator">
-              Hello,
-              <span id="userid">${this.userid}</span>
-            </a>
-            <menu>
-              <li>
-                <label
-                  class="dark-mode-switch"
-                  @click=${(event: InputEvent) =>
-        Events.relay(event, "dark-mode", {
-          checked: (
-            event.target as HTMLInputElement
-          ).checked
-        })}>
-                  <input type="checkbox" />
-                  Dark Mode
-                </label>
-              </li>
-              <li class="when-signed-in">
-                <a
-                  id="signout"
-                  @click=${(event: InputEvent) =>
-        Events.relay(event, "auth:message", [
-          "auth/signout"
-        ])}
-                  >Sign Out</a
-                >
-              </li>
-              <li class="when-signed-out">
-                <a href="/login">Sign In</a>
-              </li>
-            </menu>
-          </mu-dropdown>
-        </nav>
-      </header>
-    `;
+  @state()
+  userid: string = "traveler";
+
+  protected render() {
+    return html` <header>
+      <h1>Blazing Travels</h1>
+      <nav>
+        <p><slot> Unnamed Tour </slot></p>
+        <mu-dropdown>
+          <a slot="actuator">
+            Hello,
+            <span id="userid">${this.userid}</span>
+          </a>
+          <menu>
+            <li>
+              <label @change=${toggleDarkMode}>
+                <input type="checkbox" />
+                Dark Mode
+              </label>
+            </li>
+            <li class="when-signed-in">
+              <a id="signout @click=${signOut}">Sign Out</a>
+            </li>
+            <li class="when-signed-out">
+              <a href="/login">Sign In</a>
+            </li>
+          </menu>
+        </mu-dropdown>
+      </nav>
+    </header>`;
   }
 
   static styles = [
-    resetCSS,
-    headingsCSS,
+    reset.styles,
+    headings.styles,
     css`
       :host {
         display: contents;
@@ -112,11 +110,9 @@ export class HeaderElement extends LitElement {
     "blazing:auth"
   );
 
-  @state()
-  userid: String = "";
-
   connectedCallback() {
     super.connectedCallback();
+
     this._authObserver.observe(({ user }) => {
       if (user && user.username !== this.userid) {
         this.userid = user.username;
