@@ -284,8 +284,10 @@ class AuthProvider extends Provider {
     return this.getAttribute("redirect") || void 0;
   }
   constructor() {
+    const user = AuthenticatedUser.authenticateFromLocalStorage();
     super({
-      user: AuthenticatedUser.authenticateFromLocalStorage()
+      user,
+      token: user.authenticated ? user.token : void 0
     });
   }
   connectedCallback() {
@@ -2247,9 +2249,7 @@ const _Switch = class _Switch extends h {
   constructor(routes, historyContext, authContext = "") {
     super();
     this._cases = [];
-    this._fallback = () => ke`
-      <h1>Not Found</h1>
-    `;
+    this._fallback = () => ke` <h1>Not Found</h1> `;
     this._cases = routes.map((r2) => ({
       ...r2,
       route: new Route$1(r2.path)
@@ -2280,34 +2280,27 @@ const _Switch = class _Switch extends h {
       if (m2) {
         if ("view" in m2) {
           if (!this._user) {
-            return ke`
-              <h1>Authenticating</h1>
-            `;
+            return ke` <h1>Authenticating</h1> `;
           }
           if (m2.auth && m2.auth !== "public" && this._user && !this._user.authenticated) {
             dispatch$1(this, "auth/redirect");
-            return ke`
-              <h1>Redirecting for Login</h1>
-            `;
+            return ke` <h1>Redirecting for Login</h1> `;
           } else {
-            return m2.view(m2.params || {});
+            console.log("Loading view, ", m2.params, m2.query);
+            return m2.view(m2.params || {}, m2.query);
           }
         }
         if ("redirect" in m2) {
           const redirect2 = m2.redirect;
           if (typeof redirect2 === "string") {
             this.redirect(redirect2);
-            return ke`
-              <h1>Redirecting to ${redirect2}…</h1>
-            `;
+            return ke` <h1>Redirecting to ${redirect2}…</h1> `;
           }
         }
       }
       return this._fallback({});
     };
-    return ke`
-      <main>${renderView()}</main>
-    `;
+    return ke` <main>${renderView()}</main> `;
   }
   updated(changedProperties) {
     if (changedProperties.has("_match")) this.requestUpdate();

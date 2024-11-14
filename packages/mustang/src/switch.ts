@@ -9,7 +9,10 @@ type RouteParams = {
   [key: string]: string;
 };
 
-type RouteView = (arg: RouteParams) => TemplateResult;
+type RouteView = (
+  params: RouteParams,
+  query?: URLSearchParams
+) => TemplateResult;
 type RouteRedirect = string | ((arg: RouteParams) => string);
 
 interface MatchPath {
@@ -46,10 +49,7 @@ export class Switch extends LitElement {
 
   @state()
   _user?: Auth.User;
-  _fallback: RouteView = () =>
-    html`
-      <h1>Not Found</h1>
-    `;
+  _fallback: RouteView = () => html` <h1>Not Found</h1> `;
 
   @state()
   _match?: Match;
@@ -92,9 +92,7 @@ export class Switch extends LitElement {
       if (m) {
         if ("view" in m) {
           if (!this._user) {
-            return html`
-              <h1>Authenticating</h1>
-            `;
+            return html` <h1>Authenticating</h1> `;
           }
           if (
             m.auth &&
@@ -103,29 +101,24 @@ export class Switch extends LitElement {
             !this._user.authenticated
           ) {
             Auth.dispatch(this, "auth/redirect");
-            return html`
-              <h1>Redirecting for Login</h1>
-            `;
+            return html` <h1>Redirecting for Login</h1> `;
           } else {
-            return m.view(m.params || {});
+            console.log("Loading view, ", m.params, m.query);
+            return m.view(m.params || {}, m.query);
           }
         }
         if ("redirect" in m) {
           const redirect = m.redirect;
           if (typeof redirect === "string") {
             this.redirect(redirect);
-            return html`
-              <h1>Redirecting to ${redirect}…</h1>
-            `;
+            return html` <h1>Redirecting to ${redirect}…</h1> `;
           }
         }
       }
       return this._fallback({});
     };
 
-    return html`
-      <main>${renderView()}</main>
-    `;
+    return html` <main>${renderView()}</main> `;
   }
 
   override updated(
