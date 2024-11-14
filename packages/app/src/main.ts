@@ -8,6 +8,7 @@ import { html, LitElement } from "lit";
 import { HeaderElement } from "./components/blazing-header";
 import { HomeViewElement } from "./views/home-view";
 import { TourViewElement } from "./views/tour-view";
+import { TravelerViewElement } from "./views/traveler-view";
 
 const routes: Switch.Route[] = [
   {
@@ -19,8 +20,24 @@ const routes: Switch.Route[] = [
   },
   {
     auth: "protected",
+    path: "/app/traveler/:id",
+    view: (
+      params: Switch.Params,
+      query?: URLSearchParams
+    ) => html`
+      <traveler-view
+        userid=${params.id}
+        mode=${query?.has("edit")
+        ? "edit"
+        : query?.has("new")
+          ? "new"
+          : "view"}></traveler-view>
+    `
+  },
+  {
+    auth: "protected",
     path: "/app",
-    view: () => html` <home-view></home-view> `
+    view: () => html`<home-view></home-view>`
   },
   {
     path: "/",
@@ -29,14 +46,6 @@ const routes: Switch.Route[] = [
 ];
 
 class AppElement extends LitElement {
-  static uses = define({
-    "mu-switch": class AppSwitch extends Switch.Element {
-      constructor() {
-        super(routes, "blazing:history", "blazing:auth");
-      }
-    }
-  });
-
   render() {
     return html`<mu-switch></mu-switch>`;
   }
@@ -58,5 +67,6 @@ define({
   "blazing-app": AppElement,
   "blazing-header": HeaderElement,
   "home-view": HomeViewElement,
-  "tour-view": TourViewElement
+  "tour-view": TourViewElement,
+  "traveler-view": TravelerViewElement
 });

@@ -14,11 +14,11 @@ declare type ApplyMap<M> = (fn: MapFn<M>) => void;
 declare namespace Auth {
     export {
         AuthenticatedUser,
-        AuthProvider as Provider,
-        APIUser as User,
         dispatch_2 as dispatch,
         authHeaders as headers,
         tokenPayload as payload,
+        AuthProvider as Provider,
+        APIUser as User,
         AuthSuccessful,
         AuthModel as Model,
         AuthMsg as Msg,
@@ -311,7 +311,7 @@ declare type RouteParams = {
 
 declare type RouteRedirect = string | ((arg: RouteParams) => string);
 
-declare type RouteView = (arg: RouteParams) => TemplateResult;
+declare type RouteView = (params: RouteParams, query?: URLSearchParams) => TemplateResult;
 
 declare class Service<Msg extends Base, T extends object> {
     _context: Context<T>;
