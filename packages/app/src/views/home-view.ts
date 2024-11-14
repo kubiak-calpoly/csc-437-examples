@@ -1,14 +1,16 @@
 import { Auth, Observer } from "@calpoly/mustang";
-import { css, html, LitElement, TemplateResult } from "lit";
+import { css, html, LitElement } from "lit";
 import { state } from "lit/decorators.js";
 import { Tour } from "server/models";
-import resetCSS from "../styles/reset.css";
+import reset from "../styles/reset.css";
 import {
   convertStartEndDates,
   formatDate
 } from "../utils/dates";
 
 export class HomeViewElement extends LitElement {
+  src = "/api/tours";
+
   @state()
   tourIndex = new Array<Tour>();
 
@@ -25,14 +27,12 @@ export class HomeViewElement extends LitElement {
       if (user) {
         this._user = user;
       }
-      this.loadData();
+      this.hydrate(this.src);
     });
   }
 
-  loadData() {
-    const src = "/api/tours";
-
-    fetch(src, {
+  hydrate(url: string) {
+    fetch(url, {
       headers: Auth.headers(this._user)
     })
       .then((res: Response) => {
@@ -55,12 +55,24 @@ export class HomeViewElement extends LitElement {
       );
   }
 
-  render(): TemplateResult {
-    const renderItem = (t: Tour) => {
-      const { name, startDate, endDate } = t;
-      const { _id } = t as unknown as { _id: string };
+  render() {
+    const tourList = this.tourIndex.map(this.renderItem);
 
-      return html`
+    return html`
+      <main class="page">
+        <header>
+          <h2>Your Trips</h2>
+        </header>
+        <dl>${tourList}</dl>
+      </main>
+    `;
+  }
+
+  renderItem(t: Tour) {
+    const { name, startDate, endDate } = t;
+    const { _id } = t as unknown as { _id: string };
+
+    return html`
         <dt>
           ${startDate.getUTCFullYear()}
         </dt>
@@ -78,20 +90,10 @@ export class HomeViewElement extends LitElement {
           <a href="/app/tour/${_id}">${name}</a>
         </dt>
       `;
-    };
-
-    return html`
-      <main class="page">
-        <header>
-          <h2>Your Trips</h2>
-        </header>
-        <dl>${this.tourIndex.map(renderItem)}</dl>
-      </main>
-    `;
   }
 
   static styles = [
-    resetCSS,
+    reset.styles,
     css`
       :host {
         display: contents;
