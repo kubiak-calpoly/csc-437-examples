@@ -47,7 +47,7 @@ export class HeaderElement extends LitElement {
               </label>
             </li>
             <li class="when-signed-in">
-              <a id="signout @click=${signOut}">Sign Out</a>
+              <a id="signout" @click=${signOut}>Sign Out</a>
             </li>
             <li class="when-signed-out">
               <a href="/login">Sign In</a>
