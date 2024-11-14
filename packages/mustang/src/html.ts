@@ -45,6 +45,8 @@ export function html(
   function processParam(v: unknown, _: number): Node | string {
     if (v === null) return "";
 
+    console.log("Processing parameter:", v);
+
     switch (typeof v) {
       case "string":
         return escapeHtml(v);
@@ -55,6 +57,8 @@ export function html(
         // convert these to strings to make text nodes
         return escapeHtml(v.toString());
       case "object":
+        if (v instanceof Node || v instanceof DocumentFragment)
+          return v;
         // turn arrays into DocumentFragments
         if (Array.isArray(v)) {
           const frag = new DocumentFragment();
@@ -64,7 +68,6 @@ export function html(
           frag.replaceChildren(...elements);
           return frag;
         }
-        if (v instanceof Node) return v;
         return new Text(v.toString());
       default:
         // anything else, leave a comment node

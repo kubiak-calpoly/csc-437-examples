@@ -1,25 +1,22 @@
-export function dispatchCustom(
-  target: EventTarget,
+export function relay(
+  event: Event,
   customType: string,
   detail?: any
 ) {
+  const relay = event.target as EventTarget;
   const customEvent = new CustomEvent(customType, {
     bubbles: true,
     composed: true,
     detail
   });
 
-  target.dispatchEvent(customEvent);
-}
+  console.log(
+    `Relaying event from ${event.type}:`,
+    customEvent
+  );
 
-export function relay(
-  event: Event,
-  customType: string,
-  detail?: any
-) {
-  const target = event.target as EventTarget;
-
-  dispatchCustom(target, customType, detail);
+  relay.dispatchEvent(customEvent);
+  event.stopPropagation();
 }
 
 export function originalTarget(

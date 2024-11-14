@@ -1,40 +1,42 @@
-const staticParts = {
-  styles: [
-    `
+import { css, html } from "@calpoly/mustang/server";
+import renderPage from "./renderPage";
+
+const styles = [
+  css`
     article {
       height: 100vh;
       display: flex;
       flex-direction: column;
     }
 
+    main.page {
+      --page-grids: 8;
+      grid-template-areas:
+        "-- -- -- -- -- -- -- --"
+        "-1 -1 fm fm fm fm -2 -2"
+        "-1 -1 rq rq rq rq -2 -2";
+      grid-template-rows: 1fr auto 1fr;
+      flex-basis: 100%;
+    }
 
-      main.page {
-        --page-grids: 8;
-        grid-template-areas:
-          "-- -- -- -- -- -- -- --"
-          "-1 -1 fm fm fm fm -2 -2"
-          "-1 -1 rq rq rq rq -2 -2";
-        grid-template-rows: 1fr auto 1fr;
-        flex-basis: 100%;
-      }
+    login-form,
+    registration-form {
+      grid-area: fm;
+    }
 
-      login-form, registration-form {
-        grid-area: fm;
-      }
-
-      p.register, p.login {
-        display: block;
-        grid-area: rq;
-        text-align: center;
-      }
-    `
-  ]
-};
+    p.register,
+    p.login {
+      display: block;
+      grid-area: rq;
+      text-align: center;
+    }
+  `
+];
 
 export class LoginPage {
-  static render() {
-    return {
-      ...staticParts,
+  render() {
+    return renderPage({
+      styles,
       scripts: [
         `
         import { define, Auth } from "@calpoly/mustang";
@@ -46,7 +48,7 @@ export class LoginPage {
         })
         `
       ],
-      body: `<body>
+      body: html`<body>
         <mu-auth provides="blazing:auth">
           <article>
             <blz-header> </blz-header>
@@ -56,20 +58,21 @@ export class LoginPage {
               </login-form>
               <p class="register">
                 Or did you want to
-                <a href="./register"> register as a new user </a>?
+                <a href="./register"> register as a new user </a
+                >?
               </p>
             </main>
           </article>
         </mu-auth>
       </body> `
-    };
+    });
   }
 }
 
 export class RegistrationPage {
-  static render() {
-    return {
-      ...staticParts,
+  render() {
+    return renderPage({
+      styles,
       scripts: [
         `
         import { define, Auth } from "@calpoly/mustang";
@@ -81,13 +84,15 @@ export class RegistrationPage {
         })
         `
       ],
-      body: `<body>
+      body: html`<body>
         <mu-auth provides="blazing:auth">
           <article>
             <blz-header> </blz-header>
             <main class="page">
               <registration-form api="/auth/register">
-                <h3 slot="title">Sign up to plan your next trip!</h3>
+                <h3 slot="title"
+                  >Sign up to plan your next trip!</h3
+                >
               </registration-form>
               <p class="login">
                 Already signed up? You can
@@ -97,6 +102,6 @@ export class RegistrationPage {
           </article>
         </mu-auth>
       </body> `
-    };
+    });
   }
 }

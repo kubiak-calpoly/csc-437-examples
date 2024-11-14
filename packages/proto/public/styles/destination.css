@@ -1,3 +1,93 @@
-blz-destination {
+section.destination {
   grid-column: 1 / -1;
+
+  img {
+    grid-area: img;
+  }
+
+  blz-accommodation {
+    grid-area: acc;
+  }
+
+
+
+  .excursions {
+    display: grid;
+    grid-area: exc;
+    grid-template-columns: subgrid;
+    list-style: none;
+    padding: 0;
+    gap: var(--size-spacing-large);
+    font-family: var(--font-family-display);
+    font-size: var(--size-type-mlarge);
+    line-height: var(--font-line-height-display);
+
+    & > li {
+      display: flex;
+      align-items: center;
+      grid-column: auto / span 2;
+      background-color: var(--color-background-card);
+      padding: var(--size-spacing-medium);
+      gap: var(--size-spacing-medium);
+    }
+
+    svg.icon {
+      --icon-size: var(--size-icon-large);
+      color: var(--color-accent);
+    }
+  }
+
+  footer {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
+    grid-area: ftr;
+
+    a {
+      display: grid;
+      grid-template-columns: subgrid;
+      grid-column: auto / span calc(var(--page-grids) / 2);
+      grid-template-areas:
+        "city stat stat icon"
+        "city time time icon";
+      align-items: center;
+      color: var(--color-link);
+      border: 1px solid var(--color-accent);
+      font-family: var(--font-family-display);
+      text-decoration: none;
+    }
+
+    svg.icon {
+      grid-area: icon;
+      justify-self: end;
+    }
+
+    dl {
+      display: contents;
+    }
+    dt {
+      grid-area: city;
+    }
+    dd {
+      grid-area: time;
+      text-align: center;
+    }
+    dd + dd {
+      grid-area: stat;
+    }
+
+  a.depart {
+    grid-template-areas:
+      "icon stat stat city"
+      "icon time time city";
+
+    svg.icon {
+      justify-self: start;
+    }
+
+    dt {
+      justify-self: end;
+      text-align: right;
+    }
+  }
 }
