@@ -8,7 +8,8 @@ export default {
       "/images": "http://localhost:3000",
       "/login": "http://localhost:3000",
       "/register": "http://localhost:3000",
-      "/scripts": "http://localhost:3000"
+      "/scripts": "http://localhost:3000",
+      "/unpkg": "http://localhost:3000"
     }
   }
 };
