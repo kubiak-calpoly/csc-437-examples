@@ -30,7 +30,7 @@ export class Observer<T extends object> {
           })
           .catch((err) =>
             console.log(
-              `Observer ${this._contextLabel} failed to locate a provider`,
+              `Observer ${this._contextLabel}: ${err}`,
               err
             )
           );

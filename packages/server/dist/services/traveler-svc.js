@@ -29,10 +29,13 @@ const TravelerSchema = new import_mongoose.Schema(
     nickname: { type: String, trim: true },
     home: { type: String, trim: true },
     airports: [String],
-    avatar: String,
+    avatar: {
+      data: Buffer,
+      contentType: String
+    },
     color: String
   },
-  { collection: "user_profiles" }
+  { collection: "traveler_profiles" }
 );
 const TravelerModel = (0, import_mongoose.model)(
   "Traveler",
@@ -47,18 +50,10 @@ function get(userid) {
   });
 }
 function update(userid, traveler) {
-  return TravelerModel.findOne({ userid }).then((found) => {
-    if (!found) throw `${userid} Not Found`;
-    else
-      return TravelerModel.findByIdAndUpdate(
-        found._id,
-        traveler,
-        {
-          new: true
-        }
-      );
+  return TravelerModel.findOneAndUpdate({ userid }, traveler, {
+    new: true
   }).then((updated) => {
-    if (!updated) throw `${userid} not updated`;
+    if (!updated) throw `${userid} Not Found`;
     else return updated;
   });
 }

@@ -1,4 +1,6 @@
+"use strict";
 var _a, _b;
+Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 class InvalidTokenError extends Error {
 }
 InvalidTokenError.prototype.name = "InvalidTokenError";
@@ -1557,7 +1559,7 @@ function commonjsRequire(path) {
   throw new Error('Could not dynamically require "' + path + '". Please configure the dynamicRequireTargets or/and ignoreDynamicRequires option of @rollup/plugin-commonjs appropriately for this require call to work.');
 }
 var compiledGrammar = {};
-(function(exports) {
+(function(exports2) {
   var parser2 = function() {
     var o2 = function(k2, v2, o3, l2) {
       for (o3 = o3 || {}, l2 = k2.length; l2--; o3[k2[l2]] = v2) ;
@@ -2057,9 +2059,9 @@ var compiledGrammar = {};
     return new Parser2();
   }();
   if (typeof commonjsRequire !== "undefined" && true) {
-    exports.parser = parser2;
-    exports.Parser = parser2.Parser;
-    exports.parse = function() {
+    exports2.parser = parser2;
+    exports2.Parser = parser2.Parser;
+    exports2.parse = function() {
       return parser2.parse.apply(parser2, arguments);
     };
   }
@@ -2591,23 +2593,21 @@ class View extends h {
 __decorateClass([
   n2()
 ], View.prototype, "model");
-export {
-  auth as Auth,
-  dropDown as Dropdown,
-  Effect,
-  event as Events,
-  form as Form,
-  history$1 as History,
-  inputArray as InputArray,
-  message as Message,
-  Observer,
-  rest as Rest,
-  store as Store,
-  _switch as Switch,
-  update as Update,
-  View,
-  css,
-  define,
-  html,
-  shadow
-};
+exports.Auth = auth;
+exports.Dropdown = dropDown;
+exports.Effect = Effect;
+exports.Events = event;
+exports.Form = form;
+exports.History = history$1;
+exports.InputArray = inputArray;
+exports.Message = message;
+exports.Observer = Observer;
+exports.Rest = rest;
+exports.Store = store;
+exports.Switch = _switch;
+exports.Update = update;
+exports.View = View;
+exports.css = css;
+exports.define = define;
+exports.html = html;
+exports.shadow = shadow;

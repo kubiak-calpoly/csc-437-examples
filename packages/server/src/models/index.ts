@@ -1,4 +1,5 @@
 export * from "./credential";
+export * from "./currency";
 export * from "./destination";
 export * from "./entourage";
 export * from "./geo";

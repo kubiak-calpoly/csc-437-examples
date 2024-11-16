@@ -1,25 +1,10 @@
 "use strict";
+var __create = Object.create;
 var __defProp = Object.defineProperty;
-var __defProps = Object.defineProperties;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
 var __getOwnPropNames = Object.getOwnPropertyNames;
-var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __propIsEnum = Object.prototype.propertyIsEnumerable;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __spreadValues = (a, b) => {
-  for (var prop in b || (b = {}))
-    if (__hasOwnProp.call(b, prop))
-      __defNormalProp(a, prop, b[prop]);
-  if (__getOwnPropSymbols)
-    for (var prop of __getOwnPropSymbols(b)) {
-      if (__propIsEnum.call(b, prop))
-        __defNormalProp(a, prop, b[prop]);
-    }
-  return a;
-};
-var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
 var __export = (target, all) => {
   for (var name in all)
     __defProp(target, name, { get: all[name], enumerable: true });
@@ -32,6 +17,14 @@ var __copyProps = (to, from, except, desc) => {
   }
   return to;
 };
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var auth_exports = {};
 __export(auth_exports, {
@@ -39,41 +32,43 @@ __export(auth_exports, {
   RegistrationPage: () => RegistrationPage
 });
 module.exports = __toCommonJS(auth_exports);
-const staticParts = {
-  styles: [
-    `
+var import_server = require("@calpoly/mustang/server");
+var import_renderPage = __toESM(require("./renderPage"));
+const styles = [
+  import_server.css`
     article {
       height: 100vh;
       display: flex;
       flex-direction: column;
     }
 
+    main.page {
+      --page-grids: 8;
+      grid-template-areas:
+        "-- -- -- -- -- -- -- --"
+        "-1 -1 fm fm fm fm -2 -2"
+        "-1 -1 rq rq rq rq -2 -2";
+      grid-template-rows: 1fr auto 1fr;
+      flex-basis: 100%;
+    }
 
-      main.page {
-        --page-grids: 8;
-        grid-template-areas:
-          "-- -- -- -- -- -- -- --"
-          "-1 -1 fm fm fm fm -2 -2"
-          "-1 -1 rq rq rq rq -2 -2";
-        grid-template-rows: 1fr auto 1fr;
-        flex-basis: 100%;
-      }
+    login-form,
+    registration-form {
+      grid-area: fm;
+    }
 
-      login-form, registration-form {
-        grid-area: fm;
-      }
-
-      p.register, p.login {
-        display: block;
-        grid-area: rq;
-        text-align: center;
-      }
-    `
-  ]
-};
+    p.register,
+    p.login {
+      display: block;
+      grid-area: rq;
+      text-align: center;
+    }
+  `
+];
 class LoginPage {
-  static render() {
-    return __spreadProps(__spreadValues({}, staticParts), {
+  render() {
+    return (0, import_renderPage.default)({
+      styles,
       scripts: [
         `
         import { define, Auth } from "@calpoly/mustang";
@@ -85,7 +80,7 @@ class LoginPage {
         })
         `
       ],
-      body: `<body>
+      body: import_server.html`<body>
         <mu-auth provides="blazing:auth">
           <article>
             <blz-header> </blz-header>
@@ -95,7 +90,8 @@ class LoginPage {
               </login-form>
               <p class="register">
                 Or did you want to
-                <a href="./register"> register as a new user </a>?
+                <a href="./register"> register as a new user </a
+                >?
               </p>
             </main>
           </article>
@@ -105,8 +101,9 @@ class LoginPage {
   }
 }
 class RegistrationPage {
-  static render() {
-    return __spreadProps(__spreadValues({}, staticParts), {
+  render() {
+    return (0, import_renderPage.default)({
+      styles,
       scripts: [
         `
         import { define, Auth } from "@calpoly/mustang";
@@ -118,13 +115,15 @@ class RegistrationPage {
         })
         `
       ],
-      body: `<body>
+      body: import_server.html`<body>
         <mu-auth provides="blazing:auth">
           <article>
             <blz-header> </blz-header>
             <main class="page">
               <registration-form api="/auth/register">
-                <h3 slot="title">Sign up to plan your next trip!</h3>
+                <h3 slot="title"
+                  >Sign up to plan your next trip!</h3
+                >
               </registration-form>
               <p class="login">
                 Already signed up? You can

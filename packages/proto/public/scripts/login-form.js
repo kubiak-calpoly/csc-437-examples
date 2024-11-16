@@ -1,10 +1,10 @@
-import { css, html, shadow, Events } from "@calpoly/mustang";
+import { css, html, shadow } from "@calpoly/mustang";
 import reset from "./styles/reset.css.js";
 import headings from "./styles/headings.css.js";
 
 export class LoginForm extends HTMLElement {
   static template = html`<template>
-    <form>
+    <form onsubmit="false;">
       <slot name="title">
         <h3>Sign in with Username and Password</h3>
       </slot>
@@ -81,7 +81,6 @@ export class LoginForm extends HTMLElement {
 
 function submitLoginForm(event, endpoint, redirect) {
   event.preventDefault();
-
   const form = event.target.closest("form");
   const data = new FormData(form);
   const method = "POST";
@@ -101,7 +100,6 @@ function submitLoginForm(event, endpoint, redirect) {
     .then((payload) => {
       const { token } = payload;
 
-      Events.dispatch;
       form.dispatchEvent(
         new CustomEvent("auth:message", {
           bubbles: true,

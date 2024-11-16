@@ -58,28 +58,24 @@ const credentialModel = (0, import_mongoose.model)(
   credentialSchema
 );
 function verify(username, password) {
-  return new Promise((resolve, reject) => {
-    credentialModel.find({ username }).then((found) => {
-      if (found && found.length === 1) return found[0];
-      else reject("Invalid username or password");
-    }).then((credsOnFile) => {
+  return credentialModel.find({ username }).then((found) => {
+    if (!found || found.length !== 1)
+      throw "Invalid username or password";
+    return found[0];
+  }).then(
+    (credsOnFile) => new Promise((resolve, reject) => {
       if (credsOnFile)
         import_bcryptjs.default.compare(
           password,
           credsOnFile.hashedPassword,
           (_, result) => {
-            console.log(
-              "Verified",
-              result,
-              credsOnFile.username
-            );
-            if (result) resolve(credsOnFile.username);
-            else reject("Invalid username or password");
+            if (!result)
+              reject("Invalid username or password");
+            else resolve(credsOnFile.username);
           }
         );
-      else reject("Invalid username or password");
-    });
-  });
+    })
+  );
 }
 function create(username, password) {
   return new Promise((resolve, reject) => {

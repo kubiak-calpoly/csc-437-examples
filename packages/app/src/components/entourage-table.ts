@@ -43,10 +43,10 @@ export class EntourageTable extends LitElement {
       return html`
         <tr>
           <td>
-            <a href="/app/profile/${userid}">${avatarImage}</a>
+            <a href="/app/traveler/${userid}">${avatarImage}</a>
           </td>
           <td class="name">
-            <a href="/app/profile/${userid}">${name}</a>
+            <a href="/app/traveler/${userid}">${name}</a>
           </td>
         </tr>
       `;
