@@ -77,7 +77,31 @@ const tourSchema = new Schema<Tour>(
 const tourModel = model<Tour>("Tour", tourSchema);
 
 function index(): Promise<Tour[]> {
-  return tourModel.find();
+  return tourModel
+    .find()
+    .then((tours) =>
+      // populate the entourage name for each tour:
+      tourModel.populate(tours, {
+        path: "entourage",
+        select: "name"
+      })
+    )
+    .then((tours) => tours.map(trimIndex));
+}
+
+function trimIndex(t: Tour): Tour & { _id: string } {
+  const { name, startDate, endDate, entourage } = t;
+  const { _id } = t as unknown as { _id: string };
+
+  return {
+    _id,
+    name,
+    startDate,
+    endDate,
+    entourage,
+    destinations: [],
+    transportation: []
+  };
 }
 
 function get(id: String): Promise<Tour> {

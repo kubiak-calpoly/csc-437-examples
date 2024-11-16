@@ -4,7 +4,7 @@ import { property, state } from "lit/decorators.js";
 import { EntourageTable } from "../components/entourage-table";
 import { Msg } from "../messages";
 import { Model } from "../model";
-import resetCSS from "../styles/reset.css";
+import reset from "../styles/reset.css";
 
 export class EntourageViewElement extends View<Model, Msg> {
   static uses = define({
@@ -68,7 +68,7 @@ export class EntourageViewElement extends View<Model, Msg> {
   }
 
   static styles = [
-    resetCSS,
+    reset.styles,
     css`
       :host {
         display: contents;

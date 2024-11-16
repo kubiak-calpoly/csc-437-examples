@@ -3,10 +3,14 @@ import {
   define,
   Dropdown,
   Events,
-  Observer
+  Observer,
+  View
 } from "@calpoly/mustang";
-import { css, html, LitElement } from "lit";
+import { css, html } from "lit";
 import { state } from "lit/decorators.js";
+import { Tour } from "server/models";
+import { Msg } from "../messages";
+import { Model } from "../model";
 import headings from "../styles/headings.css";
 import reset from "../styles/reset.css";
 
@@ -21,7 +25,7 @@ function signOut(ev: MouseEvent) {
   Events.relay(ev, "auth:message", ["auth/signout"]);
 }
 
-export class HeaderElement extends LitElement {
+export class HeaderElement extends View<Model, Msg> {
   static uses = define({
     "mu-dropdown": Dropdown.Element
   });
@@ -29,11 +33,18 @@ export class HeaderElement extends LitElement {
   @state()
   userid: string = "traveler";
 
-  protected render() {
+  @state()
+  get tour(): Tour | undefined {
+    return this.model.tour;
+  }
+
+  render() {
+    console.log("Tour in header:", this.tour);
+
     return html` <header>
       <h1>Blazing Travels</h1>
       <nav>
-        <p><slot> Unnamed Tour </slot></p>
+        <p>${this.tour ? this.tour.name : ""}</p>
         <mu-dropdown>
           <a slot="actuator">
             Hello,
@@ -104,6 +115,10 @@ export class HeaderElement extends LitElement {
       }
     `
   ];
+
+  constructor() {
+    super("blazing:model");
+  }
 
   _authObserver = new Observer<Auth.Model>(
     this,

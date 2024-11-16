@@ -11,7 +11,7 @@ import { Destination, Excursion, Tour } from "server/models";
 import { ExcursionCardElement } from "../components/excursion-card.ts";
 import { Msg } from "../messages";
 import { Model } from "../model";
-import resetCSS from "../styles/reset.css";
+import reset from "../styles/reset.css";
 import { formatDate } from "../utils/dates";
 
 export class DestinationViewElement extends View<Model, Msg> {
@@ -79,16 +79,19 @@ export class DestinationViewElement extends View<Model, Msg> {
     const imageUrl = this.image || featuredImage;
     const acc = accommodations[0] || { rate: {} };
 
-    const init = {
-      ...this.destination,
-      "acc-name": acc.name,
-      "acc-checkIn": acc.checkIn && new Date(acc.checkIn),
-      "acc-checkOut": acc.checkOut && new Date(acc.checkOut),
-      "acc-roomType": acc.roomType,
-      "acc-rate-amount": acc.rate.amount,
-      "acc-rate-currency": acc.rate.currency,
-      excursions: excursions.map((x) => x.name)
-    };
+    const init = this.destination
+      ? {
+        ...this.destination,
+        "acc-name": acc.name,
+        "acc-checkIn": acc.checkIn && new Date(acc.checkIn),
+        "acc-checkOut":
+          acc.checkOut && new Date(acc.checkOut),
+        "acc-roomType": acc.roomType,
+        "acc-rate-amount": acc.rate?.amount,
+        "acc-rate-currency": acc.rate?.currency,
+        excursions: excursions.map((x) => x.name)
+      }
+      : {};
 
     const renderForm = () =>
       html`
@@ -201,7 +204,7 @@ export class DestinationViewElement extends View<Model, Msg> {
   }
 
   static styles = [
-    resetCSS,
+    reset.styles,
     css`
       :host {
         display: contents;

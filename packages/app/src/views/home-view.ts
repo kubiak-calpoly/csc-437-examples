@@ -69,27 +69,31 @@ export class HomeViewElement extends LitElement {
   }
 
   renderItem(t: Tour) {
-    const { name, startDate, endDate } = t;
+    const { name, startDate, endDate, entourage } = t;
     const { _id } = t as unknown as { _id: string };
+    const entourage_id = (
+      t.entourage as unknown as { _id: string }
+    )._id as string;
 
     return html`
-        <dt>
-          ${startDate.getUTCFullYear()}
-        </dt>
-        <dt>from
-          <time datetime=${startDate}>
-            ${formatDate(startDate)}
-          </time>
-        </dt>
-        <dt> to
-          <time datetime=${endDate}>
-            ${formatDate(endDate)}
-          </time>
-        </dt>
-        <dd>
-          <a href="/app/tour/${_id}">${name}</a>
-        </dt>
-      `;
+      <dt>
+        <time datetime=${startDate}>
+          ${formatDate(startDate)}
+        </time>
+        to
+        <time datetime=${endDate}>
+          ${formatDate(endDate)}
+        </time>
+        ${startDate.getUTCFullYear()}
+      </dt>
+      <dd>
+        <a href="/app/tour/${_id}">${name}</a>
+        with
+        <a href="/app/entourage/${entourage_id}"
+          >${entourage.name}</a
+        >
+      </dd>
+    `;
   }
 
   static styles = [

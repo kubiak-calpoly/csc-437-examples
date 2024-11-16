@@ -120,7 +120,7 @@ app.get(
         outbound: tour.transportation[di + 1]
       });
     }).then((data) => {
-      const page = new import_pages.DestinationPage(data, mode);
+      const page = new DestinationPage(data, mode);
       res.set("Content-Type", "text/html").send(page.render());
     });
   }
