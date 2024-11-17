@@ -19,7 +19,7 @@ export class TravelerViewElement extends LitElement {
   @property()
   userid?: string;
 
-  @property()
+  @property({ reflect: true })
   mode = "view";
 
   @state()
@@ -44,7 +44,9 @@ export class TravelerViewElement extends LitElement {
       <main class="page">
       <section class="view">
         <img src=${avatar}/>
-        <button id="edit">Edit</button>
+        <button id="edit"
+          @click=${() => (this.mode = "edit")}
+        >Edit</button>
         <h1>${name}</h1>
         <dl>
           <dt>Username</dt>
@@ -65,7 +67,7 @@ export class TravelerViewElement extends LitElement {
           </dd>
         </dl>
       </section>
-      <mu-form class="edit">
+      <mu-form class="edit" .init=${this.traveler}>
         <label>
           <span>Username</span>
           <input name="userid" />

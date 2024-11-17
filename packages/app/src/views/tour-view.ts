@@ -7,6 +7,7 @@ import {
   Tour,
   Transportation
 } from "server/models";
+import { CalendarWidget } from "../components/calendar-widget";
 import { EntourageTable } from "../components/entourage-table";
 import {
   ItineraryDestinationElement,
@@ -18,6 +19,7 @@ import { formatDate } from "../utils/dates";
 
 export class TourViewElement extends View<Model, Msg> {
   static uses = define({
+    "calendar-widget": CalendarWidget,
     "entourage-table": EntourageTable,
     "itinerary-destination": ItineraryDestinationElement,
     "itinerary-transportation": ItineraryTransportationElement
@@ -135,6 +137,11 @@ export class TourViewElement extends View<Model, Msg> {
           ${renderDates()}
         </header>
 
+        <calendar-widget
+          start-date=${startDate}
+          end-date=${endDate}>
+        </calendar-widget>
+
         <section class="itinerary">
           ${destinations.map(renderDestAndTrans)}
         </section>
@@ -164,6 +171,7 @@ export class TourViewElement extends View<Model, Msg> {
         grid-template-rows: auto auto 1fr;
         grid-template-areas:
           "hd hd hd it it it it it"
+          "cal cal cal it it it it it"
           "en en en it it it it it"
           "xx xx xx it it it it it";
         gap: var(--size-spacing-medium)
@@ -185,6 +193,10 @@ export class TourViewElement extends View<Model, Msg> {
 
       entourage-table {
         grid-area: en;
+      }
+
+      calendar-widget {
+        grid-area: cal;
       }
     `
   ];
