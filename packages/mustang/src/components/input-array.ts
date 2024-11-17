@@ -112,12 +112,14 @@ function populateArray(
 }
 
 function renderItem(value: string | undefined, _: number) {
-  const valueAttr =
-    value === undefined ? "" : `value="${value}"`;
+  const field =
+    value === undefined
+      ? html`<input />`
+      : html`<input value="${value}" />`;
 
   return html`
     <label>
-      <input ${valueAttr} />
+      ${field}
       <button class="remove" type="button">Remove</button>
     </label>
   `;

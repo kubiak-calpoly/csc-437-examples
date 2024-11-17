@@ -436,7 +436,6 @@ function html(template, ...values) {
   return fragment;
   function processParam(v2, _2) {
     if (v2 === null) return "";
-    console.log("Processing parameter:", v2);
     switch (typeof v2) {
       case "string":
         return escapeHtml(v2);
@@ -2506,10 +2505,10 @@ function populateArray(array, container) {
   array.forEach((s2, i2) => container.append(renderItem(s2)));
 }
 function renderItem(value, _2) {
-  const valueAttr = value === void 0 ? "" : `value="${value}"`;
+  const field = value === void 0 ? html`<input />` : html`<input value="${value}" />`;
   return html`
     <label>
-      <input ${valueAttr} />
+      ${field}
       <button class="remove" type="button">Remove</button>
     </label>
   `;
