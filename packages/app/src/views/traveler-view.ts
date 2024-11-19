@@ -1,16 +1,17 @@
 import {
-  Auth,
   define,
   Form,
   InputArray,
-  Observer
+  View
 } from "@calpoly/mustang";
-import { css, html, LitElement } from "lit";
+import { css, html } from "lit";
 import { property, state } from "lit/decorators.js";
 import { Traveler } from "server/models";
+import { Msg } from "../messages";
+import { Model } from "../model";
 import reset from "../styles/reset.css";
 
-export class TravelerViewElement extends LitElement {
+export class TravelerViewElement extends View<Model, Msg> {
   static uses = define({
     "mu-form": Form.Element,
     "input-array": InputArray.Element
@@ -23,10 +24,8 @@ export class TravelerViewElement extends LitElement {
   mode = "view";
 
   @state()
-  traveler?: Traveler;
-
-  get src() {
-    return `/api/travelers/${this.userid}`;
+  get profile(): Traveler | undefined {
+    return this.model.profile;
   }
 
   render() {
@@ -38,7 +37,7 @@ export class TravelerViewElement extends LitElement {
       airports = [],
       avatar,
       color = "ffffff"
-    } = this.traveler || {};
+    } = this.profile || {};
 
     return html`
       <main class="page">
@@ -67,7 +66,7 @@ export class TravelerViewElement extends LitElement {
           </dd>
         </dl>
       </section>
-      <mu-form class="edit" .init=${this.traveler}>
+      <mu-form class="edit" .init=${this.profile}>
         <label>
           <span>Username</span>
           <input name="userid" />
@@ -181,36 +180,21 @@ export class TravelerViewElement extends LitElement {
     `
   ];
 
-  _authObserver = new Observer<Auth.Model>(
-    this,
-    "blazing:auth"
-  );
-
-  _user = new Auth.User();
-
-  connectedCallback() {
-    super.connectedCallback();
-    this._authObserver.observe(({ user }) => {
-      if (user) {
-        this._user = user;
-      }
-      this.hydrate(this.src);
-    });
+  constructor() {
+    super("blazing:model");
   }
 
-  hydrate(url: string) {
-    fetch(url, {
-      headers: Auth.headers(this._user)
-    })
-      .then((res) => {
-        if (res.status !== 200) throw `Status: ${res.status}`;
-        return res.json();
-      })
-      .then((json) => {
-        this.traveler = json as Traveler;
-      })
-      .catch((error) => {
-        console.log(`Failed to render data ${url}:`, error);
-      });
+  attributeChangedCallback(
+    name: string,
+    old: string | null,
+    value: string | null
+  ) {
+    super.attributeChangedCallback(name, old, value);
+
+    if (name === "userid" && old !== value && value)
+      this.dispatchMessage([
+        "profile/select",
+        { userid: value }
+      ]);
   }
 }
