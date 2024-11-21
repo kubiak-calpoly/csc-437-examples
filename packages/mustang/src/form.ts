@@ -41,6 +41,9 @@ class FormElement extends HTMLElement {
       grid-template-columns: subgrid;
       gap: var(--size-spacing-medium);
     }
+    ::slotted(fieldset) {
+      display: contents;
+    }
     button[type="submit"] {
       grid-column: input;
       justify-self: start;

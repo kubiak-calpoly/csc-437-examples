@@ -534,6 +534,9 @@ let FormElement$1 = (_a = class extends HTMLElement {
       grid-template-columns: subgrid;
       gap: var(--size-spacing-medium);
     }
+    ::slotted(fieldset) {
+      display: contents;
+    }
     button[type="submit"] {
       grid-column: input;
       justify-self: start;
@@ -2495,6 +2498,8 @@ _InputArrayElement.styles = css`
     }
     ::slotted(label) {
       grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: subgrid;
     }
   `;
 let InputArrayElement = _InputArrayElement;

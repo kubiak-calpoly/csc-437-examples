@@ -173,24 +173,26 @@ export class DestinationViewElement extends View<Model, Msg> {
             ${formatDate(endDate)}
             ${endDate && endDate.getFullYear()}
           </p>
-          <a
-            class="edit"
-            href="${document.location.pathname}/edit">
-            Edit
-          </a>
+          <button
+            @click=${() =>
+          History.dispatch(this, "history/navigate", {
+            href: `/app/destination/${this.tourid}/${this.index}/edit`
+          })}
+            >Edit</button
+          >
         </header>
         <img class="hero" src=${imageUrl} />
         <ul class="excursions">
           ${excursions.map(
-        (x: Excursion) =>
-          html`
+            (x: Excursion) =>
+              html`
                 <li>
                   <excursion-card type="${x.type}">
                     ${x.name}
                   </excursion-card>
                 </li>
               `
-      )}
+          )}
         </ul>
       `;
 
@@ -229,12 +231,17 @@ export class DestinationViewElement extends View<Model, Msg> {
         grid-template-areas: "-- fm fm fm fm fm fm -1";
       }
       mu-form {
+        display: grid;
         grid-area: fm;
+        grid-template-columns: subgrid;
       }
       input {
-        grid-column: input;
+        grid-column: input / span 2;
       }
       fieldset {
+        > h3 {
+          grid-column: label / end;
+        }
         > label {
           display: grid;
           grid-column: label / end;

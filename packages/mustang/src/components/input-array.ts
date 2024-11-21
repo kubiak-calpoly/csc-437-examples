@@ -30,6 +30,8 @@ class InputArrayElement extends HTMLElement {
     }
     ::slotted(label) {
       grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: subgrid;
     }
   `;
 
