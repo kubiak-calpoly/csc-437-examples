@@ -63,6 +63,7 @@ router.put(
   (req, res) => {
     const { id, n } = req.params;
     const newDest = req.body;
+    console.log("User", req.params.username);
     console.log(
       `Updating Destination ${n} of tour ${id} with`,
       newDest

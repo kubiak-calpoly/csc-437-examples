@@ -15,6 +15,7 @@ import { DestinationViewElement } from "./views/destination-view";
 import { EntourageViewElement } from "./views/entourage-view";
 import { HomeViewElement } from "./views/home-view";
 import { TourViewElement } from "./views/tour-view";
+import { TravelerEditElement } from "./views/traveler-edit";
 import { TravelerViewElement } from "./views/traveler-view";
 
 const routes: Switch.Route[] = [
@@ -53,17 +54,17 @@ const routes: Switch.Route[] = [
   {
     auth: "protected",
     path: "/app/traveler/:id",
-    view: (
-      params: Switch.Params,
-      query?: URLSearchParams
-    ) => html`
+    view: (params: Switch.Params) => html`
       <traveler-view
         userid=${params.id}
-        mode=${query?.has("edit")
-        ? "edit"
-        : query?.has("new")
-          ? "new"
-          : "view"}></traveler-view>
+      </traveler-view>
+    `
+  },
+  {
+    auth: "protected",
+    path: "/app/traveler/:id/edit",
+    view: (params: Switch.Params) => html`
+      <traveler-edit userid=${params.id}></traveler-edit>
     `
   },
   {
@@ -111,5 +112,6 @@ define({
   "entourage-view": EntourageViewElement,
   "home-view": HomeViewElement,
   "tour-view": TourViewElement,
+  "traveler-edit": TravelerEditElement,
   "traveler-view": TravelerViewElement
 });

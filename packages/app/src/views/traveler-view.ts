@@ -1,9 +1,4 @@
-import {
-  define,
-  Form,
-  InputArray,
-  View
-} from "@calpoly/mustang";
+import { History, View } from "@calpoly/mustang";
 import { css, html } from "lit";
 import { property, state } from "lit/decorators.js";
 import { Traveler } from "server/models";
@@ -12,16 +7,8 @@ import { Model } from "../model";
 import reset from "../styles/reset.css";
 
 export class TravelerViewElement extends View<Model, Msg> {
-  static uses = define({
-    "mu-form": Form.Element,
-    "input-array": InputArray.Element
-  });
-
   @property()
   userid?: string;
-
-  @property({ reflect: true })
-  mode = "view";
 
   @state()
   get profile(): Traveler | undefined {
@@ -44,7 +31,14 @@ export class TravelerViewElement extends View<Model, Msg> {
       <section class="view">
         <img src=${avatar}/>
         <button id="edit"
-          @click=${() => (this.mode = "edit")}
+                   @click=${() =>
+        History.dispatch(
+          this,
+          "history/navigate",
+          {
+            href: `/app/traveler/${this.userid}/edit`
+          }
+        )}
         >Edit</button>
         <h1>${name}</h1>
         <dl>
@@ -67,37 +61,6 @@ export class TravelerViewElement extends View<Model, Msg> {
         </dl>
       </section>
       <mu-form class="edit" .init=${this.profile}>
-        <label>
-          <span>Username</span>
-          <input name="userid" />
-        </label>
-        <label>
-          <span>Avatar</span>
-          <input type="file" name="_avatar" />
-        </label>
-        <label>
-          <span>Name</span>
-          <input name="name" />
-        </label>
-        <label>
-          <span>Nickname</span>
-          <input name="nickname" />
-        </label>
-        <label>
-          <span>Home City</span>
-          <input name="home" />
-        </label>
-        <label>
-          <span>Airports</span>
-          <input-array name="airports">
-            <span slot="label-add">Add an airport</span>
-          </input-array>
-        </label>
-        <label>
-          <span>Color</span>
-          <input type="color" name="color" />
-        </label>
-      </mu-form>
       </main>
     `;
   }
@@ -108,13 +71,6 @@ export class TravelerViewElement extends View<Model, Msg> {
       :host {
         display: contents;
         grid-column: 2/-2;
-      }
-      :host([mode="edit"]),
-      :host([mode="new"]) {
-        --display-view-none: none;
-      }
-      :host([mode="view"]) {
-        --display-editor-none: none;
       }
       .page {
         --page-grids: 12;

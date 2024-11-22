@@ -49,7 +49,6 @@ function generateAccessToken(username) {
       (error, token) => {
         if (error) reject(error);
         else {
-          console.log("Token is", token);
           resolve(token);
         }
       }
@@ -82,6 +81,8 @@ function authenticateUser(req, res, next) {
   } else {
     import_jsonwebtoken.default.verify(token, TOKEN_SECRET, (_, decoded) => {
       if (decoded) {
+        const payload = decoded;
+        req.params.username = payload.username;
         next();
       } else {
         res.status(401).end();

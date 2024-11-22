@@ -26,7 +26,6 @@ function generateAccessToken(
       (error, token) => {
         if (error) reject(error);
         else {
-          console.log("Token is", token);
           resolve(token as string);
         }
       }
@@ -77,6 +76,8 @@ export function authenticateUser(
   } else {
     jwt.verify(token, TOKEN_SECRET, (_, decoded) => {
       if (decoded) {
+        const payload = decoded as { username: string };
+        req.params.username = payload.username;
         next();
       } else {
         res.status(401).end();

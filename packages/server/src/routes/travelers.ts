@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import { Traveler } from "../models/traveler";
+import { authenticateUser } from "./auth";
 
 import travelers from "../services/traveler-svc";
 
@@ -21,15 +22,19 @@ router.get("/:userid", (req: Request, res: Response) => {
     .catch((err) => res.status(404).send(err));
 });
 
-router.put("/:userid", (req: Request, res: Response) => {
-  const { userid } = req.params;
-  const editedTraveler = req.body;
+router.put(
+  "/:userid",
+  authenticateUser,
+  (req: Request, res: Response) => {
+    const { userid } = req.params;
+    const editedTraveler = req.body;
 
-  travelers
-    .update(userid, editedTraveler)
-    .then((traveler: Traveler) => res.json(traveler))
-    .catch((err) => res.status(404).send(err));
-});
+    travelers
+      .update(userid, editedTraveler)
+      .then((traveler: Traveler) => res.json(traveler))
+      .catch((err) => res.status(404).send(err));
+  }
+);
 
 router.post("/", (req: Request, res: Response) => {
   const newTraveler = req.body;
