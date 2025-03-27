@@ -31,7 +31,7 @@ class ProfileViewer extends LitElement {
   @property()
   username?: string;
 
-  render() {
+  override render() {
     return html`
       <section>
         <slot name="avatar"></slot>
@@ -54,7 +54,7 @@ class ProfileViewer extends LitElement {
   }
 
   static styles = [
-    resetCSS,
+    resetCSS.styles,
     gridCSS,
     css`
       * {
@@ -157,7 +157,7 @@ class ProfileEditor extends LitElement {
   }
 
   static styles = [
-    resetCSS,
+    resetCSS.styles,
     gridCSS,
     css`
       mu-form {
