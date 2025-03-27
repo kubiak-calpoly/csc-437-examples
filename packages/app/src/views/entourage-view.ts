@@ -1,15 +1,13 @@
 import { define, View } from "@calpoly/mustang";
 import { css, html } from "lit";
 import { property, state } from "lit/decorators.js";
-import { ChatRoomElement } from "../components/chat-room";
 import { EntourageTable } from "../components/entourage-table";
-import resetCSS from "../css/reset";
 import { Msg } from "../messages";
 import { Model } from "../model";
+import reset from "../styles/reset.css";
 
 export class EntourageViewElement extends View<Model, Msg> {
   static uses = define({
-    "chat-room": ChatRoomElement,
     "entourage-table": EntourageTable
   });
 
@@ -31,7 +29,6 @@ export class EntourageViewElement extends View<Model, Msg> {
     newValue: string
   ) {
     super.attributeChangedCallback(name, oldValue, newValue);
-    console.log("ATTRIBUTE CHANGED", name, oldValue, newValue);
     if (
       name === "tour-id" &&
       oldValue !== newValue &&
@@ -51,8 +48,6 @@ export class EntourageViewElement extends View<Model, Msg> {
     const { entourage } = this.tour || {};
     const tourName = this.tour?.name;
 
-    console.log("RENDER", this.tourid, this.tour);
-
     if (entourage) {
       return html`
         <main class="page">
@@ -65,9 +60,6 @@ export class EntourageViewElement extends View<Model, Msg> {
             <entourage-table
               .using=${entourage}></entourage-table>
           </aside>
-          <section class="chat">
-            <chat-room tour-id=${this.tourid}></chat-room>
-          </section>
         </main>
       `;
     } else {
@@ -76,7 +68,7 @@ export class EntourageViewElement extends View<Model, Msg> {
   }
 
   static styles = [
-    resetCSS,
+    reset.styles,
     css`
       :host {
         display: contents;

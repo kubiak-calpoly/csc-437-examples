@@ -1,9 +1,9 @@
 import { Auth, Update } from "@calpoly/mustang";
 import {
   Destination,
-  Profile,
   Tour,
-  Transportation
+  Transportation,
+  Traveler
 } from "server/models";
 import { Msg } from "./messages";
 import { Model } from "./model";
@@ -78,57 +78,10 @@ export default function update(
   }
 }
 
-function saveProfile(
-  msg: {
-    userid: string;
-    profile: Profile;
-  },
-  user: Auth.User
-) {
-  return fetch(`/api/profiles/${msg.userid}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      ...Auth.headers(user)
-    },
-    body: JSON.stringify(msg.profile)
-  })
-    .then((response: Response) => {
-      if (response.status === 200) return response.json();
-      else
-        throw new Error(
-          `Failed to save profile for ${msg.userid}`
-        );
-    })
-    .then((json: unknown) => {
-      if (json) return json as Profile;
-      return undefined;
-    });
-}
-
-function selectProfile(
-  msg: { userid: string },
-  user: Auth.User
-) {
-  return fetch(`/api/profiles/${msg.userid}`, {
-    headers: Auth.headers(user)
-  })
-    .then((response: Response) => {
-      if (response.status === 200) {
-        return response.json();
-      }
-      return undefined;
-    })
-    .then((json: unknown) => {
-      if (json) {
-        console.log("Profile:", json);
-        return json as Profile;
-      }
-    });
-}
-
 function indexTours(user: Auth.User) {
-  return fetch("/api/tours", {
+  const userid = user.username;
+
+  return fetch(`/api/tours?userid=${userid}`, {
     headers: Auth.headers(user)
   })
     .then((response: Response) => {
@@ -206,5 +159,54 @@ function saveDestination(
         );
       }
       return undefined;
+    });
+}
+
+function saveProfile(
+  msg: {
+    userid: string;
+    profile: Traveler;
+  },
+  user: Auth.User
+) {
+  return fetch(`/api/travelers/${msg.userid}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      ...Auth.headers(user)
+    },
+    body: JSON.stringify(msg.profile)
+  })
+    .then((response: Response) => {
+      if (response.status === 200) return response.json();
+      else
+        throw new Error(
+          `Failed to save profile for ${msg.userid}`
+        );
+    })
+    .then((json: unknown) => {
+      if (json) return json as Traveler;
+      return undefined;
+    });
+}
+
+function selectProfile(
+  msg: { userid: string },
+  user: Auth.User
+) {
+  return fetch(`/api/travelers/${msg.userid}`, {
+    headers: Auth.headers(user)
+  })
+    .then((response: Response) => {
+      if (response.status === 200) {
+        return response.json();
+      }
+      return undefined;
+    })
+    .then((json: unknown) => {
+      if (json) {
+        console.log("Profile:", json);
+        return json as Traveler;
+      }
     });
 }

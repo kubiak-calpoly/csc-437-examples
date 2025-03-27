@@ -1,5 +1,7 @@
+import { css } from "../css";
 import { originalTarget, relay } from "../event";
-import { html, shadow } from "../html";
+import { html } from "../html";
+import { shadow } from "../shadow";
 
 class InputArrayElement extends HTMLElement {
   static template = html`
@@ -9,22 +11,28 @@ class InputArrayElement extends HTMLElement {
       </ul>
       <button class="add">
         <slot name="label-add">Add one</slot>
-        <style>
-          :host {
-            display: contents;
-          }
-          ul {
-            display: contents;
-          }
-          button.add {
-            grid-column: input / input-end;
-          }
-          ::slotted(label) {
-            display: contents;
-          }
-        </style>
+        <style></style>
       </button>
     </template>
+  `;
+
+  static styles = css`
+    :host {
+      display: grid;
+      grid-template-columns: subgrid;
+      grid-column: input / end;
+    }
+    ul {
+      display: contents;
+    }
+    button.add {
+      grid-column: input / input-end;
+    }
+    ::slotted(label) {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: subgrid;
+    }
   `;
 
   _array: Array<string> = [];
@@ -44,7 +52,9 @@ class InputArrayElement extends HTMLElement {
 
   constructor() {
     super();
-    shadow(InputArrayElement.template).attach(this);
+    shadow(this)
+      .template(InputArrayElement.template)
+      .styles(InputArrayElement.styles);
 
     this.addEventListener("input-array:add", (event) => {
       event.stopPropagation();
@@ -104,12 +114,14 @@ function populateArray(
 }
 
 function renderItem(value: string | undefined, _: number) {
-  const valueAttr =
-    value === undefined ? "" : `value="${value}"`;
+  const field =
+    value === undefined
+      ? html`<input />`
+      : html`<input value="${value}" />`;
 
   return html`
     <label>
-      <input ${valueAttr} />
+      ${field}
       <button class="remove" type="button">Remove</button>
     </label>
   `;

@@ -14,11 +14,11 @@ declare type ApplyMap<M> = (fn: MapFn<M>) => void;
 declare namespace Auth {
     export {
         AuthenticatedUser,
-        AuthProvider as Provider,
-        APIUser as User,
-        dispatch,
+        dispatch_2 as dispatch,
         authHeaders as headers,
         tokenPayload as payload,
+        AuthProvider as Provider,
+        APIUser as User,
         AuthSuccessful,
         AuthModel as Model,
         AuthMsg as Msg,
@@ -83,15 +83,17 @@ declare class Context<T extends object> {
     apply(mapFn: (t: T) => T): void;
 }
 
+export declare function css(template: TemplateStringsArray, ...params: string[]): CSSStyleSheet;
+
 export declare function define(defns: ElementDefinitions): CustomElementRegistry;
 
 declare class Dispatch<Msg extends Base> extends CustomEvent<Msg> {
     constructor(msg: Msg, eventType?: string);
 }
 
-declare const dispatch: (target: HTMLElement, ...msg: AuthMsg) => boolean;
+declare const dispatch: (target: HTMLElement, ...msg: Base) => boolean;
 
-declare const dispatch_2: (target: HTMLElement, ...msg: Base) => boolean;
+declare const dispatch_2: (target: HTMLElement, ...msg: AuthMsg) => boolean;
 
 declare const dispatch_3: (target: HTMLElement, ...msg: HistoryMsg) => boolean;
 
@@ -148,6 +150,7 @@ export { Form }
 declare class FormElement extends HTMLElement {
     set init(x: FormValues);
     static template: DocumentFragment;
+    static styles: CSSStyleSheet;
     get form(): HTMLFormElement | null | undefined;
     _state: FormValues;
     constructor();
@@ -224,7 +227,7 @@ declare class HistoryService extends Service<HistoryMsg, HistoryModel> {
     update(message: HistoryMsg, apply: ApplyMap<HistoryModel>): void;
 }
 
-export declare function html(template: TemplateStringsArray, ...params: string[]): DocumentFragment;
+export declare function html(template: TemplateStringsArray, ...values: unknown[]): DocumentFragment;
 
 declare function identity<M>(model: M): M;
 
@@ -237,6 +240,7 @@ export { InputArray }
 
 declare class InputArrayElement extends HTMLElement {
     static template: DocumentFragment;
+    static styles: CSSStyleSheet;
     _array: Array<string>;
     get name(): string | null;
     get value(): string[];
@@ -261,7 +265,7 @@ declare namespace Message {
         Type,
         Base,
         Dispatch,
-        dispatch_2 as dispatch
+        dispatch
     }
 }
 export { Message }
@@ -307,7 +311,7 @@ declare type RouteParams = {
 
 declare type RouteRedirect = string | ((arg: RouteParams) => string);
 
-declare type RouteView = (arg: RouteParams) => TemplateResult;
+declare type RouteView = (params: RouteParams, query?: URLSearchParams) => TemplateResult;
 
 declare class Service<Msg extends Base, T extends object> {
     _context: Context<T>;
@@ -323,8 +327,9 @@ declare class Service<Msg extends Base, T extends object> {
     process(message: Msg): void;
 }
 
-export declare function shadow(fragment: DocumentFragment): {
-    attach: (el: HTMLElement, options?: ShadowRootInit) => ShadowRoot;
+export declare function shadow(el: HTMLElement, options?: ShadowRootInit): {
+    template: (fragment: DocumentFragment) => any;
+    styles: (...sheets: CSSStyleSheet[]) => void;
 };
 
 declare namespace Store {

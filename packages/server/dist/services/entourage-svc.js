@@ -22,13 +22,14 @@ __export(entourage_svc_exports, {
 });
 module.exports = __toCommonJS(entourage_svc_exports);
 var import_mongoose = require("mongoose");
+var import_traveler_svc = require("../services/traveler-svc");
 const entourageSchema = new import_mongoose.Schema(
   {
     name: {
       type: String,
       trim: true
     },
-    people: [{ type: import_mongoose.Schema.Types.ObjectId, ref: "Profile" }]
+    people: [{ type: import_mongoose.Schema.Types.ObjectId, ref: "Traveler" }]
   },
   { collection: "entourage_collection" }
 );
@@ -53,10 +54,8 @@ function update(id, ent) {
     entourageModel.findByIdAndUpdate(id, ent, {
       new: true
     }).then((ent2) => {
-      if (ent2)
-        resolve(ent2);
-      else
-        reject("Failed to update Entourage");
+      if (ent2) resolve(ent2);
+      else reject("Failed to update Entourage");
     });
   });
 }

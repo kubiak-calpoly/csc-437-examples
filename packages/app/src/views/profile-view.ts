@@ -7,13 +7,13 @@ import {
 } from "@calpoly/mustang";
 import { css, html, LitElement } from "lit";
 import { property, state } from "lit/decorators.js";
-import { Profile } from "server/models";
-import { ProfileAvatarElement } from "../components/profile-avatar";
-import resetStyles from "../css/reset";
+import { Traveler } from "server/models";
+import { AvatarElement } from "../components/traveler-avatar";
 import { Msg } from "../messages";
 import { Model } from "../model";
+import resetCSS from "../styles/reset.css";
 
-const gridStyles = css`
+const gridCSS = css`
   slot[name="avatar"] {
     display: block;
     grid-row: 1 / span 4;
@@ -31,7 +31,7 @@ class ProfileViewer extends LitElement {
   @property()
   username?: string;
 
-  render() {
+  override render() {
     return html`
       <section>
         <slot name="avatar"></slot>
@@ -54,8 +54,8 @@ class ProfileViewer extends LitElement {
   }
 
   static styles = [
-    resetStyles,
-    gridStyles,
+    resetCSS.styles,
+    gridCSS,
     css`
       * {
         margin: 0;
@@ -106,7 +106,7 @@ class ProfileEditor extends LitElement {
   username?: string;
 
   @property({ attribute: false })
-  init?: Profile;
+  init?: Traveler;
 
   render() {
     return html`
@@ -157,8 +157,8 @@ class ProfileEditor extends LitElement {
   }
 
   static styles = [
-    resetStyles,
-    gridStyles,
+    resetCSS.styles,
+    gridCSS,
     css`
       mu-form {
         grid-column: key / end;
@@ -201,7 +201,7 @@ export class ProfileViewElement extends View<Model, Msg> {
   static uses = define({
     "profile-viewer": ProfileViewer,
     "profile-editor": ProfileEditor,
-    "profile-avatar": ProfileAvatarElement
+    "traveler-avatar": AvatarElement
   });
 
   @property({ type: Boolean, reflect: true })
@@ -211,7 +211,7 @@ export class ProfileViewElement extends View<Model, Msg> {
   userid = "";
 
   @state()
-  get profile(): Profile | undefined {
+  get profile(): Traveler | undefined {
     return this.model.profile;
   }
 
@@ -264,18 +264,15 @@ export class ProfileViewElement extends View<Model, Msg> {
       1
     );
     const airports_html = airports.map(
-      (s) =>
-        html`
-          <li>${s}</li>
-        `
+      (s) => html` <li>${s}</li> `
     );
 
     const fields = html`
-      <profile-avatar
+      <traveler-avatar
         slot="avatar"
         color=${color}
         src=${this.newAvatar || avatar}
-        initial=${initial}></profile-avatar>
+        initial=${initial}></traveler-avatar>
     `;
 
     return this.edit
@@ -284,7 +281,7 @@ export class ProfileViewElement extends View<Model, Msg> {
             username=${userid}
             .init=${this.profile}
             @mu-form:submit=${(
-        event: Form.SubmitEvent<Profile>
+        event: Form.SubmitEvent<Traveler>
       ) => this._handleSubmit(event)}>
             ${fields}
           </profile-editor>
@@ -303,13 +300,14 @@ export class ProfileViewElement extends View<Model, Msg> {
         `;
   }
 
-  _handleSubmit(event: Form.SubmitEvent<Profile>) {
+  _handleSubmit(event: Form.SubmitEvent<Traveler>) {
     console.log("Handling submit of mu-form");
     const profile = this.newAvatar
       ? { ...event.detail, avatar: this.newAvatar }
       : event.detail;
     this.dispatchMessage([
       "profile/save",
+
       {
         userid: this.userid,
         profile,
@@ -323,5 +321,5 @@ export class ProfileViewElement extends View<Model, Msg> {
     ]);
   }
 
-  static styles = [resetStyles];
+  static styles = [resetCSS];
 }

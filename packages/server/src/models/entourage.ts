@@ -1,6 +1,6 @@
-import { Profile } from "./profile";
+import { Traveler } from "./traveler";
 
 export interface Entourage {
   name?: string;
-  people: Profile[];
+  people: Traveler[];
 }

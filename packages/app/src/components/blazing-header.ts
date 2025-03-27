@@ -1,158 +1,153 @@
 import {
   Auth,
+  define,
   Dropdown,
   Events,
   Observer,
-  View,
-  define
+  View
 } from "@calpoly/mustang";
 import { css, html } from "lit";
-import { property, state } from "lit/decorators.js";
-import { Profile } from "server/models";
+import { state } from "lit/decorators.js";
+import { Tour } from "server/models";
 import { Msg } from "../messages";
 import { Model } from "../model";
-import { ProfileAvatarElement } from "./profile-avatar";
-
-export class BlazingHeaderElement extends View<Model, Msg> {
-  static uses = define({
-    "drop-down": Dropdown.Element,
-    "profile-avatar": ProfileAvatarElement
-  });
-
-  @property()
-  username = "anonymous";
-
-  @state()
-  get profile(): Profile | undefined {
-    return this.model.profile;
-  }
-
-  constructor() {
-    super("blazing:model");
-  }
-
-  connectedCallback() {
-    super.connectedCallback();
-    this._authObserver.observe(({ user }) => {
-      if (user && user.username !== this.username) {
-        this.username = user.username;
-        this.dispatchMessage([
-          "profile/select",
-          { userid: this.username }
-        ]);
-      }
-    });
-  }
-
-  render() {
-    const { avatar, name, nickname, userid, color } =
-      this.profile || {};
-    const initial = (nickname || name || userid || "?").slice(
-      0,
-      1
-    );
-    const editProfileHref = `/app/profile/${userid}/edit`;
-
-    return html`
-      <header>
-        <h1><a href="/app">Blazing Travels</a></h1>
-        <drop-down>
-          <a href="#" slot="actuator">
-            <slot name="greeting">Hello, ${this.username}</slot>
-          </a>
-          <ul>
-            <li>
-              <profile-avatar
-                color=${color}
-                src=${avatar}
-                initial="${initial}"></profile-avatar>
-            </li>
-            <li><h3>${name || nickname || userid}</h3></li>
-            <li>
-              <label @change=${toggleDarkMode}>
-                <input type="checkbox" autocomplete="off" />
-                Dark mode
-              </label>
-            </li>
-            <li>
-              <a href=${editProfileHref}>Edit Profile</a>
-            </li>
-            <li>
-              <a href="#" @click=${signOutUser}>Sign out</a>
-            </li>
-          </ul>
-        </drop-down>
-      </header>
-    `;
-  }
-
-  static styles = css`
-    :host {
-      display: contents;
-    }
-    * {
-      margin: 0;
-      box-sizing: border-box;
-    }
-    header {
-      grid-column: start / end;
-      margin: 0 calc(-0.5 * var(--page-grid-gap));
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      padding: var(--size-spacing-medium);
-      /* flex-wrap: wrap;
-        gap: var(--size-spacing-xlarge); */
-      background-color: var(--color-background-header);
-      color: var(--color-text-inverted);
-    }
-    a[href] {
-      color: var(--color-link-inverted);
-    }
-    drop-down a[href]:not([slot="actuator"]) {
-      color: var(--color-link);
-    }
-    h1 {
-      font-family: var(--font-family-display);
-      line-height: var(--font-line-height-display);
-      font-size: var(--size-type-xxlarge);
-      font-style: oblique;
-      line-height: 1;
-      font-weight: var(--font-weight-bold);
-    }
-    h1 a[href] {
-      text-decoration: none;
-      color: inherit;
-    }
-    h3 {
-      font-family: var(--font-family-display);
-      line-height: var(--font-line-height-display);
-      font-size: var(--size-type-large);
-      font-weight: var(--font-weight-normal);
-      font-style: oblique;
-      width: min-content;
-    }
-    ul {
-      list-style: none;
-      padding: var(--size-spacing-medium);
-    }
-  `;
-
-  _authObserver = new Observer<Auth.Model>(
-    this,
-    "blazing:auth"
-  );
-}
-
-type Checkbox = HTMLInputElement & { checked: boolean };
+import headings from "../styles/headings.css";
+import reset from "../styles/reset.css";
 
 function toggleDarkMode(ev: InputEvent) {
-  const target = ev.target as Checkbox;
+  const target = ev.target as HTMLInputElement;
   const checked = target.checked;
 
   Events.relay(ev, "dark-mode", { checked });
 }
 
-function signOutUser(ev: Event) {
+function signOut(ev: MouseEvent) {
   Events.relay(ev, "auth:message", ["auth/signout"]);
+}
+
+export class HeaderElement extends View<Model, Msg> {
+  static uses = define({
+    "mu-dropdown": Dropdown.Element
+  });
+
+  @state()
+  userid: string = "traveler";
+
+  @state()
+  get tour(): Tour | undefined {
+    return this.model.tour;
+  }
+
+  render() {
+    console.log("Tour in header:", this.tour);
+
+    return html` <header>
+      <h1>Blazing Travels</h1>
+      <nav>
+        <p>${this.tour ? this.tour.name : ""}</p>
+        <mu-dropdown>
+          <a slot="actuator">
+            Hello,
+            <span id="userid">${this.userid}</span>
+          </a>
+          <menu>
+            <li>
+              <label @change=${toggleDarkMode}>
+                <input type="checkbox" />
+                Dark Mode
+              </label>
+            </li>
+            <li class="when-signed-in">
+              <a id="signout" @click=${signOut}>Sign Out</a>
+            </li>
+            <li class="when-signed-out">
+              <a href="/login">Sign In</a>
+            </li>
+          </menu>
+        </mu-dropdown>
+      </nav>
+    </header>`;
+  }
+
+  static styles = [
+    reset.styles,
+    headings.styles,
+    css`
+      :host {
+        display: contents;
+      }
+      header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: bottom;
+        justify-content: space-between;
+        padding: var(--size-spacing-medium);
+        background-color: var(--color-background-header);
+        color: var(--color-text-inverted);
+      }
+      header ~ * {
+        margin: var(--size-spacing-medium);
+      }
+      header p {
+        --color-link: var(--color-link-inverted);
+      }
+      nav {
+        display: flex;
+        flex-direction: column;
+        flex-basis: max-content;
+        align-items: end;
+      }
+      a[slot="actuator"] {
+        color: var(--color-link-inverted);
+        cursor: pointer;
+      }
+      #userid:empty::before {
+        content: "traveler";
+      }
+      menu a {
+        color: var(--color-link);
+        cursor: pointer;
+        text-decoration: underline;
+      }
+      a:has(#userid:empty) ~ menu > .when-signed-in,
+      a:has(#userid:not(:empty)) ~ menu > .when-signed-out {
+        display: none;
+      }
+    `
+  ];
+
+  constructor() {
+    super("blazing:model");
+  }
+
+  _authObserver = new Observer<Auth.Model>(
+    this,
+    "blazing:auth"
+  );
+
+  connectedCallback() {
+    super.connectedCallback();
+
+    this._authObserver.observe(({ user }) => {
+      if (user && user.username !== this.userid) {
+        this.userid = user.username;
+      }
+    });
+  }
+
+  static initializeOnce() {
+    function toggleDarkMode(
+      page: HTMLElement,
+      checked: boolean
+    ) {
+      page.classList.toggle("dark-mode", checked);
+    }
+
+    document.body.addEventListener("dark-mode", (event) =>
+      toggleDarkMode(
+        event.currentTarget as HTMLElement,
+        (event as CustomEvent).detail?.checked
+      )
+    );
+  }
 }

@@ -87,8 +87,13 @@ class AuthProvider extends Provider<AuthModel> {
   }
 
   constructor() {
+    const user =
+      AuthenticatedUser.authenticateFromLocalStorage();
     super({
-      user: AuthenticatedUser.authenticateFromLocalStorage()
+      user,
+      token: user.authenticated
+        ? (user as AuthenticatedUser).token
+        : undefined
     });
   }
 
@@ -190,13 +195,10 @@ function tokenPayload(
 }
 
 export {
-  AuthenticatedUser,
-  AuthProvider as Provider,
-  APIUser as User,
-  dispatch,
+  AuthenticatedUser, dispatch,
   authHeaders as headers,
-  tokenPayload as payload,
-  type AuthSuccessful,
+  tokenPayload as payload, AuthProvider as Provider,
+  APIUser as User, type AuthSuccessful,
   type AuthModel as Model,
   type AuthMsg as Msg,
   type AuthService as Service

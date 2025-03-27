@@ -41,10 +41,8 @@ router.post("/", (req, res) => {
 router.get("/:id", (req, res) => {
   const { id } = req.params;
   import_entourage_svc.default.get(id).then((profile) => {
-    if (!profile)
-      throw "Not found";
-    else
-      res.json(profile);
+    if (!profile) throw "Not found";
+    else res.json(profile);
   }).catch((err) => res.status(404).end());
 });
 router.put("/:userid", (req, res) => {

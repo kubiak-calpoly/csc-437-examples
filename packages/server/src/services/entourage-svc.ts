@@ -1,5 +1,6 @@
 import { Document, Model, Schema, model } from "mongoose";
 import { Entourage } from "../models/entourage";
+import "../services/traveler-svc";
 
 const entourageSchema = new Schema<Entourage>(
   {
@@ -7,7 +8,7 @@ const entourageSchema = new Schema<Entourage>(
       type: String,
       trim: true
     },
-    people: [{ type: Schema.Types.ObjectId, ref: "Profile" }]
+    people: [{ type: Schema.Types.ObjectId, ref: "Traveler" }]
   },
   { collection: "entourage_collection" }
 );

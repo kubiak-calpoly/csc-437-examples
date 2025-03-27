@@ -1,6 +1,6 @@
 :root {
-  --size-icon-normal: 1em;
-  --size-icon-large: 4rem;
+  --size-icon-normal: 2em;
+  --size-icon-large: 4em;
 
   --size-spacing-small: 0.25rem;
   --size-spacing-medium: 0.5rem;
@@ -17,13 +17,12 @@
   --size-type-xxlarge: 2.5rem;
 
   --color-accent: rgb(42 143 42);
+  --color-accent-inverted: rgb(255 208 0);
   --color-background-header: var(--color-accent);
   --color-background-page: rgb(238 237 231);
   --color-background-card: white;
-  --color-border-control: #999;
-  --color-link-inverted: rgb(255 208 0);
+  --color-link-inverted: var(--color-accent-inverted);
   --color-link: var(--color-accent);
-  --color-shadow: rgb(3 69 2/50%);
   --color-text: rgb(51 51 51);
   --color-text-heading: var(--color-accent);
   --color-text-inverted: rgb(255 255 255);
@@ -34,18 +33,27 @@
     "Segoe UI", Ubuntu, sans-serif;
 
   --font-line-height-body: 1.5;
+  --font-line-height-compact: 1.25;
   --font-line-height-display: 1.125;
 
   --font-weight-normal: 400;
   --font-weight-light: 200;
   --font-weight-bold: 700;
 
-  --shadow-popover: 1px 1px 2px var(--color-shadow);
+  --shadow-light: 1px 1px rgb(0 0 0 / 25%);
+  --shadow-medium: 1px 2px 1px rgb(0 0 0 / 50%);
+  --shadow-heavy: 2px 4px 2px rgb(0 0 0 / 75%);
+  --shadow-popover: var(--shadow-medium);
+
+  --weight-line-thin: 1px;
+  --weight-line-rule: var(--weight-line-thin);
+  --weight-line-medium: 2px;
 }
 
 body.dark-mode {
   --color-background-page: rgb(3, 69, 2);
   --color-text: rgb(240, 240, 223);
+  --color-link: var(--color-link-inverted);
   --color-background-card: black;
   --color-accent: var(--color-accent-inverted);
   --color-text-control: rgb(51 51 51);

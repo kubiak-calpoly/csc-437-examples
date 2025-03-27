@@ -1,12 +1,12 @@
 import { define } from "@calpoly/mustang";
 import { css, html, LitElement } from "lit";
 import { property } from "lit/decorators.js";
-import { Entourage, Profile } from "server/models";
-import { ProfileAvatarElement } from "./profile-avatar";
+import { Entourage, Traveler } from "server/models";
+import { AvatarElement } from "./traveler-avatar";
 
 export class EntourageTable extends LitElement {
   static uses = define({
-    "profile-avatar": ProfileAvatarElement
+    "traveler-avatar": AvatarElement
   });
 
   @property({ attribute: false })
@@ -23,13 +23,7 @@ export class EntourageTable extends LitElement {
     const { name, people } = this.entourage;
     const rows = people || [];
 
-    const link = this.href
-      ? html`
-          <a href=${this.href}>Chat Now...</a>
-        `
-      : "";
-
-    const renderRow = (row: Profile) => {
+    const renderRow = (row: Traveler) => {
       const {
         userid,
         avatar,
@@ -39,20 +33,20 @@ export class EntourageTable extends LitElement {
       } = row;
       const initial = (nickname || name || userid).slice(0, 1);
       const avatarImage = html`
-        <profile-avatar
+        <traveler-avatar
           color=${color}
           src=${avatar}
           initial=${initial}
-          style="--avatar-size: 2em"></profile-avatar>
+          style="--avatar-size: 2em"></traveler-avatar>
       `;
 
       return html`
         <tr>
           <td>
-            <a href="/app/profile/${userid}">${avatarImage}</a>
+            <a href="/app/traveler/${userid}">${avatarImage}</a>
           </td>
           <td class="name">
-            <a href="/app/profile/${userid}">${name}</a>
+            <a href="/app/traveler/${userid}">${name}</a>
           </td>
         </tr>
       `;
@@ -60,8 +54,9 @@ export class EntourageTable extends LitElement {
 
     return html`
       <section>
-        <h3>${name || "Entourage"}</h3>
-        ${link}
+        <a href="${this.href}"
+          ><h3>${name || "Entourage"}</h3></a
+        >
         <table>
           <tbody>${rows.map(renderRow)}</tbody>
         </table>

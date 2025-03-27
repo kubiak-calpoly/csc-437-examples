@@ -30,7 +30,7 @@ export class Observer<T extends object> {
           })
           .catch((err) =>
             console.log(
-              `Observer ${this._contextLabel} failed to locate a provider`,
+              `Observer ${this._contextLabel}: ${err}`,
               err
             )
           );
@@ -44,6 +44,7 @@ export class Observer<T extends object> {
       ev,
       this._effects
     );
+    ev.stopPropagation();
     this._effects.forEach((obs) => obs.runEffect());
   }
 }

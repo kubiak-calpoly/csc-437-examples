@@ -58,33 +58,24 @@ const credentialModel = (0, import_mongoose.model)(
   credentialSchema
 );
 function verify(username, password) {
-  return new Promise((resolve, reject) => {
-    credentialModel.find({ username }).then((found) => {
-      if (found && found.length === 1)
-        return found[0];
-      else
-        reject("Invalid username or password");
-    }).then((credsOnFile) => {
+  return credentialModel.find({ username }).then((found) => {
+    if (!found || found.length !== 1)
+      throw "Invalid username or password";
+    return found[0];
+  }).then(
+    (credsOnFile) => new Promise((resolve, reject) => {
       if (credsOnFile)
         import_bcryptjs.default.compare(
           password,
           credsOnFile.hashedPassword,
           (_, result) => {
-            console.log(
-              "Verified",
-              result,
-              credsOnFile.username
-            );
-            if (result)
-              resolve(credsOnFile.username);
-            else
+            if (!result)
               reject("Invalid username or password");
+            else resolve(credsOnFile.username);
           }
         );
-      else
-        reject("Invalid username or password");
-    });
-  });
+    })
+  );
 }
 function create(username, password) {
   return new Promise((resolve, reject) => {
@@ -92,8 +83,7 @@ function create(username, password) {
       reject("must provide username and password");
     }
     credentialModel.find({ username }).then((found) => {
-      if (found.length)
-        reject("username exists");
+      if (found.length) reject("username exists");
     }).then(
       () => import_bcryptjs.default.genSalt(10).then((salt) => import_bcryptjs.default.hash(password, salt)).then((hashedPassword) => {
         const creds = new credentialModel({
@@ -101,8 +91,7 @@ function create(username, password) {
           hashedPassword
         });
         creds.save().then((created) => {
-          if (created)
-            resolve(created);
+          if (created) resolve(created);
         });
       })
     );

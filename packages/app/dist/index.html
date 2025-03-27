@@ -15,22 +15,13 @@
     <link rel="stylesheet" href="/styles/reset.css" />
     <link rel="stylesheet" href="/styles/tokens.css" />
     <link rel="stylesheet" href="/styles/page.css" />
-    
-    
-    <script type="module" crossorigin src="/assets/spa-d3918860.js"></script>
-    <link rel="modulepreload" crossorigin href="/assets/lit-element-19d16ef1.js">
-    <link rel="modulepreload" crossorigin href="/assets/property-4e000f11.js">
+    <script type="module" crossorigin src="/assets/index-BQhKnKZg.js"></script>
   </head>
   <body>
-    <mu-history provides="blazing:history">
-      <mu-auth provides="blazing:auth" redirect="/login.html">
-        <mu-store provides="blazing:model">
-          <article class="page">
-            <blazing-header></blazing-header>
-            <mu-switch></mu-switch>
-          </article>
-        </mu-store>
-      </mu-auth>
-    </mu-history>
+    <mu-auth provides="blazing:auth">
+      <article>
+        <blazing-app></blazing-app>
+      </article>
+    </mu-auth>
   </body>
 </html>

@@ -1,7 +1,8 @@
 import * as Auth from "./auth";
-import { html, shadow } from "./html";
+import { html } from "./html";
 import * as Message from "./message";
 import { Observer } from "./observer";
+import { shadow } from "./shadow";
 
 type FormValues = { [key: string]: unknown };
 
@@ -61,7 +62,7 @@ export class FormElement extends HTMLElement {
 
   constructor() {
     super();
-    shadow(FormElement.template).attach(this);
+    shadow(this).template(FormElement.template);
 
     if (this.form) {
       this.form.addEventListener("submit", (event) => {

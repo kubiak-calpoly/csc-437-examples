@@ -1,9 +1,5 @@
 import { Document, Model, Schema, model } from "mongoose";
-import {
-  Destination,
-  Tour,
-  Transportation
-} from "../models/tour";
+import { Destination, Tour, Transportation } from "../models";
 import "./entourage-svc"; // to load schema
 
 const tourSchema = new Schema<Tour>(
@@ -29,23 +25,29 @@ const tourSchema = new Schema<Tour>(
     destinations: [
       {
         name: String,
-        link: String,
         startDate: Date,
         endDate: Date,
         location: { lat: Number, lon: Number },
         featuredImage: String,
         accommodations: [
-          { name: String, link: String, nights: Number }
+          {
+            name: String,
+            checkIn: Date,
+            checkOut: Date,
+            roomType: String,
+            persons: Number,
+            rate: {
+              amount: Number,
+              currency: String
+            }
+          }
         ],
-        excursions: [
-          { name: String, type: { type: String }, link: String }
-        ]
+        excursions: [{ name: String, type: { type: String } }]
       }
     ],
     transportation: [
       {
         type: { type: String },
-        routing: [String],
         startDate: Date,
         endDate: Date,
         segments: [
@@ -53,11 +55,13 @@ const tourSchema = new Schema<Tour>(
             name: String,
             provider: String,
             departure: {
+              name: String,
               station: String,
               time: Date,
               tzoffset: Number
             },
             arrival: {
+              name: String,
               station: String,
               time: Date,
               tzoffset: Number
@@ -73,7 +77,31 @@ const tourSchema = new Schema<Tour>(
 const tourModel = model<Tour>("Tour", tourSchema);
 
 function index(): Promise<Tour[]> {
-  return tourModel.find();
+  return tourModel
+    .find()
+    .then((tours) =>
+      // populate the entourage name for each tour:
+      tourModel.populate(tours, {
+        path: "entourage",
+        select: "name"
+      })
+    )
+    .then((tours) => tours.map(trimIndex));
+}
+
+function trimIndex(t: Tour): Tour & { _id: string } {
+  const { name, startDate, endDate, entourage } = t;
+  const { _id } = t as unknown as { _id: string };
+
+  return {
+    _id,
+    name,
+    startDate,
+    endDate,
+    entourage,
+    destinations: [],
+    transportation: []
+  };
 }
 
 function get(id: String): Promise<Tour> {

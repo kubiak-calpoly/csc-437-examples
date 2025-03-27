@@ -34,7 +34,7 @@ router.get("/:id", (req: Request, res: Response) => {
       if (!tour) throw "Not found";
       else res.json(tour);
     })
-    .catch((err) => res.status(404).end());
+    .catch(() => res.status(404).end());
 });
 
 router.put("/:id", (req: Request, res: Response) => {
@@ -52,6 +52,8 @@ router.put(
   (req: Request, res: Response) => {
     const { id, n } = req.params;
     const newDest = req.body;
+
+    console.log("User", req.params.username);
 
     console.log(
       `Updating Destination ${n} of tour ${id} with`,

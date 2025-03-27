@@ -46,23 +46,29 @@ const tourSchema = new import_mongoose.Schema(
     destinations: [
       {
         name: String,
-        link: String,
         startDate: Date,
         endDate: Date,
         location: { lat: Number, lon: Number },
         featuredImage: String,
         accommodations: [
-          { name: String, link: String, nights: Number }
+          {
+            name: String,
+            checkIn: Date,
+            checkOut: Date,
+            roomType: String,
+            persons: Number,
+            rate: {
+              amount: Number,
+              currency: String
+            }
+          }
         ],
-        excursions: [
-          { name: String, type: { type: String }, link: String }
-        ]
+        excursions: [{ name: String, type: { type: String } }]
       }
     ],
     transportation: [
       {
         type: { type: String },
-        routing: [String],
         startDate: Date,
         endDate: Date,
         segments: [
@@ -70,11 +76,13 @@ const tourSchema = new import_mongoose.Schema(
             name: String,
             provider: String,
             departure: {
+              name: String,
               station: String,
               time: Date,
               tzoffset: Number
             },
             arrival: {
+              name: String,
               station: String,
               time: Date,
               tzoffset: Number
@@ -88,7 +96,28 @@ const tourSchema = new import_mongoose.Schema(
 );
 const tourModel = (0, import_mongoose.model)("Tour", tourSchema);
 function index() {
-  return tourModel.find();
+  return tourModel.find().then(
+    (tours) => (
+      // populate the entourage name for each tour:
+      tourModel.populate(tours, {
+        path: "entourage",
+        select: "name"
+      })
+    )
+  ).then((tours) => tours.map(trimIndex));
+}
+function trimIndex(t) {
+  const { name, startDate, endDate, entourage } = t;
+  const { _id } = t;
+  return {
+    _id,
+    name,
+    startDate,
+    endDate,
+    entourage,
+    destinations: [],
+    transportation: []
+  };
 }
 function get(id) {
   return tourModel.findById(id).populate({
@@ -112,10 +141,8 @@ function update(id, tour) {
     tourModel.findByIdAndUpdate(id, tour, {
       new: true
     }).then((doc) => {
-      if (doc)
-        resolve(doc);
-      else
-        reject("Failed to update tour");
+      if (doc) resolve(doc);
+      else reject("Failed to update tour");
     });
   });
 }
@@ -133,8 +160,7 @@ function updateDestination(id, n, newDest) {
       if (doc) {
         const tour = doc;
         resolve(tour.destinations[n]);
-      } else
-        reject(`Tour ${id} not found`);
+      } else reject(`Tour ${id} not found`);
     }).catch((error) => {
       console.log("Cannot update Destination:", error);
       reject(error);

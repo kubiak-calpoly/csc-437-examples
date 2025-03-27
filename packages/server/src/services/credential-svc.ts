@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import { Schema, model } from "mongoose";
-import { Credential, Role } from "../models/credential";
+import { Credential } from "../models/credential";
 
 const credentialSchema = new Schema<Credential>(
   {
@@ -32,31 +32,28 @@ function verify(
   username: string,
   password: string
 ): Promise<string> {
-  return new Promise<string>((resolve, reject) => {
-    credentialModel
-      .find({ username })
-      .then((found) => {
-        if (found && found.length === 1) return found[0];
-        else reject("Invalid username or password");
-      })
-      .then((credsOnFile) => {
-        if (credsOnFile)
-          bcrypt.compare(
-            password,
-            credsOnFile.hashedPassword,
-            (_, result) => {
-              console.log(
-                "Verified",
-                result,
-                credsOnFile.username
-              );
-              if (result) resolve(credsOnFile.username);
-              else reject("Invalid username or password");
-            }
-          );
-        else reject("Invalid username or password");
-      });
-  });
+  return credentialModel
+    .find({ username })
+    .then((found) => {
+      if (!found || found.length !== 1)
+        throw "Invalid username or password";
+      return found[0];
+    })
+    .then(
+      (credsOnFile) =>
+        new Promise<string>((resolve, reject) => {
+          if (credsOnFile)
+            bcrypt.compare(
+              password,
+              credsOnFile.hashedPassword,
+              (_, result) => {
+                if (!result)
+                  reject("Invalid username or password");
+                else resolve(credsOnFile.username);
+              }
+            );
+        })
+    );
 }
 
 function create(username: string, password: string) {

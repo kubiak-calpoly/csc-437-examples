@@ -1,66 +1,12 @@
+import { Destination } from "./destination";
 import { Entourage } from "./entourage";
-import { Point } from "./geo";
+import { Transportation } from "./transportation";
 
 export interface Tour {
   name: string;
+  startDate: Date;
+  endDate: Date;
   destinations: Array<Destination>;
   transportation: Array<Transportation>;
-  startDate: Date;
-  endDate: Date;
   entourage: Entourage;
-}
-
-export interface Destination {
-  name: string;
-  link: string;
-  startDate: Date;
-  endDate: Date;
-  location: Point;
-  featuredImage: string | undefined;
-  accommodations: Array<Accommodation>;
-  excursions: Array<Excursion>;
-}
-
-export interface Accommodation {
-  name: string;
-  link: string | undefined;
-  nights: number;
-}
-
-export interface Excursion {
-  name: string;
-  link: string | undefined;
-  type: ExcursionType;
-}
-
-export type ExcursionType =
-  | "boat"
-  | "bus"
-  | "metro"
-  | "train"
-  | "walking"
-  | "tour"
-  | undefined;
-
-export interface Transportation {
-  type: TransportationType;
-  provider?: string;
-  routing: string[];
-  startDate: Date;
-  endDate?: Date;
-  segments: Array<Segment>;
-}
-
-type TransportationType = "air" | "rail" | "ship" | "bus";
-
-export interface Segment {
-  name: string;
-  provider: string | undefined;
-  departure: Endpoint;
-  arrival: Endpoint;
-}
-
-export interface Endpoint {
-  station: string;
-  time: Date;
 }

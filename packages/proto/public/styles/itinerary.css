@@ -1,66 +1,98 @@
+@import "timings.css";
+
 .itinerary {
   display: grid;
-  grid-template-columns: subgrid;
+  grid-template-columns: [start] auto [header] 3fr [highlights] 2fr [end];
+  gap: var(--size-spacing-medium);
+  align-items: baseline;
+  margin: var(--size-spacing-small);
+
+  > dl {
+    display: contents;
+    > dt {
+      grid-column: start;
+    }
+
+    > dd {
+      grid-column: header / -1;
+    }
+  }
 }
 
-.itinerary > dt {
-  text-align: right;
+.page > .itinerary {
+  grid-area: itn;
+  grid-template-columns: subgrid [start] [header] [] [] [highlights] [] [end];
 }
 
-.itinerary > dd {
-  display: grid;
-  grid-column: 2 / end;
-  grid-template-columns: subgrid;
-}
-
-.itinerary h3 {
-  grid-column: 1 / end;
-  text-align: center;
-}
-
-.itinerary h4 {
-  grid-column: 1 / end;
-}
-
-.transportation > details {
+.itinerary dd.destination {
   display: contents;
+
+  header {
+    aspect-ratio: 16/9;
+    background-size: cover;
+    grid-column: header / span 5;
+    color: var(--color-text-inverted);
+    text-align: right;
+    text-shadow: var(--shadow-medium);
+
+    h3 {
+      color: currentColor;
+    }
+
+    a[href] {
+      color: currentColor;
+    }
+  }
+
+  ul {
+    display: grid;
+    grid-template-columns: subgrid;
+    gap: var(--size-spacing-medium);
+    grid-column: span 2 / -1;
+    list-style: none;
+    padding: 0;
+    line-height: var(--font-line-height-compact);
+
+    > * {
+      grid-column: 1 / -1;
+    }
+  }
 }
 
-.transportation summary {
-  grid-column: 1 / end;
-}
-
-.transportation ol,
-.transportation ol > li {
+.itinerary dd.transportation {
   display: contents;
-}
 
-.transportation dl {
-  display: contents;
-}
+  details {
+    display: contents;
 
-.transportation dt {
-  grid-column-start: 1;
-}
+    summary {
+      grid-column: header / span 2;
+    }
+  }
 
-.transportation dt + dd {
-  grid-column-end: span 3;
-}
+  .timings {
+    grid-column: span 4 / -1;
+    grid-template-columns: subgrid;
+  }
 
-.transportation dd + dd {
-  text-align: right;
-}
+  h3 {
+    grid-column: header / -1;
+    font-weight: var(--font-weight-bold);
 
-.destination {
-  background: var(--color-background-card);
-  padding: var(--size-spacing-large) var(--size-spacing-medium);
-  border-radius: var(--size-radius-medium);
-}
-
-.destination article {
-  grid-column: 1 / end;
-}
-
-.transportation summary {
-  font-size: var(--size-type-mlarge);
+    span:first-child::after {
+      content: " →";
+    }
+    .icon + span::before {
+      content: "→ ";
+    }
+    span.via {
+      font-style: italic;
+      &::before {
+        content: "(via ";
+      }
+      &::after {
+        content: ")";
+      }
+    }
+  }
 }

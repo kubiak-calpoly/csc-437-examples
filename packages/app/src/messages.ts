@@ -1,4 +1,4 @@
-import { Destination, Profile } from "server/models";
+import { Destination, Traveler } from "server/models";
 
 export type Msg =
   | ["profile/select", { userid: string }]
@@ -6,12 +6,12 @@ export type Msg =
     "profile/save",
     {
       userid: string;
-      profile: Profile;
+      profile: Traveler;
       onSuccess?: () => void;
       onFailure?: (err: Error) => void;
     }
   ]
-  | ["tour/index"]
+  | ["tour/index", { userid: string }]
   | ["tour/select", { tourid: string }]
   | [
     "tour/save-destination",

@@ -16,26 +16,14 @@
     <link rel="stylesheet" href="/styles/tokens.css" />
     <link rel="stylesheet" href="/styles/page.css" />
     <script type="module" src="/src/main"></script>
-    <script type="module">
-      function toggleDarkMode(page, checked) {
-        page.classList.toggle("dark-mode", checked);
-      }
-
-      document.body.addEventListener("dark-mode", (event) =>
-        toggleDarkMode(
-          event.currentTarget,
-          event.detail.checked
-        )
-      );
-    </script>
   </head>
   <body>
     <mu-history provides="blazing:history">
-      <mu-auth provides="blazing:auth" redirect="/login.html">
+      <mu-auth provides="blazing:auth" redirect="/login">
         <mu-store provides="blazing:model">
-          <article class="page">
+          <article>
             <blazing-header></blazing-header>
-            <mu-switch></mu-switch>
+            <blazing-app></blazing-app>
           </article>
         </mu-store>
       </mu-auth>

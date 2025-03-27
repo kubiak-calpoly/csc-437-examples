@@ -6,10 +6,16 @@ export default defineConfig({
   mode: "development",
   build: {
     minify: false,
+    outDir: "dist",
     lib: {
-      entry: resolve(__dirname, "src/index.ts"),
-      name: "mu",
-      fileName: "mustang"
+      entry: {
+        mustang: "./src/index.ts",
+        server: "./src/server/index.ts"
+      }
+    },
+    server: {
+      entry: resolve(__dirname, "src/server/index.ts"),
+      fileName: "mu-server"
     }
   },
   plugins: [
