@@ -45,7 +45,7 @@ export class EntourageViewElement extends View<Model, Msg> {
   }
 
   render() {
-    const { entourage } = this.tour || {};
+    const { entourage } = this.tour || {name: "Unknown Tour", entourage: {}};
     const tourName = this.tour?.name;
 
     if (entourage) {

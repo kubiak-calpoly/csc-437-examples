@@ -30,7 +30,5 @@ kram_modules/
 # MacOS
 .DS_Store
 
-# Yalc
-/.yalc
-.yalc
-yalc.lock
+# WebStorm config
+/.idea

@@ -321,5 +321,5 @@ export class ProfileViewElement extends View<Model, Msg> {
     ]);
   }
 
-  static styles = [resetCSS];
+  static styles = [resetCSS.styles];
 }
