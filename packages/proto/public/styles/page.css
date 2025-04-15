@@ -3,6 +3,9 @@ body {
   background-color: var(--color-background-page);
 }
 header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
   padding: var(--size-spacing-medium);
   background-color: var(--color-background-header);
   color: var(--color-text-inverted);
@@ -13,6 +16,10 @@ header {
 
   & ~ * {
     margin: var(--size-spacing-medium);
+  }
+
+  h1 {
+    line-height: var(--font-line-height-logotype);
   }
 }
 body > :not(header) {
