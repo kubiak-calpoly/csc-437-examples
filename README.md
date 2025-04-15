@@ -27,18 +27,18 @@ progress:
 - [Module 1](https://github.com/kubiak-calpoly/csc-437-examples/tree/sp24/mod-1):
   Information Architecture and HTML
 - [Module 2](https://github.com/kubiak-calpoly/csc-437-examples/tree/sp24/mod-2):
-  Styling and Layout with CSS
+  Styling with CSS
 - [Module 3](https://github.com/kubiak-calpoly/csc-437-examples/tree/sp24/mod-3):
-  Adding Interactions with Javascript
+  Graphics and CSS Layout
 - [Module 4](https://github.com/kubiak-calpoly/csc-437-examples/tree/sp24/mod-4):
-  MVC Architecture
+  Javascript and the DOM
 - [Module 5](https://github.com/kubiak-calpoly/csc-437-examples/tree/sp24/mod-5):
-  Client-Server Communication with REST
+  Frontend Development
 - [Module 6](https://github.com/kubiak-calpoly/csc-437-examples/tree/sp24/mod-6):
-  Security and Handling Large Files
+  Server Development and APIs
 - [Module 7](https://github.com/kubiak-calpoly/csc-437-examples/tree/sp24/mod-7):
-  Client-side Rendering
+  Web Security and Forms
 - [Module 8](https://github.com/kubiak-calpoly/csc-437-examples/tree/sp24/mod-8):
   Single-page Apps
 - [Module 9](https://github.com/kubiak-calpoly/csc-437-examples/tree/sp24/mod-9):
-  Special Topics
+  MVU Architecture
