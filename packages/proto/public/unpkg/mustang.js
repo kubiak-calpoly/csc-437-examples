@@ -1,1 +1,0 @@
-../../../mustang/dist/mustang.js
