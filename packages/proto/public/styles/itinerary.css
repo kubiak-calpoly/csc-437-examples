@@ -1,41 +1,56 @@
 .itinerary {
-  margin: var(--size-spacing-medium);
+    display: contents;
+    margin: var(--size-spacing-medium);
+
+    > dt {
+        text-align: right;
+    }
+
+    > dd {
+        grid-column: 2 / end;
+    }
 }
 
 .itinerary > .destination {
-  aspect-ratio: 16/9;
-  background-size: cover;
-  color: var(--color-text-inverted);
+    aspect-ratio: 16/9;
+    background-size: cover;
+    color: var(--color-text-inverted);
 
-  h3 {
-    color: currentColor;
-    text-align: right;
-    text-shadow: 1px 2px 1px rgb(0 0 0 / 50%);
-  }
+    h3 {
+        color: currentColor;
+        text-align: right;
+        text-shadow: 1px 2px 1px rgb(0 0 0 / 50%);
+    }
 
-  a[href] {
-    color: currentColor;
-  }
+    a[href] {
+        color: currentColor;
+    }
 }
 
 .itinerary > .transportation summary {
-  font-weight: var(--font-weight-bold);
-  .icon {
-    --size-icon: var(--size-icon-large);
-  }
-  span:first-child::after {
-    content: " →";
-  }
-  .icon + span::before {
-    content: "→ ";
-  }
-  span.via {
-    font-style: italic;
-    &::before {
-      content: "(via ";
+    font-weight: var(--font-weight-bold);
+
+    .icon {
+        --size-icon: var(--size-icon-large);
     }
-    &::after {
-      content: ")";
+
+    span:first-child::after {
+        content: " →";
     }
-  }
+
+    .icon + span::before {
+        content: "→ ";
+    }
+
+    span.via {
+        font-style: italic;
+
+        &::before {
+            content: "(via ";
+        }
+
+        &::after {
+            content: ")";
+        }
+    }
 }

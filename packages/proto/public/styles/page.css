@@ -44,16 +44,30 @@ body > :not(header) {
 }
 
 .page {
+  --page-grid-gap: var(--size-spacing-large);
   display: grid;
-  grid-template-columns:
-    [start] 1fr 1fr 1fr 1fr [end];
+  grid-template-columns: [start]
+    1fr 1fr 1fr 1fr 1fr 1fr [end];
+  padding: 0 calc(0.5 * var(--page-grid-gap));
+  gap: var(--page-grid-gap);
+  align-items: baseline;
 
   > header {
     grid-column: start / end;
   }
 
   > main {
-    grid-column-end: span 3;
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-column: start / span 4;
+
+    > h2 {
+      grid-column: start / end;
+    }
+  }
+
+  > section {
+    grid-column-end: span 2;
   }
 }
 
