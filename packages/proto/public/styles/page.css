@@ -35,11 +35,25 @@ body > :not(header) {
     flex-basis: min-content;
   }
 
-  > main {
+  > header ~ * {
     flex-basis: 100%;
     overflow: auto;
     margin: 0;
     padding: 0.5rem;
+  }
+}
+
+.page {
+  display: grid;
+  grid-template-columns:
+    [start] 1fr 1fr 1fr 1fr [end];
+
+  > header {
+    grid-column: start / end;
+  }
+
+  > main {
+    grid-column-end: span 3;
   }
 }
 
