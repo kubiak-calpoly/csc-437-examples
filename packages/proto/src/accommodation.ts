@@ -1,47 +1,52 @@
-import { css, html, shadow } from "@calpoly/mustang";
+import { css, html, LitElement } from "lit";
 import reset from "./styles/reset.css.js";
 import icon from "./styles/icon.css.js";
 import headings from "./styles/headings.css.js";
 
-export class AccommodationElement extends HTMLElement {
-  static template = html`<template>
-    <section>
-      <h3>
-        <svg class="icon">
-          <use xlink:href="/icons/destination.svg#icon-hotel" />
-        </svg>
-        <slot name="name">Accommodation</slot>
-      </h3>
-      <dl>
-        <dt>Check-in</dt>
-        <dd>
-          <slot name="check-in">
-            <time datetime="1970-01-01">dd-Mmm</time>
-          </slot>
-        </dd>
-        <dt>Check-out</dt>
-        <dd>
-          <slot name="check-out">
-            <time datetime="1970-01-01">dd-Mmm</time>
-          </slot> </dd
-        ><dt>Room Type</dt>
-        <dd>
-          <slot name="room-type">Standard</slot>
-        </dd>
-        <dt>Sleeps</dt>
-        <dd>
-          <slot name="persons"># </slot>
-        </dd>
-        <dt>Rate</dt>
-        <dd>
-          <slot name="room-rate">###</slot>
-          <slot name="currency">USD</slot>
-        </dd>
-      </dl>
-    </section>
-  </template>`;
+export class AccommodationElement extends LitElement {
+  render() {
+    return html`<section>
+        <h3>
+          <svg class="icon">
+            <use xlink:href="/icons/destination.svg#icon-hotel" />
+          </svg>
+          <slot name="name">Accommodation</slot>
+        </h3>
+        <dl>
+          <dt>Check-in</dt>
+          <dd>
+            <slot name="check-in">
+              <time datetime="1970-01-01">dd-Mmm</time>
+            </slot>
+          </dd>
+          <dt>Check-out</dt>
+          <dd>
+            <slot name="check-out">
+              <time datetime="1970-01-01">dd-Mmm</time>
+            </slot> </dd
+          ><dt>Room Type</dt>
+          <dd>
+            <slot name="room-type">Standard</slot>
+          </dd>
+          <dt>Sleeps</dt>
+          <dd>
+            <slot name="persons"># </slot>
+          </dd>
+          <dt>Rate</dt>
+          <dd>
+            <slot name="room-rate">###</slot>
+            <slot name="currency">USD</slot>
+          </dd>
+        </dl>
+      </section>
+    </template>`;
+  }
 
-  static styles = css`
+  static styles = [
+    reset.styles,
+    headings.styles,
+    icon.styles,
+    css`
     :host {
       display: contents;
     }
@@ -71,17 +76,5 @@ export class AccommodationElement extends HTMLElement {
       grid-column: dd / -1;
       justify-self: end;
     }
-  `;
-
-  constructor() {
-    super();
-    shadow(this)
-      .template(AccommodationElement.template)
-      .styles(
-        reset.styles,
-        icon.styles,
-        headings.styles,
-        AccommodationElement.styles
-      );
-  }
+  `];
 }

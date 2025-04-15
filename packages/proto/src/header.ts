@@ -24,9 +24,15 @@ export class HeaderElement extends LitElement {
             <menu>
               <li>Hello, traveler</li>
               <li>
-                <label class="dark-mode-switch">
-                  <input type="checkbox" />
-                  Dark Mode
+                <label class="dark-mode-switch" 
+                  @change=${(event) => Events.relay(
+                    event, "dark-mode", {
+                    checked: event.target.checked
+                  })
+                }
+                >
+                <input type="checkbox" />
+                Dark Mode
                 </label>
               </li>
             </menu>
@@ -63,9 +69,15 @@ export class HeaderElement extends LitElement {
       flex-basis: max-content;
       align-items: end;
     }
-  `;
+  `];
 
-  constructor() {
-    super();
+  static initializeOnce() {
+    function toggleDarkMode(page, checked) {
+      page.classList.toggle("dark-mode", checked);
+    }
+
+    document.body.addEventListener("dark-mode", (event: CustomEvent) =>
+      toggleDarkMode(event.currentTarget, event.detail.checked)
+    );
   }
 }
