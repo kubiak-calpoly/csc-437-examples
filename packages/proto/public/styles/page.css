@@ -3,6 +3,7 @@ body {
   background-color: var(--color-background-page);
 }
 header {
+  padding: var(--size-spacing-medium);
   background-color: var(--color-background-header);
   color: var(--color-text-inverted);
 
@@ -14,7 +15,9 @@ header {
     margin: var(--size-spacing-medium);
   }
 }
-
+body > :not(header) {
+  margin: var(--size-spacing-medium);
+}
 body > section {
 }
 h1,
@@ -58,6 +61,13 @@ h6 {
 }
 dt {
   font-weight: var(--size-type-body);
+}
+dd {
+  margin-left: var(--size-spacing-xlarge);
+}
+dd + dt {
+  margin-top: var(--size-spacing-large);
+  border-top: 1px solid var(--color-border);
 }
 h3,
 a {

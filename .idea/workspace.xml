@@ -6,9 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="68014ec2-4fb4-41d0-8091-3a079a0424c5" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/proto/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/packages/proto/public/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/packages/proto/public/styles/page.css" beforeDir="false" afterPath="$PROJECT_DIR$/packages/proto/public/styles/page.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/packages/proto/public/styles/reset.css" beforeDir="false" afterPath="$PROJECT_DIR$/packages/proto/public/styles/reset.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/proto/public/styles/tokens.css" beforeDir="false" afterPath="$PROJECT_DIR$/packages/proto/public/styles/tokens.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
