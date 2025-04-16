@@ -15,6 +15,7 @@
     aspect-ratio: 16/9;
     background-size: cover;
     color: var(--color-text-inverted);
+    padding: var(--size-spacing-medium);
 
     h3 {
         color: currentColor;

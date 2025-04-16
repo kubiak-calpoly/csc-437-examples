@@ -39,11 +39,10 @@ body > :not(header) {
     flex-basis: 100%;
     overflow: auto;
     margin: 0;
-    padding: 0.5rem;
   }
 }
 
-.page {
+.grid {
   --page-grid-gap: var(--size-spacing-large);
   display: grid;
   grid-template-columns: [start]
@@ -113,12 +112,12 @@ h6 {
 dt {
   font-weight: var(--size-type-body);
 }
-dd {
-  margin-left: var(--size-spacing-xlarge);
-}
 dd + dt {
   margin-top: var(--size-spacing-large);
   border-top: 1px solid var(--color-border);
+}
+dd + dt + dd {
+  margin-top: var(--size-spacing-large);
 }
 h3,
 a {
