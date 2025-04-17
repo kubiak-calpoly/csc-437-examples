@@ -1,97 +1,57 @@
-@import "timings.css";
-
 .itinerary {
-  display: grid;
-  grid-template-columns: [start] auto [header] 3fr [highlights] 2fr [end];
-  gap: var(--size-spacing-medium);
-  align-items: baseline;
-  margin: var(--size-spacing-small);
-
-  > dl {
     display: contents;
+    margin: var(--size-spacing-medium);
+
     > dt {
-      grid-column: start;
+        text-align: right;
     }
 
     > dd {
-      grid-column: header / -1;
+        grid-column: 2 / end;
     }
-  }
 }
 
-.page > .itinerary {
-  grid-area: itn;
-  grid-template-columns: subgrid [start] [header] [] [] [highlights] [] [end];
-}
-
-.itinerary dd.destination {
-  display: contents;
-
-  header {
+.itinerary > .destination {
     aspect-ratio: 16/9;
     background-size: cover;
-    grid-column: header / span 5;
+    color: var(--color-text-inverted);
+    padding: var(--size-spacing-medium);
 
     h3 {
-      color: currentColor;
-      text-align: right;
-      text-shadow: 1px 2px 1px rgb(0 0 0 / 50%);
+        color: currentColor;
+        text-align: right;
+        text-shadow: 1px 2px 1px rgb(0 0 0 / 50%);
     }
 
     a[href] {
-      color: currentColor;
+        color: currentColor;
     }
-  }
-
-  ul {
-    display: grid;
-    grid-template-columns: subgrid;
-    gap: var(--size-spacing-medium);
-    grid-column: span 2 / -1;
-    list-style: none;
-    padding: 0;
-    line-height: var(--font-line-height-compact);
-
-    > * {
-      grid-column: 1 / -1;
-    }
-  }
 }
 
-.itinerary dd.transportation {
-  display: contents;
-
-  details {
-    display: contents;
-
-    summary {
-      grid-column: header / span 2;
-    }
-  }
-
-  .timings {
-    grid-column: span 4 / -1;
-    grid-template-columns: subgrid;
-  }
-
-  h3 {
-    grid-column: header / -1;
+.itinerary > .transportation summary {
     font-weight: var(--font-weight-bold);
 
+    .icon {
+        --size-icon: var(--size-icon-large);
+    }
+
     span:first-child::after {
-      content: " →";
+        content: " →";
     }
+
     .icon + span::before {
-      content: "→ ";
+        content: "→ ";
     }
+
     span.via {
-      font-style: italic;
-      &::before {
-        content: "(via ";
-      }
-      &::after {
-        content: ")";
-      }
+        font-style: italic;
+
+        &::before {
+            content: "(via ";
+        }
+
+        &::after {
+            content: ")";
+        }
     }
-  }
 }
