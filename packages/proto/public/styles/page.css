@@ -23,23 +23,7 @@ header {
   }
 }
 body > :not(header) {
-  margin: var(--size-spacing-medium);
-}
-.page {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  width: 100vw;
-
-  > header {
-    flex-basis: min-content;
-  }
-
-  > header ~ * {
-    flex-basis: 100%;
-    overflow: auto;
-    margin: 0;
-  }
+  margin: var(--size-spacing-small);
 }
 
 .grid {
@@ -114,7 +98,6 @@ dt {
 }
 dd + dt {
   margin-top: var(--size-spacing-large);
-  border-top: 1px solid var(--color-border);
 }
 dd + dt + dd {
   margin-top: var(--size-spacing-large);

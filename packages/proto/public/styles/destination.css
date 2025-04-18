@@ -1,0 +1,71 @@
+.destination {
+  h2 {
+    grid-column: start / end;
+  }
+
+  img {
+    align-self: start;
+    grid-column-end: span 6;
+  }
+}
+
+.grid > .accommodation {
+  display: grid;
+  grid-column-end: span 2;
+  grid-template-columns: subgrid;
+
+  h3 {
+    grid-column: 1/-1;
+  }
+  dl {
+    display: contents;
+  }
+  dd {
+    text-align: right;
+  }
+}
+
+.grid > .excursions {
+  grid-column-end: span 4;
+}
+
+ul.excursions {
+    > li {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--color-accent);
+  }
+}
+
+.grid > nav {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: start/end;
+  grid-auto-flow: dense;
+  align-items: center;
+
+  a {
+    display: contents;
+    .icon {
+      font-size: 2rem;
+    }
+  }
+  a:first-child {
+    .icon {
+      grid-column-start: 1;
+    }
+    dl {
+      grid-column-end: span 2;
+    }
+  }
+  a:last-child {
+    text-align: right;
+    .icon {
+      grid-column: span 1 / end;
+      justify-self: end;
+    }
+    dl {
+      grid-column: span 2 / -2;
+    }
+  }
+}

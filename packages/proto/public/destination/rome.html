@@ -1,12 +1,37 @@
 <!DOCTYPE html>
-<article>
-  <header>
-    <a href="../index.html">&larr; Tour: 12 Days in Italy</a>
-    <h3><a href="../guide/rome.html">Rome</a></h3>
-    <p>4 nights</p>
-  </header>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  />
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,200;0,400;0,700;1,700&family=Merriweather:wght@400;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="/styles/reset.css" />
+  <link rel="stylesheet" href="/styles/tokens.css" />
+  <link rel="stylesheet" href="/styles/page.css" />
+  <link rel="stylesheet" href="/styles/destination.css" />
+</head>
+<body class="page">
+<header>
+  <h1>Blazing Travels</h1>
+  <p>
+    <a href="../index.html">Tour: 12 Days in Italy</a>
+  </p>
+</header>
+<article class="destination grid">
+  <h2>Rome</h2>
+  <img src="/images/full/Colosseum_in_Rome,_Italy_-_April_2007.jpg" />
   <section class="accommodation">
-    <h2>La Piccola Maison</h2>
+    <h3>La Piccola Maison</h3>
     <dl>
       <dt>Check-in Date</dt>
       <dd>Oct 21</dd>
@@ -18,8 +43,71 @@
       <dd>&euro; 180.00</dd>
     </dl>
   </section>
+  <ul class="excursions">
+    <li>
+      <svg class="icon">
+        <use
+          xlink:href="/icons/transportation.svg#icon-train"
+        />
+      </svg>
+      <h6> The Forum, Colosseum, Palatino Hill</h6>
+    </li>
+    <li>
+      <svg class="icon">
+        <use xlink:href="/icons/transportation.svg#icon-train"/>
+      </svg>
+      <h6>Vatican Museums, Sistine Chapel, & St Peter's Basilica</h6>
+    </li>
+    <li>
+      <svg class="icon">
+        <use xlink:href="/icons/transportation.svg#icon-airplane"/>
+      </svg>
+      <h6>Pompeii, Amalfi Coast, and Positano</h6>
+    </li>
+    <li>
+      <svg class="icon">
+        <use xlink:href="/icons/transportation.svg#icon-airplane"/>
+      </svg>
+      <h6>Tuscany from Rome with Lunch and Wine Tasting</h6>
+    </li>
+    <li>
+      <svg class="icon">
+        <use xlink:href="/icons/transportation.svg#icon-train"/>
+      </svg>
+      <h6>Cooking Class, Piazza Novena</h6>
+    </li>
+    <li>
+      <svg class="icon">
+        <use xlink:href="/icons/transportation.svg#icon-airplane"/>
+      </svg>
+      <h6>Capri Island Boat Tour</h6>
+    </li>
+    <li>
+      <svg class="icon">
+        <use xlink:href="/icons/transportation.svg#icon-train"/>
+      </svg>
+      <h6>E-Bike Tour of Appian Way</h6>
+    </li>
+    <li>
+      <svg class="icon">
+        <use xlink:href="/icons/transportation.svg#icon-train"/>
+      </svg>
+      <h6>Rome 3-Hour Bicycle Tour</h6>
+    </li>
+    <li>
+      <svg class="icon">
+        <use xlink:href="/icons/transportation.svg#icon-airplane"/>
+      </svg>
+      <h6>Fly to Sicily for the Day</h6>
+    </li>
+  </ul>
   <nav class="transportation">
     <a href="florence.html">
+      <svg class="icon">
+        <use
+          xlink:href="/icons/transportation.svg#icon-train"
+        />
+      </svg>
       <dl>
         <dt>Arrive from Florence</dt>
         <dd>Oct 21, 5:10PM</dd>
@@ -27,6 +115,11 @@
       </dl>
     </a>
     <a href="../flight/return.html">
+      <svg class="icon">
+        <use
+          xlink:href="/icons/transportation.svg#icon-airplane"
+        />
+      </svg>
       <dl>
         <dt>Depart for SFO</dt>
         <dd>Oct 25, 5:25PM</dd>
@@ -35,3 +128,5 @@
     </a>
   </nav>
 </article>
+</body>
+</html>
