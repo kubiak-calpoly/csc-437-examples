@@ -1,4 +1,4 @@
-.destination {
+.destination.grid {
   > header {
     grid-column: start / span 3;
   }
@@ -8,6 +8,8 @@
       span min(5, var(--page-grids)) / end;
     grid-row-end: span 2;
   }
+
+
 }
 
 .grid > .accommodation {
@@ -68,7 +70,7 @@ ul.excursions {
       grid-column-start: 1;
     }
     dl {
-      grid-column-end: span 2;
+      grid-column-end: span 1;
     }
   }
   a:last-child {
@@ -78,7 +80,14 @@ ul.excursions {
       justify-self: end;
     }
     dl {
-      grid-column: span 2 / -2;
+      grid-column: span 1 / -2;
     }
   }
 }
+
+@media screen and (max-width: 50rem) {
+  .grid.destination {
+    --page-grids: 4;
+  }
+}
+
