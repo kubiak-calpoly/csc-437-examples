@@ -1,93 +1,112 @@
-section.destination {
-  grid-column: 1 / -1;
-
-  img {
-    grid-area: img;
+.destination.grid {
+  > header {
+    grid-column: start / span 3;
   }
 
-  blz-accommodation {
-    grid-area: acc;
+  > .hero {
+    grid-column:
+      span min(5, var(--page-grids)) / end;
+    grid-row-end: span 2;
   }
 
 
+}
 
-  .excursions {
+.grid > .accommodation {
+  display: grid;
+  grid-column-end: span 3;
+  grid-template-columns: subgrid;
+
+  h3 {
+    grid-column: 1/-1;
+  }
+  dl {
     display: grid;
-    grid-area: exc;
+    grid-column-end: span 3;
     grid-template-columns: subgrid;
-    list-style: none;
-    padding: 0;
-    gap: var(--size-spacing-large);
-    font-family: var(--font-family-display);
-    font-size: var(--size-type-mlarge);
-    line-height: var(--font-line-height-display);
-
-    & > li {
-      display: flex;
-      align-items: center;
-      grid-column: auto / span 2;
-      background-color: var(--color-background-card);
-      padding: var(--size-spacing-medium);
-      gap: var(--size-spacing-medium);
-    }
-
-    svg.icon {
-      --icon-size: var(--size-icon-large);
-      color: var(--color-accent);
-    }
   }
+  dt {
+    grid-column-start: 1;
+  }
+  dd {
+    grid-column-end: span 2;
+    text-align: right;
+  }
+}
 
-  footer {
-    display: grid;
-    grid-column: 1 / -1;
-    grid-template-columns: subgrid;
-    grid-area: ftr;
+.grid > .excursions {
+  grid-column-end: span 4;
+}
 
-    a {
-      display: grid;
-      grid-template-columns: subgrid;
-      grid-column: auto / span calc(var(--page-grids) / 2);
-      grid-template-areas:
-        "city stat stat icon"
-        "city time time icon";
-      align-items: center;
-      color: var(--color-link);
-      border: 1px solid var(--color-accent);
-      font-family: var(--font-family-display);
-      text-decoration: none;
-    }
+ul.excursions {
+  display: contents;
 
-    svg.icon {
-      grid-area: icon;
-      justify-self: end;
-    }
-
-    dl {
-      display: contents;
-    }
-    dt {
-      grid-area: city;
-    }
-    dd {
-      grid-area: time;
-      text-align: center;
-    }
-    dd + dd {
-      grid-area: stat;
-    }
-
-  a.depart {
-    grid-template-areas:
-      "icon stat stat city"
-      "icon time time city";
-
-    svg.icon {
-      justify-self: start;
-    }
-
-    dt {
-      justify-self: end;
-      text-align: right;
+  > li {
+    grid-column-end: span 2;
+    align-self: stretch;
+    border: 1px solid var(--color-accent);
+    > .icon {
+      font-size: 1.5rem;
+      flex-shrink: 0;
     }
   }
 }
+
+.grid > nav {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: start/end;
+  grid-auto-flow: dense;
+  align-items: center;
+
+  a {
+    display: contents;
+    .icon {
+      font-size: 2rem;
+    }
+  }
+  a:first-child {
+    .icon {
+      grid-column-start: 1;
+    }
+    dl {
+      grid-column-end: span 1;
+    }
+  }
+  a:last-child {
+    text-align: right;
+    .icon {
+      grid-column: span 1 / end;
+      justify-self: end;
+    }
+    dl {
+      grid-column: span 1 / -2;
+    }
+  }
+}
+
+@media screen and (max-width: 50rem) {
+  .grid.destination {
+    --page-grids: 4;
+  }
+}
+
+@media screen and (max-width: 30rem) {
+  .grid.destination {
+    --page-grids: 2;
+  }
+}
+
+@media screen and (min-width: 100rem) {
+  .grid.destination {
+    --page-grids: 16;
+
+    > .hero {
+      grid-column: 5 / span 8;
+      grid-row: auto / span 3;
+    }
+  }
+}
+
+
+
