@@ -97,4 +97,16 @@ ul.excursions {
   }
 }
 
+@media screen and (min-width: 100rem) {
+  .grid.destination {
+    --page-grids: 16;
+
+    > .hero {
+      grid-column: 5 / span 8;
+      grid-row: auto / span 3;
+    }
+  }
+}
+
+
 
