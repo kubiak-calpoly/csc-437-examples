@@ -1,26 +1,33 @@
 .destination {
-  h2 {
-    grid-column: start / end;
+  > header {
+    grid-column: start / span 3;
   }
 
-  img {
-    align-self: start;
-    grid-column-end: span 6;
+  > .hero {
+    grid-column:
+      span min(5, var(--page-grids)) / end;
+    grid-row-end: span 2;
   }
 }
 
 .grid > .accommodation {
   display: grid;
-  grid-column-end: span 2;
+  grid-column-end: span 3;
   grid-template-columns: subgrid;
 
   h3 {
     grid-column: 1/-1;
   }
   dl {
-    display: contents;
+    display: grid;
+    grid-column-end: span 3;
+    grid-template-columns: subgrid;
+  }
+  dt {
+    grid-column-start: 1;
   }
   dd {
+    grid-column-end: span 2;
     text-align: right;
   }
 }
@@ -30,21 +37,12 @@
 }
 
 ul.excursions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--size-spacing-small);
+  display: contents;
 
   > li {
-    display: flex;
-    width: fit-content;
-    flex-grow: 1;
-    flex-basis: 0;
-    align-items: center;
+    grid-column-end: span 2;
+    align-self: stretch;
     border: 1px solid var(--color-accent);
-
-    @media screen and (max-width: 32rem) {
-      flex-basis: auto;
-    }
     > .icon {
       font-size: 1.5rem;
       flex-shrink: 0;

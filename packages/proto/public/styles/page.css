@@ -2,7 +2,7 @@ body {
   font-family: var(--font-family-body);
   background-color: var(--color-background-page);
 }
-header {
+.page > header {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -27,10 +27,13 @@ body > :not(header) {
 }
 
 .grid {
-  --page-grid-gap: var(--size-spacing-large);
+  --page-grids: 8;
+  --page-grid-gap: var(--size-spacing-medium);
+
   display: grid;
   grid-template-columns: [start]
-    1fr 1fr 1fr 1fr 1fr 1fr [end];
+    repeat(var(--page-grids), 1fr) [end];
+  grid-auto-flow: dense;
   padding: 0 calc(0.5 * var(--page-grid-gap));
   gap: var(--page-grid-gap);
   align-items: baseline;
