@@ -24,21 +24,21 @@ Each module (week) of the course builds on the previous ones. In
 this repo, there is a branch for each module so we can track the
 progress:
 
-- [Module 1](https://github.com/kubiak-calpoly/csc-437-examples/tree/sp24/mod-1):
+- [Module 1](https://github.com/kubiak-calpoly/csc-437-examples/tree/mod-1):
   Information Architecture and HTML
-- [Module 2](https://github.com/kubiak-calpoly/csc-437-examples/tree/sp24/mod-2):
+- [Module 2](https://github.com/kubiak-calpoly/csc-437-examples/tree/mod-2):
   Styling with CSS
-- [Module 3](https://github.com/kubiak-calpoly/csc-437-examples/tree/sp24/mod-3):
+- [Module 3](https://github.com/kubiak-calpoly/csc-437-examples/tree/mod-3):
   Graphics and CSS Layout
-- [Module 4](https://github.com/kubiak-calpoly/csc-437-examples/tree/sp24/mod-4):
+- [Module 4](https://github.com/kubiak-calpoly/csc-437-examples/tree/mod-4):
   Javascript and the DOM
-- [Module 5](https://github.com/kubiak-calpoly/csc-437-examples/tree/sp24/mod-5):
+- [Module 5](https://github.com/kubiak-calpoly/csc-437-examples/tree/mod-5):
   Frontend Development
-- [Module 6](https://github.com/kubiak-calpoly/csc-437-examples/tree/sp24/mod-6):
+- [Module 6](https://github.com/kubiak-calpoly/csc-437-examples/tree/mod-6):
   Server Development and APIs
-- [Module 7](https://github.com/kubiak-calpoly/csc-437-examples/tree/sp24/mod-7):
+- [Module 7](https://github.com/kubiak-calpoly/csc-437-examples/tree/mod-7):
   Web Security and Forms
-- [Module 8](https://github.com/kubiak-calpoly/csc-437-examples/tree/sp24/mod-8):
+- [Module 8](https://github.com/kubiak-calpoly/csc-437-examples/tree/mod-8):
   Single-page Apps
-- [Module 9](https://github.com/kubiak-calpoly/csc-437-examples/tree/sp24/mod-9):
+- [Module 9](https://github.com/kubiak-calpoly/csc-437-examples/tree/mod-9):
   MVU Architecture
