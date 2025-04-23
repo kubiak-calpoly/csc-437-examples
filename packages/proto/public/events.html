@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com" />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,200;0,400;0,700;1,700&family=Merriweather:wght@400;700&display=swap"
+      rel="stylesheet" />
+    <link rel="stylesheet" href="/styles/reset.css" />
+    <link rel="stylesheet" href="/styles/tokens.css" />
+    <link rel="stylesheet" href="/styles/page.css" />
+    <link rel="stylesheet" href="/styles/itinerary.css" />
+    <link rel="stylesheet" href="/styles/entourage.css" />
+    <style>
+      main.page {
+        --page-grids: 8;
+        grid-template-areas:
+          "itn itn itn itn itn itn ent ent"
+          "itn itn itn itn itn itn -   - ";
+      }
+      @media screen and (max-width: 48rem) {
+        main.page {
+          --page-grids: 6;
+          grid-template-areas:
+            "itn itn itn itn itn itn"
+            "ent ent ent ent ent ent";
+        }
+      }
+    </style>
+    <script type="importmap">
+      {
+        "imports": {
+          "@calpoly/mustang": "https://unpkg.com/@calpoly/mustang"
+        }
+      }
+    </script>
+    <script type="module">
+      import { loadHTML } from "/scripts/html-loader.js";
+      window.fns = { loadHTML };
+    </script>
+
+    <style>
+      header {
+        --color-link: var(--color-link-inverted);
+
+        display: flex;
+        flex-wrap: wrap;
+        align-items: bottom;
+        justify-content: space-between;
+        padding: var(--size-spacing-medium);
+        background-color: var(--color-background-header);
+        color: var(--color-text-inverted);
+      }
+      header ~ * {
+        margin: var(--size-spacing-medium);
+      }
+      nav {
+        display: flex;
+        flex-direction: column;
+        flex-basis: max-content;
+        align-items: end;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      const page = document.body;
+
+      page.addEventListener("dark-mode:toggle", (event) => {
+        const checked = event.detail.checked;
+        page.classList.toggle("dark-mode", checked);
+      });
+
+      function toggleDarkMode(target, checked) {
+       const customEvent = new CustomEvent(
+         "dark-mode:toggle", {
+          bubbles: true,
+          detail: { checked },
+          });
+
+          target.dispatchEvent(customEvent);
+      }
+    </script>
+    <header>
+      <h1>Blazing Travels</h1>
+      <nav>
+        <p
+          >12 days in
+          <a href="/guide/italy.html">Italy</a>
+        </p>
+        <label> <input type="checkbox" /> Dark Mode </label>
+      </nav>
+    </header>
+
+    <main class="page">
+      <section class="itinerary">
+        <h2>Itinerary</h2>
+        <dl>
+          <dt>13 Oct - 14 Oct</dt>
+          <dd class="transportation">
+            <h3>
+              <span>SFO</span>
+              <svg class="icon">
+                <use
+                  xlink:href="/icons/transportation.svg#icon-airplane" />
+              </svg>
+              <span>VCE</span>
+              <span class="via">FRA</span>
+            </h3>
+            <details>
+              <summary>United UA926</summary>
+              <dl class="timings">
+                <dt>Depart</dt>
+                <dd>San Francisco (SFO)</dd>
+                <dd>
+                  <time datetime="2024-10-13 19:05:00-0800">
+                    7:05 PM
+                  </time>
+                </dd>
+                <dt>Arrive</dt>
+                <dd>Frankfurt (FRA)</dd>
+                <dd>
+                  <time datetime="2024-10-14 14:55:00+0100">
+                    2:55 PM
+                    <sub>+1 day</sub>
+                  </time>
+                </dd>
+              </dl>
+            </details>
+            <details>
+              <summary>Lufthansa LH330</summary>
+              <dl class="timings">
+                <dt>Depart</dt>
+                <dd>Frankfurt (FRA)</dd>
+                <dd>
+                  <time datetime="2024-10-14 17:15:00+0100">
+                    5:15 PM
+                  </time>
+                </dd>
+                <dt>Arrive</dt>
+                <dd>Venice (VCE)</dd>
+                <dd>
+                  <time datetime="2024-10-14 18:30:00+0100">
+                    6:30 PM
+                  </time>
+                </dd>
+              </dl>
+            </details>
+          </dd>
+
+          <dt>14 Oct - 18 Oct</dt>
+          <dd class="destination">
+            <a href="destination/venice.html">Venice</a>
+          </dd>
+
+          <dt>18 Oct</dt>
+          <dd class="transportation">
+            <h3>
+              <span>Venice</span>
+              <svg class="icon">
+                <use
+                  xlink:href="/icons/transportation.svg#icon-train" /></svg
+              ><span>Florence</span>
+            </h3>
+            <details>
+              <summary>9407 Frecciarossa</summary>
+              <dl class="timings">
+                <dt>Depart</dt>
+                <dd>Venezia S. Lucia</dd>
+                <dd>
+                  <time datetime="2024-10-18 09:25:00+0100">
+                    9:25 AM
+                  </time>
+                </dd>
+                <dt>Arrive</dt>
+                <dd>Firenze S.M.N.</dd>
+                <dd>
+                  <time datetime="2024-10-18 11:30:00+0100">
+                    11:30 AM
+                  </time>
+                </dd>
+              </dl>
+            </details>
+          </dd>
+
+          <dt>18 Oct - 21 Oct</dt>
+          <dd class="destination">
+            <a href="destination/florence.html">Florence</a>
+          </dd>
+
+          <dt>21 Oct</dt>
+          <dd class="transportation">
+            <h3>
+              <span>Florence</span>
+              <svg class="icon">
+                <use
+                  xlink:href="/icons/transportation.svg#icon-train" />
+              </svg>
+              <span>Rome</span>
+            </h3>
+            <details>
+              <summary>9435 Frecciarossa</summary>
+              <dl class="timings">
+                <dt>Depart</dt>
+                <dd>Firenze S.M.N.</dd>
+                <dd>
+                  <time datetime="2024-10-21 15:38:00+0100">
+                    3:38 PM
+                  </time>
+                </dd>
+                <dt>Arrive</dt>
+                <dd>Roma Termini</dd>
+                <dd>
+                  <time datetime="2024-10-21 17:10:00+0100">
+                    5:10 PM
+                  </time>
+                </dd>
+              </dl>
+            </details>
+          </dd>
+
+          <dt>21 Oct - 25 Oct</dt>
+          <dd class="destination">
+            <a href="destination/rome.html">Rome</a>
+          </dd>
+
+          <dt>25 Oct</dt>
+          <dd class="transportation">
+            <h3>
+              <span>FCO</span>
+              <svg class="icon">
+                <use
+                  xlink:href="/icons/transportation.svg#icon-airplane" />
+              </svg>
+              <span>SFO</span>
+              <span class="via">FRA</span>
+            </h3>
+            <details>
+              <summary>Lufthansa LH233</summary>
+              <dl class="timings">
+                <dt>Depart</dt>
+                <dd>Rome (FCO)</dd>
+                <dd>
+                  <time datetime="2024-10-25 13:25:00+0100">
+                    1:25 PM
+                  </time>
+                </dd>
+                <dt>Arrive</dt>
+                <dd>Frankfurt (FRA)</dd>
+                <dd>
+                  <time datetime="2024-10-25 15:20:00+0100">
+                    3:20 PM
+                  </time>
+                </dd>
+              </dl>
+            </details>
+            <details>
+              <summary>United UA927</summary>
+              <dl class="timings">
+                <dt>Depart</dt>
+                <dd>Frankfurt (FRA)</dd>
+                <dd>
+                  <time datetime="2024-10-25 17:25:00-0800">
+                    5:25 PM
+                  </time>
+                </dd>
+                <dt>Arrive</dt>
+                <dd>San Francisco (SFO)</dd>
+                <dd>
+                  <time datetime="2024-10-25 9:45:00+0100">
+                    7:45 PM
+                  </time>
+                </dd>
+              </dl>
+            </details>
+          </dd>
+        </dl>
+      </section>
+
+      <script type="text/javascript">
+        const itinerary = document.querySelector(".itinerary");
+
+        itinerary.addEventListener("click", (event) => {
+          if (
+            event.target.tagName === "A" &&
+            event.target.href
+          ) {
+            event.preventDefault();
+            fns.loadHTML(
+              event.target.href,
+              event.target.closest("dd")
+            );
+          }
+        });
+      </script>
+
+      <section class="entourage">
+        <h2>Entourage</h2>
+        <ul>
+          <li><a href="person.html">Blaze Pasquale</a></li>
+          <li><a href="person.html">Isabel Nootin</a></li>
+          <li><a href="person.html">Pi Mondrian</a></li>
+        </ul>
+      </section>
+
+      <section>
+        <label>Where do you want to go today?
+          <input />
+        </label>
+      </section>
+
+      </section>
+    </main>
+  </body>
+</html>
