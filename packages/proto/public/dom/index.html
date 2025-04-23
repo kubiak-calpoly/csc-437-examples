@@ -12,7 +12,8 @@
     function addItem(s) {
       const list = document.querySelector("ol");
       const item = document.createElement("li");
-      item.textContent = s;
+      if (s instanceof DocumentFragment) item.appendChild(s);
+      else item.textContent = s;
       list.appendChild(item);
     }
   </script>
@@ -20,7 +21,6 @@
 <body>
 <p>There are only two hard problems in CS:</p>
 <ol>
-  <li>Cache coherency</li>
 </ol>
 <button onclick="addItem('Cache coherency')">Thing 1</button>
 <button onclick="addItem(html`<em>Naming</em> Things`)">Thing 2</button>
