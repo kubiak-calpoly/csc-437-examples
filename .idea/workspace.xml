@@ -56,7 +56,7 @@
     "nodejs_package_manager_path": "npm",
     "npm.proto > dev.executor": "Run",
     "npm.proto > start.executor": "Run",
-    "ts.external.directory.path": "/Users/kenkubiak/Projects/csc-437-examples/node_modules/typescript/lib"
+    "ts.external.directory.path": "/Applications/WebStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -118,7 +118,7 @@
       <workItem from="1745003339792" duration="5232000" />
       <workItem from="1745012083871" duration="4443000" />
       <workItem from="1745259957588" duration="13903000" />
-      <workItem from="1745432595613" duration="653000" />
+      <workItem from="1745432595613" duration="902000" />
     </task>
     <servers />
   </component>

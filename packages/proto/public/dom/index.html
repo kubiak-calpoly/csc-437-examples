@@ -4,11 +4,20 @@
   <meta charset="UTF-8">
   <title>Title</title>
   <link rel="stylesheet" href="demo.css">
+  <script>
+    function addItem(s) {
+      const list = document.querySelector("ol");
+      const item = document.createElement("li");
+      item.textContent = s;
+      list.appendChild(item);
+    }
+  </script>
 </head>
 <body>
 <p>There are only two hard problems in CS:</p>
 <ol>
   <li>Cache coherency</li>
 </ol>
+<button onclick="addItem('Naming Things')">Add Item</button>
 </body>
 </html>
