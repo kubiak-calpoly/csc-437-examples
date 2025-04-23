@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <title>Title</title>
   <link rel="stylesheet" href="demo.css">
+  <script type="module">
+    import {html} from "./parser.js"
+    window.html = html;
+  </script>
   <script>
     function addItem(s) {
       const list = document.querySelector("ol");
@@ -18,6 +22,7 @@
 <ol>
   <li>Cache coherency</li>
 </ol>
-<button onclick="addItem('Naming Things')">Add Item</button>
+<button onclick="addItem('Cache coherency')">Thing 1</button>
+<button onclick="addItem(html`<em>Naming</em> Things`)">Thing 2</button>
 </body>
 </html>
