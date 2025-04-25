@@ -42,7 +42,11 @@
     </script>
     <script type="module">
       import { loadHTML } from "/scripts/html-loader.js";
-      window.fns = { loadHTML };
+      import { Events } from "@calpoly/mustang";
+
+      window.fns = { loadHTML,
+        relayEvent: Events.relay
+      };
     </script>
 
     <style>
@@ -95,7 +99,11 @@
           <a href="/guide/italy.html">Italy</a>
         </p>
         <label> <input type="checkbox"
-          onchange="toggleDarkMode(event.target, event.target.checked)"/> Dark Mode </label>
+          onchange="fns.relayEvent(event,
+            'dark-mode:toggle', {
+              checked: event.target.checked
+            }
+          )"/> Dark Mode </label>
       </nav>
     </header>
 
