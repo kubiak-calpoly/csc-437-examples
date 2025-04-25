@@ -94,7 +94,8 @@
           >12 days in
           <a href="/guide/italy.html">Italy</a>
         </p>
-        <label> <input type="checkbox" /> Dark Mode </label>
+        <label> <input type="checkbox"
+          onchange="toggleDarkMode(event.target, event.target.checked)"/> Dark Mode </label>
       </nav>
     </header>
 
@@ -156,7 +157,11 @@
 
           <dt>14 Oct - 18 Oct</dt>
           <dd class="destination">
-            <a href="destination/venice.html">Venice</a>
+            <a onclick="fns.loadHTML(
+                'destination/venice.html',
+                 event.target.closest('dd'))">
+              Venice
+            </a>
           </dd>
 
           <dt>18 Oct</dt>
@@ -285,19 +290,6 @@
 
       <script type="text/javascript">
         const itinerary = document.querySelector(".itinerary");
-
-        itinerary.addEventListener("click", (event) => {
-          if (
-            event.target.tagName === "A" &&
-            event.target.href
-          ) {
-            event.preventDefault();
-            fns.loadHTML(
-              event.target.href,
-              event.target.closest("dd")
-            );
-          }
-        });
       </script>
 
       <section class="entourage">
