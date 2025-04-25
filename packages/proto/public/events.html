@@ -42,7 +42,11 @@
     </script>
     <script type="module">
       import { loadHTML } from "/scripts/html-loader.js";
-      window.fns = { loadHTML };
+      import { Events } from "@calpoly/mustang";
+
+      window.fns = { loadHTML,
+        relayEvent: Events.relay
+      };
     </script>
 
     <style>
@@ -72,20 +76,10 @@
     <script>
       const page = document.body;
 
-      page.addEventListener("dark-mode:toggle", (event) => {
-        const checked = event.detail.checked;
+      page.addEventListener("change", (event) => {
+        const checked = event.target.checked;
         page.classList.toggle("dark-mode", checked);
       });
-
-      function toggleDarkMode(target, checked) {
-       const customEvent = new CustomEvent(
-         "dark-mode:toggle", {
-          bubbles: true,
-          detail: { checked },
-          });
-
-          target.dispatchEvent(customEvent);
-      }
     </script>
     <header>
       <h1>Blazing Travels</h1>
@@ -94,7 +88,7 @@
           >12 days in
           <a href="/guide/italy.html">Italy</a>
         </p>
-        <label> <input type="checkbox" /> Dark Mode </label>
+        <label> <input type="checkbox"/> Dark Mode </label>
       </nav>
     </header>
 
@@ -156,7 +150,11 @@
 
           <dt>14 Oct - 18 Oct</dt>
           <dd class="destination">
-            <a href="destination/venice.html">Venice</a>
+            <a onclick="fns.loadHTML(
+                'destination/venice.html',
+                 event.target.closest('dd'))">
+              Venice
+            </a>
           </dd>
 
           <dt>18 Oct</dt>
@@ -285,19 +283,6 @@
 
       <script type="text/javascript">
         const itinerary = document.querySelector(".itinerary");
-
-        itinerary.addEventListener("click", (event) => {
-          if (
-            event.target.tagName === "A" &&
-            event.target.href
-          ) {
-            event.preventDefault();
-            fns.loadHTML(
-              event.target.href,
-              event.target.closest("dd")
-            );
-          }
-        });
       </script>
 
       <section class="entourage">

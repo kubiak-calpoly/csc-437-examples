@@ -5,9 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="68014ec2-4fb4-41d0-8091-3a079a0424c5" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/packages/proto/public/dom/demo.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/packages/proto/public/dom/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/packages/proto/public/dom/parser.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/proto/public/events.html" beforeDir="false" afterPath="$PROJECT_DIR$/packages/proto/public/events.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,7 +49,7 @@
     "DefaultHtmlFileTemplate": "HTML File",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "mod-3",
+    "git-widget-placeholder": "live-4.3",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
@@ -119,6 +118,7 @@
       <workItem from="1745012083871" duration="4443000" />
       <workItem from="1745259957588" duration="13903000" />
       <workItem from="1745432595613" duration="1170000" />
+      <workItem from="1745608205553" duration="460000" />
     </task>
     <servers />
   </component>
