@@ -35,6 +35,7 @@ export class DestinationElement extends LitElement {
       }
       header {
         aspect-ratio: 16/9;
+        padding: var(--size-spacing-medium);
         background-size: cover;
         grid-column: header / span 5;
         color: var(--color-text-inverted);

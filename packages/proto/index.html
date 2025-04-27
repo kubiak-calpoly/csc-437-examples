@@ -38,7 +38,7 @@
       import { HeaderElement } from "./src/header.ts";
       import { TransportationElement,
         SegmentElement,
-        PlaceAndTimeElement
+        EndPointElement
       } from "./src/transportation.ts";
       import { DestinationElement } from "./src/destination.ts";
 
@@ -47,7 +47,7 @@
         "blz-header": HeaderElement,
         "blz-transportation": TransportationElement,
         "transportation-segment": SegmentElement,
-        "place-and-time": PlaceAndTimeElement
+        "end-point": EndPointElement
       });
 
       HeaderElement.initializeOnce();
@@ -72,42 +72,42 @@
               <transportation-segment>
                 <span slot="carrier">United</span>
                 <span slot="number">UA926</span>
-                <place-and-time
+                <end-point
                   slot="departure"
                   localtime="2024-10-13 19:05:00"
                   tz="-0800"
                   code="SFO"
                 >
                   San Francisco
-                </place-and-time>
-                <place-and-time
+                </end-point>
+                <end-point
                    slot="arrival"
                    localtime="2024-10-14 14:55:00"
                    tz="+0100"
                    code="FRA"
                 >
                    Frankfurt
-                </place-and-time>
+                </end-point>
               </transportation-segment>
             <transportation-segment>
               <span slot="carrier">Lufthansa</span>
               <span slot="number">LH330</span>
-              <place-and-time
+              <end-point
                 slot="departure"
                 localtime="2024-10-14 17:15:00"
                 tz="+0100"
                 code="FRA"
               >
                 Frankfurt
-              </place-and-time>
-              <place-and-time
+              </end-point>
+              <end-point
                 slot="arrival"
                 localtime="2024-10-14 18:30:00"
                 tz="+0100"
                 code="VCE"
               >
                 Venice
-              </place-and-time>
+              </end-point>
             </transportation-segment>
           </blz-transportation>
           </dd>
@@ -132,19 +132,19 @@
               <transportation-segment>
                 <span slot="carrier">Frecciarossa</span>
                 <span slot="number">9407</span>
-                <place-and-time slot="departure"
+                <end-point slot="departure"
                   localtime="2024-10-18 09:25:00"
                   tz="+0100"
                 >
                   Venezia S. Lucia
-                </place-and-time>
-                <place-and-time
+                </end-point>
+                <end-point
                   slot="arrival"
                   localtime="2024-10-18 11:30:00"
                   tz="+0100"
                 >
                   Firenze S.M.N.
-                </place-and-time>
+                </end-point>
               </transportation-segment>
             </blz-transportation>
           </dd>
@@ -168,20 +168,20 @@
               <transportation-segment>
                 <span slot="carrier">Frecciarossa</span>
                 <span slot="number">9435</span>
-                <place-and-time
+                <end-point
                   slot="departure"
                   localtime="2024-10-21 15:38:00"
                   tz="+0100"
                 >
                   Firenze S.M.N.
-                </place-and-time>
-                <place-and-time
+                </end-point>
+                <end-point
                   slot="arrival"
                   localtime="2024-10-21 17:10:00"
                   tz="+0100"
                 >
                   Roma Termini
-                </place-and-time>
+                </end-point>
               </transportation-segment>
             </blz-transportation>
           </dd>
@@ -206,42 +206,42 @@
               <transportation-segment>
                 <span slot="carrier">Lufthansa</span>
                 <span slot="number">LH233</span>
-                <place-and-time
+                <end-point
                   slot="departure"
                   localtime="2024-10-25 13:25:00"
                   tz="+0100"
                   code="FCO"
                 >
                   Rome
-                </place-and-time>
-                <place-and-time
+                </end-point>
+                <end-point
                   slot="arrival"
                   localtime="2024-10-25 15:20:00"
                   tz="+0100"
                   code="FRA"
                 >
                   Frankfurt
-                </place-and-time>
+                </end-point>
               </transportation-segment>
               <transportation-segment>
                 <span slot="carrier">United</span>
                 <span slot="number">UA927</span>
-                <place-and-time
+                <end-point
                   slot="departure"
                   localtime="2024-10-25 17:25:00"
                   tz="+0100"
                   code="FRA"
                 >
                   Frankfurt
-                </place-and-time>
-                <place-and-time
+                </end-point>
+                <end-point
                   slot="arrival"
                   localtime="2024-10-25 19:45:00"
                   tz="-0800"
                   code="SFO"
                 >
                   San Francisco
-                </place-and-time>
+                </end-point>
               </transportation-segment>
             </blz-transportation>
           </dd>

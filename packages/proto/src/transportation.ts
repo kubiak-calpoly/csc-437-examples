@@ -106,6 +106,10 @@ export class SegmentElement extends LitElement {
         grid-column: span 4 / -1;
         grid-template-columns: subgrid;
       }
+      dt {
+        font-family: var(--font-family-display);
+        font-weight: var(--font-weight-bold);
+      }
       dd {
         display: contents;
       }
@@ -113,7 +117,7 @@ export class SegmentElement extends LitElement {
   ];
 }
 
-export class PlaceAndTimeElement extends LitElement {
+export class EndPointElement extends LitElement {
   @property()
   localtime: string = "1970-01-01";
 

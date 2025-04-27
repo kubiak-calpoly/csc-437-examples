@@ -1,27 +1,6 @@
-.itinerary {
-  display: grid;
-  grid-template-columns: [start] auto [header] 3fr [highlights] 2fr [end];
-  gap: var(--size-spacing-medium);
-  align-items: baseline;
-  margin: var(--size-spacing-small);
-
-  > dl {
-    display: contents;
-    > dt {
-      grid-column: start;
-    }
-
-    > dd {
-      grid-column: header / -1;
-    }
-  }
-}
-
 .page > .itinerary {
-  grid-area: itn;
-  grid-template-columns: subgrid [start] [header] [] [] [highlights] [] [end];
-}
+  --grid-area: itn;
 
-.itinerary dd {
   display: contents;
 }
+
