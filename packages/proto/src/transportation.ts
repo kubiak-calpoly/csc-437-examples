@@ -1,32 +1,73 @@
-import {html, css, LitElement} from 'lit';
-import {property} from "lit/decorators.js"
+import { html, css, LitElement } from "lit";
+import { property } from "lit/decorators.js";
+import reset from "./styles/reset.css.ts";
+import headings from "./styles/headings.css.ts";
+import icon from "./styles/icon.css.ts";
+
+type TransportationMode = "air" | "rail" | "unknown";
 
 export class TransportationElement extends LitElement {
   @property()
-  mode: string = "default";
+  mode: TransportationMode = "unknown";
 
-  render() {
+  override render() {
     const modeToIcon = {
-      "air": "icon-airplane",
-      "rail": "icon-train",
-    }
+      air: "icon-airplane",
+      rail: "icon-train",
+      unknown: "icon-unknown"
+    };
+    const icon: string = modeToIcon[this.mode];
+
     return html`
       <h3>
         <slot name="from">FCO</slot>
         <svg class="icon">
           <use
-            href="/icons/transportation.svg#icon-airplane" />
+            href="/icons/transportation.svg#${icon}" />
         </svg>
         <slot name="to">SFO</slot>
-        <slot name="via">FRA</slot>
+        <slot name="via"></slot>
       </h3>
       <slot></slot>
     `;
   }
+
+  static styles = [
+    reset.styles,
+    icon.styles,
+    headings.styles,
+    css`
+    :host {
+      display: contents;
+    }
+    h3 {
+      color: var(--color-accent);
+
+    grid-column: header / -1;
+    font-weight: var(--font-weight-bold);
+
+    slot[name="from"]::after {
+      content: " →";
+    }
+    slot[name="to"]::before {
+      content: "→ ";
+    }
+    slot[name="via"]:has-slotted {
+      font-style: italic;
+      &::before {
+        content: "(via ";
+      }
+      &::after {
+        content: ")";
+      }
+    }
+  }
+    `
+  ];
 }
 
 export class SegmentElement extends LitElement {
-  render() {
+  override render() {
     return html`
       <details>
         <summary>
@@ -40,12 +81,36 @@ export class SegmentElement extends LitElement {
           </dd>
           <dt>Arrive</dt>
           <dd>
-            <slot name="arrival">Place and Time </slot>
+            <slot name="arrival">Place and Time</slot>
           </dd>
         </dl>
       </details>
-    `
+    `;
   }
+
+  static styles = [
+    reset.styles,
+    css`
+      :host {
+        display: contents;
+      }
+      details {
+        display: contents;
+
+        summary {
+          grid-column: header / span 2;
+        }
+      }
+      dl {
+        display: grid;
+        grid-column: span 4 / -1;
+        grid-template-columns: subgrid;
+      }
+      dd {
+        display: contents;
+      }
+    `
+  ];
 }
 
 export class PlaceAndTimeElement extends LitElement {
@@ -58,18 +123,46 @@ export class PlaceAndTimeElement extends LitElement {
   @property()
   code?: string;
 
-  render() {
+  override render() {
     const time = new Date(this.localtime);
     const hours = time.getHours();
     const minutes = time.getMinutes();
-    const ampm: string = hours >= 12 ? "AM" : "PM";
-    const formattedTime: string =
-      `${hours % 12 || 12}:${minutes} ${ampm}`;
+    const ampm: string = hours < 12 ? "AM" : "PM";
+    const hr: string = (hours > 12 ? hours-12 : (hours || 12))
+      .toString().padStart(2, "0");
+    const min: string = minutes.toString().padStart(2, "0");
+    const formattedTime = html`
+      <span>${hr}:${min} ${ampm}</span>
+      <small>${this.tz}</small>
+    `;
+    const code = this.code ?
+      html`<span>(${this.code})</span>` : "";
+
     return html`
-      <slot></slot>
+      <span class="place">
+        <slot></slot>${code}
+      </span>
       <time datetime="${this.localtime}${this.tz}">
         ${formattedTime}
       </time>
     `;
   }
+
+  static styles = [
+    reset.styles,
+    css`
+    :host {
+      display: contents;
+    }
+    .place {
+      grid-column-end: span 2;
+    }
+    time {
+      grid-column-end: -1;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+    `
+  ]
 }

@@ -1,5 +1,3 @@
-@import "timings.css";
-
 .itinerary {
   display: grid;
   grid-template-columns: [start] auto [header] 3fr [highlights] 2fr [end];
@@ -61,38 +59,4 @@
 
 .itinerary dd.transportation {
   display: contents;
-
-  details {
-    display: contents;
-
-    summary {
-      grid-column: header / span 2;
-    }
-  }
-
-  .timings {
-    grid-column: span 4 / -1;
-    grid-template-columns: subgrid;
-  }
-
-  h3 {
-    grid-column: header / -1;
-    font-weight: var(--font-weight-bold);
-
-    span:first-child::after {
-      content: " →";
-    }
-    .icon + span::before {
-      content: "→ ";
-    }
-    span.via {
-      font-style: italic;
-      &::before {
-        content: "(via ";
-      }
-      &::after {
-        content: ")";
-      }
-    }
-  }
 }

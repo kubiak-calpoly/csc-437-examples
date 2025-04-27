@@ -1,7 +1,7 @@
 import { css, html, LitElement } from "lit";
-import reset from "./styles/reset.css.js";
-import icon from "./styles/icon.css.js";
-import headings from "./styles/headings.css.js";
+import reset from "./styles/reset.css.ts";
+import icon from "./styles/icon.css.ts";
+import headings from "./styles/headings.css.ts";
 
 export class AccommodationElement extends LitElement {
   render() {

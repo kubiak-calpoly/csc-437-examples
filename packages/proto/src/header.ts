@@ -4,8 +4,8 @@ import {
   Events
 } from "@calpoly/mustang";
 import { css, html, LitElement } from "lit";
-import reset from "./styles/reset.css.js";
-import headings from "./styles/headings.css.js";
+import reset from "./styles/reset.css.ts";
+import headings from "./styles/headings.css.ts";
 
 export class HeaderElement extends LitElement {
   static uses = define({
@@ -25,9 +25,9 @@ export class HeaderElement extends LitElement {
               <li>Hello, traveler</li>
               <li>
                 <label class="dark-mode-switch" 
-                  @change=${(event) => Events.relay(
+                  @change=${(event: Event) => Events.relay(
                     event, "dark-mode", {
-                    checked: event.target.checked
+                    checked: (event.target as HTMLInputElement)?.checked
                   })
                 }
                 >
@@ -72,12 +72,13 @@ export class HeaderElement extends LitElement {
   `];
 
   static initializeOnce() {
-    function toggleDarkMode(page, checked) {
-      page.classList.toggle("dark-mode", checked);
+    function toggleDarkMode(page: HTMLElement | null, checked: any) {
+      page?.classList.toggle("dark-mode", checked);
     }
 
-    document.body.addEventListener("dark-mode", (event: CustomEvent) =>
-      toggleDarkMode(event.currentTarget, event.detail.checked)
+    document.body.addEventListener("dark-mode", (event: Event) =>
+      toggleDarkMode(event.currentTarget as HTMLElement,
+        (event as CustomEvent).detail.checked)
     );
   }
 }

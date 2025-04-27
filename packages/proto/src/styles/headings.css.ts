@@ -23,7 +23,6 @@ const styles = css`
   h3 {
     font-size: var(--size-type-large);
     font-weight: var(--font-weight-normal);
-    font-style: oblique;
   }
   h4 {
     font-size: var(--size-type-mlarge);

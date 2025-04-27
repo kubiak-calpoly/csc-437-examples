@@ -91,7 +91,7 @@
                    tz="+0100"
                    code="FRA"
                 >
-                   Frankfurt (FRA)
+                   Frankfurt
                 </place-and-time>
               </transportation-segment>
             <transportation-segment>
@@ -132,32 +132,28 @@
 
           <dt>18 Oct</dt>
           <dd class="transportation">
-            <h3>
-              <span>Venice</span>
-              <svg class="icon">
-                <use
-                  xlink:href="/icons/transportation.svg#icon-train" /></svg
-              ><span>Florence</span>
-            </h3>
-            <details>
-              <summary>9407 Frecciarossa</summary>
-              <dl class="timings">
-                <dt>Depart</dt>
-                <dd>Venezia S. Lucia</dd>
-                <dd>
-                  <time datetime="2024-10-18 09:25:00+0100">
-                    9:25 AM
-                  </time>
-                </dd>
-                <dt>Arrive</dt>
-                <dd>Firenze S.M.N.</dd>
-                <dd>
-                  <time datetime="2024-10-18 11:30:00+0100">
-                    11:30 AM
-                  </time>
-                </dd>
-              </dl>
-            </details>
+            <blz-transportation mode="rail">
+              <span slot="from">Venice</span>
+              <span slot="to">Florence</span>
+
+              <transportation-segment>
+                <span slot="carrier">Frecciarossa</span>
+                <span slot="number">9407</span>
+                <place-and-time slot="departure"
+                  localtime="2024-10-18 09:25:00"
+                  tz="+0100"
+                >
+                  Venezia S. Lucia
+                </place-and-time>
+                <place-and-time
+                  slot="arrival"
+                  localtime="2024-10-18 11:30:00"
+                  tz="+0100"
+                >
+                  Firenze S.M.N.
+                </place-and-time>
+              </transportation-segment>
+            </blz-transportation>
           </dd>
 
           <dt>18 Oct - 21 Oct</dt>
@@ -167,7 +163,7 @@
                 background-image: url(/images/preview/Firenze_-_Vista_dal_Piazzale_Michelangelo.jpg);
               ">
               <h3>
-                <a href="public/destination/florence.html">Florence</a>
+                <a href="destination/florence.html">Florence</a>
               </h3>
               <p>3 nights</p>
             </header>
@@ -175,33 +171,28 @@
 
           <dt>21 Oct</dt>
           <dd class="transportation">
-            <h3>
-              <span>Florence</span>
-              <svg class="icon">
-                <use
-                  xlink:href="/icons/transportation.svg#icon-train" />
-              </svg>
-              <span>Rome</span>
-            </h3>
-            <details>
-              <summary>9435 Frecciarossa</summary>
-              <dl class="timings">
-                <dt>Depart</dt>
-                <dd>Firenze S.M.N.</dd>
-                <dd>
-                  <time datetime="2024-10-21 15:38:00+0100">
-                    3:38 PM
-                  </time>
-                </dd>
-                <dt>Arrive</dt>
-                <dd>Roma Termini</dd>
-                <dd>
-                  <time datetime="2024-10-21 17:10:00+0100">
-                    5:10 PM
-                  </time>
-                </dd>
-              </dl>
-            </details>
+            <blz-transportation mode="rail">
+              <span slot="from">Florence</span>
+              <span slot="to">Rome</span>
+              <transportation-segment>
+                <span slot="carrier">Frecciarossa</span>
+                <span slot="number">9435</span>
+                <place-and-time
+                  slot="departure"
+                  localtime="2024-10-21 15:38:00"
+                  tz="+0100"
+                >
+                  Firenze S.M.N.
+                </place-and-time>
+                <place-and-time
+                  slot="arrival"
+                  localtime="2024-10-21 17:10:00"
+                  tz="+0100"
+                >
+                  Roma Termini
+                </place-and-time>
+              </transportation-segment>
+            </blz-transportation>
           </dd>
 
           <dt>21 Oct - 25 Oct</dt>
@@ -219,53 +210,51 @@
 
           <dt>25 Oct</dt>
           <dd class="transportation">
-            <h3>
-              <span>FCO</span>
-              <svg class="icon">
-                <use
-                  xlink:href="/icons/transportation.svg#icon-airplane" />
-              </svg>
-              <span>SFO</span>
-              <span class="via">FRA</span>
-            </h3>
-            <details>
-              <summary>Lufthansa LH233</summary>
-              <dl class="timings">
-                <dt>Depart</dt>
-                <dd>Rome (FCO)</dd>
-                <dd>
-                  <time datetime="2024-10-25 13:25:00+0100">
-                    1:25 PM
-                  </time>
-                </dd>
-                <dt>Arrive</dt>
-                <dd>Frankfurt (FRA)</dd>
-                <dd>
-                  <time datetime="2024-10-25 15:20:00+0100">
-                    3:20 PM
-                  </time>
-                </dd>
-              </dl>
-            </details>
-            <details>
-              <summary>United UA927</summary>
-              <dl class="timings">
-                <dt>Depart</dt>
-                <dd>Frankfurt (FRA)</dd>
-                <dd>
-                  <time datetime="2024-10-25 17:25:00-0800">
-                    5:25 PM
-                  </time>
-                </dd>
-                <dt>Arrive</dt>
-                <dd>San Francisco (SFO)</dd>
-                <dd>
-                  <time datetime="2024-10-25 9:45:00+0100">
-                    7:45 PM
-                  </time>
-                </dd>
-              </dl>
-            </details>
+            <blz-transportation mode="air">
+              <span slot="from">FCO</span>
+              <span slot="to">SFO</span>
+              <span slot="via">FRA</span>
+              <transportation-segment>
+                <span slot="carrier">Lufthansa</span>
+                <span slot="number">LH233</span>
+                <place-and-time
+                  slot="departure"
+                  localtime="2024-10-25 13:25:00"
+                  tz="+0100"
+                  code="FCO"
+                >
+                  Rome
+                </place-and-time>
+                <place-and-time
+                  slot="arrival"
+                  localtime="2024-10-25 15:20:00"
+                  tz="+0100"
+                  code="FRA"
+                >
+                  Frankfurt
+                </place-and-time>
+              </transportation-segment>
+              <transportation-segment>
+                <span slot="carrier">United</span>
+                <span slot="number">UA927</span>
+                <place-and-time
+                  slot="departure"
+                  localtime="2024-10-25 17:25:00"
+                  tz="+0100"
+                  code="FRA"
+                >
+                  Frankfurt
+                </place-and-time>
+                <place-and-time
+                  slot="arrival"
+                  localtime="2024-10-25 19:45:00"
+                  tz="-0800"
+                  code="SFO"
+                >
+                  San Francisco
+                </place-and-time>
+              </transportation-segment>
+            </blz-transportation>
           </dd>
         </dl>
       </section>
