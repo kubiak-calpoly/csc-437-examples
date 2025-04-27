@@ -1,4 +1,4 @@
-import { css } from "@calpoly/mustang";
+import { css } from "lit";
 
 const styles = css`
   svg.icon {
