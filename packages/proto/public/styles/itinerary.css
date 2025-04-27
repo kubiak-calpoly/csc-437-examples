@@ -22,41 +22,6 @@
   grid-template-columns: subgrid [start] [header] [] [] [highlights] [] [end];
 }
 
-.itinerary dd.destination {
-  display: contents;
-
-  header {
-    aspect-ratio: 16/9;
-    background-size: cover;
-    grid-column: header / span 5;
-    color: var(--color-text-inverted);
-    text-align: right;
-    text-shadow: var(--shadow-medium);
-
-    h3 {
-      color: currentColor;
-    }
-
-    a[href] {
-      color: currentColor;
-    }
-  }
-
-  ul {
-    display: grid;
-    grid-template-columns: subgrid;
-    gap: var(--size-spacing-medium);
-    grid-column: span 2 / -1;
-    list-style: none;
-    padding: 0;
-    line-height: var(--font-line-height-compact);
-
-    > * {
-      grid-column: 1 / -1;
-    }
-  }
-}
-
-.itinerary dd.transportation {
+.itinerary dd {
   display: contents;
 }

@@ -47,8 +47,10 @@
         SegmentElement,
         PlaceAndTimeElement
       } from "./src/transportation.ts";
+      import { DestinationElement } from "./src/destination.ts";
 
       define({
+        "blz-destination": DestinationElement,
         "blz-header": HeaderElement,
         "blz-transportation": TransportationElement,
         "transportation-segment": SegmentElement,
@@ -69,7 +71,7 @@
         <h2>Itinerary</h2>
         <dl>
           <dt>13 Oct - 14 Oct</dt>
-          <dd class="transportation">
+          <dd>
             <blz-transportation mode="air">
               <span slot="from">SFO</span>
               <span slot="to">VCE</span>
@@ -118,20 +120,18 @@
           </dd>
 
           <dt>14 Oct - 18 Oct</dt>
-          <dd class="destination">
-            <header
-              style="
-                background-image: url(/images/preview/Canal_Grande_Chiesa_della_Salute_e_Dogana_dal_ponte_dell_Accademia.jpg);
-              ">
-              <h3>
-                <a href="/destination/venice">Venice</a>
-              </h3>
-              <p>4 nights</p>
-            </header>
+          <dd>
+            <blz-destination
+              img-src="/images/preview/Canal_Grande_Chiesa_della_Salute_e_Dogana_dal_ponte_dell_Accademia.jpg"
+              href="/destination/venice"
+              nights="4"
+            >
+              Venice
+            </blz-destination>
           </dd>
 
           <dt>18 Oct</dt>
-          <dd class="transportation">
+          <dd>
             <blz-transportation mode="rail">
               <span slot="from">Venice</span>
               <span slot="to">Florence</span>
@@ -157,20 +157,18 @@
           </dd>
 
           <dt>18 Oct - 21 Oct</dt>
-          <dd class="destination">
-            <header
-              style="
-                background-image: url(/images/preview/Firenze_-_Vista_dal_Piazzale_Michelangelo.jpg);
-              ">
-              <h3>
-                <a href="destination/florence.html">Florence</a>
-              </h3>
-              <p>3 nights</p>
-            </header>
+          <dd>
+            <blz-destination
+              img-src="/images/preview/Firenze_-_Vista_dal_Piazzale_Michelangelo.jpg"
+              href="/destination/florence.html"
+              nights="3"
+            >
+              Florence
+            </blz-destination>
           </dd>
 
           <dt>21 Oct</dt>
-          <dd class="transportation">
+          <dd>
             <blz-transportation mode="rail">
               <span slot="from">Florence</span>
               <span slot="to">Rome</span>
@@ -196,20 +194,18 @@
           </dd>
 
           <dt>21 Oct - 25 Oct</dt>
-          <dd class="destination">
-            <header
-              style="
-                background-image: url(/images/preview/Colosseum_in_Rome,_Italy_-_April_2007.jpg);
-              ">
-              <h3>
-                <a href="public/destination/rome.html">Rome</a>
-              </h3>
-              <p>4 nights</p>
-            </header>
+          <dd>
+            <blz-destination
+              img-src="/images/preview/Colosseum_in_Rome,_Italy_-_April_2007.jpg"
+              href="/destination/rome.html"
+              nights="4"
+            >
+              Rome
+            </blz-destination>
           </dd>
 
           <dt>25 Oct</dt>
-          <dd class="transportation">
+          <dd>
             <blz-transportation mode="air">
               <span slot="from">FCO</span>
               <span slot="to">SFO</span>
