@@ -1,14 +1,7 @@
 import express, { Request, Response } from "express";
-import {
-  DestinationPage,
-  TravelerPage,
-  renderPage
-} from "./pages/index";
 import tours from "./routes/tours";
 import travelers from "./routes/travelers";
 import { connect } from "./services/mongo";
-import Tours from "./services/tour-svc";
-import Travelers from "./services/traveler-svc";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -37,45 +30,6 @@ app.get("/hello", (_: Request, res: Response) => {
     `
   );
 });
-
-app.get("/traveler/:userid", (req: Request, res: Response) => {
-  const { userid } = req.params;
-
-  Travelers.get(userid).then((data) => {
-    const page = new TravelerPage(data);
-    res.set("Content-Type", "text/html").send(page.render());
-  });
-});
-
-app.get(
-  "/destination/:tourId/:destIndex",
-  (req: Request, res: Response) => {
-    const { tourId, destIndex } = req.params;
-    const di = parseInt(destIndex);
-
-    Tours.get(tourId)
-      .then((tour) => {
-        const dest = tour.destinations[di];
-
-        // reshape destination and tour data for page
-        return {
-          ...dest,
-          tour: {
-            name: tour.name
-          },
-          inbound: tour.transportation[di],
-          outbound: tour.transportation[di + 1]
-        };
-      })
-      .then((data) => {
-        const page = new DestinationPage(data);
-
-        res
-          .set("Content-Type", "text/html")
-          .send(page.render());
-      });
-  }
-);
 
 // Start the server
 app.listen(port, () => {

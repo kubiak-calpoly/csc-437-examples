@@ -22,12 +22,9 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 var import_express = __toESM(require("express"));
-var import_pages = require("./pages/index");
 var import_tours = __toESM(require("./routes/tours"));
 var import_travelers = __toESM(require("./routes/travelers"));
 var import_mongo = require("./services/mongo");
-var import_tour_svc = __toESM(require("./services/tour-svc"));
-var import_traveler_svc = __toESM(require("./services/traveler-svc"));
 const app = (0, import_express.default)();
 const port = process.env.PORT || 3e3;
 (0, import_mongo.connect)("blazing");
@@ -45,34 +42,6 @@ app.get("/hello", (_, res) => {
     `
   );
 });
-app.get("/traveler/:userid", (req, res) => {
-  const { userid } = req.params;
-  import_traveler_svc.default.get(userid).then((data) => {
-    const page = new import_pages.TravelerPage(data);
-    res.set("Content-Type", "text/html").send(page.render());
-  });
-});
-app.get(
-  "/destination/:tourId/:destIndex",
-  (req, res) => {
-    const { tourId, destIndex } = req.params;
-    const di = parseInt(destIndex);
-    import_tour_svc.default.get(tourId).then((tour) => {
-      const dest = tour.destinations[di];
-      return {
-        ...dest,
-        tour: {
-          name: tour.name
-        },
-        inbound: tour.transportation[di],
-        outbound: tour.transportation[di + 1]
-      };
-    }).then((data) => {
-      const page = new import_pages.DestinationPage(data);
-      res.set("Content-Type", "text/html").send(page.render());
-    });
-  }
-);
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
