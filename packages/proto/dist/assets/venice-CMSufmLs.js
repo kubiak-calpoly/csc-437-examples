@@ -1,4 +1,4 @@
-import{i as s,x as i,r as a,h as n,a as o,b as l,d as c,H as e}from"./icon.css-BXaNM7GT.js";const d=class d extends s{render(){return i`<section>
+import{i as s,x as i,r as a,h as n,a as o,d as l,H as e}from"./header-B9vVfjwr.js";import{i as m}from"./icon.css-Doj_KN8F.js";const d=class d extends s{render(){return i`<section>
         <h3>
           <svg class="icon">
             <use xlink:href="/icons/destination.svg#icon-hotel" />
@@ -32,7 +32,7 @@ import{i as s,x as i,r as a,h as n,a as o,b as l,d as c,H as e}from"./icon.css-B
           </dd>
         </dl>
       </section>
-    </template>`}};d.styles=[a.styles,n.styles,o.styles,l`
+    </template>`}};d.styles=[a.styles,n.styles,m.styles,o`
     :host {
       display: contents;
     }
@@ -62,4 +62,4 @@ import{i as s,x as i,r as a,h as n,a as o,b as l,d as c,H as e}from"./icon.css-B
       grid-column: dd / -1;
       justify-self: end;
     }
-  `];let t=d;c({"blz-accommodation":t,"blz-header":e});e.initializeOnce();
+  `];let t=d;l({"blz-accommodation":t,"blz-header":e});e.initializeOnce();

@@ -73,8 +73,14 @@ svg.icon {
 .page > * {
   display: grid;
   grid-template-columns: subgrid;
+  grid-template-areas: inherit;
+  gap: inherit;
 
   > h2 {
     grid-column: 1 / -1;
   }
+}
+
+.page > blz-header {
+  grid-column: 1 / -1;
 }
