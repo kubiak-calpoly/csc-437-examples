@@ -1,0 +1,6 @@
+.page > .itinerary {
+  --grid-area: itn;
+
+  display: contents;
+}
+
