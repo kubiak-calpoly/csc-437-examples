@@ -21,8 +21,10 @@ node_modules
 .env.production.local
 .env.local
 
-# Nova editor
+# IDEs
 .nova
+.zed
+.idea
 
 # @cre-ative/kram intermediate files
 kram_modules/

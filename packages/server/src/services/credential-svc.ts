@@ -28,10 +28,9 @@ const credentialModel = model<Credential>(
   credentialSchema
 );
 
-function verify(
-  username: string,
-  password: string
-): Promise<string> {
+function verify(username: string,password: string)
+  : Promise<string>
+{
   return credentialModel
     .find({ username })
     .then((found) => {
@@ -40,31 +39,24 @@ function verify(
       return found[0];
     })
     .then(
-      (credsOnFile) =>
-        new Promise<string>((resolve, reject) => {
-          if (credsOnFile)
-            bcrypt.compare(
-              password,
-              credsOnFile.hashedPassword,
-              (_, result) => {
-                if (!result)
-                  reject("Invalid username or password");
-                else resolve(credsOnFile.username);
-              }
-            );
-        })
+      (credsOnFile : Credential) =>
+        bcrypt.compare(
+          password,
+          credsOnFile.hashedPassword
+        )
+        .then((result: boolean) => {
+          if (!result)
+            throw("Invalid username or password");
+          return credsOnFile.username;
+        });
     );
 }
 
-function create(username: string, password: string) {
-  return new Promise<Credential>((resolve, reject) => {
-    if (!username || !password) {
-      reject("must provide username and password");
-    }
-    credentialModel
+function create(username: string, password: string): Promise<Credential> {
+    return credentialModel
       .find({ username })
       .then((found: Credential[]) => {
-        if (found.length) reject("username exists");
+        if (found.length) throw `Username exists: ${username}`
       })
       .then(() =>
         bcrypt
@@ -75,9 +67,7 @@ function create(username: string, password: string) {
               username,
               hashedPassword
             });
-            creds.save().then((created: Credential) => {
-              if (created) resolve(created);
-            });
+            return creds.save();
           })
       );
   });
