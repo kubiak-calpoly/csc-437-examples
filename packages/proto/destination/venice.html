@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com" />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,200;0,400;0,700;1,700&family=Merriweather:wght@400;700&display=swap"
+      rel="stylesheet" />
+    <link rel="stylesheet" href="/styles/reset.css" />
+    <link rel="stylesheet" href="/styles/tokens.css" />
+    <link rel="stylesheet" href="/styles/page.css" />
+    <link rel="stylesheet" href="/styles/destination.css" />
+    <style>
+      main.page {
+        --page-grids: 8;
+        grid-template-areas:
+          "hdr hdr img img img img img img"
+          "acc acc img img img img img img"
+          "-- -- img img img img img img"
+          "exc exc exc exc exc exc exc exc"
+          "ftr ftr ftr ftr ftr ftr ftr ftr";
+      }
+      @media screen and (max-width: 48rem) {
+        main.page {
+          --page-grids: 6;
+          grid-template-areas:
+            "hdr hdr acc acc acc acc"
+            "img img img img img img"
+            "exc exc exc exc exc exc";
+            "ftr ftr ftr ftr ftr ftr";
+        }
+      }
+    </style>
+    <script type="importmap">
+      {
+        "imports": {
+          "@calpoly/mustang": "https://unpkg.com/@calpoly/mustang"
+        }
+      }
+    </script>
+    <script type="module">
+      import { define } from "@calpoly/mustang";
+      import { AccommodationElement } from "/src/accommodation.ts";
+      import { HeaderElement } from "/src/header.ts";
+
+      define({
+        "blz-accommodation": AccommodationElement,
+        "blz-header": HeaderElement
+      });
+
+      HeaderElement.initializeOnce();
+    </script>
+  </head>
+  <body>
+    <blz-header>
+      <a href="../../index.html">&larr; Tour: 12 Days in Italy</a>
+    </blz-header>
+
+    <main class="page">
+      <section class="destination">
+        <header>
+          <h2>Venice</h2>
+          <p>4 nights</p>
+        </header>
+        <img
+          src="/images/full/Canal_Grande_Chiesa_della_Salute_e_Dogana_dal_ponte_dell_Accademia.jpg" />
+        <blz-accommodation>
+          <span slot="name">Locanda San Barnaba</span>
+          <time slot="check-in" datetime="2024-10-14"
+            >14 Oct</time
+          >
+          <time slot="check-out" datetime="2024-10-17"
+            >17 Oct</time
+          >
+          <span slot="room-type">2 Queen</span>
+          <span slot="persons">4</span>
+          <span slot="room-rate">190</span>
+          <span slot="currency">€</span>
+        </blz-accommodation>
+        <ul class="excursions">
+          <li>
+            <svg class="icon">
+              <use
+                xlink:href="/icons/destination.svg#icon-boat" />
+            </svg>
+            <span>Vaporetto trip to Murano</span>
+          </li>
+          <li>
+            <svg class="icon">
+              <use
+                xlink:href="/icons/destination.svg#icon-walk" />
+            </svg>
+            <span>Walking tour of Piazza San Marco</span>
+          </li>
+        </ul>
+        <footer>
+          <a
+            class="arrive flight"
+            href="../flight/outbound.html">
+            <svg class="icon">
+              <use
+                xlink:href="/icons/transportation.svg#icon-airplane" />
+            </svg>
+            <dl>
+              <dt>Arrive from SFO</dt>
+              <dd>Oct 14, 6:30PM</dd>
+              <dd>VCE</dd>
+            </dl>
+          </a>
+          <a class="depart train" href="./florence.html">
+            <svg class="icon">
+              <use
+                xlink:href="/icons/transportation.svg#icon-train" />
+            </svg>
+            <dl>
+              <dt>Depart for Florence</dt>
+              <dd>Oct 18, 9:25AM</dd>
+              <dd>Venezia S. Lucia</dd>
+            </dl>
+          </a>
+        </footer>
+      </section>
+    </main>
+  </body>
+</html>

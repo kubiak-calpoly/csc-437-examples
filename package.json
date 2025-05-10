@@ -22,5 +22,7 @@
   "workspaces": [
     "packages/*"
   ],
-  "dependencies": {}
+  "dependencies": {
+    "mongoose": "^8.14.1"
+  }
 }

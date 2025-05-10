@@ -105,7 +105,8 @@ function get(id) {
       path: "people"
     }
   }).then((doc) => {
-    return doc;
+    if (!doc) throw `No Tour for id: ${id}`;
+    return doc.toObject();
   }).catch((err) => {
     console.log("Not found!", err);
     throw `${id} Not Found`;

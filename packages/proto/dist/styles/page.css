@@ -1,0 +1,86 @@
+body {
+  font-family: var(--font-family-body);
+  background-color: var(--color-background-page);
+  color: var(--color-text);
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+dt,
+summary {
+  font-family: var(--font-family-display);
+  line-height: var(--font-line-height-display);
+}
+h1 {
+  font-size: var(--size-type-xxlarge);
+  font-style: oblique;
+  line-height: 1;
+  font-weight: var(--font-weight-bold);
+}
+h2 {
+  font-size: var(--size-type-xlarge);
+  font-weight: var(--font-weight-bold);
+}
+h3 {
+  font-size: var(--size-type-large);
+  font-weight: var(--font-weight-normal);
+}
+h4 {
+  font-size: var(--size-type-mlarge);
+  font-weight: var(--font-weight-bold);
+}
+h5 {
+  font-size: var(--size-type-body);
+  font-weight: var(--font-weight-bold);
+}
+h6 {
+  font-size: var(--size-type-body);
+  font-weight: var(--font-weight-normal);
+  font-style: italic;
+}
+dt {
+  font-weight: var(--size-type-body);
+}
+h3 {
+  color: var(--color-accent);
+}
+a {
+  color: var(--color-link);
+}
+svg.icon {
+  --size-icon: var(--size-icon-normal);
+
+  display: inline-block;
+  height: var(--size-icon);
+  width: var(--size-icon);
+  vertical-align: calc(0.5em - 0.5 * var(--size-icon));
+  fill: currentColor;
+}
+
+/* Responsive Page Grid */
+
+.page {
+  --page-grids: 12;
+
+  display: grid;
+  grid-template-columns: [start] repeat(var(--page-grids), 1fr) [end];
+  gap: var(--size-spacing-large) var(--size-spacing-medium);
+}
+
+.page > * {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-template-areas: inherit;
+  gap: inherit;
+
+  > h2 {
+    grid-column: 1 / -1;
+  }
+}
+
+.page > blz-header {
+  grid-column: 1 / -1;
+}
