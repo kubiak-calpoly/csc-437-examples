@@ -48,8 +48,8 @@ function verify(username: string,password: string)
           if (!result)
             throw("Invalid username or password");
           return credsOnFile.username;
-        });
-    );
+        })
+      );
 }
 
 function create(username: string, password: string): Promise<Credential> {
@@ -70,7 +70,6 @@ function create(username: string, password: string): Promise<Credential> {
             return creds.save();
           })
       );
-  });
 }
 
 export default { create, verify };
