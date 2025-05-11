@@ -1,4 +1,3 @@
-import { css } from "../css";
 import { originalTarget, relay } from "../event";
 import { html } from "../html";
 import { shadow } from "../shadow";
@@ -11,26 +10,22 @@ class InputArrayElement extends HTMLElement {
       </ul>
       <button class="add">
         <slot name="label-add">Add one</slot>
-        <style></style>
+        <style>
+          :host {
+            display: contents;
+          }
+          ul {
+            display: contents;
+          }
+          button.add {
+            grid-column: input / input-end;
+          }
+          ::slotted(label) {
+            display: contents;
+          }
+        </style>
       </button>
     </template>
-  `;
-
-  static styles = css`
-    :host {
-      display: grid;
-      grid-template-columns: subgrid;
-      grid-column: input / end;
-    }
-    ul {
-      display: contents;
-    }
-    button.add {
-      grid-column: input / input-end;
-    }
-    ::slotted(label) {
-      grid-column: 1 / -1;
-    }
   `;
 
   _array: Array<string> = [];
@@ -50,9 +45,7 @@ class InputArrayElement extends HTMLElement {
 
   constructor() {
     super();
-    shadow(this)
-      .template(InputArrayElement.template)
-      .styles(InputArrayElement.styles);
+    shadow(this).template(InputArrayElement.template);
 
     this.addEventListener("input-array:add", (event) => {
       event.stopPropagation();

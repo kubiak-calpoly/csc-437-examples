@@ -1,4 +1,4 @@
-import{i as s,x as i,r as a,h as n,a as o,d as l,H as e}from"./header-B9vVfjwr.js";import{i as m}from"./icon.css-Doj_KN8F.js";const d=class d extends s{render(){return i`<section>
+import{i as s,x as i,r as a,h as o,a as n,d as l}from"./state-DerlYqys.js";import{i as m}from"./icon.css-DFMstrbp.js";import{H as e}from"./header-DAM_I-nj.js";const d=class d extends s{render(){return i`<section>
         <h3>
           <svg class="icon">
             <use xlink:href="/icons/destination.svg#icon-hotel" />
@@ -32,7 +32,7 @@ import{i as s,x as i,r as a,h as n,a as o,d as l,H as e}from"./header-B9vVfjwr.j
           </dd>
         </dl>
       </section>
-    </template>`}};d.styles=[a.styles,n.styles,m.styles,o`
+    </template>`}};d.styles=[a.styles,o.styles,m.styles,n`
     :host {
       display: contents;
     }

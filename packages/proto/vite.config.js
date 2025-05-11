@@ -9,6 +9,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
+        login: resolve(__dirname, 'login.html'),
         venice: resolve(__dirname, 'destination/venice.html'),
         blaze: resolve(__dirname, 'profile/blaze.html')
       },

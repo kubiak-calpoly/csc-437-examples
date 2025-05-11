@@ -1,4 +1,4 @@
-import{i as g,x as m,r as h,h as u,a as y,d as v,H as c}from"./header-B9vVfjwr.js";import{n as f,r as b}from"./state-CmAgHQWl.js";var $=Object.defineProperty,p=(o,a,t,i)=>{for(var d=void 0,r=o.length-1,e;r>=0;r--)(e=o[r])&&(d=e(a,t,d)||d);return d&&$(a,t,d),d};const n=class n extends g{render(){const{userid:a,name:t,nickname:i,home:d,airports:r=[],avatar:e,color:l}=this.traveler||{};return m`
+import{i as g,x as m,r as h,h as u,a as y,n as v,b as f,d as b}from"./state-DerlYqys.js";import{H as c}from"./header-DAM_I-nj.js";var $=Object.defineProperty,p=(o,a,t,i)=>{for(var d=void 0,r=o.length-1,e;r>=0;r--)(e=o[r])&&(d=e(a,t,d)||d);return d&&$(a,t,d),d};const n=class n extends g{render(){const{userid:a,name:t,nickname:i,home:d,airports:r=[],avatar:e,color:l}=this.traveler||{};return m`
       <img src=${e} alt=${t} />
       <h1>${t}</h1>
       <dl>
@@ -66,4 +66,4 @@ import{i as g,x as m,r as h,h as u,a as y,d as v,H as c}from"./header-B9vVfjwr.j
     dd {
       grid-column: 3 / -1;
     }
-  `];let s=n;p([f()],s.prototype,"src");p([b()],s.prototype,"traveler");v({"blz-header":c,"profile-view":s});c.initializeOnce();
+  `];let s=n;p([v()],s.prototype,"src");p([f()],s.prototype,"traveler");b({"blz-header":c,"profile-view":s});c.initializeOnce();

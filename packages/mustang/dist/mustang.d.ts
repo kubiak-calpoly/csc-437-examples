@@ -97,6 +97,8 @@ declare const dispatch_2: (target: HTMLElement, ...msg: AuthMsg) => boolean;
 
 declare const dispatch_3: (target: HTMLElement, ...msg: HistoryMsg) => boolean;
 
+declare function dispatchCustom(target: EventTarget, customType: string, detail?: any): void;
+
 declare function dispatcher<Msg extends Base>(eventType?: string): (target: HTMLElement, ...msg: Msg) => boolean;
 
 declare namespace Dropdown {
@@ -130,6 +132,7 @@ declare type ElementDefinitions = {
 
 declare namespace Events {
     export {
+        dispatchCustom,
         relay,
         originalTarget
     }
@@ -150,7 +153,6 @@ export { Form }
 declare class FormElement extends HTMLElement {
     set init(x: FormValues);
     static template: DocumentFragment;
-    static styles: CSSStyleSheet;
     get form(): HTMLFormElement | null | undefined;
     _state: FormValues;
     constructor();
@@ -240,7 +242,6 @@ export { InputArray }
 
 declare class InputArrayElement extends HTMLElement {
     static template: DocumentFragment;
-    static styles: CSSStyleSheet;
     _array: Array<string>;
     get name(): string | null;
     get value(): string[];

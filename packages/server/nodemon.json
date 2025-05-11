@@ -5,7 +5,7 @@
   "exec": "npx etsc && node ./dist/index.js",
   "env": {
     "DEBUG": "express/*",
-    "STATIC": "../proto/public"
+    "STATIC": "../proto/dist"
   },
   "legacyWatch": true
 }

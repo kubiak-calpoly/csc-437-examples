@@ -369,19 +369,17 @@ const auth = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty
   headers: authHeaders,
   payload: tokenPayload
 }, Symbol.toStringTag, { value: "Module" }));
-function relay(event2, customType, detail) {
-  const relay2 = event2.target;
+function dispatchCustom(target, customType, detail) {
   const customEvent = new CustomEvent(customType, {
     bubbles: true,
     composed: true,
     detail
   });
-  console.log(
-    `Relaying event from ${event2.type}:`,
-    customEvent
-  );
-  relay2.dispatchEvent(customEvent);
-  event2.stopPropagation();
+  target.dispatchEvent(customEvent);
+}
+function relay(event2, customType, detail) {
+  const target = event2.target;
+  dispatchCustom(target, customType, detail);
 }
 function originalTarget(event2, selector = "*") {
   const path = event2.composedPath();
@@ -392,15 +390,10 @@ function originalTarget(event2, selector = "*") {
 }
 const event = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
+  dispatchCustom,
   originalTarget,
   relay
 }, Symbol.toStringTag, { value: "Module" }));
-function css(template, ...params) {
-  const cssString = template.map((s2, i2) => i2 ? [params[i2 - 1], s2] : [s2]).flat().join("");
-  let sheet = new CSSStyleSheet();
-  sheet.replaceSync(cssString);
-  return sheet;
-}
 const parser$1 = new DOMParser();
 function html(template, ...values) {
   const params = values.map(processParam);
@@ -442,8 +435,6 @@ function html(template, ...values) {
       case "symbol":
         return escapeHtml(v2.toString());
       case "object":
-        if (v2 instanceof Node || v2 instanceof DocumentFragment)
-          return v2;
         if (Array.isArray(v2)) {
           const frag = new DocumentFragment();
           const elements = v2.map(
@@ -452,6 +443,7 @@ function html(template, ...values) {
           frag.replaceChildren(...elements);
           return frag;
         }
+        if (v2 instanceof Node) return v2;
         return new Text(v2.toString());
       default:
         return new Comment(
@@ -483,7 +475,7 @@ let FormElement$1 = (_a = class extends HTMLElement {
   constructor() {
     super();
     this._state = {};
-    shadow(this).template(_a.template).styles(_a.styles);
+    shadow(this).template(_a.template);
     this.addEventListener("change", (event2) => {
       const target = event2.target;
       if (target) {
@@ -516,27 +508,24 @@ let FormElement$1 = (_a = class extends HTMLElement {
         </slot>
       </form>
       <slot name="delete"></slot>
-      <style></style>
+      <style>
+        form {
+          display: grid;
+          gap: var(--size-spacing-medium);
+          grid-template-columns: [start] 1fr [label] 1fr [input] 3fr 1fr [end];
+        }
+        ::slotted(label) {
+          display: grid;
+          grid-column: label / end;
+          grid-template-columns: subgrid;
+          gap: var(--size-spacing-medium);
+        }
+        button[type="submit"] {
+          grid-column: input;
+          justify-self: start;
+        }
+      </style>
     </template>
-  `, _a.styles = css`
-    form {
-      display: grid;
-      gap: var(--size-spacing-medium);
-      grid-column: 1/-1;
-      grid-template-columns:
-        subgrid
-        [start] [label] [input] [col2] [col3] [end];
-    }
-    ::slotted(label) {
-      display: grid;
-      grid-column: label / end;
-      grid-template-columns: subgrid;
-      gap: var(--size-spacing-medium);
-    }
-    button[type="submit"] {
-      grid-column: input;
-      justify-self: start;
-    }
   `, _a);
 function populateForm$1(json, formBody) {
   const entries = Object.entries(json);
@@ -683,7 +672,7 @@ class Observer {
           resolve(effect);
         }).catch(
           (err) => console.log(
-            `Observer ${this._contextLabel}: ${err}`,
+            `Observer ${this._contextLabel} failed to locate a provider`,
             err
           )
         );
@@ -2422,7 +2411,7 @@ const _InputArrayElement = class _InputArrayElement extends HTMLElement {
   constructor() {
     super();
     this._array = [];
-    shadow(this).template(_InputArrayElement.template).styles(_InputArrayElement.styles);
+    shadow(this).template(_InputArrayElement.template);
     this.addEventListener("input-array:add", (event2) => {
       event2.stopPropagation();
       this.append(renderItem("", this._array.length));
@@ -2484,25 +2473,22 @@ _InputArrayElement.template = html`
       </ul>
       <button class="add">
         <slot name="label-add">Add one</slot>
-        <style></style>
+        <style>
+          :host {
+            display: contents;
+          }
+          ul {
+            display: contents;
+          }
+          button.add {
+            grid-column: input / input-end;
+          }
+          ::slotted(label) {
+            display: contents;
+          }
+        </style>
       </button>
     </template>
-  `;
-_InputArrayElement.styles = css`
-    :host {
-      display: grid;
-      grid-template-columns: subgrid;
-      grid-column: input / end;
-    }
-    ul {
-      display: contents;
-    }
-    button.add {
-      grid-column: input / input-end;
-    }
-    ::slotted(label) {
-      grid-column: 1 / -1;
-    }
   `;
 let InputArrayElement = _InputArrayElement;
 function populateArray(array, container) {
@@ -2522,6 +2508,12 @@ const inputArray = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePr
   __proto__: null,
   Element: InputArrayElement
 }, Symbol.toStringTag, { value: "Module" }));
+function css(template, ...params) {
+  const cssString = template.map((s2, i2) => i2 ? [params[i2 - 1], s2] : [s2]).flat().join("");
+  let sheet = new CSSStyleSheet();
+  sheet.replaceSync(cssString);
+  return sheet;
+}
 function define(defns) {
   Object.entries(defns).map(([k2, v2]) => {
     if (!customElements.get(k2)) customElements.define(k2, v2);

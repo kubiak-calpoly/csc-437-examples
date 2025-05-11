@@ -1,16 +1,25 @@
 import {
   define,
+  Auth,
   Dropdown,
-  Events
+  Events,
+  Observer
 } from "@calpoly/mustang";
 import { css, html, LitElement } from "lit";
 import reset from "./styles/reset.css.ts";
 import headings from "./styles/headings.css.ts";
+import { state } from "lit/decorators.js";
 
 export class HeaderElement extends LitElement {
   static uses = define({
     "mu-dropdown": Dropdown.Element
   });
+
+  @state()
+  loggedIn = false;
+
+  @state()
+  userid?: string;
 
   render() {
     return html`
@@ -21,8 +30,10 @@ export class HeaderElement extends LitElement {
             <slot> Unnamed Tour</slot>
           </p>
           <mu-dropdown>
+            <a slot="actuator">
+              Hello, ${this.userid || "traveler"}
+            </a>
             <menu>
-              <li>Hello, traveler</li>
               <li>
                 <label class="dark-mode-switch" 
                   @change=${(event: Event) => Events.relay(
@@ -34,6 +45,12 @@ export class HeaderElement extends LitElement {
                 <input type="checkbox" />
                 Dark Mode
                 </label>
+              </li>
+              <li>
+                ${this.loggedIn ?
+                  this.renderSignOutButton() :
+                  this.renderSignInButton()
+                }
               </li>
             </menu>
           </mu-dropdown>
@@ -70,6 +87,44 @@ export class HeaderElement extends LitElement {
       align-items: end;
     }
   `];
+
+  renderSignOutButton() {
+    return html`
+      <button
+        @click=${(e: UIEvent) => {
+          Events.relay(e, "auth:message", ["auth/signout"])
+        }}
+      >
+        Sign Out
+      </button>
+    `;
+  }
+
+  renderSignInButton() {
+    return html`
+      <a href="/login.html">
+        Sign In…
+      </a>
+    `;
+  }
+
+  _authObserver = new Observer<Auth.Model>(this, "blazing:auth");
+
+  connectedCallback() {
+    super.connectedCallback();
+    this._authObserver.observe((auth: Auth.Model) => {
+      const { user } = auth;
+
+      if (user && user.authenticated ) {
+        this.loggedIn = true;
+        this.userid = user.username;
+      } else {
+        this.loggedIn = false;
+        this.userid = undefined;
+      }
+    });
+  }
+
 
   static initializeOnce() {
     function toggleDarkMode(page: HTMLElement | null, checked: any) {

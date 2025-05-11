@@ -1,61 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link
-      rel="preconnect"
-      href="https://fonts.googleapis.com" />
-    <link
-      rel="preconnect"
-      href="https://fonts.gstatic.com"
-      crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,200;0,400;0,700;1,700&family=Merriweather:wght@400;700&display=swap"
-      rel="stylesheet" />
-    <link rel="stylesheet" href="/styles/reset.css" />
-    <link rel="stylesheet" href="/styles/tokens.css" />
-    <link rel="stylesheet" href="/styles/page.css" />
-    <link rel="stylesheet" href="/styles/itinerary.css" />
-    <link rel="stylesheet" href="/styles/entourage.css" />
-    <style>
+<head>
+  <meta charset="utf-8" />
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com" />
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,200;0,400;0,700;1,700&family=Merriweather:wght@400;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="/styles/reset.css" />
+  <link rel="stylesheet" href="/styles/tokens.css" />
+  <link rel="stylesheet" href="/styles/page.css" />
+  <link rel="stylesheet" href="/styles/itinerary.css" />
+  <link rel="stylesheet" href="/styles/entourage.css" />
+  <style>
       main.page {
-        --page-grids: 8;
-        grid-template-areas:
+          --page-grids: 8;
+          grid-template-areas:
           "itn itn itn itn itn itn ent ent"
           "itn itn itn itn itn itn -   - ";
       }
+
       @media screen and (max-width: 48rem) {
-        main.page {
-          --page-grids: 6;
-          grid-template-areas:
+          main.page {
+              --page-grids: 6;
+              grid-template-areas:
             "itn itn itn itn itn itn"
             "ent ent ent ent ent ent";
-        }
+          }
       }
-    </style>
-    <script type="module" crossorigin src="/assets/main-C2cXDQau.js"></script>
-    <link rel="modulepreload" crossorigin href="/assets/header-B9vVfjwr.js">
-    <link rel="modulepreload" crossorigin href="/assets/state-CmAgHQWl.js">
-    <link rel="modulepreload" crossorigin href="/assets/icon.css-Doj_KN8F.js">
-  </head>
-  <body>
-    <blz-header>
-      12 days in
-      <a href="/guide/italy.html">Italy</a>
-    </blz-header>
+  </style>
+  <script type="module" crossorigin src="/assets/main-Vqx4gQbj.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/state-DerlYqys.js">
+  <link rel="modulepreload" crossorigin href="/assets/header-DAM_I-nj.js">
+  <link rel="modulepreload" crossorigin href="/assets/icon.css-DFMstrbp.js">
+</head>
+<body>
+<mu-auth provides="blazing:auth">
+  <blz-header>
+    12 days in
+    <a href="/guide/italy.html">Italy</a>
+  </blz-header>
 
-    <main class="page">
-      <blz-itinerary class="itinerary" src="/data/itinerary.json">
-      </blz-itinerary>
+  <main class="page">
+    <blz-itinerary class="itinerary" src="/data/itinerary.json">
+    </blz-itinerary>
 
-      <section class="entourage">
-        <h2>Entourage</h2>
-        <ul>
-          <li><a href="profile/blaze.html">Blaze Pasquale</a></li>
-          <li><a href="profile/izzy.html">Isabel Nootin</a></li>
-          <li><a href="/profile/mondy.html">Pi Mondrian</a></li>
-        </ul>
-      </section>
-    </main>
-  </body>
+    <section class="entourage">
+      <h2>Entourage</h2>
+      <ul>
+        <li><a href="profile/blaze.html">Blaze Pasquale</a></li>
+        <li><a href="profile/izzy.html">Isabel Nootin</a></li>
+        <li><a href="/profile/mondy.html">Pi Mondrian</a></li>
+      </ul>
+    </section>
+  </main>
+</mu-auth>
+</body>
 </html>
