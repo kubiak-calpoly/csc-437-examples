@@ -1,7 +1,7 @@
-import{i as b,O as y,x as o,r as k,h as w,a as z,b as _,n as v,d as O,c as x}from"./state-DerlYqys.js";import{H as f}from"./header-DAM_I-nj.js";var C=Object.defineProperty,c=(h,e,t,p)=>{for(var i=void 0,a=h.length-1,n;a>=0;a--)(n=h[a])&&(i=n(e,t,i)||i);return i&&C(e,t,i),i};const u=class u extends b{constructor(){super(...arguments),this.mode="view",this._authObserver=new y(this,"blazing:auth")}render(){const{userid:e,name:t,nickname:p,home:i,airports:a=[],avatar:n,color:m}=this.traveler||{},l=this.mode==="edit";function g(d,s=""){return l?o`<input 
+import{i as b,O as f,x as o,r as y,h as k,a as w,b as _,n as v}from"./state-DerlYqys.js";var z=Object.defineProperty,c=(h,e,t,p)=>{for(var r=void 0,s=h.length-1,n;s>=0;s--)(n=h[s])&&(r=n(e,t,r)||r);return r&&z(e,t,r),r};const u=class u extends b{constructor(){super(...arguments),this.mode="view",this._authObserver=new f(this,"blazing:auth")}render(){const{userid:e,name:t,nickname:p,home:r,airports:s=[],avatar:n,color:m}=this.traveler||{},l=this.mode==="edit";function g(d,i=""){return l?o`<input 
         id="${d}-input"
         name="${d}" 
-        value=${s}>`:s}function $(d,s){return l?o`<label for="${d}-input">${s}</label>`:s}return o`
+        value=${i}>`:i}function $(d,i){return l?o`<label for="${d}-input">${i}</label>`:i}return o`
       <p>${l?"":o`
         <button @click=${()=>{this.mode="edit"}}>
           Edit
@@ -16,9 +16,9 @@ import{i as b,O as y,x as o,r as k,h as w,a as z,b as _,n as v,d as O,c as x}fro
         <dt>${$("nickname","Nickname")}</dt>
         <dd>${g("nickname",p)}</dd>
         <dt>Home City</dt>
-        <dd>${i}</dd>
+        <dd>${r}</dd>
         <dt>Airports</dt>
-        <dd>${a.join(", ")}</dd>
+        <dd>${s.join(", ")}</dd>
         <dt>Favorite Color</dt>
         <dd>
           <slot name="color-swatch">
@@ -30,7 +30,7 @@ import{i as b,O as y,x as o,r as k,h as w,a as z,b as _,n as v,d as O,c as x}fro
         </dd>
       </dl>
       </section>
-      </template>`}connectedCallback(){super.connectedCallback(),this._authObserver.observe(e=>{this._user=e.user,this.src&&this.hydrate(this.src)})}get authorization(){return this._user&&this._user.authenticated?{Authorization:`Bearer ${this._user.token}`}:{}}hydrate(e){fetch(e,{headers:this.authorization}).then(t=>{if(t.status!==200)throw`Status: ${t.status}`;return t.json()}).then(t=>this.traveler=t).catch(t=>console.log(`Failed to render data ${e}:`,t))}};u.styles=[k.styles,w.styles,z`
+      </template>`}connectedCallback(){super.connectedCallback(),this._authObserver.observe(e=>{this._user=e.user,this.src&&this.hydrate(this.src)})}get authorization(){return this._user&&this._user.authenticated?{Authorization:`Bearer ${this._user.token}`}:{}}hydrate(e){fetch(e,{headers:this.authorization}).then(t=>{if(t.status!==200)throw`Status: ${t.status}`;return t.json()}).then(t=>this.traveler=t).catch(t=>console.log(`Failed to render data ${e}:`,t))}};u.styles=[y.styles,k.styles,w`
     :host {
       display: contents;
       grid-column: 2/-2;
@@ -75,4 +75,4 @@ import{i as b,O as y,x as o,r as k,h as w,a as z,b as _,n as v,d as O,c as x}fro
     dd {
       grid-column: 3 / -1;
     }
-  `];let r=u;c([v()],r.prototype,"src");c([_()],r.prototype,"traveler");c([v()],r.prototype,"mode");O({"blz-header":f,"mu-auth":x.Provider,"profile-view":r});f.initializeOnce();
+  `];let a=u;c([v()],a.prototype,"src");c([_()],a.prototype,"traveler");c([v()],a.prototype,"mode");export{a as P};
