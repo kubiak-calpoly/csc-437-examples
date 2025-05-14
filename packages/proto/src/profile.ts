@@ -3,6 +3,7 @@ import { property, state } from "lit/decorators.js";
 import { Traveler } from "./models/traveler.ts";
 import reset from "./styles/reset.css.js";
 import headings from "./styles/headings.css.js";
+import { Auth, Observer } from "@calpoly/mustang";
 
 export class ProfileElement extends LitElement {
   @property()
@@ -11,7 +12,10 @@ export class ProfileElement extends LitElement {
   @state()
   traveler?: Traveler;
 
-  render() {
+  @property()
+  mode = "view";
+
+  override render() {
     const {
       userid,
       name,
@@ -21,15 +25,35 @@ export class ProfileElement extends LitElement {
       avatar,
       color
     } = this.traveler || {};
+    const editing = this.mode === "edit";
+
+    function textInput(name: string, value: string = "") {
+      if (!editing) return value;
+      else return html`<input 
+        id="${name}-input"
+        name="${name}" 
+        value=${value}>`;
+    }
+
+    function inputLabel(name: string, label: string) {
+      if (!editing) return label;
+      else return html`<label for="${name}-input">${label}</label>`;
+    }
 
     return html`
+      <p>${!editing ? html`
+        <button @click=${() => {this.mode="edit"}}>
+          Edit
+        </button>
+        ` : ""}
+      </p>
       <img src=${avatar} alt=${name} />
-      <h1>${name}</h1>
+      <h1>${textInput('name', name)}</h1>
       <dl>
         <dt>Username</dt>
         <dd>${userid}</dd>
-        <dt>Nickname</dt>
-        <dd>${nickname}</dd>
+        <dt>${inputLabel('nickname', 'Nickname')}</dt>
+        <dd>${textInput('nickname', nickname)}</dd>
         <dt>Home City</dt>
         <dd>${home}</dd>
         <dt>Airports</dt>
@@ -98,18 +122,31 @@ export class ProfileElement extends LitElement {
     }
   `];
 
-  override attributeChangedCallback(
-    name: string,
-    oldValue: string,
-    newValue:string
-  ){
-    super.attributeChangedCallback(name, oldValue, newValue);
-    if (name === "src" && oldValue !== newValue && newValue)
-      this.hydrate(newValue);
+  _authObserver = new Observer<Auth.Model>(this, "blazing:auth");
+  _user? : Auth.User;
+
+  override connectedCallback() {
+    super.connectedCallback();
+    this._authObserver.observe((auth: Auth.Model) => {
+      this._user = auth.user;
+      if (this.src) this.hydrate(this.src);
+    });
+  }
+
+  get authorization(): { Authorization?: string } {
+    if (this._user && this._user.authenticated)
+      return {
+        Authorization:
+          `Bearer ${(this._user as Auth.AuthenticatedUser).token}`
+      };
+    else return {};
   }
 
   hydrate(url: string) {
-    fetch(url)
+    fetch(
+      url,
+      { headers: this.authorization }
+    )
       .then((res: Response) => {
         if (res.status !== 200) throw `Status: ${res.status}`;
         return res.json();

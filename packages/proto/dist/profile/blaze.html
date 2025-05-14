@@ -15,14 +15,16 @@
     <link rel="stylesheet" href="/styles/reset.css" />
     <link rel="stylesheet" href="/styles/tokens.css" />
     <link rel="stylesheet" href="/styles/page.css" />
-    <script type="module" crossorigin src="/assets/blaze-JQh9Qtfe.js"></script>
+    <script type="module" crossorigin src="/assets/blaze-4UvW0ZSf.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/state-DerlYqys.js">
     <link rel="modulepreload" crossorigin href="/assets/header-DAM_I-nj.js">
   </head>
   <body>
-    <blz-header> </blz-header>
+  <mu-auth provides="blazing:auth">
+    <blz-header></blz-header>
     <main class="page">
-      <profile-view src="/api/travelers/blaze"> </profile-view>
+      <profile-view src="/api/travelers/blaze"></profile-view>
     </main>
+  </mu-auth>
   </body>
 </html>

@@ -63,6 +63,8 @@ router.post("/register", (req, res) => {
   } else {
     import_credential_svc.default.create(username, password).then((creds) => generateAccessToken(creds.username)).then((token) => {
       res.status(201).send({ token });
+    }).catch((err) => {
+      res.status(409).send({ error: err.message });
     });
   }
 });

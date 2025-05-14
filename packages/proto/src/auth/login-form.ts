@@ -38,7 +38,7 @@ export class LoginFormElement extends LitElement {
           <button
             ?disabled=${!this.canSubmit}
             type="submit">
-            Login
+            <slot name="button-label">Login</slot>
           </button>
         </slot>
         <p class="error">${this.error}</p>
@@ -88,7 +88,7 @@ export class LoginFormElement extends LitElement {
         }
       )
         .then((res) => {
-          if (res.status !== 200)
+          if (res.status !== 200 && res.status !== 201)
             throw "Login failed";
           else return res.json();
         })
