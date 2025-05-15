@@ -60,9 +60,9 @@ export class ProfileElement extends LitElement {
           <slot name="color-swatch">
             <span
               class="swatch"
-              style="background: #${color}"></span>
+              style="background: ${color}"></span>
           </slot>
-          <slot name="color-name">#${color}</slot>
+          <slot name="color-name">${color}</slot>
         </dd>
       </dl>
       </section>
@@ -92,10 +92,11 @@ export class ProfileElement extends LitElement {
     }
 
     return html`
-      <mu-form>
-          <button slot="submit">
-            Save
-          </button>
+      <mu-form @mu-form:submit=${(e: CustomEvent) => {
+          if (this.src)
+            this.handleSubmit(this.src, e.detail as Traveler)
+          }         
+      }>
         <img src=${avatar} alt=${name} />
         <h1>${textInput("name", name)}</h1>
         <dl>
@@ -111,7 +112,7 @@ export class ProfileElement extends LitElement {
           </dd>
           <dt>${inputLabel("color", "Favorite Color")}</dt>
           <dd>
-            <input type="color" name="color" value="#${color}">
+            <input type="color" name="color" value="${color}">
           </dd>
         </dl>
       </mu-form>`;
@@ -207,6 +208,26 @@ export class ProfileElement extends LitElement {
       .catch((error) =>
         console.log(`Failed to render data ${url}:`, error)
       );
+  }
+
+  handleSubmit(src: string, traveler: Traveler) {
+    fetch( src, {
+      headers: {
+        "Content-Type": "application/json",
+        ...this.authorization
+      },
+      method: "PUT",
+      body: JSON.stringify(traveler)
+    })
+    .then(res => {
+      if (res.status !== 200) throw `Status: ${res.status}`;
+      else return res.json()
+    })
+    .then((json: unknown) => {
+      const traveler = json as Traveler;
+      this.traveler = traveler;
+      this.mode = "view";
+    })
   }
 }
 
