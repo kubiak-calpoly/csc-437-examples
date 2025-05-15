@@ -3,9 +3,15 @@ import { property, state } from "lit/decorators.js";
 import { Traveler } from "./models/traveler.ts";
 import reset from "./styles/reset.css.js";
 import headings from "./styles/headings.css.js";
-import { Auth, Observer } from "@calpoly/mustang";
+import {
+  define, Auth, Observer, Form
+} from "@calpoly/mustang";
 
 export class ProfileElement extends LitElement {
+  static uses = define({
+    "mu-form": Form.Element
+  });
+
   @property()
   src?: string;
 
@@ -16,6 +22,12 @@ export class ProfileElement extends LitElement {
   mode = "view";
 
   override render() {
+    return this.mode === "edit" ?
+      this.renderEditor() :
+      this.renderView();
+  }
+
+  renderView() {
     const {
       userid,
       name,
@@ -25,35 +37,20 @@ export class ProfileElement extends LitElement {
       avatar,
       color
     } = this.traveler || {};
-    const editing = this.mode === "edit";
-
-    function textInput(name: string, value: string = "") {
-      if (!editing) return value;
-      else return html`<input 
-        id="${name}-input"
-        name="${name}" 
-        value=${value}>`;
-    }
-
-    function inputLabel(name: string, label: string) {
-      if (!editing) return label;
-      else return html`<label for="${name}-input">${label}</label>`;
-    }
 
     return html`
-      <p>${!editing ? html`
-        <button @click=${() => {this.mode="edit"}}>
+        <button @click=${() => {
+          this.mode = "edit";
+        }}>
           Edit
         </button>
-        ` : ""}
-      </p>
       <img src=${avatar} alt=${name} />
-      <h1>${textInput('name', name)}</h1>
+      <h1>${name}</h1>
       <dl>
         <dt>Username</dt>
         <dd>${userid}</dd>
-        <dt>${inputLabel('nickname', 'Nickname')}</dt>
-        <dd>${textInput('nickname', nickname)}</dd>
+        <dt>Nickname</dt>
+        <dd>${nickname}</dd>
         <dt>Home City</dt>
         <dd>${home}</dd>
         <dt>Airports</dt>
@@ -70,6 +67,54 @@ export class ProfileElement extends LitElement {
       </dl>
       </section>
       </template>`;
+  }
+
+  renderEditor() {
+    const {
+      userid,
+      name,
+      nickname,
+      home,
+      airports = [],
+      avatar,
+      color
+    } = this.traveler || {};
+
+    function textInput(name: string, value: string = "") {
+      return html`<input
+        id="${name}-input"
+        name="${name}"
+        value=${value}>`;
+    }
+
+    function inputLabel(name: string, label: string) {
+      return html`<label for="${name}-input">${label}</label>`;
+    }
+
+    return html`
+      <mu-form>
+          <button slot="submit">
+            Save
+          </button>
+        <img src=${avatar} alt=${name} />
+        <h1>${textInput("name", name)}</h1>
+        <dl>
+          <dt>Username</dt>
+          <dd>${userid}</dd>
+          <dt>${inputLabel("nickname", "Nickname")}</dt>
+          <dd>${textInput("nickname", nickname)}</dd>
+          <dt>${inputLabel("home", "Home City")}</dt>
+          <dd>${textInput("home", home)}</dd>
+          <dt>${inputLabel("airports", "Airports")}</dt>
+          <dd>
+            ${textInput("airports", airports.join(", "))}
+          </dd>
+          <dt>${inputLabel("color", "Favorite Color")}</dt>
+          <dd>
+            <input type="color" name="color" value="#${color}">
+          </dd>
+        </dl>
+      </mu-form>`;
   }
 
   static styles = [
@@ -105,25 +150,30 @@ export class ProfileElement extends LitElement {
     }
     dl {
       display: grid;
-      grid-column: 1 / span 4;
+      grid-column: 1 / -1;
       grid-row: 5 / auto;
       grid-template-columns: subgrid;
-      gap: 0 var(--size-spacing-xlarge);
       align-items: baseline;
     }
     dt {
       grid-column: 1 / span 2;
-      justify-self: end;
       color: var(--color-accent);
       font-family: var(--font-family-display);
     }
     dd {
       grid-column: 3 / -1;
     }
+    mu-form {
+      display: contents;
+    }
+    input {
+     margin: var(--size-spacing-medium) 0;
+     font: inherit;
+    }
   `];
 
   _authObserver = new Observer<Auth.Model>(this, "blazing:auth");
-  _user? : Auth.User;
+  _user?: Auth.User;
 
   override connectedCallback() {
     super.connectedCallback();

@@ -1,4 +1,4 @@
-import{i as g,O as m,d as p,e as v,f as u,x as i,r as b,h as f,a as k,b as c}from"./state-DerlYqys.js";var y=Object.defineProperty,h=(o,t,e,d)=>{for(var r=void 0,a=o.length-1,l;a>=0;a--)(l=o[a])&&(r=l(t,e,r)||r);return r&&y(t,e,r),r};const s=class s extends g{constructor(){super(...arguments),this.loggedIn=!1,this._authObserver=new m(this,"blazing:auth")}render(){return i`
+import{i as g,O as m,d as p,e as v,g as u,x as i,r as b,h as f,a as k,b as c}from"./state-By6HLBIX.js";var y=Object.defineProperty,h=(o,t,e,d)=>{for(var r=void 0,a=o.length-1,l;a>=0;a--)(l=o[a])&&(r=l(t,e,r)||r);return r&&y(t,e,r),r};const s=class s extends g{constructor(){super(...arguments),this.loggedIn=!1,this._authObserver=new m(this,"blazing:auth")}render(){return i`
       <header>
         <h1>Blazing Travels</h1>
         <nav>

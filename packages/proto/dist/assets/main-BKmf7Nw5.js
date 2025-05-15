@@ -1,4 +1,4 @@
-import{i as g,x as n,r as f,h as z,a as v,n as c,d as O,b as S,c as j}from"./state-DerlYqys.js";import{H as _}from"./header-DAM_I-nj.js";import{i as J}from"./icon.css-DFMstrbp.js";var U=Object.defineProperty,b=(o,s,e,l)=>{for(var a=void 0,r=o.length-1,t;r>=0;r--)(t=o[r])&&(a=t(s,e,a)||a);return a&&U(s,e,a),a};const x=class x extends g{constructor(){super(...arguments),this.mode="unknown"}render(){const e={air:"icon-airplane",rail:"icon-train",unknown:"icon-unknown"}[this.mode];return n`
+import{i as g,x as n,r as f,h as z,a as v,n as c,d as O,b as S,c as j}from"./state-By6HLBIX.js";import{H as _}from"./header-BPxdGmxf.js";import{i as J}from"./icon.css-JrZfBXGW.js";var U=Object.defineProperty,b=(o,s,e,l)=>{for(var a=void 0,r=o.length-1,t;r>=0;r--)(t=o[r])&&(a=t(s,e,a)||a);return a&&U(s,e,a),a};const x=class x extends g{constructor(){super(...arguments),this.mode="unknown"}render(){const e={air:"icon-airplane",rail:"icon-train",unknown:"icon-unknown"}[this.mode];return n`
       <h3>
         <slot name="from">FCO</slot>
         <svg class="icon">
