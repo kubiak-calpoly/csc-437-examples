@@ -71,7 +71,6 @@ export class ProfileElement extends LitElement {
 
   renderEditor() {
     const {
-      userid,
       name,
       nickname,
       home,
@@ -93,15 +92,28 @@ export class ProfileElement extends LitElement {
 
     return html`
       <mu-form @mu-form:submit=${(e: CustomEvent) => {
-          if (this.src)
-            this.handleSubmit(this.src, e.detail as Traveler)
-          }         
+        if (this.src)
+          this.handleSubmit(this.src, e.detail as Traveler)
+      }
       }>
         <img src=${avatar} alt=${name} />
         <h1>${textInput("name", name)}</h1>
         <dl>
-          <dt>Username</dt>
-          <dd>${userid}</dd>
+          <dt>${inputLabel("_nickname", "Avatar")}</dt>
+          <dd>
+            <input
+              id="_avatar-input"
+              type="file"
+              name="_avatar"
+              @change=${(e: InputEvent) => {
+                const target = e.target as HTMLInputElement;
+                const files = target.files;
+                if (files && files.length) {
+                  this.handleAvatarSelected(files)
+                }
+              }}
+            />
+          </dd>
           <dt>${inputLabel("nickname", "Nickname")}</dt>
           <dd>${textInput("nickname", nickname)}</dd>
           <dt>${inputLabel("home", "Home City")}</dt>
@@ -112,7 +124,7 @@ export class ProfileElement extends LitElement {
           </dd>
           <dt>${inputLabel("color", "Favorite Color")}</dt>
           <dd>
-            <input type="color" name="color" value="${color}">
+            <input id="color-input" type="color" name="color" value="${color}">
           </dd>
         </dl>
       </mu-form>`;
@@ -210,7 +222,11 @@ export class ProfileElement extends LitElement {
       );
   }
 
+  _avatar? : string; // the avatar, base64 encoded
+
   handleSubmit(src: string, traveler: Traveler) {
+    if (this._avatar) traveler.avatar = this._avatar;
+
     fetch( src, {
       headers: {
         "Content-Type": "application/json",
@@ -228,6 +244,20 @@ export class ProfileElement extends LitElement {
       this.traveler = traveler;
       this.mode = "view";
     })
+  }
+
+  handleAvatarSelected(files: FileList) {
+    if (files && files.length) {
+      const reader = new Promise((resolve, reject) => {
+        const fr = new FileReader();
+        fr.onload = () => resolve(fr.result);
+        fr.onerror = (err) => reject(err);
+        fr.readAsDataURL(files[0]);
+      });
+
+      reader.then((result: unknown) =>
+        (this._avatar = result as string));
+    }
   }
 }
 
