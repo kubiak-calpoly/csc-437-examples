@@ -125,6 +125,15 @@ function update(id, tour) {
     });
   });
 }
+function getDestination(id, n) {
+  return tourModel.findById(id).then((doc) => {
+    const tour = doc;
+    return tour.destinations[n];
+  }).catch((err) => {
+    console.log("Not found!", err);
+    throw `${id} Not Found`;
+  });
+}
 function updateDestination(id, n, newDest) {
   return new Promise((resolve, reject) => {
     const path = `destinations.${n}`;
@@ -151,5 +160,6 @@ var tour_svc_default = {
   get,
   create,
   update,
+  getDestination,
   updateDestination
 };

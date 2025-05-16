@@ -47,6 +47,18 @@ router.put("/:id", (req: Request, res: Response) => {
     .catch(() => res.status(404).end());
 });
 
+router.get(
+  "/:id/destinations/:n",
+  (req: Request, res: Response) => {
+    const { id, n } = req.params;
+
+    tours
+      .getDestination(id, parseInt(n))
+      .then((destination: Destination) =>
+        res.status(200).json(destination))
+      .catch(() => res.status(404).end());
+  });
+
 router.put(
   "/:id/destinations/:n",
   (req: Request, res: Response) => {

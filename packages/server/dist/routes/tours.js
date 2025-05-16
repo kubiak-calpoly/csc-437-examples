@@ -58,6 +58,13 @@ router.put("/:id", (req, res) => {
   const newTour = req.body;
   import_tour_svc.default.update(id, newTour).then((tour) => res.json(tour)).catch(() => res.status(404).end());
 });
+router.get(
+  "/:id/destinations/:n",
+  (req, res) => {
+    const { id, n } = req.params;
+    import_tour_svc.default.getDestination(id, parseInt(n)).then((destination) => res.status(200).json(destination)).catch(() => res.status(404).end());
+  }
+);
 router.put(
   "/:id/destinations/:n",
   (req, res) => {

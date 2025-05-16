@@ -120,6 +120,24 @@ function update(id: String, tour: Tour): Promise<Tour> {
   });
 }
 
+function getDestination(
+  id: String,
+  n: number
+): Promise<Destination> {
+  return (
+    tourModel
+      .findById(id)
+      .then((doc: unknown) => {
+        const tour =  doc as Tour;
+        return tour.destinations[n];
+      })
+      .catch((err) => {
+        console.log("Not found!", err);
+        throw `${id} Not Found`;
+      })
+  );
+}
+
 function updateDestination(
   id: String,
   n: number,
@@ -156,5 +174,6 @@ export default {
   get,
   create,
   update,
+  getDestination,
   updateDestination
 };

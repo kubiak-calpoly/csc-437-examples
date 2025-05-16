@@ -19,12 +19,12 @@
     <script type="module">
       import { define, Auth } from "@calpoly/mustang";
       import { HeaderElement } from "/src/header.ts";
-      import { DestinationElement } from "/src/destination.ts";
+      import { DestinationViewElement } from "/src/destination-view.ts";
 
       define({
         "blz-header": HeaderElement,
         "mu-auth": Auth.Provider,
-        "destination-view": DestinationElement
+        "destination-view": DestinationViewElement
       });
 
       HeaderElement.initializeOnce();
@@ -34,12 +34,12 @@
     <mu-auth provides="blazing:auth">
 
       <blz-header>
-        <a href="../../index.html">&larr; Tour: 12 Days in Italy</a>
+        <a href="/">&larr; Tour: 12 Days in Italy</a>
       </blz-header>
 
       <main class="page">
-        <destination-view src="/api/tour/*/destination">
-
+        <destination-view
+          src="/api/tours/65c7e92ea837ff7c15b669e5/destinations/0">
         </destination-view>
       </main>
     </mu-auth>
