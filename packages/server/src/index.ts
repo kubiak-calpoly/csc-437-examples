@@ -4,8 +4,6 @@ import tours from "./routes/tours";
 import travelers from "./routes/travelers";
 import { getFile, saveFile } from "./services/filesystem";
 import { connect } from "./services/mongo";
-import Tours from "./services/tour-svc";
-import Travelers from "./services/traveler-svc";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -19,6 +17,7 @@ console.log("Serving static files from ", staticDir);
 app.use(express.static(staticDir));
 
 // Middleware:
+app.use(express.raw({ type: "image/*", limit: "32Mb" }));
 app.use(express.json());
 
 // Auth routes
@@ -28,6 +27,9 @@ app.use("/auth", auth);
 app.use("/api/travelers", authenticateUser, travelers);
 app.use("/api/tours", authenticateUser, tours);
 
+// Image Routes:
+app.post("/images", authenticateUser, saveFile);
+app.get("/images/:id", getFile);
 
 // Page Routes:
 app.get("/ping", (_: Request, res: Response) => {

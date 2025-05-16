@@ -58,43 +58,44 @@ export class DestinationViewElement extends LitElement {
 
   renderEditor() {
     const {
-      name,
-      startDate,
-      endDate,
       featuredImage,
     } = this.destination || ({} as Destination);
+    const imgUrl = this._image || featuredImage;
 
-    function textInput(name: string, value: string = "") {
-      return html`<input
-        id="${name}-input"
-        name="${name}"
-        value=${value}>`;
-    }
+    const init = this.destination;
 
-    function dateInput(name: string, value: Date) {
-      return html`<input
-        id="${name}-input"
-        type="date"
-        name="${name}"
-        value=${value.toISOString().substring(0,10)}>`;
-    }
+    console.log("init", init);
 
     return html`
-      <mu-form @mu-form:submit=${(e: CustomEvent) => {
-        if (this.src)
-          this.handleSubmit(this.src, e.detail as Destination)
-      }
-      }>
+      <mu-form
+        .init=${init}
+        @mu-form:submit=${(e: CustomEvent) => {
+          if(this.src)
+            this.handleSubmit(this.src, e.detail)
+        }}>
         <header>
-          <h2>${textInput("name", name)}</h2>
+          <h2><input name="name"></h2>
           <dl>
-            <dt>from</dt>
-            <dd>${dateInput("startDate", startDate)}</dd>
-            <dt>to</dt>
-            <dd>${dateInput("endDate", endDate)}</dd>
+            <dt>"From date"</dt>
+            <dd><input name="startDate" type="date"></dd>
+            <dt>To date</dt>
+            <dd><input name="endDate" type="date"></dd>
+            <dt>Image</dt>
+            <dd>
+              <input
+                type="file"
+                @change=${(e: InputEvent) => {
+                  const target = e.target as HTMLInputElement;
+                  const files = target.files;
+                  if (files && files.length) {
+                    this.handleImageSelected(files)
+                  }
+                }}
+              />
+            </dd>
           </dl>
         </header>
-        <img class="hero" src=${featuredImage} />
+        <img class="hero" src=${imgUrl} />
       </mu-form>
     `;
   }
@@ -109,6 +110,7 @@ export class DestinationViewElement extends LitElement {
         grid-template-columns: subgrid;
         grid-column: 1 / span 4;
         grid-auto-flow: dense;
+        grid-template-rows: min-content;
       }
     mu-form {
       display: contents;
@@ -122,6 +124,9 @@ export class DestinationViewElement extends LitElement {
     }
     p {
       grid-column: 2 / -1;
+    }
+    img.hero {
+      grid-column: auto / span 4;
     }
     input {
      margin: var(--size-spacing-medium) 0;
@@ -180,14 +185,23 @@ export class DestinationViewElement extends LitElement {
       );
   }
 
-  handleSubmit(src: string, destination: Destination) {
+  handleSubmit(src: string, formData: object) {
+    console.log("Submitting form", formData);
+    const json: object = {
+      ...this.destination,
+      ...formData
+    };
+
+    if ( this._image )
+      (json as Destination).featuredImage = this._image
+
     fetch( src, {
       headers: {
         "Content-Type": "application/json",
         ...this.authorization
       },
       method: "PUT",
-      body: JSON.stringify(destination)
+      body: JSON.stringify(json)
     })
       .then(res => {
         if (res.status !== 200) throw `Status: ${res.status}`;
@@ -197,5 +211,49 @@ export class DestinationViewElement extends LitElement {
         this.destination = convertStartEndDates<Destination>(json);
         this.mode = "view";
       })
+  }
+
+  @state()
+  _image?: string;
+
+  handleImageSelected(files: FileList) {
+    if (files && files.length) {
+      const reader = new Promise((resolve, reject) => {
+        const fr = new FileReader();
+        fr.onload = () => resolve(fr.result);
+        fr.onerror = (err) => reject(err);
+        fr.readAsArrayBuffer(files[0]);
+      });
+
+      reader.then((buffer) => {
+        const { name, size, type } = files[0];
+        const query = new URLSearchParams({ filename: name });
+        const url = new URL("/images", document.location.origin);
+        url.search = query.toString();
+
+        fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": type,
+            "Content-Length": size.toString(),
+            ...this.authorization
+          },
+          body: buffer as ArrayBuffer
+        })
+          .then((res) => {
+            if (res.status === 201) return res.json();
+            else throw res.status;
+          })
+          .then((json: { url: string } | undefined) => {
+            if (json) {
+              console.log("Image has been uploaded to", json.url);
+              this._image = json.url;
+            } else throw "No JSON response";
+          })
+          .catch((error) => {
+            console.log("Upload failed", error);
+          });
+      });
+    }
   }
 }
