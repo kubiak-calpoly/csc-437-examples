@@ -78,7 +78,7 @@ import{i as y,x as h,r as v,h as _,a as b,O as C,d as S,f as O,n as w,b as $,c a
         </header>
 
         <img class="hero" src=${s} />
-    `}renderEditor(){const{featuredImage:t}=this.destination||{},e=this._image||t,n=this.destination;return console.log("init",n),h`
+    `}renderEditor(){const{featuredImage:t}=this.destination||{},e=this._image||t,n=this.destination;return h`
       <mu-form
         .init=${n}
         @mu-form:submit=${s=>{this.src&&this.handleSubmit(this.src,s.detail)}}>

@@ -72,39 +72,30 @@ export class ProfileElement extends LitElement {
   renderEditor() {
     const {
       name,
-      nickname,
-      home,
-      airports = [],
       avatar,
-      color
+      airports = []
     } = this.traveler || {};
 
-    function textInput(name: string, value: string = "") {
-      return html`<input
-        id="${name}-input"
-        name="${name}"
-        value=${value}>`;
-    }
-
-    function inputLabel(name: string, label: string) {
-      return html`<label for="${name}-input">${label}</label>`;
-    }
+    const init = {
+      ...this.traveler,
+      airports: airports.join(" ")
+    };
 
     return html`
-      <mu-form @mu-form:submit=${(e: CustomEvent) => {
-        if (this.src)
-          this.handleSubmit(this.src, e.detail as Traveler)
+      <mu-form 
+        .init=${init}
+        @mu-form:submit=${(e: CustomEvent) => {
+          if (this.src)
+            this.handleSubmit(this.src, e.detail )
       }
       }>
         <img src=${avatar} alt=${name} />
-        <h1>${textInput("name", name)}</h1>
+        <h1><input name="name"></h1>
         <dl>
-          <dt>${inputLabel("_nickname", "Avatar")}</dt>
+          <dt>Avatar</dt>
           <dd>
             <input
-              id="_avatar-input"
               type="file"
-              name="_avatar"
               @change=${(e: InputEvent) => {
                 const target = e.target as HTMLInputElement;
                 const files = target.files;
@@ -114,17 +105,15 @@ export class ProfileElement extends LitElement {
               }}
             />
           </dd>
-          <dt>${inputLabel("nickname", "Nickname")}</dt>
-          <dd>${textInput("nickname", nickname)}</dd>
-          <dt>${inputLabel("home", "Home City")}</dt>
-          <dd>${textInput("home", home)}</dd>
-          <dt>${inputLabel("airports", "Airports")}</dt>
+          <dt>Nickname</dt>
+          <dd><input name="nickname"></dd>
+          <dt>Home City</dt>
+          <dd><input name="home"></dd>
+          <dt>Airports</dt>
+          <dd><input name="airports"></dd>
+          <dt>Favorite Color</dt>
           <dd>
-            ${textInput("airports", airports.join(", "))}
-          </dd>
-          <dt>${inputLabel("color", "Favorite Color")}</dt>
-          <dd>
-            <input id="color-input" type="color" name="color" value="${color}">
+            <input type="color" name="color">
           </dd>
         </dl>
       </mu-form>`;
@@ -224,8 +213,16 @@ export class ProfileElement extends LitElement {
 
   _avatar? : string; // the avatar, base64 encoded
 
-  handleSubmit(src: string, traveler: Traveler) {
-    if (this._avatar) traveler.avatar = this._avatar;
+  handleSubmit(src: string, formData: object) {
+    const json: object = {
+      ...this.traveler,
+      ...formData
+    }
+
+    if ("airports" in formData ) {
+      (json as Traveler).airports = (formData.airports as string).split(" ")
+    }
+    if (this._avatar) (json as Traveler).avatar = this._avatar;
 
     fetch( src, {
       headers: {
@@ -233,15 +230,14 @@ export class ProfileElement extends LitElement {
         ...this.authorization
       },
       method: "PUT",
-      body: JSON.stringify(traveler)
+      body: JSON.stringify(json)
     })
     .then(res => {
       if (res.status !== 200) throw `Status: ${res.status}`;
       else return res.json()
     })
     .then((json: unknown) => {
-      const traveler = json as Traveler;
-      this.traveler = traveler;
+      this.traveler = json as Traveler;
       this.mode = "view";
     })
   }

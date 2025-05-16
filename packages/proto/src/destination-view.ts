@@ -64,8 +64,6 @@ export class DestinationViewElement extends LitElement {
 
     const init = this.destination;
 
-    console.log("init", init);
-
     return html`
       <mu-form
         .init=${init}
