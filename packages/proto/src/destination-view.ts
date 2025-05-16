@@ -1,4 +1,4 @@
-import { Auth, define, Observer } from "@calpoly/mustang";
+import { Auth, define, Form, Observer } from "@calpoly/mustang";
 import { css, html, LitElement } from "lit";
 import { property, state } from "lit/decorators.js";
 import { Destination } from "./models/itinerary.ts";
@@ -8,7 +8,8 @@ import reset from "./styles/reset.css";
 
 export class DestinationViewElement extends LitElement {
   static uses = define({
-    "accommodation-info": AccommodationElement
+    "accommodation-info": AccommodationElement,
+    "mu-form": Form.Element
   });
 
   @property()
@@ -17,7 +18,16 @@ export class DestinationViewElement extends LitElement {
   @state()
   destination?: Destination;
 
-  render() {
+  @property()
+  mode = "view";
+
+  override render() {
+    return this.mode === "edit" ?
+      this.renderEditor() :
+      this.renderView();
+  }
+
+  renderView() {
     const {
       name,
       startDate,
@@ -27,17 +37,67 @@ export class DestinationViewElement extends LitElement {
 
     return html`
         <header>
+
           <h2>${name}</h2>
           <p>
             from ${formatDate(startDate)} to
             ${formatDate(endDate)}
             ${endDate && endDate.getFullYear()}
           </p>
+          <nav>
+          <button @click=${() => {
+            this.mode = "edit";
+          }}>
+            Edit
+          </button></nav>
         </header>
+
         <img class="hero" src=${featuredImage} />
     `;
   }
 
+  renderEditor() {
+    const {
+      name,
+      startDate,
+      endDate,
+      featuredImage,
+    } = this.destination || ({} as Destination);
+
+    function textInput(name: string, value: string = "") {
+      return html`<input
+        id="${name}-input"
+        name="${name}"
+        value=${value}>`;
+    }
+
+    function dateInput(name: string, value: Date) {
+      return html`<input
+        id="${name}-input"
+        type="date"
+        name="${name}"
+        value=${value.toISOString().substring(0,10)}>`;
+    }
+
+    return html`
+      <mu-form @mu-form:submit=${(e: CustomEvent) => {
+        if (this.src)
+          this.handleSubmit(this.src, e.detail as Destination)
+      }
+      }>
+        <header>
+          <h2>${textInput("name", name)}</h2>
+          <dl>
+            <dt>from</dt>
+            <dd>${dateInput("startDate", startDate)}</dd>
+            <dt>to</dt>
+            <dd>${dateInput("endDate", endDate)}</dd>
+          </dl>
+        </header>
+        <img class="hero" src=${featuredImage} />
+      </mu-form>
+    `;
+  }
   static styles = [
     reset.styles,
     css`
@@ -45,8 +105,41 @@ export class DestinationViewElement extends LitElement {
         display: contents;
       }
       header {
-        grid-column: 1 / span 3;
+        display: grid;
+        grid-template-columns: subgrid;
+        grid-column: 1 / span 4;
+        grid-auto-flow: dense;
       }
+    mu-form {
+      display: contents;
+    }
+    nav {
+      grid-column: auto / -1;
+      text-align: right;
+    }
+    h2 {
+      grid-column: 1 / span 3;
+    }
+    p {
+      grid-column: 2 / -1;
+    }
+    input {
+     margin: var(--size-spacing-medium) 0;
+     font: inherit;
+    }
+    dl {
+      display: grid;
+      grid-column: 1 / span 4;
+      grid-template-columns: subgrid;
+      align-items: baseline;
+    }
+    dt {
+      color: var(--color-accent);
+      font-family: var(--font-family-display);
+    }
+    dd {
+      grid-column: span 3 / -1;
+    }
     `
   ];
 
@@ -87,4 +180,22 @@ export class DestinationViewElement extends LitElement {
       );
   }
 
+  handleSubmit(src: string, destination: Destination) {
+    fetch( src, {
+      headers: {
+        "Content-Type": "application/json",
+        ...this.authorization
+      },
+      method: "PUT",
+      body: JSON.stringify(destination)
+    })
+      .then(res => {
+        if (res.status !== 200) throw `Status: ${res.status}`;
+        else return res.json()
+      })
+      .then((json: unknown) => {
+        this.destination = convertStartEndDates<Destination>(json);
+        this.mode = "view";
+      })
+  }
 }
