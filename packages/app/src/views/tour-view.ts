@@ -7,11 +7,10 @@ import {
   Tour,
   Transportation
 } from "server/models";
+import { DateRangeElement} from "../components/date-range.ts";
 import { EntourageTable } from "../components/entourage-table";
-import {
-  ItineraryDestinationElement,
-  ItineraryTransportationElement
-} from "../components/itinerary-items";
+import { DestinationElement } from "../components/destination.ts";
+import { TransportationElement } from "../components/transportation.ts";
 import {
   convertStartEndDates,
   formatDate
@@ -19,12 +18,13 @@ import {
 
 export class TourViewElement extends LitElement {
   static uses = define({
+    "date-range": DateRangeElement,
     "entourage-table": EntourageTable,
-    "itinerary-destination": ItineraryDestinationElement,
-    "itinerary-transportation": ItineraryTransportationElement
+    "itinerary-destination": DestinationElement,
+    "itinerary-transportation": TransportationElement
   });
 
-  @property({ attribute: "tour-id", reflect: true })
+  @property({ attribute: "tour-id" })
   tourid = "";
 
   @state()
@@ -95,31 +95,32 @@ export class TourViewElement extends LitElement {
           start-date=${startDate}
           end-date=${endDate}
           img-src=${featuredImage}
-          href="/destination/${this.tourid}/${i}">
+          href="/app/tour/${this.tourid}/destination/${i}">
           ${name}
         </itinerary-destination>
       `;
     };
 
-    const renderRoute = (route: Segment[]) => {
-      const count = route.length + 1;
-      const origin = route[0].departure;
-      const terminus = route[route.length - 1].arrival;
+    const renderRoute = (segments: Segment[]) => {
+      const count = segments.length + 1;
+      const origin = segments[0].departure;
+      const terminus = segments[segments.length - 1].arrival;
       const via =
         count > 2
           ? html`
               <span slot="via">
-                ${route
-              .slice(1, -1)
-              .map((seg) => seg.departure.name)
-              .join(", ")}
+                ${segments.slice(1).map(
+                  (seg) => seg.departure.station || 
+                    seg.departure.name
+                )
+                .join(", ")}
               </span>
             `
           : null;
 
       return html`
-        <span slot="origin">${origin.name}</span>
-        <span slot="terminus">${terminus.name}</span>
+        <span slot="from">${origin.station || origin.name}</span>
+        <span slot="to">${terminus.station || terminus.name}</span>
         ${via}
       `;
     };
@@ -129,7 +130,7 @@ export class TourViewElement extends LitElement {
       return html`
         <itinerary-transportation
           start-date=${startDate}
-          type=${type}>
+          mode=${type}>
           ${renderRoute(segments)}
         </itinerary-transportation>
       `;
@@ -150,8 +151,23 @@ export class TourViewElement extends LitElement {
       const tn = transportation[i + 1];
 
       return html`
-        ${i ? "" : renderTransportation(t0)}
-        ${renderDestination(d, i)} ${renderTransportation(tn)}
+        ${i ? "" : html`
+          <date-range
+            from=${t0.startDate}
+            to="${t0.endDate}">
+          </date-range>
+          ${renderTransportation(t0)}`
+        }
+        <date-range
+          from=${d.startDate}
+          to="${d.endDate}">
+        </date-range>
+        ${renderDestination(d, i)}
+        <date-range
+          from=${tn.startDate}
+          to="${tn.endDate}">
+        </date-range>
+        ${renderTransportation(tn)}
       `;
     };
 
@@ -207,13 +223,21 @@ export class TourViewElement extends LitElement {
         display: grid;
         grid-area: it;
         align-self: start;
-        grid-template-columns: subgrid;
+        grid-template-columns: subgrid [start] [header] [] [] [end];
         gap: 0 var(--size-spacing-medium);
         align-items: baseline;
       }
 
       entourage-table {
         grid-area: en;
+        display: grid;
+        grid-template-columns: subgrid;
+      }
+      
+      date-range {
+        text-align: right;
+        font-family: var(--font-family-display);
+        color: var(--color-accent);
       }
     `
   ];

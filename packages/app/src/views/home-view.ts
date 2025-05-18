@@ -106,8 +106,7 @@ export class HomeViewElement extends LitElement {
         grid-template-columns: subgrid;
         grid-template-rows: auto auto auto 1fr;
         grid-template-areas:
-          "hd hd yr dt1 dt2 dd dd dd"
-          "xx xx yr dt1 dt2 dd dd dd";
+          "hd hd dd dd dd yr dt1 dt2";
         gap: var(--size-spacing-medium)
           var(--size-spacing-large);
         align-items: end;

@@ -4,13 +4,24 @@ import {
   History,
   Switch
 } from "@calpoly/mustang";
-import { html, LitElement } from "lit";
+import { html } from "lit";
+import { DestinationViewElement } from "./views/destination-view";
 import { HeaderElement } from "./components/blazing-header";
 import { HomeViewElement } from "./views/home-view";
 import { TourViewElement } from "./views/tour-view";
 import { TravelerViewElement } from "./views/traveler-view";
 
 const routes: Switch.Route[] = [
+  {
+    auth: "protected",
+    path: "/app/tour/:id/destination/:index",
+    view: (params: Switch.Params) => html`
+      <destination-view 
+        tour-id=${params.id} 
+        index="${params.index}">
+      </destination-view>
+    `
+  },
   {
     auth: "protected",
     path: "/app/tour/:id",
@@ -45,17 +56,6 @@ const routes: Switch.Route[] = [
   }
 ];
 
-class AppElement extends LitElement {
-  render() {
-    return html`<mu-switch></mu-switch>`;
-  }
-
-  connectedCallback() {
-    super.connectedCallback();
-    HeaderElement.initializeOnce();
-  }
-}
-
 define({
   "mu-auth": Auth.Provider,
   "mu-history": History.Provider,
@@ -64,8 +64,8 @@ define({
       super(routes, "blazing:history", "blazing:auth");
     }
   },
-  "blazing-app": AppElement,
   "blazing-header": HeaderElement,
+  "destination-view": DestinationViewElement,
   "home-view": HomeViewElement,
   "tour-view": TourViewElement,
   "traveler-view": TravelerViewElement

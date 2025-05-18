@@ -30,7 +30,6 @@ export class AvatarElement extends LitElement {
 
   static styles = css`
     :host {
-      display: contents;
       --avatar-backgroundColor: var(--color-accent);
       --avatar-size: 100px;
     }

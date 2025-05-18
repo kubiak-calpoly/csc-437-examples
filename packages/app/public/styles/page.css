@@ -15,6 +15,14 @@ body {
   gap: var(--page-grid-gap);
   align-items: baseline;
   padding: 0 calc(0.5 * var(--page-grid-gap));
+
+  @media screen and (max-width: 40rem) {
+    --page-grids: 6;
+  }
+
+  @media screen and (max-width: 60rem) {
+    --page-grids: 8;
+  }
 }
 
 .page > section {

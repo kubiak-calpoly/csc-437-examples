@@ -27,7 +27,10 @@ export class HeaderElement extends LitElement {
   });
 
   @state()
-  userid: string = "traveler";
+  loggedIn = false;
+
+  @state()
+  userid?: string = "traveler";
 
   protected render() {
     return html` <header>
@@ -67,6 +70,7 @@ export class HeaderElement extends LitElement {
       }
       header {
         display: flex;
+        grid-column: start / end;
         flex-wrap: wrap;
         align-items: bottom;
         justify-content: space-between;
@@ -114,8 +118,12 @@ export class HeaderElement extends LitElement {
     super.connectedCallback();
 
     this._authObserver.observe(({ user }) => {
-      if (user && user.username !== this.userid) {
+      if (user && user.authenticated ) {
+        this.loggedIn = true;
         this.userid = user.username;
+      } else {
+        this.loggedIn = false;
+        this.userid = undefined;
       }
     });
   }

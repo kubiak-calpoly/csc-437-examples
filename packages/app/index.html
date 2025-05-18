@@ -18,11 +18,13 @@
     <script type="module" src="/src/main"></script>
   </head>
   <body>
-    <mu-auth provides="blazing:auth">
-      <article>
-        <blazing-header></blazing-header>
-        <blazing-app></blazing-app>
-      </article>
-    </mu-auth>
+    <mu-history provides="blazing:history">
+      <mu-auth provides="blazing:auth" redirect="/login.html">
+        <article class="page">
+          <blazing-header></blazing-header>
+          <mu-switch></mu-switch>
+        </article>
+      </mu-auth>
+    </mu-history>
   </body>
 </html>

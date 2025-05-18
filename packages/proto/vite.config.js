@@ -10,12 +10,7 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'index.html'),
         login: resolve(__dirname, 'login.html'),
-        newuser: resolve(__dirname, 'new-user.html'),
-        venice: resolve(__dirname, 'destination/venice.html'),
-        blaze: resolve(__dirname, 'profile/blaze.html'),
-        izzy: resolve(__dirname, 'profile/izzy.html'),
-        mondy: resolve(__dirname, 'profile/mondy.html')
-
+        newuser: resolve(__dirname, 'new-user.html')
       },
     },
   },
