@@ -174,7 +174,7 @@ export class TourViewElement extends LitElement {
     console.log("Rendering Tour page", this.tour);
 
     return html`
-      <main class="page">
+      <main>
         <header>
           <h2>${name}</h2>
           ${renderDates()}
@@ -200,7 +200,7 @@ export class TourViewElement extends LitElement {
       p {
         margin: 0;
       }
-      main.page {
+      main {
         display: grid;
         grid-column: 1/-1;
         padding: var(--size-spacing-small)

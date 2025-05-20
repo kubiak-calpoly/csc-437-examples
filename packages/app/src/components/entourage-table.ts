@@ -34,7 +34,7 @@ export class EntourageTable extends LitElement {
       const initial = (nickname || name || userid).slice(0, 1);
 
       return html`
-        <a href="/app/traveler/${userid}">
+        <a href="/app/profile/${userid}">
           <traveler-avatar
             color=${color}
             src=${avatar}
