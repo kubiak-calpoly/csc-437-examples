@@ -1,6 +1,6 @@
 import { html, css, LitElement } from "lit";
 import { property, state } from "lit/decorators.js";
-import { Traveler } from "../models/traveler.ts";
+import { Traveler } from "server/models";
 import reset from "../styles/reset.css.js";
 import headings from "../styles/headings.css.js";
 import {
