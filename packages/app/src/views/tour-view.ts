@@ -24,8 +24,8 @@ export class TourViewElement extends LitElement {
     "itinerary-transportation": TransportationElement
   });
 
-  @property({ attribute: "tour-id" })
-  tourid = "";
+  @property()
+  src?: string;
 
   @state()
   tour?: Tour;
@@ -48,31 +48,31 @@ export class TourViewElement extends LitElement {
   }
 
   loadData() {
-    const src = `/api/tours/${this.tourid}`;
-
-    fetch(src, {
-      headers: Auth.headers(this._user)
-    })
-      .then((res: Response) => {
-        if (res.status === 200) return res.json();
-        throw `Server responded with status ${res.status}`;
+    if (this.src) {
+      fetch(this.src, {
+        headers: Auth.headers(this._user)
       })
-      .catch((err) =>
-        console.log("Failed to load tour data:", err)
-      )
-      .then((json: unknown) => {
-        if (json) {
-          console.log("Tour:", json);
-          let tour: Tour = convertStartEndDates<Tour>(json);
-          tour.destinations = tour.destinations.map(
-            convertStartEndDates<Destination>
-          );
-          this.tour = tour;
-        }
-      })
-      .catch((err) =>
-        console.log("Failed to convert tour data:", err)
-      );
+        .then((res: Response) => {
+          if (res.status === 200) return res.json();
+          throw `Server responded with status ${res.status}`;
+        })
+        .catch((err) =>
+          console.log("Failed to load tour data:", err)
+        )
+        .then((json: unknown) => {
+          if (json) {
+            console.log("Tour:", json);
+            let tour: Tour = convertStartEndDates<Tour>(json);
+            tour.destinations = tour.destinations.map(
+              convertStartEndDates<Destination>
+            );
+            this.tour = tour;
+          }
+        })
+        .catch((err) =>
+          console.log("Failed to convert tour data:", err)
+        );
+    }
   }
 
   render(): TemplateResult {
@@ -95,7 +95,7 @@ export class TourViewElement extends LitElement {
           start-date=${startDate}
           end-date=${endDate}
           img-src=${featuredImage}
-          href="/app/tour/${this.tourid}/destination/${i}">
+          href="/app/tour/TOUR_ID/destination/${i}">
           ${name}
         </itinerary-destination>
       `;
@@ -184,9 +184,8 @@ export class TourViewElement extends LitElement {
           ${destinations.map(renderDestAndTrans)}
         </section>
 
-        <entourage-table
-          href="/app/entourage/${this.tourid}"
-          .using=${entourage}></entourage-table>
+        <entourage-table .using=${entourage}>
+        </entourage-table>
       </main>
     `;
   }

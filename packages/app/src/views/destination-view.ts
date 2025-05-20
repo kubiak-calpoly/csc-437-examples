@@ -10,22 +10,14 @@ export class DestinationViewElement extends LitElement {
     "accommodation-info": AccommodationElement,
     "mu-form": Form.Element
   });
-
-  @property({ attribute: "tour-id" })
-  tourid = "";
-
-  @property({ type: Number })
-  index?: number;
-
   @state()
   destination?: Destination;
 
   @property()
   mode = "view";
 
-  get src() {
-    return `/api/tours/${this.tourid}/destinations/${this.index}`;
-  }
+  @property()
+  src?: string;
 
   override render() {
     return this.mode === "edit" ?
