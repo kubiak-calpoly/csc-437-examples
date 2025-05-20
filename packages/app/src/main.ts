@@ -9,7 +9,7 @@ import { DestinationViewElement } from "./views/destination-view";
 import { HeaderElement } from "./components/blazing-header";
 import { HomeViewElement } from "./views/home-view";
 import { TourViewElement } from "./views/tour-view";
-import { TravelerViewElement } from "./views/traveler-view";
+import { ProfileViewElement } from "./views/profile-view.ts";
 
 const routes: Switch.Route[] = [
   {
@@ -31,18 +31,18 @@ const routes: Switch.Route[] = [
   },
   {
     auth: "protected",
-    path: "/app/traveler/:id",
+    path: "/app/profile/:id",
     view: (
       params: Switch.Params,
       query?: URLSearchParams
     ) => html`
-      <traveler-view
+      <profile-view
         userid=${params.id}
         mode=${query?.has("edit")
         ? "edit"
         : query?.has("new")
           ? "new"
-          : "view"}></traveler-view>
+          : "view"}></profile-view>
     `
   },
   {
@@ -68,5 +68,5 @@ define({
   "destination-view": DestinationViewElement,
   "home-view": HomeViewElement,
   "tour-view": TourViewElement,
-  "traveler-view": TravelerViewElement
+  "profile-view": ProfileViewElement
 });

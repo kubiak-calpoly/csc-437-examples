@@ -13,6 +13,7 @@
     "build": "npx etsc",
     "start": "npm run build && npm run start:node",
     "start:node": "node dist/index.js",
+    "start:app": "cross-env STATIC=../app/dist npm run start",
     "start:proto": "cross-env STATIC=../proto/dist npm run start",
     "check": "tsc --noEmit"
   },
