@@ -18,6 +18,7 @@ module.exports = __toCommonJS(models_exports);
 __reExport(models_exports, require("./currency"), module.exports);
 __reExport(models_exports, require("./date"), module.exports);
 __reExport(models_exports, require("./destination"), module.exports);
+__reExport(models_exports, require("./entourage"), module.exports);
 __reExport(models_exports, require("./geo"), module.exports);
 __reExport(models_exports, require("./tour"), module.exports);
 __reExport(models_exports, require("./transportation"), module.exports);
@@ -27,6 +28,7 @@ __reExport(models_exports, require("./traveler"), module.exports);
   ...require("./currency"),
   ...require("./date"),
   ...require("./destination"),
+  ...require("./entourage"),
   ...require("./geo"),
   ...require("./tour"),
   ...require("./transportation"),
