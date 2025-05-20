@@ -13,13 +13,7 @@ export class ProfileViewElement extends LitElement {
   });
 
   @property()
-  userid?: string;
-
-  get src(): string | undefined{
-    if( this.userid ) {
-      return `/api/travelers/${this.userid}`;
-    }
-  }
+  src?: string;
 
   @state()
   traveler?: Traveler;

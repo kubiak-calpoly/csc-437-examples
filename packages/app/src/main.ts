@@ -37,7 +37,7 @@ const routes: Switch.Route[] = [
       query?: URLSearchParams
     ) => html`
       <profile-view
-        userid=${params.id}
+        src="/api/travelers/blaze"
         mode=${query?.has("edit")
         ? "edit"
         : query?.has("new")
