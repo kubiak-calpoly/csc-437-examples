@@ -44,6 +44,11 @@ export class HeaderElement extends LitElement {
           </a>
           <menu>
             <li>
+              <a href="/app/profile/${this.userid}">
+                View Profile
+              </a>
+            </li>
+            <li>
               <label @change=${toggleDarkMode}>
                 <input type="checkbox" />
                 Dark Mode
