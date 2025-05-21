@@ -16,9 +16,7 @@ const routes: Switch.Route[] = [
     auth: "protected",
     path: "/app/tour/:id/destination/:index",
     view: (params: Switch.Params) => html`
-      <destination-view
-        src="/api/tours/65c7e92ea837ff7c15b669e5/destinations/0"
-      >
+      <destination-view>
       </destination-view>
     `
   },
@@ -26,7 +24,7 @@ const routes: Switch.Route[] = [
     auth: "protected",
     path: "/app/tour/:id",
     view: (params: Switch.Params) => html`
-      <tour-view src="/api/tours/65c7e92ea837ff7c15b669e5">
+      <tour-view>
       </tour-view>
     `
   },
@@ -37,19 +35,15 @@ const routes: Switch.Route[] = [
       params: Switch.Params,
       query?: URLSearchParams
     ) => html`
-      <profile-view
-        src="/api/travelers/blaze"
-        mode=${query?.has("edit")
-        ? "edit"
-        : query?.has("new")
-          ? "new"
-          : "view"}></profile-view>
-    `
+      <profile-view>
+      </profile-view>`
   },
   {
     auth: "protected",
     path: "/app",
-    view: () => html`<home-view></home-view>`
+    view: () => html`
+      <home-view>
+      </home-view>`
   },
   {
     path: "/",
