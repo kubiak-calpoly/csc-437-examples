@@ -2,9 +2,13 @@ import {
   Auth,
   define,
   History,
+  Store,
   Switch
 } from "@calpoly/mustang";
 import { html } from "lit";
+import { Msg } from "./messages";
+import { Model, init } from "./model";
+import update from "./update";
 import { DestinationViewElement } from "./views/destination-view";
 import { HeaderElement } from "./components/blazing-header";
 import { HomeViewElement } from "./views/home-view";
@@ -16,8 +20,8 @@ const routes: Switch.Route[] = [
     auth: "protected",
     path: "/app/tour/:id/destination/:index",
     view: (params: Switch.Params) => html`
-      <destination-view 
-        tour-id=${params.id} 
+      <destination-view
+        tour-id=${params.id}
         index="${params.index}">
       </destination-view>
     `
@@ -37,7 +41,7 @@ const routes: Switch.Route[] = [
       query?: URLSearchParams
     ) => html`
       <profile-view
-        userid=${params.id}
+        user-id=${params.id}
         mode=${query?.has("edit")
         ? "edit"
         : query?.has("new")
@@ -59,6 +63,13 @@ const routes: Switch.Route[] = [
 define({
   "mu-auth": Auth.Provider,
   "mu-history": History.Provider,
+  "mu-store": class AppStore
+    extends Store.Provider<Model, Msg>
+  {
+    constructor() {
+      super(update, init, "blazing:auth");
+    }
+  },
   "mu-switch": class AppSwitch extends Switch.Element {
     constructor() {
       super(routes, "blazing:history", "blazing:auth");

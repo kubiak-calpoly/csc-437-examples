@@ -20,10 +20,12 @@
   <body>
     <mu-history provides="blazing:history">
       <mu-auth provides="blazing:auth" redirect="/login.html">
-        <article class="page">
-          <blazing-header></blazing-header>
-          <mu-switch></mu-switch>
-        </article>
+         <mu-store provides="blazing:model">
+          <article class="page">
+            <blazing-header></blazing-header>
+            <mu-switch></mu-switch>
+          </article>
+         </mu-store>
       </mu-auth>
     </mu-history>
   </body>

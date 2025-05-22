@@ -1,18 +1,18 @@
-import { html, css, LitElement } from "lit";
+import { define, Auth, Form, Observer, View } from "@calpoly/mustang";
+import { html, css } from "lit";
 import { property, state } from "lit/decorators.js";
 import { Traveler } from "server/models";
+import { Msg } from "../messages";
+import { Model } from "../model";
 import reset from "../styles/reset.css.js";
 import headings from "../styles/headings.css.js";
-import {
-  define, Auth, Observer, Form
-} from "@calpoly/mustang";
 
-export class ProfileViewElement extends LitElement {
+export class ProfileViewElement extends View<Model, Msg> {
   static uses = define({
     "mu-form": Form.Element
   });
 
-  @property()
+  @property({attribute: "user-id"})
   userid?: string;
 
   get src(): string | undefined{
@@ -22,10 +22,16 @@ export class ProfileViewElement extends LitElement {
   }
 
   @state()
-  traveler?: Traveler;
+  get traveler(): Traveler | undefined {
+    return this.model.profile;
+  }
 
   @property()
   mode = "view";
+
+  constructor() {
+    super("blazing:model");
+  }
 
   override render() {
     return this.mode === "edit" ?
@@ -88,7 +94,7 @@ export class ProfileViewElement extends LitElement {
     };
 
     return html`
-      <mu-form 
+      <mu-form
         .init=${init}
         @mu-form:submit=${(e: CustomEvent) => {
       if (this.src)
@@ -182,6 +188,24 @@ export class ProfileViewElement extends LitElement {
     }
   `];
 
+  attributeChangedCallback(
+      name: string,
+      oldValue: string,
+      newValue: string
+  ) {
+    super.attributeChangedCallback(name, oldValue, newValue);
+    if (
+      name === "user-id" &&
+      oldValue !== newValue &&
+      newValue
+    ) {
+      this.dispatchMessage([
+        "profile/select",
+        { userid: newValue }
+      ]);
+    }
+  }
+
   _authObserver = new Observer<Auth.Model>(this, "blazing:auth");
   _user?: Auth.User;
 
@@ -200,23 +224,6 @@ export class ProfileViewElement extends LitElement {
           `Bearer ${(this._user as Auth.AuthenticatedUser).token}`
       };
     else return {};
-  }
-
-  hydrate(url: string) {
-    fetch(
-      url,
-      { headers: this.authorization }
-    )
-      .then((res: Response) => {
-        if (res.status !== 200) throw `Status: ${res.status}`;
-        return res.json();
-      })
-      .then((json: unknown) =>
-        this.traveler = json as Traveler
-      )
-      .catch((error) =>
-        console.log(`Failed to render data ${url}:`, error)
-      );
   }
 
   _avatar? : string; // the avatar, base64 encoded
@@ -264,5 +271,3 @@ export class ProfileViewElement extends LitElement {
     }
   }
 }
-
-
