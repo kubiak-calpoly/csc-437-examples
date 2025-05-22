@@ -213,7 +213,6 @@ export class ProfileViewElement extends View<Model, Msg> {
     super.connectedCallback();
     this._authObserver.observe((auth: Auth.Model) => {
       this._user = auth.user;
-      if (this.src) this.hydrate(this.src);
     });
   }
 
