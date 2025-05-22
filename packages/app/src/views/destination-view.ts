@@ -1,11 +1,13 @@
-import { Auth, define, Form, Observer } from "@calpoly/mustang";
-import { css, html, LitElement } from "lit";
+import { Auth, define, Form, Observer, View } from "@calpoly/mustang";
+import { css, html } from "lit";
 import { property, state } from "lit/decorators.js";
 import { Destination, formatDate, convertStartEndDates } from "server/models";
+import { Msg } from "../messages";
+import { Model } from "../model";
 import { AccommodationElement } from "../components/accommodation";
 import reset from "../styles/reset.css";
 
-export class DestinationViewElement extends LitElement {
+export class DestinationViewElement extends View<Model, Msg> {
   static uses = define({
     "accommodation-info": AccommodationElement,
     "mu-form": Form.Element
@@ -18,13 +20,21 @@ export class DestinationViewElement extends LitElement {
   index?: number;
 
   @state()
-  destination?: Destination;
+  get destination(): Destination | undefined {
+    if( this.index !== undefined ) {
+      return this.model.tour?.destinations[this.index];
+    }
+  };
 
   @property()
   mode = "view";
 
   get src() {
     return `/api/tours/${this.tourid}/destinations/${this.index}`;
+  }
+
+  constructor() {
+    super("blazing:model")
   }
 
   override render() {
@@ -152,6 +162,25 @@ export class DestinationViewElement extends LitElement {
     `
   ];
 
+  attributeChangedCallback(
+    name: string,
+    oldValue: string,
+    newValue: string
+  ) {
+    super.attributeChangedCallback(name, oldValue, newValue);
+    if (
+      name === "tour-id" &&
+      oldValue !== newValue &&
+      newValue
+    ) {
+      this.dispatchMessage([
+        "tour/select",
+        { tourid: newValue }
+      ]);
+    }
+  }
+
+  // Auth for image upload
   _authObserver = new Observer<Auth.Model>(this, "blazing:auth");
   _user?: Auth.User;
 
@@ -159,7 +188,6 @@ export class DestinationViewElement extends LitElement {
     super.connectedCallback();
     this._authObserver.observe((auth: Auth.Model) => {
       this._user = auth.user;
-      if (this.src) this.hydrate(this.src);
     });
   }
 
@@ -170,23 +198,6 @@ export class DestinationViewElement extends LitElement {
           `Bearer ${(this._user as Auth.AuthenticatedUser).token}`
       };
     else return {};
-  }
-
-  hydrate(url: string) {
-    fetch(
-      url,
-      { headers: this.authorization }
-    )
-      .then((res: Response) => {
-        if (res.status !== 200) throw `Status: ${res.status}`;
-        return res.json();
-      })
-      .then((json: unknown) =>
-        this.destination = convertStartEndDates<Destination>(json)
-      )
-      .catch((error) =>
-        console.log(`Failed to render data ${url}:`, error)
-      );
   }
 
   handleSubmit(src: string, formData: object) {
