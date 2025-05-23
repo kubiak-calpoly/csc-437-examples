@@ -2,17 +2,16 @@ import express, { Request, Response } from "express";
 import fs from "node:fs/promises";
 import path from "path";
 import {
+  DestinationPage,
   LoginPage,
   RegistrationPage,
-  TravelerPage
+  renderPage
 } from "./pages/index";
 import auth, { authenticateUser } from "./routes/auth";
 import tours from "./routes/tours";
 import travelers from "./routes/travelers";
 import { getFile, saveFile } from "./services/filesystem";
 import { connect } from "./services/mongo";
-import Tours from "./services/tour-svc";
-import Travelers from "./services/traveler-svc";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -51,41 +50,15 @@ app.get("/ping", (_: Request, res: Response) => {
 });
 
 app.get("/login", (req: Request, res: Response) => {
-  const page = new LoginPage();
-  res.set("Content-Type", "text/html").send(page.render());
+  res
+    .set("Content-Type", "text/html")
+    .send(renderPage(LoginPage.render()));
 });
 
 app.get("/register", (req: Request, res: Response) => {
-  const page = new RegistrationPage();
-  res.set("Content-Type", "text/html").send(page.render());
-});
-
-app.get("/traveler/:userid", (req: Request, res: Response) => {
-  const { userid } = req.params;
-  const mode =
-    req.query["new"] !== undefined
-      ? "new"
-      : req.query.edit !== undefined
-        ? "edit"
-        : "view";
-
-  if (mode === "new") {
-    const page = new TravelerPage(null, mode);
-    res.set("Content-Type", "text/html").send(page.render());
-  } else {
-    Travelers.get(userid)
-      .then((data) => {
-        if (!data) throw `Not found: ${userid}`;
-        const page = new TravelerPage(data, mode);
-        res
-          .set("Content-Type", "text/html")
-          .send(page.render());
-      })
-      .catch((error) => {
-        console.log(error);
-        res.status(404).end();
-      });
-  }
+  res
+    .set("Content-Type", "text/html")
+    .send(renderPage(RegistrationPage.render()));
 });
 
 app.get("/login", (req: Request, res: Response) => {
@@ -101,41 +74,6 @@ app.use("/app", (_: Request, res: Response) => {
     res.send(html)
   );
 });
-
-app.get(
-  "/destination/:tourId/:destIndex",
-  (req: Request, res: Response) => {
-    const { tourId, destIndex } = req.params;
-    const di = parseInt(destIndex);
-    const mode = req.query.edit
-      ? "edit"
-      : req.query.new
-        ? "new"
-        : "view";
-
-    Tours.get(tourId)
-      .then((tour) => {
-        const dest = tour.destinations[di].toObject();
-
-        // reshape destination and tour data for page
-        return {
-          ...dest,
-          tour: {
-            name: tour.name
-          },
-          inbound: tour.transportation[di],
-          outbound: tour.transportation[di + 1]
-        };
-      })
-      .then((data) => {
-        const page = new DestinationPage(data, mode);
-
-        res
-          .set("Content-Type", "text/html")
-          .send(page.render());
-      });
-  }
-);
 
 // Start the server
 app.listen(port, () => {

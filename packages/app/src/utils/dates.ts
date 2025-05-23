@@ -23,12 +23,12 @@ export const formatDate = (date: Date | string | undefined) => {
   return `${d} ${m}`;
 };
 
-interface DateStringRange {
+export interface DateStringRange {
   startDate: string;
   endDate: string;
 }
 
-interface DateRange {
+export interface DateRange {
   startDate: Date;
   endDate?: Date;
 }

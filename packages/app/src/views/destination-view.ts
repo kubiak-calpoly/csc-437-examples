@@ -1,37 +1,166 @@
-import { define, History, View } from "@calpoly/mustang";
+import { Auth, define, Form, Observer, View } from "@calpoly/mustang";
 import { css, html } from "lit";
 import { property, state } from "lit/decorators.js";
-import { Destination, Excursion } from "server/models";
-import { AccommodationElement } from "../components/accommodation";
-import { ExcursionCardElement } from "../components/excursion-card";
+import { Destination, formatDate, convertStartEndDates } from "server/models";
 import { Msg } from "../messages";
 import { Model } from "../model";
+import { AccommodationElement } from "../components/accommodation";
 import reset from "../styles/reset.css";
-import { formatDate } from "../utils/dates";
 
 export class DestinationViewElement extends View<Model, Msg> {
   static uses = define({
-    "excursion-card": ExcursionCardElement,
-    "accommodation-info": AccommodationElement
+    "accommodation-info": AccommodationElement,
+    "mu-form": Form.Element
   });
 
   @property({ attribute: "tour-id" })
   tourid = "";
 
   @property({ type: Number })
-  index = 0;
+  index?: number;
 
   @state()
   get destination(): Destination | undefined {
-    return this.model.tour?.destinations[this.index];
-  }
+    if( this.index !== undefined ) {
+      return this.model.tour?.destinations[this.index];
+    }
+  };
 
-  @state()
-  image? = this.destination?.featuredImage;
+  @property()
+  mode = "view";
+
+  get src() {
+    return `/api/tours/${this.tourid}/destinations/${this.index}`;
+  }
 
   constructor() {
-    super("blazing:model");
+    super("blazing:model")
   }
+
+  override render() {
+    return this.mode === "edit" ?
+      this.renderEditor() :
+      this.renderView();
+  }
+
+  renderView() {
+    const {
+      name,
+      startDate,
+      endDate,
+      featuredImage,
+    } = this.destination || ({} as Destination);
+
+    return html`
+        <header>
+
+          <h2>${name}</h2>
+          <p>
+            from ${formatDate(startDate)} to
+            ${formatDate(endDate)}
+            ${endDate && endDate.getFullYear()}
+          </p>
+          <nav>
+          <button @click=${() => {
+            this.mode = "edit";
+          }}>
+            Edit
+          </button></nav>
+        </header>
+
+        <img class="hero" src=${featuredImage} />
+    `;
+  }
+
+  renderEditor() {
+    const {
+      featuredImage,
+    } = this.destination || ({} as Destination);
+    const imgUrl = this._image || featuredImage;
+
+    const init = this.destination;
+
+    return html`
+      <mu-form
+        .init=${init}
+        @mu-form:submit=${(e: CustomEvent) => {
+          if(this.src)
+            this.handleSubmit(this.src, e.detail)
+        }}>
+        <header>
+          <h2><input name="name"></h2>
+          <dl>
+            <dt>"From date"</dt>
+            <dd><input name="startDate" type="date"></dd>
+            <dt>To date</dt>
+            <dd><input name="endDate" type="date"></dd>
+            <dt>Image</dt>
+            <dd>
+              <input
+                type="file"
+                @change=${(e: InputEvent) => {
+                  const target = e.target as HTMLInputElement;
+                  const files = target.files;
+                  if (files && files.length) {
+                    this.handleImageSelected(files)
+                  }
+                }}
+              />
+            </dd>
+          </dl>
+        </header>
+        <img class="hero" src=${imgUrl} />
+      </mu-form>
+    `;
+  }
+  static styles = [
+    reset.styles,
+    css`
+      :host {
+        display: contents;
+      }
+      header {
+        display: grid;
+        grid-template-columns: subgrid;
+        grid-column: 1 / span 4;
+        grid-auto-flow: dense;
+        grid-template-rows: min-content;
+      }
+    mu-form {
+      display: contents;
+    }
+    nav {
+      grid-column: auto / -1;
+      text-align: right;
+    }
+    h2 {
+      grid-column: 1 / span 3;
+    }
+    p {
+      grid-column: 2 / -1;
+    }
+    img.hero {
+      grid-column: auto / span 4;
+    }
+    input {
+     margin: var(--size-spacing-medium) 0;
+     font: inherit;
+    }
+    dl {
+      display: grid;
+      grid-column: 1 / span 4;
+      grid-template-columns: subgrid;
+      align-items: baseline;
+    }
+    dt {
+      color: var(--color-accent);
+      font-family: var(--font-family-display);
+    }
+    dd {
+      grid-column: span 3 / -1;
+    }
+    `
+  ];
 
   attributeChangedCallback(
     name: string,
@@ -44,7 +173,6 @@ export class DestinationViewElement extends View<Model, Msg> {
       oldValue !== newValue &&
       newValue
     ) {
-      console.log("Tour Page:", newValue);
       this.dispatchMessage([
         "tour/select",
         { tourid: newValue }
@@ -52,119 +180,95 @@ export class DestinationViewElement extends View<Model, Msg> {
     }
   }
 
-  render() {
-    const {
-      name,
-      startDate,
-      endDate,
-      featuredImage,
-      accommodations = [],
-      excursions = []
-    } = this.destination || ({} as Destination);
-    const imageUrl = this.image || featuredImage;
-    const acc = accommodations[0] || { rate: {} };
+  // Auth for image upload
+  _authObserver = new Observer<Auth.Model>(this, "blazing:auth");
+  _user?: Auth.User;
 
-    return html`
-      <main class="page">
-        <header>
-          <h2>${name}</h2>
-          <p>
-            from ${formatDate(startDate)} to
-            ${formatDate(endDate)}
-            ${endDate && endDate.getFullYear()}
-          </p>
-          <button
-            @click=${() =>
-        History.dispatch(this, "history/navigate", {
-          href: `/app/destination/${this.tourid}/${this.index}/edit`
-        })}
-            >Edit</button
-          >
-        </header>
-        <img class="hero" src=${imageUrl} />
-        <accommodation-info .using=${acc}> </accommodation-info>
-        <ul class="excursions">
-          ${excursions.map(
-          (x: Excursion) =>
-            html`
-                <li>
-                  <excursion-card type="${x.type}">
-                    ${x.name}
-                  </excursion-card>
-                </li>
-              `
-        )}
-        </ul>
-      </main>
-    `;
+  override connectedCallback() {
+    super.connectedCallback();
+    this._authObserver.observe((auth: Auth.Model) => {
+      this._user = auth.user;
+    });
   }
 
-  static styles = [
-    reset.styles,
-    css`
-      :host {
-        display: contents;
-      }
-      header {
-        grid-column: 1 / span 3;
-      }
-      main.page {
-        --page-grids: 8;
+  get authorization(): { Authorization?: string } {
+    if (this._user && this._user.authenticated)
+      return {
+        Authorization:
+          `Bearer ${(this._user as Auth.AuthenticatedUser).token}`
+      };
+    else return {};
+  }
 
-        display: grid;
-        grid-column: 1/-1;
-        grid-template-columns: repeat(var(--page-grids), 1fr);
-        gap: var(--size-spacing-small)
-          var(--size-spacing-medium);
-        padding: var(--size-spacing-medium);
-        grid-template-rows: auto auto 1fr auto;
-        gap: var(--size-spacing-medium)
-          var(--size-spacing-large);
-      }
-      .page > accommodation-info {
-        display: grid;
-        grid-template-columns: subgrid;
-        grid-column: 1 / span 3;
-      }
-      .page > .hero {
-        grid-column: span min(5, var(--page-grids)) / -1;
-        grid-row: auto / span 2;
-      }
-      .page > .excursions {
-        display: contents;
-        list-style: none;
-        padding: 0;
-      }
-      .excursions > * {
-        grid-column: auto / span 2;
-      }
-      @media screen and (max-width: 50rem) {
-        main.page {
-          --page-grids: 4;
-        }
-      }
-      @media screen and (max-width: 30rem) {
-        main.page {
-          --page-grids: 2;
-        }
-      }
-      @media screen and (min-width: 75rem) and (max-width: 100rem) {
-        main.page {
-          --page-grids: 12;
-        }
-        .page > .hero {
-          grid-column-start: span 8;
-        }
-      }
-      @media screen and (min-width: 100rem) {
-        main.page {
-          --page-grids: 16;
-        }
-        .page > .hero {
-          grid-column: 5 / span 8;
-          grid-row: auto / span 3;
-        }
-      }
-    `
-  ];
+  handleSubmit(src: string, formData: object) {
+    console.log("Submitting form", formData);
+    const json: object = {
+      ...this.destination,
+      ...formData
+    };
+
+    if ( this._image )
+      (json as Destination).featuredImage = this._image
+
+    fetch( src, {
+      headers: {
+        "Content-Type": "application/json",
+        ...this.authorization
+      },
+      method: "PUT",
+      body: JSON.stringify(json)
+    })
+      .then(res => {
+        if (res.status !== 200) throw `Status: ${res.status}`;
+        else return res.json()
+      })
+      .then((json: unknown) => {
+        this.destination = convertStartEndDates<Destination>(json);
+        this.mode = "view";
+      })
+  }
+
+  @state()
+  _image?: string;
+
+  handleImageSelected(files: FileList) {
+    if (files && files.length) {
+      const reader = new Promise((resolve, reject) => {
+        const fr = new FileReader();
+        fr.onload = () => resolve(fr.result);
+        fr.onerror = (err) => reject(err);
+        fr.readAsArrayBuffer(files[0]);
+      });
+
+      reader.then((buffer) => {
+        const { name, size, type } = files[0];
+        const query = new URLSearchParams({ filename: name });
+        const url = new URL("/images", document.location.origin);
+        url.search = query.toString();
+
+        fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": type,
+            "Content-Length": size.toString(),
+            ...this.authorization
+          },
+          body: buffer as ArrayBuffer
+        })
+          .then((res) => {
+            if (res.status === 201) return res.json();
+            else throw res.status;
+          })
+          .then((json: { url: string } | undefined) => {
+            if (json) {
+              console.log("Image has been uploaded to", json.url);
+              this._image = json.url;
+            } else throw "No JSON response";
+          })
+          .catch((error) => {
+            console.log("Upload failed", error);
+          });
+      });
+    }
+  }
 }

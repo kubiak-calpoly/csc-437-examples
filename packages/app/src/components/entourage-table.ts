@@ -32,65 +32,56 @@ export class EntourageTable extends LitElement {
         color
       } = row;
       const initial = (nickname || name || userid).slice(0, 1);
-      const avatarImage = html`
-        <traveler-avatar
-          color=${color}
-          src=${avatar}
-          initial=${initial}
-          style="--avatar-size: 2em"></traveler-avatar>
-      `;
 
       return html`
-        <tr>
-          <td>
-            <a href="/app/traveler/${userid}">${avatarImage}</a>
-          </td>
-          <td class="name">
-            <a href="/app/traveler/${userid}">${name}</a>
-          </td>
-        </tr>
+        <a href="/app/profile/${userid}">
+          <traveler-avatar
+            color=${color}
+            src=${avatar}
+            initial=${initial}
+            style="--avatar-size: 2em">
+          </traveler-avatar>
+          <span>${name}</span>
+        </a>
       `;
     };
 
     return html`
       <section>
-        <a href="${this.href}"
-          ><h3>${name || "Entourage"}</h3></a
-        >
-        <table>
-          <tbody>${rows.map(renderRow)}</tbody>
-        </table>
+        <h3>${name || "Entourage"}</h3>
+        ${rows.map(renderRow)}
       </section>
     `;
   }
 
   static styles = css`
+    :host {
+      gap: var(--size-spacing-medium);
+    }
     * {
       margin: 0;
       box-sizing: border-box;
+      align-self: center;
     }
-    table {
-      width: 100%;
+    section {
+      display: contents;
     }
-    thead {
-      font-size: var(--size-font-min);
-    }
-    th,
-    td {
-      padding: 0 var(--size-spacing-small);
-      vertical-align: middle;
+    h3 {
+      grid-column: 1 / -1;
     }
     a[href] {
+      display: contents;
       font: inherit;
       color: inherit;
     }
-    .name {
-      width: 100%;
+    traveler-avatar {
+      grid-column: 1;
+      justify-self: center;
+    }
+    span {
+      grid-column: 2 / -1;
       font-family: var(--font-family-display);
       color: var(--color-accent);
-    }
-    img {
-      width: 100%;
     }
   `;
 }

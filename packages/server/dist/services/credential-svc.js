@@ -63,38 +63,27 @@ function verify(username, password) {
       throw "Invalid username or password";
     return found[0];
   }).then(
-    (credsOnFile) => new Promise((resolve, reject) => {
-      if (credsOnFile)
-        import_bcryptjs.default.compare(
-          password,
-          credsOnFile.hashedPassword,
-          (_, result) => {
-            if (!result)
-              reject("Invalid username or password");
-            else resolve(credsOnFile.username);
-          }
-        );
+    (credsOnFile) => import_bcryptjs.default.compare(
+      password,
+      credsOnFile.hashedPassword
+    ).then((result) => {
+      if (!result)
+        throw "Invalid username or password";
+      return credsOnFile.username;
     })
   );
 }
 function create(username, password) {
-  return new Promise((resolve, reject) => {
-    if (!username || !password) {
-      reject("must provide username and password");
-    }
-    credentialModel.find({ username }).then((found) => {
-      if (found.length) reject("username exists");
-    }).then(
-      () => import_bcryptjs.default.genSalt(10).then((salt) => import_bcryptjs.default.hash(password, salt)).then((hashedPassword) => {
-        const creds = new credentialModel({
-          username,
-          hashedPassword
-        });
-        creds.save().then((created) => {
-          if (created) resolve(created);
-        });
-      })
-    );
-  });
+  return credentialModel.find({ username }).then((found) => {
+    if (found.length) throw `Username exists: ${username}`;
+  }).then(
+    () => import_bcryptjs.default.genSalt(10).then((salt) => import_bcryptjs.default.hash(password, salt)).then((hashedPassword) => {
+      const creds = new credentialModel({
+        username,
+        hashedPassword
+      });
+      return creds.save();
+    })
+  );
 }
 var credential_svc_default = { create, verify };

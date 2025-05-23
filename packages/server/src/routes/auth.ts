@@ -36,7 +36,9 @@ function generateAccessToken(
 router.post("/register", (req: Request, res: Response) => {
   const { username, password } = req.body; // from form
 
-  if (!username || !password) {
+  if ( typeof username !== "string" ||
+    typeof password !== "string"
+  ) {
     res.status(400).send("Bad request: Invalid input data.");
   } else {
     credentials
@@ -44,6 +46,9 @@ router.post("/register", (req: Request, res: Response) => {
       .then((creds) => generateAccessToken(creds.username))
       .then((token) => {
         res.status(201).send({ token: token });
+      })
+      .catch((err) => {
+        res.status(409).send({ error: err.message });
       });
   }
 });
@@ -51,7 +56,9 @@ router.post("/register", (req: Request, res: Response) => {
 router.post("/login", (req: Request, res: Response) => {
   const { username, password } = req.body; // from form
 
-  if (!username || !password) {
+  if ( typeof username !== "string" ||
+       typeof password !== "string"
+  ) {
     res.status(400).send("Bad request: Invalid input data.");
   } else {
     credentials

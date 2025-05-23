@@ -16,7 +16,7 @@ export interface Accommodation {
   checkIn: Date;
   checkOut: Date;
   roomType: RoomType;
-  persons?: 1 | 2 | 3 | 4;
+  persons: 1 | 2 | 3 | 4;
   rate: Currency;
 }
 

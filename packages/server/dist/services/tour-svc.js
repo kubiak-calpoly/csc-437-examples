@@ -96,28 +96,7 @@ const tourSchema = new import_mongoose.Schema(
 );
 const tourModel = (0, import_mongoose.model)("Tour", tourSchema);
 function index() {
-  return tourModel.find().then(
-    (tours) => (
-      // populate the entourage name for each tour:
-      tourModel.populate(tours, {
-        path: "entourage",
-        select: "name"
-      })
-    )
-  ).then((tours) => tours.map(trimIndex));
-}
-function trimIndex(t) {
-  const { name, startDate, endDate, entourage } = t;
-  const { _id } = t;
-  return {
-    _id,
-    name,
-    startDate,
-    endDate,
-    entourage,
-    destinations: [],
-    transportation: []
-  };
+  return tourModel.find();
 }
 function get(id) {
   return tourModel.findById(id).populate({
@@ -146,6 +125,15 @@ function update(id, tour) {
     });
   });
 }
+function getDestination(id, n) {
+  return tourModel.findById(id).then((doc) => {
+    const tour = doc;
+    return tour.destinations[n];
+  }).catch((err) => {
+    console.log("Not found!", err);
+    throw `${id} Not Found`;
+  });
+}
 function updateDestination(id, n, newDest) {
   return new Promise((resolve, reject) => {
     const path = `destinations.${n}`;
@@ -172,5 +160,6 @@ var tour_svc_default = {
   get,
   create,
   update,
+  getDestination,
   updateDestination
 };

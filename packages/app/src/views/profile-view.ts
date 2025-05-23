@@ -1,239 +1,197 @@
-import {
-  define,
-  Form,
-  History,
-  InputArray,
-  View
-} from "@calpoly/mustang";
-import { css, html, LitElement } from "lit";
+import { define, Auth, Form, Observer, View } from "@calpoly/mustang";
+import { html, css } from "lit";
 import { property, state } from "lit/decorators.js";
 import { Traveler } from "server/models";
-import { AvatarElement } from "../components/traveler-avatar";
 import { Msg } from "../messages";
 import { Model } from "../model";
-import resetCSS from "../styles/reset.css";
-
-const gridCSS = css`
-  slot[name="avatar"] {
-    display: block;
-    grid-row: 1 / span 4;
-  }
-  nav {
-    display: contents;
-    text-align: right;
-  }
-  nav > * {
-    grid-column: controls;
-  }
-`;
-
-class ProfileViewer extends LitElement {
-  @property()
-  username?: string;
-
-  override render() {
-    return html`
-      <section>
-        <slot name="avatar"></slot>
-        <h1><slot name="name"></slot></h1>
-        <nav>
-          <a href="${this.username}/edit" class="edit">Edit</a>
-        </nav>
-        <dl>
-          <dt>Username</dt>
-          <dd><slot name="userid"></slot></dd>
-          <dt>Nickname</dt>
-          <dd><slot name="nickname"></slot></dd>
-          <dt>Home City</dt>
-          <dd><slot name="home"></slot></dd>
-          <dt>Airports</dt>
-          <dd><slot name="airports"></slot></dd>
-        </dl>
-      </section>
-    `;
-  }
-
-  static styles = [
-    resetCSS.styles,
-    gridCSS,
-    css`
-      * {
-        margin: 0;
-        box-sizing: border-box;
-      }
-      section {
-        display: grid;
-        grid-template-columns: [key] 1fr [value] 3fr [controls] 1fr [end];
-        gap: var(--size-spacing-medium)
-          var(--size-spacing-xlarge);
-        align-items: end;
-      }
-      h1 {
-        grid-row: 4;
-        grid-column: value;
-      }
-      dl {
-        display: grid;
-        grid-column: key / end;
-        grid-template-columns: subgrid;
-        gap: 0 var(--size-spacing-xlarge);
-        align-items: baseline;
-      }
-      dt {
-        grid-column: key;
-        justify-self: end;
-        color: var(--color-accent);
-        font-family: var(--font-family-display);
-      }
-      dd {
-        grid-column: value;
-      }
-      ::slotted(ul) {
-        list-style: none;
-        display: flex;
-        gap: var(--size-spacing-medium);
-      }
-    `
-  ];
-}
-
-class ProfileEditor extends LitElement {
-  static uses = define({
-    "mu-form": Form.Element,
-    "input-array": InputArray.Element
-  });
-  @property()
-  username?: string;
-
-  @property({ attribute: false })
-  init?: Traveler;
-
-  render() {
-    return html`
-      <section>
-        <h1><slot name="name"></slot></h1>
-        <nav>
-          <a class="close" href="../${this.username}">Close</a>
-          <button class="delete">Delete</button>
-        </nav>
-        <mu-form .init=${this.init}>
-          <label>
-            <span>Username</span>
-            <input disabled name="userid" />
-          </label>
-          <label>
-            <span>Avatar</span>
-            <input
-              name="avatar"
-              type="file"
-              @change=${this._handleAvatarSelected} />
-          </label>
-          <slot name="avatar"></slot>
-          <label>
-            <span>Name</span>
-            <input name="name" />
-          </label>
-          <label>
-            <span>Nickname</span>
-            <input name="nickname" />
-          </label>
-          <label>
-            <span>Home City</span>
-            <input name="home" />
-          </label>
-          <label>
-            <span>Airports</span>
-            <input-array name="airports">
-              <span slot="label-add">Add an airport</span>
-            </input-array>
-          </label>
-          <label>
-            <span>Color</span>
-            <input type="color" name="color" />
-          </label>
-        </mu-form>
-      </section>
-    `;
-  }
-
-  static styles = [
-    resetCSS.styles,
-    gridCSS,
-    css`
-      mu-form {
-        grid-column: key / end;
-      }
-      mu-form input {
-        grid-column: input;
-      }
-      mu-form label:has(input[type="file"]) {
-        grid-row-end: span 4;
-      }
-    `
-  ];
-
-  _handleAvatarSelected(ev: Event) {
-    const target = ev.target as HTMLInputElement;
-    const selectedFile = (target.files as FileList)[0];
-
-    const reader: Promise<string> = new Promise(
-      (resolve, reject) => {
-        const fr = new FileReader();
-        fr.onload = () => resolve(fr.result as string);
-        fr.onerror = (err) => reject(err);
-        fr.readAsDataURL(selectedFile);
-      }
-    );
-
-    reader.then((url: string) => {
-      this.dispatchEvent(
-        new CustomEvent("profile:new-avatar", {
-          bubbles: true,
-          composed: true,
-          detail: url
-        })
-      );
-    });
-  }
-}
+import reset from "../styles/reset.css.js";
+import headings from "../styles/headings.css.js";
 
 export class ProfileViewElement extends View<Model, Msg> {
   static uses = define({
-    "profile-viewer": ProfileViewer,
-    "profile-editor": ProfileEditor,
-    "traveler-avatar": AvatarElement
+    "mu-form": Form.Element
   });
 
-  @property({ type: Boolean, reflect: true })
-  edit = false;
+  @property({attribute: "user-id"})
+  userid?: string;
 
-  @property({ attribute: "user-id", reflect: true })
-  userid = "";
+  get src(): string | undefined{
+    if( this.userid ) {
+      return `/api/travelers/${this.userid}`;
+    }
+  }
 
   @state()
-  get profile(): Traveler | undefined {
+  get traveler(): Traveler | undefined {
     return this.model.profile;
   }
 
-  @state()
-  newAvatar?: string;
+  @property()
+  mode = "view";
 
   constructor() {
     super("blazing:model");
-
-    this.addEventListener(
-      "profile:new-avatar",
-      (event: Event) => {
-        this.newAvatar = (event as CustomEvent)
-          .detail as string;
-      }
-    );
   }
 
+  override render() {
+    return this.mode === "edit" ?
+      this.renderEditor() :
+      this.renderView();
+  }
+
+  renderView() {
+    const {
+      userid,
+      name,
+      nickname,
+      home,
+      airports = [],
+      avatar,
+      color
+    } = this.traveler || {};
+
+    return html`
+        <button @click=${() => {
+      this.mode = "edit";
+    }}>
+          Edit
+        </button>
+      <img src=${avatar} alt=${name} />
+      <h1>${name}</h1>
+      <dl>
+        <dt>Username</dt>
+        <dd>${userid}</dd>
+        <dt>Nickname</dt>
+        <dd>${nickname}</dd>
+        <dt>Home City</dt>
+        <dd>${home}</dd>
+        <dt>Airports</dt>
+        <dd>${airports.join(", ")}</dd>
+        <dt>Favorite Color</dt>
+        <dd>
+          <slot name="color-swatch">
+            <span
+              class="swatch"
+              style="background: ${color}"></span>
+          </slot>
+          <slot name="color-name">${color}</slot>
+        </dd>
+      </dl>
+      </section>
+      </template>`;
+  }
+
+  renderEditor() {
+    const {
+      name,
+      avatar,
+      airports = []
+    } = this.traveler || {};
+
+    const init = {
+      ...this.traveler,
+      airports: airports.join(" ")
+    };
+
+    return html`
+      <mu-form
+        .init=${init}
+        @mu-form:submit=${(e: CustomEvent) => {
+      if (this.src)
+        this.handleSubmit(this.src, e.detail )
+    }
+    }>
+        <img src=${avatar} alt=${name} />
+        <h1><input name="name"></h1>
+        <dl>
+          <dt>Avatar</dt>
+          <dd>
+            <input
+              type="file"
+              @change=${(e: InputEvent) => {
+      const target = e.target as HTMLInputElement;
+      const files = target.files;
+      if (files && files.length) {
+        this.handleAvatarSelected(files)
+      }
+    }}
+            />
+          </dd>
+          <dt>Nickname</dt>
+          <dd><input name="nickname"></dd>
+          <dt>Home City</dt>
+          <dd><input name="home"></dd>
+          <dt>Airports</dt>
+          <dd><input name="airports"></dd>
+          <dt>Favorite Color</dt>
+          <dd>
+            <input type="color" name="color">
+          </dd>
+        </dl>
+      </mu-form>`;
+  }
+
+  static styles = [
+    reset.styles,
+    headings.styles,
+    css`
+    :host {
+      display: contents;
+      grid-column: 2/-2;
+      display: grid;
+      grid-template-columns: subgrid;
+    }
+    section {
+      display: grid;
+      grid-template-columns: subgrid;
+      gap: inherit;
+      gap: var(--size-spacing-medium) var(--size-spacing-xlarge);
+      align-items: end;
+      grid-column: 1 / -1;
+    }
+    h1 {
+      grid-row: 4;
+      grid-column: auto / span 2;
+    }
+    img {
+      display: block;
+      grid-column: auto / span 2;
+      grid-row: 1 / span 4;
+    }
+    .swatch {
+      display: inline-block;
+      width: 2em;
+      aspect-ratio: 1;
+      vertical-align: middle;
+    }
+    dl {
+      display: grid;
+      grid-column: 1 / -1;
+      grid-row: 5 / auto;
+      grid-template-columns: subgrid;
+      align-items: baseline;
+    }
+    dt {
+      grid-column: 1 / span 2;
+      color: var(--color-accent);
+      font-family: var(--font-family-display);
+    }
+    dd {
+      grid-column: 3 / -1;
+    }
+    mu-form {
+      display: contents;
+    }
+    input {
+     margin: var(--size-spacing-medium) 0;
+     font: inherit;
+    }
+  `];
+
   attributeChangedCallback(
-    name: string,
-    oldValue: string,
-    newValue: string
+      name: string,
+      oldValue: string,
+      newValue: string
   ) {
     super.attributeChangedCallback(name, oldValue, newValue);
     if (
@@ -241,7 +199,6 @@ export class ProfileViewElement extends View<Model, Msg> {
       oldValue !== newValue &&
       newValue
     ) {
-      console.log("Profiler Page:", newValue);
       this.dispatchMessage([
         "profile/select",
         { userid: newValue }
@@ -249,77 +206,67 @@ export class ProfileViewElement extends View<Model, Msg> {
     }
   }
 
-  render() {
-    const {
-      color,
-      avatar,
-      name,
-      userid,
-      nickname,
-      home,
-      airports = []
-    } = this.profile || {};
-    const initial = (name || nickname || userid || "?").slice(
-      0,
-      1
-    );
-    const airports_html = airports.map(
-      (s) => html` <li>${s}</li> `
-    );
+  _authObserver = new Observer<Auth.Model>(this, "blazing:auth");
+  _user?: Auth.User;
 
-    const fields = html`
-      <traveler-avatar
-        slot="avatar"
-        color=${color}
-        src=${this.newAvatar || avatar}
-        initial=${initial}></traveler-avatar>
-    `;
-
-    return this.edit
-      ? html`
-          <profile-editor
-            username=${userid}
-            .init=${this.profile}
-            @mu-form:submit=${(
-        event: Form.SubmitEvent<Traveler>
-      ) => this._handleSubmit(event)}>
-            ${fields}
-          </profile-editor>
-        `
-      : html`
-          <profile-viewer username=${userid}>
-            ${fields}
-            <span slot="name">${name}</span>
-            <span slot="userid">${userid}</span>
-            <span slot="nickname">${nickname}</span>
-            <span slot="home">${home}</span>
-            <ul slot="airports">
-              ${airports_html}
-            </ul>
-          </profile-viewer>
-        `;
+  override connectedCallback() {
+    super.connectedCallback();
+    this._authObserver.observe((auth: Auth.Model) => {
+      this._user = auth.user;
+    });
   }
 
-  _handleSubmit(event: Form.SubmitEvent<Traveler>) {
-    console.log("Handling submit of mu-form");
-    const profile = this.newAvatar
-      ? { ...event.detail, avatar: this.newAvatar }
-      : event.detail;
-    this.dispatchMessage([
-      "profile/save",
-
-      {
-        userid: this.userid,
-        profile,
-        onSuccess: () =>
-          History.dispatch(this, "history/navigate", {
-            href: `/app/profile/${this.userid}`
-          }),
-        onFailure: (error: Error) =>
-          console.log("ERROR:", error)
-      }
-    ]);
+  get authorization(): { Authorization?: string } {
+    if (this._user && this._user.authenticated)
+      return {
+        Authorization:
+          `Bearer ${(this._user as Auth.AuthenticatedUser).token}`
+      };
+    else return {};
   }
 
-  static styles = [resetCSS.styles];
+  _avatar? : string; // the avatar, base64 encoded
+
+  handleSubmit(src: string, formData: object) {
+    const json: object = {
+      ...this.traveler,
+      ...formData
+    }
+
+    if ("airports" in formData ) {
+      (json as Traveler).airports = (formData.airports as string).split(" ")
+    }
+    if (this._avatar) (json as Traveler).avatar = this._avatar;
+
+    fetch( src, {
+      headers: {
+        "Content-Type": "application/json",
+        ...this.authorization
+      },
+      method: "PUT",
+      body: JSON.stringify(json)
+    })
+      .then(res => {
+        if (res.status !== 200) throw `Status: ${res.status}`;
+        else return res.json()
+      })
+      .then((json: unknown) => {
+        this.traveler = json as Traveler;
+        this.mode = "view";
+      })
+  }
+
+  handleAvatarSelected(files: FileList) {
+    if (files && files.length) {
+      const reader = new Promise((resolve, reject) => {
+        const fr = new FileReader();
+        fr.onload = () => resolve(fr.result);
+        fr.onerror = (err) => reject(err);
+        fr.readAsDataURL(files[0]);
+      });
+
+      reader.then((result: unknown) =>
+        (this._avatar = result as string));
+    }
+  }
 }

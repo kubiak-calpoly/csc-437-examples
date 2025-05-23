@@ -4,9 +4,9 @@ import { Transportation } from "./transportation";
 
 export interface Tour {
   name: string;
-  startDate: Date;
-  endDate: Date;
   destinations: Array<Destination>;
   transportation: Array<Transportation>;
+  startDate: Date;
+  endDate: Date;
   entourage: Entourage;
 }

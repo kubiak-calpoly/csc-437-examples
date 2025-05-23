@@ -24,6 +24,7 @@
   --color-text: rgb(51 51 51);
   --color-text-heading: var(--color-accent);
   --color-text-inverted: rgb(255 255 255);
+  --color-error: rgb(200, 23, 23);
 
   --font-family-body: Merriweather, Baskerville, Cambria,
     "Noto Serif", "Bitstream Charter", serif;

@@ -52,7 +52,7 @@ function create(traveler: Traveler): Promise<Traveler> {
 }
 
 function remove(userid: String): Promise<void> {
-  return travelerModel
+  return TravelerModel
     .findOneAndDelete({ userid })
     .then((deleted) => {
       if (!deleted) throw `${userid} not deleted`;
