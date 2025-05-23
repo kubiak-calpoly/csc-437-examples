@@ -1,5 +1,5 @@
-import { Auth, define, Observer } from "@calpoly/mustang";
-import { css, html, LitElement, TemplateResult } from "lit";
+import { define, View } from "@calpoly/mustang";
+import { css, html, TemplateResult } from "lit";
 import { property, state } from "lit/decorators.js";
 import {
   Destination,
@@ -7,6 +7,8 @@ import {
   Tour,
   Transportation
 } from "server/models";
+import { Msg } from "../messages.ts";
+import { Model } from "../model.ts";
 import { DateRangeElement} from "../components/date-range.ts";
 import { EntourageTable } from "../components/entourage-table";
 import { DestinationElement } from "../components/destination.ts";
@@ -16,7 +18,7 @@ import {
   formatDate
 } from "../utils/dates";
 
-export class TourViewElement extends LitElement {
+export class TourViewElement extends View<Model, Msg> {
   static uses = define({
     "date-range": DateRangeElement,
     "entourage-table": EntourageTable,
@@ -28,39 +30,19 @@ export class TourViewElement extends LitElement {
   tourid = "";
 
   @state()
-  tour?: Tour;
+  get tour() {
+    return this.model.tour;
+  };
 
-  get src() {
-    if (this.tourid)
-      return `/api/tours/${this.tourid}`;
-  }
-
-  _authObserver = new Observer<Auth.Model>(
-    this,
-    "blazing:auth"
-  );
-
-  _user = new Auth.User();
-
-  connectedCallback() {
-    super.connectedCallback();
-    this._authObserver.observe(({user}) => {
-      if (user) {
-        this._user = user;
-      }
-      if (this._user.authenticated && this.src) {
-        loadData(this.src, this._user as Auth.AuthenticatedUser)
-          .then((tour: Tour | undefined) => this.tour = tour);
-      }
-    });
-  }
-
-  attributeChangedCallback(name: string, _old: string | null, value: string | null) {
-    super.attributeChangedCallback(name, _old, value);
-    if (this._user.authenticated && this.src) {
-      loadData(this.src, this._user as Auth.AuthenticatedUser)
-        .then((tour: Tour | undefined) => this.tour = tour);
+  attributeChangedCallback(name: string, old: string | null, value: string | null) {
+    super.attributeChangedCallback(name, old, value);
+    if(name === "tour-id" && old !== value && value ) {
+      this.dispatchMessage(["tour/select", {tourid: value}]);
     }
+  }
+
+  constructor() {
+    super("blazing:model");
   }
 
   render(): TemplateResult {
@@ -231,26 +213,4 @@ export class TourViewElement extends LitElement {
   ];
 }
 
-function loadData(
-  src: string,
-  user: Auth.AuthenticatedUser
-): Promise<Tour | undefined>
-{
-  return fetch(src, {
-    headers: Auth.headers(user)
-  })
-    .then((res: Response) => {
-      if (res.status === 200) return res.json();
-      throw `Server responded with status ${res.status}`;
-    })
-    .then((json: unknown) => {
-      if (json) {
-        console.log("Tour:", json);
-        let tour: Tour = convertStartEndDates<Tour>(json);
-        tour.destinations = tour.destinations.map(
-          convertStartEndDates<Destination>
-        );
-        return tour;
-      }
-    })
-}
+
