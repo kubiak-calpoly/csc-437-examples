@@ -81,3 +81,5 @@ define({
   "tour-view": TourViewElement,
   "profile-view": ProfileViewElement
 });
+
+HeaderElement.initializeOnce();
