@@ -22,12 +22,6 @@ export default function update(
         );
       break;
     case "tour/select":
-      loadTour(message[1], user)
-        .then((tour) =>
-          apply((model) =>
-            ({ ...model, tour })
-          )
-        );
       break;
     default:
       throw new Error(`Unhandled Auth message "${unhandled}"`);
@@ -54,26 +48,3 @@ function loadProfile(
     });
 }
 
-function loadTour(
-  payload: { tourid: string },
-  user: Auth.User
-): Promise<Tour|undefined> {
-  const src = `/api/tours/${payload.tourid}`;
-
-  return fetch(src, {
-    headers: Auth.headers(user)
-  })
-    .then((res: Response) => {
-      if (res.status === 200) return res.json();
-    })
-    .then((json: object) => {
-      if (json) {
-        console.log("Tour:", json);
-        let tour: Tour = convertStartEndDates<Tour>(json);
-        tour.destinations = tour.destinations.map(
-          convertStartEndDates<Destination>
-        );
-        return tour;
-      }
-    })
-}
