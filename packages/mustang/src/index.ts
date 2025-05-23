@@ -1,10 +1,28 @@
-export * from "./auth";
+import * as Auth from "./auth";
+import * as Events from "./event";
+import * as Form from "./form";
+import * as History from "./history";
+import * as Message from "./message";
+import * as Rest from "./rest";
+import * as Store from "./store";
+import * as Switch from "./switch";
+import * as Update from "./update";
+
+export * from "./components";
+export { css } from "./css";
 export * from "./define";
-export * from "./history";
-export * from "./message";
+export { html } from "./html";
 export * from "./observer";
-export * from "./rest";
-export * from "./router";
-export * from "./store";
-export * from "./update";
-export * from "./view";
+export { shadow } from "./shadow";
+export { View } from "./view";
+export {
+  Auth,
+  Events,
+  Form,
+  History,
+  Message,
+  Rest,
+  Store,
+  Switch,
+  Update
+};

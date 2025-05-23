@@ -11,25 +11,29 @@ export class Observer<T extends object> {
     this._contextLabel = contextLabel;
   }
 
-  observe() {
+  observe(fn: EffectFn<T> | undefined = undefined) {
     return new Promise<Effect<T>>((resolve, _) => {
       if (this._provider) {
-        const effect = new Effect<T>(this._provider);
+        const effect = new Effect<T>(this._provider, fn);
         this._effects.push(effect);
         resolve(effect);
       } else {
-        whenProviderReady<T>(
-          this._target,
-          this._contextLabel
-        ).then((provider: Provider<T>) => {
-          const effect = new Effect<T>(provider);
-          this._provider = provider;
-          this._effects.push(effect);
-          provider.attach((ev: Event) =>
-            this._handleChange(ev as CustomEvent)
+        whenProviderReady<T>(this._target, this._contextLabel)
+          .then((provider: Provider<T>) => {
+            const effect = new Effect<T>(provider, fn);
+            this._provider = provider;
+            this._effects.push(effect);
+            provider.attach((ev: Event) =>
+              this._handleChange(ev as CustomEvent)
+            );
+            resolve(effect);
+          })
+          .catch((err) =>
+            console.log(
+              `Observer ${this._contextLabel} failed to locate a provider`,
+              err
+            )
           );
-          resolve(effect);
-        });
       }
     });
   }
@@ -40,6 +44,7 @@ export class Observer<T extends object> {
       ev,
       this._effects
     );
+    ev.stopPropagation();
     this._effects.forEach((obs) => obs.runEffect());
   }
 }
@@ -50,12 +55,17 @@ export class Effect<T extends object> {
   _provider: Provider<T>;
   _effectFn?: EffectFn<T>;
 
-  constructor(observable: Provider<T>) {
+  constructor(observable: Provider<T>, fn?: EffectFn<T>) {
     this._provider = observable;
+    if (fn) this.setEffect(fn);
   }
 
   get context() {
     return this._provider.context;
+  }
+
+  get value() {
+    return this.context.value;
   }
 
   setEffect(fn: EffectFn<T>) {
@@ -65,7 +75,7 @@ export class Effect<T extends object> {
 
   runEffect() {
     if (this._effectFn) {
-      this._effectFn(this.context);
+      this._effectFn(this.context.value);
     }
   }
 }

@@ -1,0 +1,103 @@
+body {
+  font-family: var(--font-family-body);
+  background-color: var(--color-background-page);
+  color: var(--color-text);
+}
+.page {
+  --page-grid-columns: 8;
+  --page-section-columns: 2;
+  --page-grid-gap: var(--size-spacing-large);
+
+  display: grid;
+  grid-template-columns:
+    [start] repeat(var(--page-grid-columns), 1fr)
+    [end];
+  gap: var(--page-grid-gap);
+  align-items: baseline;
+  padding: 0 calc(0.5 * var(--page-grid-gap));
+
+  @media screen and (max-width: 40rem) {
+    --page-grids: 6;
+  }
+
+  @media screen and (max-width: 60rem) {
+    --page-grids: 8;
+  }
+}
+
+.page > section {
+  grid-template-columns: subgrid;
+  display: grid;
+  grid-column-end: span var(--page-section-columns);
+}
+.page > section > * {
+  grid-column-end: span var(--page-section-columns);
+}
+.page > main {
+  --page-main-columns: calc(
+    var(--page-grid-columns) - var(--page-section-columns)
+  );
+
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: start / span var(--page-main-columns);
+}
+.page > main > * {
+  grid-column: start / span var(--page-main-columns);
+}
+
+h1,
+h2,
+h3,
+h5,
+h6,
+dt,
+summary {
+  font-family: var(--font-family-display);
+  line-height: var(--font-line-height-display);
+}
+h1 {
+  font-size: var(--size-type-xxlarge);
+  font-style: oblique;
+  line-height: 1;
+  font-weight: var(--font-weight-bold);
+}
+h2 {
+  font-size: var(--size-type-xlarge);
+  font-weight: var(--font-weight-bold);
+}
+h3 {
+  font-size: var(--size-type-large);
+  font-weight: var(--font-weight-normal);
+  font-style: oblique;
+}
+h4 {
+  font-size: var(--size-type-mlarge);
+  font-weight: var(--font-weight-light);
+}
+h5 {
+  font-size: var(--size-type-body);
+  font-weight: var(--font-weight-bold);
+}
+h6 {
+  font-size: var(--size-type-body);
+  font-weight: var(--font-weight-normal);
+  font-style: italic;
+}
+dt {
+  font-weight: var(--size-type-body);
+}
+h3,
+a[href],
+a[onclick] {
+  color: var(--color-accent);
+}
+a[onclick] {
+  cursor: pointer;
+}
+time {
+  white-space: nowrap;
+}
+.card {
+  color-background: var(--color-background-card);
+}

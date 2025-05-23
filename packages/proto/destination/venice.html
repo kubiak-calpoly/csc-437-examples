@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com" />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,200;0,400;0,700;1,700&family=Merriweather:wght@400;700&display=swap"
+      rel="stylesheet" />
+    <link rel="stylesheet" href="/styles/reset.css" />
+    <link rel="stylesheet" href="/styles/tokens.css" />
+    <link rel="stylesheet" href="/styles/page.css" />
+
+    <script type="module">
+      import { define, Auth } from "@calpoly/mustang";
+      import { HeaderElement } from "/src/header.ts";
+      import { DestinationViewElement } from "/src/destination-view.ts";
+
+      define({
+        "blz-header": HeaderElement,
+        "mu-auth": Auth.Provider,
+        "destination-view": DestinationViewElement
+      });
+
+      HeaderElement.initializeOnce();
+    </script>
+  </head>
+  <body>
+    <mu-auth provides="blazing:auth">
+
+      <blz-header>
+        <a href="/">&larr; Tour: 12 Days in Italy</a>
+      </blz-header>
+
+      <main class="page">
+        <destination-view
+          src="/api/tours/65c7e92ea837ff7c15b669e5/destinations/0">
+        </destination-view>
+      </main>
+    </mu-auth>
+  </body>
+</html>

@@ -4,14 +4,11 @@
   "description": "Code examples for CSC 437 — Dynamic Web Development",
   "main": "index.js",
   "scripts": {
-    "build:docs": "npx @11ty/eleventy",
-    "build:frontend": "npm run -w lit-frontend build",
-    "docs": "npm run build:docs && npm run start:docs",
-    "start": "npm run build:frontend && npm run start:backend",
-    "start:docs": "npx @11ty/eleventy --serve",
-    "start:proto": "npm -w proto start",
-    "start:frontend": "npm -w lit-frontend run dev",
-    "start:backend": "npm -w express-backend run start",
+    "build": "npm run -w app build",
+    "start": "npm run start:app",
+    "start:api": "npm start -w server",
+    "start:app": "npm run -w server start:app",
+    "start:proto": "npm run -w server start:proto",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -29,18 +26,5 @@
   "homepage": "https://github.com/kubiak-calpoly/csc-437-examples#readme",
   "workspaces": [
     "packages/*"
-  ],
-  "devDependencies": {
-    "@11ty/eleventy": "^2.0.1",
-    "@11ty/eleventy-plugin-syntaxhighlight": "^5.0.0",
-    "@11ty/eleventy-plugin-vite": "^4.0.0",
-    "@cre.ative/kram": "^1.6.0",
-    "@cre.ative/kram-11ty": "^1.6.4",
-    "@cre.ative/kram-typescript": "^1.6.0",
-    "@types/geojson": "^7946.0.14",
-    "lit": "^3.1.1"
-  },
-  "dependencies": {
-    "bcryptjs": "^2.4.3"
-  }
+  ]
 }

@@ -2,73 +2,115 @@ import { jwtDecode } from "jwt-decode";
 import { Context, Provider } from "./context";
 import { dispatcher } from "./message";
 import { Service } from "./service";
-import { MapFn, Update, noUpdate, replace } from "./update";
+import { ApplyMap, replace } from "./update";
 
 const TOKEN_KEY = "mu:auth:jwt";
 
-export interface AuthModel {
-  user?: APIUser;
+interface AuthModel {
+  user?: APIUser | AuthenticatedUser;
   token?: string;
 }
 
-export interface AuthAttempt {
-  credentials: LoginCredential;
+interface AuthSuccessful {
+  token: string;
+  redirect?: string;
 }
 
-export interface AuthRegister {
-  credentials: LoginCredential;
-}
+type AuthMsg =
+  | ["auth/signin", AuthSuccessful]
+  | ["auth/signout"]
+  | ["auth/redirect"];
 
-export type AuthMsg =
-  | ["auth/signin", AuthAttempt]
-  | ["auth/signup", AuthRegister]
-  | ["auth/signout"];
-
-export class AuthService extends Service<AuthMsg, AuthModel> {
+class AuthService extends Service<AuthMsg, AuthModel> {
   static EVENT_TYPE = "auth:message";
 
-  constructor(context: Context<AuthModel>) {
-    super(update, context, AuthService.EVENT_TYPE);
+  _redirectForLogin: string | undefined;
+
+  constructor(
+    context: Context<AuthModel>,
+    redirectForLogin: string | undefined
+  ) {
+    super(
+      (msg, apply) => this.update(msg, apply),
+      context,
+      AuthService.EVENT_TYPE
+    );
+    this._redirectForLogin = redirectForLogin;
   }
 
-  static dispatch = dispatcher(AuthService.EVENT_TYPE);
+  update(message: AuthMsg, apply: ApplyMap<AuthModel>) {
+    switch (message[0]) {
+      case "auth/signin":
+        const { token, redirect } = message[1];
+        apply(signIn(token));
+        return redirection(redirect);
+      case "auth/signout":
+        apply(signOut());
+        return redirection(this._redirectForLogin);
+      case "auth/redirect":
+        return redirection(this._redirectForLogin, {
+          next: window.location.href
+        });
+      default:
+        const unhandled: never = message[0];
+        throw new Error(
+          `Unhandled Auth message "${unhandled}"`
+        );
+    }
+  }
 }
 
-const update: Update<AuthMsg, AuthModel> = (message, apply) => {
-  switch (message[0]) {
-    case "auth/signin":
-      loginUser(message[1] as AuthAttempt).then(apply);
-      return;
-    case "auth/signup":
-      registerUser(message[1] as AuthRegister).then(apply);
-      return;
-    case "auth/signout":
-      apply(signOut());
-      return;
-    default:
-      const unhandled: never = message[0];
-      throw new Error(`Unhandled Auth message "${unhandled}"`);
-  }
-};
+const dispatch = dispatcher<AuthMsg>(AuthService.EVENT_TYPE);
 
-export class AuthElement extends Provider<AuthModel> {
+function redirection(
+  redirect: string | undefined,
+  query: { [key: string]: string } = {}
+) {
+  if (!redirect) return undefined;
+
+  const base = window.location.href;
+  const target = new URL(redirect, base);
+
+  Object.entries(query).forEach(([k, v]) =>
+    target.searchParams.set(k, v)
+  );
+
+  return () => {
+    console.log("Redirecting to ", redirect);
+    window.location.assign(target);
+  };
+}
+
+class AuthProvider extends Provider<AuthModel> {
+  get redirect() {
+    return this.getAttribute("redirect") || undefined;
+  }
+
   constructor() {
-    super({ user: new APIUser() });
-    const service = new AuthService(this.context);
+    const user =
+      AuthenticatedUser.authenticateFromLocalStorage();
+    super({
+      user,
+      token: user.authenticated
+        ? (user as AuthenticatedUser).token
+        : undefined
+    });
+  }
+
+  connectedCallback() {
+    const service = new AuthService(
+      this.context,
+      this.redirect
+    );
     service.attach(this);
   }
 }
 
-export interface LoginCredential {
-  username: string;
-  pwd: string;
-}
-
-export class APIUser {
+class APIUser {
   authenticated = false;
   username = "anonymous";
 
-  static deauthenticate(user: AuthenticatedUser) {
+  static deauthenticate(user: APIUser) {
     user.authenticated = false;
     user.username = "anonymous";
     localStorage.removeItem(TOKEN_KEY);
@@ -76,12 +118,16 @@ export class APIUser {
   }
 }
 
-export class AuthenticatedUser extends APIUser {
+interface PayloadModel {
+  username: string;
+}
+
+class AuthenticatedUser extends APIUser {
   token: string | undefined;
 
   constructor(token: string) {
     super();
-    const jsonPayload = jwtDecode(token) as LoginCredential;
+    const jsonPayload = jwtDecode(token) as PayloadModel;
     console.log("Token payload", jsonPayload);
     this.token = token;
     this.authenticated = true;
@@ -103,53 +149,57 @@ export class AuthenticatedUser extends APIUser {
   }
 }
 
-function loginUser(
-  msg: AuthAttempt
-): Promise<MapFn<AuthModel>> {
-  const root = window.location.origin;
-
-  return fetch(`${root}/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(msg)
-  })
-    .then((res) => {
-      if (res.status === 200) return res.json();
-      else return undefined;
-    })
-    .then((json) => {
-      if (json) {
-        console.log("Authentication:", json.token);
-        const user = AuthenticatedUser.authenticate(json.token);
-        const token = user ? (json.token as string) : "";
-        console.log("Providing auth user:", user);
-        return replace<AuthModel>({ user, token });
-      } else {
-        return noUpdate;
-      }
-    });
-}
-
-function registerUser(
-  msg: AuthRegister
-): Promise<MapFn<AuthModel>> {
-  const root = window.location.origin;
-
-  return fetch(`${root}/signup`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(msg)
-  })
-    .then((res) => {
-      if (res.status === 200) return res.json();
-      else return undefined;
-    })
-    .then((json) => {
-      console.log("Registration:", json);
-      return noUpdate;
-    });
+function signIn(token: string) {
+  return replace<AuthModel>({
+    user: AuthenticatedUser.authenticate(token),
+    token
+  });
 }
 
 function signOut() {
-  return replace<AuthModel>({ user: new APIUser(), token: "" });
+  return (model: AuthModel) => {
+    const oldUser = model.user;
+
+    return {
+      user:
+        oldUser && oldUser.authenticated
+          ? APIUser.deauthenticate(oldUser)
+          : oldUser,
+      token: ""
+    };
+  };
 }
+
+function authHeaders(user: APIUser | AuthenticatedUser): {
+  Authorization?: string;
+} {
+  if (user.authenticated) {
+    const authUser = user as AuthenticatedUser;
+    return {
+      Authorization: `Bearer ${authUser.token || "NO_TOKEN"}`
+    };
+  } else {
+    return {};
+  }
+}
+
+function tokenPayload(
+  user: APIUser | AuthenticatedUser
+): object {
+  if (user.authenticated) {
+    const authUser = user as AuthenticatedUser;
+    return jwtDecode(authUser.token || "");
+  } else {
+    return {};
+  }
+}
+
+export {
+  AuthenticatedUser, dispatch,
+  authHeaders as headers,
+  tokenPayload as payload, AuthProvider as Provider,
+  APIUser as User, type AuthSuccessful,
+  type AuthModel as Model,
+  type AuthMsg as Msg,
+  type AuthService as Service
+};

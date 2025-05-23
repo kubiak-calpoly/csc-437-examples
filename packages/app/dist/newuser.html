@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com" />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,200;0,400;0,700;1,700&family=Merriweather:wght@400;700&display=swap"
+      rel="stylesheet" />
+    <link rel="stylesheet" href="/styles/reset.css" />
+    <link rel="stylesheet" href="/styles/tokens.css" />
+    
+    <style>
+      .page {
+        height: 100vh;
+        grid-template-rows: 1fr fit-content(1fr) 1fr;
+      }
+      main.card {
+        align-self: center;
+        grid-column: 3 / span 4;
+      }
+      h2 {
+        grid-column: start / end;
+        align-self: end;
+      }
+      p {
+        grid-column: 2 / -2;
+        text-align: center;
+      }
+    </style>
+    <script type="module" crossorigin src="/assets/signup-186ba9b8.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/lit-element-19d16ef1.js">
+  </head>
+  <body class="page">
+    <mu-auth>
+      <h2>New User Registration</h2>
+      <main class="card">
+        <signup-form>
+          <label>
+            <span>Username:</span>
+            <input name="username" autocomplete="off" />
+          </label>
+          <label>
+            <span>Password:</span>
+            <input type="password" name="password" />
+          </label>
+        </signup-form>
+      </main>
+      <p>
+        Already have an account and want to
+        <a href="./login.html">Log In</a>
+        instead?
+      </p>
+    </mu-auth>
+  </body>
+</html>

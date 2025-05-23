@@ -26,8 +26,9 @@ export class Provider<T extends object> extends HTMLElement {
 
   constructor(init: T) {
     super();
-    console.log("Constructing context", this);
+    console.log("Constructing context provider", this);
     this.context = new Context<T>(init, this);
+    this.style.display = "contents";
   }
 
   attach(observer: EventListener) {
@@ -44,25 +45,20 @@ export function createContext<T extends object>(
   root: T,
   eventTarget: Provider<T>
 ): T {
-  console.log("creating Context:", JSON.stringify(root));
-
   let proxy = new Proxy<T>(root, {
     get: (target, prop: string, receiver) => {
       if (prop === "then") {
         return undefined;
       }
       const value = Reflect.get(target, prop, receiver);
-      console.log(
-        `Context['${prop}'] => ${JSON.stringify(value)}`
-      );
+      console.log(`Context['${prop}'] => `, value);
       return value;
     },
     set: (target, prop: string, newValue, receiver) => {
       const oldValue = root[prop as keyof T];
       console.log(
-        `Context['${prop.toString()}'] <= ${JSON.stringify(
-          newValue
-        )}; was ${JSON.stringify(oldValue)}`
+        `Context['${prop.toString()}'] <= `,
+        newValue
       );
       const didSet = Reflect.set(
         target,
@@ -82,11 +78,6 @@ export function createContext<T extends object>(
           value: newValue
         });
         eventTarget.dispatchEvent(evt);
-        console.log(
-          "dispatched event to target",
-          evt,
-          eventTarget
-        );
       } else {
         console.log(
           `Context['${prop}] was not set to ${newValue}`
@@ -116,7 +107,7 @@ export function whenProviderReady<T extends object>(
         .then(() => resolve(provider));
     } else {
       reject({
-        context,
+        context: contextLabel,
         reason: `No provider for this context "${contextLabel}:`
       });
     }
@@ -128,15 +119,17 @@ function closestProvider(
   el: Element
 ): Element | undefined {
   const selector = `[provides="${contextLabel}"]`;
-  return (
-    (el &&
-      el !== document.rootElement &&
-      (el.closest(selector) ||
-        (el.shadowRoot &&
-          closestProvider(
-            contextLabel,
-            el.shadowRoot.host
-          )))) ||
-    undefined
-  );
+
+  if (!el || el === document.getRootNode()) return undefined;
+
+  const closest = el.closest(selector);
+
+  if (closest) return closest;
+
+  const root = el.getRootNode();
+
+  if (root instanceof ShadowRoot)
+    return closestProvider(contextLabel, root.host);
+
+  return undefined;
 }

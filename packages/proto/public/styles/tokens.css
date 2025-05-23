@@ -1,6 +1,6 @@
 :root {
-  --size-icon-normal: 1em;
-  --size-icon-large: 4rem;
+  --size-icon-normal: 2em;
+  --size-icon-large: 4em;
 
   --size-spacing-small: 0.25rem;
   --size-spacing-medium: 0.5rem;
@@ -18,12 +18,13 @@
   --color-accent: rgb(42 143 42);
   --color-background-header: var(--color-accent);
   --color-background-page: rgb(238 237 231);
-  --color-border-control: #999;
+  --color-border: var(--color-accent);
   --color-link-inverted: rgb(255 208 0);
   --color-link: var(--color-accent);
   --color-text: rgb(51 51 51);
   --color-text-heading: var(--color-accent);
   --color-text-inverted: rgb(255 255 255);
+  --color-error: rgb(200, 23, 23);
 
   --font-family-body: Merriweather, Baskerville, Cambria,
     "Noto Serif", "Bitstream Charter", serif;
@@ -31,9 +32,13 @@
     "Segoe UI", Ubuntu, sans-serif;
 
   --font-line-height-body: 1.5;
+  --font-line-height-compact: 1.25;
   --font-line-height-display: 1.125;
+  --font-line-height-logotype: 1;
 
   --font-weight-normal: 400;
   --font-weight-light: 200;
   --font-weight-bold: 700;
+
+  --line-weight-rule: 1px;
 }
