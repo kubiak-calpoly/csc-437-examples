@@ -7,13 +7,14 @@ import {
   Tour,
   Transportation
 } from "server/models";
-import { Msg } from "../messages";
-import { Model } from "../model";
+import { Msg } from "../messages.ts";
+import { Model } from "../model.ts";
 import { DateRangeElement} from "../components/date-range.ts";
 import { EntourageTable } from "../components/entourage-table";
 import { DestinationElement } from "../components/destination.ts";
 import { TransportationElement } from "../components/transportation.ts";
 import {
+  convertStartEndDates,
   formatDate
 } from "../utils/dates";
 
@@ -29,9 +30,16 @@ export class TourViewElement extends View<Model, Msg> {
   tourid = "";
 
   @state()
-  get tour() : Tour | undefined {
+  get tour() {
     return this.model.tour;
   };
+
+  attributeChangedCallback(name: string, old: string | null, value: string | null) {
+    super.attributeChangedCallback(name, old, value);
+    if(name === "tour-id" && old !== value && value ) {
+      this.dispatchMessage(["tour/select", {tourid: value}]);
+    }
+  }
 
   constructor() {
     super("blazing:model");
@@ -72,7 +80,7 @@ export class TourViewElement extends View<Model, Msg> {
           ? html`
               <span slot="via">
                 ${segments.slice(1).map(
-                  (seg) => seg.departure.station ||
+                  (seg) => seg.departure.station || 
                     seg.departure.name
                 )
                 .join(", ")}
@@ -195,7 +203,7 @@ export class TourViewElement extends View<Model, Msg> {
         display: grid;
         grid-template-columns: subgrid;
       }
-
+      
       date-range {
         text-align: right;
         font-family: var(--font-family-display);
@@ -203,22 +211,6 @@ export class TourViewElement extends View<Model, Msg> {
       }
     `
   ];
-
-  attributeChangedCallback(
-    name: string,
-    oldValue: string,
-    newValue: string
-  ) {
-    super.attributeChangedCallback(name, oldValue, newValue);
-    if (
-      name === "tour-id" &&
-      oldValue !== newValue &&
-      newValue
-    ) {
-      this.dispatchMessage([
-        "tour/select",
-        { tourid: newValue }
-      ]);
-    }
-  }
 }
+
+

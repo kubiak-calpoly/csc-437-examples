@@ -55,18 +55,18 @@ function loadProfile(
 }
 
 function loadTour(
-  payload: { tourid: string },
-  user: Auth.User
-): Promise<Tour|undefined> {
-  const src = `/api/tours/${payload.tourid}`;
-
-  return fetch(src, {
+  payload: {tourid: string},
+  user: Auth.AuthenticatedUser
+): Promise<Tour | undefined>
+{
+  return fetch(`/api/tours/${payload.tourid}`, {
     headers: Auth.headers(user)
   })
     .then((res: Response) => {
       if (res.status === 200) return res.json();
+      throw `Server responded with status ${res.status}`;
     })
-    .then((json: object) => {
+    .then((json: unknown) => {
       if (json) {
         console.log("Tour:", json);
         let tour: Tour = convertStartEndDates<Tour>(json);
@@ -77,3 +77,4 @@ function loadTour(
       }
     })
 }
+
