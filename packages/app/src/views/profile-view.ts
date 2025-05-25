@@ -1,4 +1,4 @@
-import { define, Form, History, View } from "@calpoly/mustang";
+import { define, Form, View } from "@calpoly/mustang";
 import { html, css } from "lit";
 import { property, state } from "lit/decorators.js";
 import { Traveler } from "server/models";
