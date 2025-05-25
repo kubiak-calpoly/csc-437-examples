@@ -55,8 +55,6 @@ export function html(
         // convert these to strings to make text nodes
         return escapeHtml(v.toString());
       case "object":
-        if (v instanceof Node || v instanceof DocumentFragment)
-          return v;
         // turn arrays into DocumentFragments
         if (Array.isArray(v)) {
           const frag = new DocumentFragment();
@@ -66,6 +64,7 @@ export function html(
           frag.replaceChildren(...elements);
           return frag;
         }
+        if (v instanceof Node) return v;
         return new Text(v.toString());
       default:
         // anything else, leave a comment node

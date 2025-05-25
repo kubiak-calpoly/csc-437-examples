@@ -7,45 +7,42 @@ import {
   Tour,
   Transportation
 } from "server/models";
-import { CalendarWidget } from "../components/calendar-widget";
+import { Msg } from "../messages.ts";
+import { Model } from "../model.ts";
+import { DateRangeElement} from "../components/date-range.ts";
 import { EntourageTable } from "../components/entourage-table";
+import { DestinationElement } from "../components/destination.ts";
+import { TransportationElement } from "../components/transportation.ts";
 import {
-  ItineraryDestinationElement,
-  ItineraryTransportationElement
-} from "../components/itinerary-items";
-import { Msg } from "../messages";
-import { Model } from "../model";
-import { formatDate } from "../utils/dates";
+  convertStartEndDates,
+  formatDate
+} from "../utils/dates";
 
 export class TourViewElement extends View<Model, Msg> {
   static uses = define({
-    "calendar-widget": CalendarWidget,
+    "date-range": DateRangeElement,
     "entourage-table": EntourageTable,
-    "itinerary-destination": ItineraryDestinationElement,
-    "itinerary-transportation": ItineraryTransportationElement
+    "itinerary-destination": DestinationElement,
+    "itinerary-transportation": TransportationElement
   });
 
-  @property({ attribute: "tour-id", reflect: true })
+  @property({ attribute: "tour-id" })
   tourid = "";
 
   @state()
-  get tour(): Tour | undefined {
+  get tour() {
     return this.model.tour;
+  };
+
+  attributeChangedCallback(name: string, old: string | null, value: string | null) {
+    super.attributeChangedCallback(name, old, value);
+    if(name === "tour-id" && old !== value && value ) {
+      this.dispatchMessage(["tour/select", {tourid: value}]);
+    }
   }
 
   constructor() {
     super("blazing:model");
-  }
-
-  attributeChangedCallback(
-    name: string,
-    old: string | null,
-    value: string | null
-  ): void {
-    super.attributeChangedCallback(name, old, value);
-
-    if (name === "tour-id" && old !== value && value)
-      this.dispatchMessage(["tour/select", { tourid: value }]);
   }
 
   render(): TemplateResult {
@@ -74,25 +71,26 @@ export class TourViewElement extends View<Model, Msg> {
       `;
     };
 
-    const renderRoute = (route: Segment[]) => {
-      const count = route.length + 1;
-      const origin = route[0].departure;
-      const terminus = route[route.length - 1].arrival;
+    const renderRoute = (segments: Segment[]) => {
+      const count = segments.length + 1;
+      const origin = segments[0].departure;
+      const terminus = segments[segments.length - 1].arrival;
       const via =
         count > 2
           ? html`
               <span slot="via">
-                ${route
-              .slice(1, -1)
-              .map((seg) => seg.departure.name)
-              .join(", ")}
+                ${segments.slice(1).map(
+                  (seg) => seg.departure.station || 
+                    seg.departure.name
+                )
+                .join(", ")}
               </span>
             `
           : null;
 
       return html`
-        <span slot="origin">${origin.name}</span>
-        <span slot="terminus">${terminus.name}</span>
+        <span slot="from">${origin.station || origin.name}</span>
+        <span slot="to">${terminus.station || terminus.name}</span>
         ${via}
       `;
     };
@@ -102,7 +100,7 @@ export class TourViewElement extends View<Model, Msg> {
       return html`
         <itinerary-transportation
           start-date=${startDate}
-          type=${type}>
+          mode=${type}>
           ${renderRoute(segments)}
         </itinerary-transportation>
       `;
@@ -123,24 +121,34 @@ export class TourViewElement extends View<Model, Msg> {
       const tn = transportation[i + 1];
 
       return html`
-        ${i ? "" : renderTransportation(t0)}
-        ${renderDestination(d, i)} ${renderTransportation(tn)}
+        ${i ? "" : html`
+          <date-range
+            from=${t0.startDate}
+            to="${t0.endDate}">
+          </date-range>
+          ${renderTransportation(t0)}`
+        }
+        <date-range
+          from=${d.startDate}
+          to="${d.endDate}">
+        </date-range>
+        ${renderDestination(d, i)}
+        <date-range
+          from=${tn.startDate}
+          to="${tn.endDate}">
+        </date-range>
+        ${renderTransportation(tn)}
       `;
     };
 
     console.log("Rendering Tour page", this.tour);
 
     return html`
-      <main class="page">
+      <main>
         <header>
           <h2>${name}</h2>
           ${renderDates()}
         </header>
-
-        <calendar-widget
-          start-date=${startDate}
-          end-date=${endDate}>
-        </calendar-widget>
 
         <section class="itinerary">
           ${destinations.map(renderDestAndTrans)}
@@ -162,7 +170,7 @@ export class TourViewElement extends View<Model, Msg> {
       p {
         margin: 0;
       }
-      main.page {
+      main {
         display: grid;
         grid-column: 1/-1;
         padding: var(--size-spacing-small)
@@ -171,7 +179,6 @@ export class TourViewElement extends View<Model, Msg> {
         grid-template-rows: auto auto 1fr;
         grid-template-areas:
           "hd hd hd it it it it it"
-          "cal cal cal it it it it it"
           "en en en it it it it it"
           "xx xx xx it it it it it";
         gap: var(--size-spacing-medium)
@@ -186,18 +193,24 @@ export class TourViewElement extends View<Model, Msg> {
         display: grid;
         grid-area: it;
         align-self: start;
-        grid-template-columns: subgrid;
+        grid-template-columns: subgrid [start] [header] [] [] [end];
         gap: 0 var(--size-spacing-medium);
         align-items: baseline;
       }
 
       entourage-table {
         grid-area: en;
+        display: grid;
+        grid-template-columns: subgrid;
       }
-
-      calendar-widget {
-        grid-area: cal;
+      
+      date-range {
+        text-align: right;
+        font-family: var(--font-family-display);
+        color: var(--color-accent);
       }
     `
   ];
 }
+
+

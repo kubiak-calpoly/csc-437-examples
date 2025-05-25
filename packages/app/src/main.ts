@@ -15,8 +15,7 @@ import { DestinationViewElement } from "./views/destination-view";
 import { EntourageViewElement } from "./views/entourage-view";
 import { HomeViewElement } from "./views/home-view";
 import { TourViewElement } from "./views/tour-view";
-import { TravelerEditElement } from "./views/traveler-edit";
-import { TravelerViewElement } from "./views/traveler-view";
+import {ProfileViewElement} from "./views/profile-view.ts";
 
 const routes: Switch.Route[] = [
   {
@@ -25,7 +24,8 @@ const routes: Switch.Route[] = [
     view: (params: Switch.Params) => html`
       <destination-edit
         tour-id=${params.tourid}
-        index=${params.index}></destination-edit>
+        index=${params.index}>
+      </destination-edit>
     `
   },
   {
@@ -34,37 +34,40 @@ const routes: Switch.Route[] = [
     view: (params: Switch.Params) => html`
       <destination-view
         tour-id=${params.tourid}
-        index=${params.index}></destination-view>
+        index=${params.index}>
+      </destination-view>
     `
   },
   {
     auth: "protected",
     path: "/app/tour/:id",
     view: (params: Switch.Params) => html`
-      <tour-view tour-id=${params.id}></tour-view>
+      <tour-view tour-id=${params.id}>
+      </tour-view>
     `
   },
   {
     auth: "protected",
     path: "/app/entourage/:id",
     view: (params: Switch.Params) => html`
-      <entourage-view tour-id=${params.id}></entourage-view>
+      <entourage-view tour-id=${params.id}>
+      </entourage-view>
     `
   },
   {
     auth: "protected",
-    path: "/app/traveler/:id",
+    path: "/app/profile/:id",
     view: (params: Switch.Params) => html`
-      <traveler-view
-        userid=${params.id}
-      </traveler-view>
+      <profile-view user-id=${params.id}>
+      </profile-view>
     `
   },
   {
     auth: "protected",
-    path: "/app/traveler/:id/edit",
+    path: "/app/profile/:id/edit",
     view: (params: Switch.Params) => html`
-      <traveler-edit userid=${params.id}></traveler-edit>
+      <profile-view user-id=${params.id} edit>
+      </profile-view>
     `
   },
   {
@@ -111,7 +114,6 @@ define({
   "destination-edit": DestinationEditElement,
   "entourage-view": EntourageViewElement,
   "home-view": HomeViewElement,
-  "tour-view": TourViewElement,
-  "traveler-edit": TravelerEditElement,
-  "traveler-view": TravelerViewElement
+  "profile-view": ProfileViewElement,
+  "tour-view": TourViewElement
 });

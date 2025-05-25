@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com" />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,200;0,400;0,700;1,700&family=Merriweather:wght@400;700&display=swap"
+      rel="stylesheet" />
+    <link rel="stylesheet" href="/styles/reset.css" />
+    <link rel="stylesheet" href="/styles/tokens.css" />
+    <link rel="stylesheet" href="/styles/page.css" />
+    <link rel="stylesheet" href="/styles/form.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "@calpoly/mustang": "/node_modules/@calpoly/mustang/dist/mustang.mjs"
+        }
+      }
+    </script>
+    <script type="module" src="/js/blazing-header.js"></script>
+    <script type="module" src="/js/profile-view.js"></script>
+    <script type="module">
+      import { relayEvent } from "/js/relay-event.js";
+      window.relayEvent = relayEvent;
+    </script>
+    <script type="module">
+      function toggleDarkMode(page, checked) {
+        page.classList.toggle("dark-mode", checked);
+      }
+
+      document.body.addEventListener("dark-mode", (event) =>
+        toggleDarkMode(
+          event.currentTarget,
+          event.detail.checked
+        )
+      );
+    </script>
+    <script type="module">
+      import { define, Auth } from "@calpoly/mustang";
+
+      define({ "mu-auth": Auth.Provider });
+    </script>
+  </head>
+  <body class="page">
+    <mu-auth provides="blazing:auth" redirect="../login.html">
+      <blazing-header></blazing-header>
+      <main>
+        <profile-view src="/api/profiles/blaze"> </profile-view>
+      </main>
+    </mu-auth>
+  </body>
+</html>

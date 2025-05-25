@@ -19,13 +19,13 @@
   </head>
   <body>
     <mu-history provides="blazing:history">
-      <mu-auth provides="blazing:auth" redirect="/login">
-        <mu-store provides="blazing:model">
-          <article>
+      <mu-auth provides="blazing:auth" redirect="/login.html">
+         <mu-store provides="blazing:model">
+          <article class="page">
             <blazing-header></blazing-header>
-            <blazing-app></blazing-app>
+            <mu-switch></mu-switch>
           </article>
-        </mu-store>
+         </mu-store>
       </mu-auth>
     </mu-history>
   </body>

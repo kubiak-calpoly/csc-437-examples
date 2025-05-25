@@ -3,14 +3,10 @@ import {
   define,
   Dropdown,
   Events,
-  Observer,
-  View
+  Observer
 } from "@calpoly/mustang";
-import { css, html } from "lit";
+import { css, html, LitElement } from "lit";
 import { state } from "lit/decorators.js";
-import { Tour } from "server/models";
-import { Msg } from "../messages";
-import { Model } from "../model";
 import headings from "../styles/headings.css";
 import reset from "../styles/reset.css";
 
@@ -25,32 +21,33 @@ function signOut(ev: MouseEvent) {
   Events.relay(ev, "auth:message", ["auth/signout"]);
 }
 
-export class HeaderElement extends View<Model, Msg> {
+export class HeaderElement extends LitElement {
   static uses = define({
     "mu-dropdown": Dropdown.Element
   });
 
   @state()
-  userid: string = "traveler";
+  loggedIn = false;
 
   @state()
-  get tour(): Tour | undefined {
-    return this.model.tour;
-  }
+  userid?: string = "traveler";
 
-  render() {
-    console.log("Tour in header:", this.tour);
-
+  protected render() {
     return html` <header>
       <h1>Blazing Travels</h1>
       <nav>
-        <p>${this.tour ? this.tour.name : ""}</p>
+        <p><slot> Unnamed Tour </slot></p>
         <mu-dropdown>
           <a slot="actuator">
             Hello,
             <span id="userid">${this.userid}</span>
           </a>
           <menu>
+            <li>
+              <a href="/app/profile/${this.userid}">
+                View Profile
+              </a>
+            </li>
             <li>
               <label @change=${toggleDarkMode}>
                 <input type="checkbox" />
@@ -78,6 +75,7 @@ export class HeaderElement extends View<Model, Msg> {
       }
       header {
         display: flex;
+        grid-column: start / end;
         flex-wrap: wrap;
         align-items: bottom;
         justify-content: space-between;
@@ -116,10 +114,6 @@ export class HeaderElement extends View<Model, Msg> {
     `
   ];
 
-  constructor() {
-    super("blazing:model");
-  }
-
   _authObserver = new Observer<Auth.Model>(
     this,
     "blazing:auth"
@@ -129,8 +123,12 @@ export class HeaderElement extends View<Model, Msg> {
     super.connectedCallback();
 
     this._authObserver.observe(({ user }) => {
-      if (user && user.username !== this.userid) {
+      if (user && user.authenticated ) {
+        this.loggedIn = true;
         this.userid = user.username;
+      } else {
+        this.loggedIn = false;
+        this.userid = undefined;
       }
     });
   }

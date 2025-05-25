@@ -1,0 +1,139 @@
+{
+  "destinations": [
+    {
+      "name": "Venice",
+      "link": "destination/venice.html",
+      "startDate": "2024-10-14",
+      "endDate": "2024-10-18",
+      "featuredImage": "/images/preview/Canal_Grande_Chiesa_della_Salute_e_Dogana_dal_ponte_dell_Accademia.jpg"
+    },
+    {
+      "name": "Florence",
+      "link": "destination/florence.html",
+      "startDate": "2024-10-18",
+      "endDate": "2024-10-21",
+      "featuredImage": "/images/preview/Firenze_-_Vista_dal_Piazzale_Michelangelo.jpg"
+    },
+    {
+      "name": "Rome",
+      "link": "destination/rome.html",
+      "startDate": "2024-10-21",
+      "endDate": "2024-10-25",
+      "featuredImage": "/images/preview/Colosseum_in_Rome,_Italy_-_April_2007.jpg"
+    }
+  ],
+  "transportations": [{
+     "mode": "air",
+     "startDate": "2024-10-13",
+     "endDate": "2024-10-14",
+     "routing": ["SFO", "FRA", "VCE"],
+      "segments": [{
+        "number": "UA926",
+        "carrier": "United",
+        "departure": {
+          "name": "San Francisco",
+          "localtime": "2024-10-13 19:05:00",
+          "tz": "-0800",
+          "code": "SFO"
+        },
+        "arrival": {
+          "name": "Frankfurt",
+          "localtime": "2024-10-14 14:55:00",
+          "tz": "+0100",
+          "code": "FRA"
+        }
+      }, {
+        "number": "LH330",
+        "carrier": "Lufthansa",
+        "departure": {
+          "name": "Frankfurt",
+          "localtime": "2024-10-14 17:15:00",
+          "tz": "+0100",
+          "code": "FRA"
+        },
+        "arrival": {
+          "name": "Venice",
+          "localtime": "2024-10-14 18:30:00",
+          "tz": "+0100",
+          "code": "VCE"
+        }
+      }]
+    },
+    {
+      "mode": "rail",
+      "startDate": "2024-10-18",
+      "routing": [
+        "Venice",
+        "Florence"
+      ],
+      "segments": [
+        {
+          "number": "9407",
+          "carrier": "Frecciarossa",
+          "departure": {
+            "name": "Venezia S. Lucia",
+            "localtime": "2024-10-18 09:25:00",
+            "tz": "+0100"
+          },
+          "arrival": {
+            "name": "Firenze S.M.N.",
+            "localtime": "2024-10-18 11:30:00",
+            "tz": "+0100"
+          }
+        }
+      ]
+    }, {
+      "mode": "rail",
+      "startDate": "2024-10-21",
+      "routing": ["Florence", "Rome"],
+      "segments": [{
+        "number": "9435",
+        "carrier": "Frecciarossa",
+        "departure": {
+          "name": "Firenze S.M.N.",
+          "localtime": "2024-10-21 15:38:00",
+          "tz": "+0100"
+        },
+        "arrival": {
+          "name": "Roma Termini",
+          "localtime": "2024-10-21 17:10:00",
+          "tz": "+0100"
+        }
+      }]
+  }, {
+      "mode": "air",
+      "startDate": "2024-10-25",
+      "routing": ["FCO", "FRA", "SFO"],
+      "segments": [{
+        "number": "LH233",
+        "carrier": "Lufthansa",
+        "departure": {
+          "name": "Rome",
+          "localtime": "2024-10-25 13:25:00",
+          "tz": "+0100",
+          "code": "FCO"
+        },
+        "arrival": {
+          "name": "Frankfurt",
+          "localtime": "2024-10-25 15:20:00",
+          "tz": "+0100",
+          "code": "FRA"
+        }
+      }, {
+        "number": "UA927",
+        "carrier": "United",
+        "departure": {
+          "name": "Frankfurt",
+          "localtime": "2024-10-25 17:25:00",
+          "tz": "+0100",
+          "code": "FRA"
+        },
+        "arrival": {
+          "name": "San Francisco",
+          "localtime": "2024-10-25 19:45:00",
+          "tz": "-0800",
+          "code": "SFO"
+        }
+      }]
+  }]
+}

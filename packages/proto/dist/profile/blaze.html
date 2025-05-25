@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com" />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,200;0,400;0,700;1,700&family=Merriweather:wght@400;700&display=swap"
+      rel="stylesheet" />
+    <link rel="stylesheet" href="/styles/reset.css" />
+    <link rel="stylesheet" href="/styles/tokens.css" />
+    <link rel="stylesheet" href="/styles/page.css" />
+    <script type="module" crossorigin src="/assets/blaze-BEbMu7pi.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/state-By6HLBIX.js">
+    <link rel="modulepreload" crossorigin href="/assets/header-BPxdGmxf.js">
+    <link rel="modulepreload" crossorigin href="/assets/profile-OYj_03SZ.js">
+  </head>
+  <body>
+  <mu-auth provides="blazing:auth">
+    <blz-header></blz-header>
+    <main class="page">
+      <profile-view src="/api/travelers/blaze"></profile-view>
+    </main>
+  </mu-auth>
+  </body>
+</html>

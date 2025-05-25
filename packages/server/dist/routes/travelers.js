@@ -32,7 +32,6 @@ __export(travelers_exports, {
 });
 module.exports = __toCommonJS(travelers_exports);
 var import_express = __toESM(require("express"));
-var import_auth = require("./auth");
 var import_traveler_svc = __toESM(require("../services/traveler-svc"));
 const router = import_express.default.Router();
 router.get("/", (_, res) => {
@@ -42,15 +41,11 @@ router.get("/:userid", (req, res) => {
   const { userid } = req.params;
   import_traveler_svc.default.get(userid).then((traveler) => res.json(traveler)).catch((err) => res.status(404).send(err));
 });
-router.put(
-  "/:userid",
-  import_auth.authenticateUser,
-  (req, res) => {
-    const { userid } = req.params;
-    const editedTraveler = req.body;
-    import_traveler_svc.default.update(userid, editedTraveler).then((traveler) => res.json(traveler)).catch((err) => res.status(404).send(err));
-  }
-);
+router.put("/:userid", (req, res) => {
+  const { userid } = req.params;
+  const editedTraveler = req.body;
+  import_traveler_svc.default.update(userid, editedTraveler).then((traveler) => res.json(traveler)).catch((err) => res.status(404).send(err));
+});
 router.post("/", (req, res) => {
   const newTraveler = req.body;
   import_traveler_svc.default.create(newTraveler).then(

@@ -34,7 +34,9 @@ module.exports = __toCommonJS(destination_exports);
 var import_server = require("@calpoly/mustang/server");
 var import_renderPage = __toESM(require("./renderPage"));
 const secondsPerDay = 24 * 60 * 60 * 1e3;
-const _DestinationPage = class _DestinationPage {
+class DestinationPage {
+  data;
+  mode;
   constructor(data, mode) {
     this.data = data;
     this.mode = mode;
@@ -120,12 +122,26 @@ const _DestinationPage = class _DestinationPage {
         </destination-form>
     </body>`;
   }
+  static months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec"
+  ];
   renderAccommodation(acc) {
     const { name, checkIn, checkOut, roomType, persons, rate } = acc;
     console.log("Accommodation:", JSON.stringify(acc));
     const formatDate = (date) => {
       const dt = date || /* @__PURE__ */ new Date();
-      const m = _DestinationPage.months[dt.getUTCMonth()];
+      const m = DestinationPage.months[dt.getUTCMonth()];
       const d = dt.getUTCDate();
       return `${d} ${m}`;
     };
@@ -152,9 +168,17 @@ const _DestinationPage = class _DestinationPage {
       </blz-accommodation>
     `;
   }
+  static excursionIcons = {
+    boat: "icon-boat",
+    bus: "icon-bus",
+    metro: "icon-metro",
+    train: "icon-train",
+    walking: "icon-walk",
+    tour: "icon-camera"
+  };
   renderExcursion(exc) {
     const { name, type } = exc;
-    const icon = _DestinationPage.excursionIcons[type || "tour"];
+    const icon = DestinationPage.excursionIcons[type || "tour"];
     return import_server.html`<li>
       <svg class="icon">
         <use xlink:href="/icons/destination.svg#${icon}" />
@@ -162,13 +186,18 @@ const _DestinationPage = class _DestinationPage {
       <span>${name}</span>
     </li>`;
   }
+  static transportationIcons = {
+    air: "icon-airplane",
+    rail: "icon-train",
+    ship: "icon-boat",
+    bus: "icon-bus"
+  };
   renderTransportation(trn, dir) {
-    var _a, _b, _c, _d;
     const { type, segments } = trn;
-    const icon = _DestinationPage.transportationIcons[type] || "icon-travel";
+    const icon = DestinationPage.transportationIcons[type] || "icon-travel";
     const dirClass = dir === "in" ? "arrive" : "depart";
-    const name = dir === "in" ? (_a = segments[0]) == null ? void 0 : _a.departure.name : (_b = segments.at(-1)) == null ? void 0 : _b.arrival.name;
-    const endpoint = dir === "in" ? (_c = segments.at(-1)) == null ? void 0 : _c.arrival : (_d = segments[0]) == null ? void 0 : _d.departure;
+    const name = dir === "in" ? segments[0]?.departure.name : segments.at(-1)?.arrival.name;
+    const endpoint = dir === "in" ? segments.at(-1)?.arrival : segments[0]?.departure;
     return import_server.html`<a class="${dirClass} ${type}" href="#">
       <svg class="icon">
         <use xlink:href="/icons/transportation.svg#${icon}" />
@@ -183,36 +212,7 @@ const _DestinationPage = class _DestinationPage {
       </dl>
     </a>`;
   }
-};
-_DestinationPage.months = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec"
-];
-_DestinationPage.excursionIcons = {
-  boat: "icon-boat",
-  bus: "icon-bus",
-  metro: "icon-metro",
-  train: "icon-train",
-  walking: "icon-walk",
-  tour: "icon-camera"
-};
-_DestinationPage.transportationIcons = {
-  air: "icon-airplane",
-  rail: "icon-train",
-  ship: "icon-boat",
-  bus: "icon-bus"
-};
-let DestinationPage = _DestinationPage;
+}
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   DestinationPage

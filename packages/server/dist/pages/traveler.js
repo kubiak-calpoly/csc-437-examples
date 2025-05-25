@@ -34,6 +34,8 @@ module.exports = __toCommonJS(traveler_exports);
 var import_server = require("@calpoly/mustang/server");
 var import_renderPage = __toESM(require("./renderPage"));
 class TravelerPage {
+  data;
+  mode;
   constructor(data, mode) {
     this.data = data;
     this.mode = mode;

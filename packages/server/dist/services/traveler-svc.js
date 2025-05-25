@@ -62,7 +62,7 @@ function create(traveler) {
   return p.save();
 }
 function remove(userid) {
-  return travelerModel.findOneAndDelete({ userid }).then((deleted) => {
+  return TravelerModel.findOneAndDelete({ userid }).then((deleted) => {
     if (!deleted) throw `${userid} not deleted`;
   });
 }
