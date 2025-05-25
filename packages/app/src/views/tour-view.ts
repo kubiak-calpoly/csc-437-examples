@@ -14,7 +14,6 @@ import { EntourageTable } from "../components/entourage-table";
 import { DestinationElement } from "../components/destination.ts";
 import { TransportationElement } from "../components/transportation.ts";
 import {
-  convertStartEndDates,
   formatDate
 } from "../utils/dates";
 
@@ -30,7 +29,7 @@ export class TourViewElement extends View<Model, Msg> {
   tourid = "";
 
   @state()
-  get tour() {
+  get tour(): Tour | undefined {
     return this.model.tour;
   };
 

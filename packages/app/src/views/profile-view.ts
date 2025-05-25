@@ -1,4 +1,4 @@
-import { define, Auth, Form, Observer, View } from "@calpoly/mustang";
+import { define, Form, History, View } from "@calpoly/mustang";
 import { html, css } from "lit";
 import { property, state } from "lit/decorators.js";
 import { Traveler } from "server/models";
@@ -14,12 +14,6 @@ export class ProfileViewElement extends View<Model, Msg> {
 
   @property({attribute: "user-id"})
   userid?: string;
-
-  get src(): string | undefined{
-    if( this.userid ) {
-      return `/api/travelers/${this.userid}`;
-    }
-  }
 
   @state()
   get traveler(): Traveler | undefined {
@@ -96,10 +90,7 @@ export class ProfileViewElement extends View<Model, Msg> {
     return html`
       <mu-form
         .init=${init}
-        @mu-form:submit=${(e: CustomEvent) => {
-      if (this.src)
-        this.handleSubmit(this.src, e.detail )
-    }
+        @mu-form:submit=${this.handleSubmit}
     }>
         <img src=${avatar} alt=${name} />
         <h1><input name="name"></h1>
@@ -205,55 +196,30 @@ export class ProfileViewElement extends View<Model, Msg> {
       ]);
     }
   }
-
-  _authObserver = new Observer<Auth.Model>(this, "blazing:auth");
-  _user?: Auth.User;
-
-  override connectedCallback() {
-    super.connectedCallback();
-    this._authObserver.observe((auth: Auth.Model) => {
-      this._user = auth.user;
-    });
-  }
-
-  get authorization(): { Authorization?: string } {
-    if (this._user && this._user.authenticated)
-      return {
-        Authorization:
-          `Bearer ${(this._user as Auth.AuthenticatedUser).token}`
-      };
-    else return {};
-  }
-
   _avatar? : string; // the avatar, base64 encoded
 
-  handleSubmit(src: string, formData: object) {
+  handleSubmit(event: Form.SubmitEvent<Traveler>) {
     const json: object = {
       ...this.traveler,
-      ...formData
+      ...event.detail
     }
 
-    if ("airports" in formData ) {
-      (json as Traveler).airports = (formData.airports as string).split(" ")
+    if ("airports" in event.detail ) {
+      (json as Traveler).airports = (event.detail.airports as string).split(" ")
     }
     if (this._avatar) (json as Traveler).avatar = this._avatar;
 
-    fetch( src, {
-      headers: {
-        "Content-Type": "application/json",
-        ...this.authorization
-      },
-      method: "PUT",
-      body: JSON.stringify(json)
-    })
-      .then(res => {
-        if (res.status !== 200) throw `Status: ${res.status}`;
-        else return res.json()
-      })
-      .then((json: unknown) => {
-        this.traveler = json as Traveler;
-        this.mode = "view";
-      })
+    if ( this.userid ) {
+      this.dispatchMessage(["profile/save", {
+        userid: this.userid,
+        profile: json as Traveler,
+        onSuccess: () =>
+          this.mode = "view",
+        onFailure: (err) => {
+          console.log("Error saving profile", err);
+        }
+      }]);
+    }
   }
 
   handleAvatarSelected(files: FileList) {

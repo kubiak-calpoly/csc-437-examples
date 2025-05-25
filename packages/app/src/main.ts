@@ -66,7 +66,7 @@ const routes: Switch.Route[] = [
     auth: "protected",
     path: "/app/profile/:id/edit",
     view: (params: Switch.Params) => html`
-      <profile-view user-id=${params.id} edit>
+      <profile-view user-id=${params.id} mode="edit">
       </profile-view>
     `
   },
