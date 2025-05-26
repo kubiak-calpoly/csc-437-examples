@@ -58,15 +58,19 @@ export class DestinationViewElement extends View<Model, Msg> {
       startDate,
       endDate,
       featuredImage,
-      accommodations = [],
+      accommodation,
       excursions = []
     } = this.destination || ({} as Destination);
     const imageUrl = this.image || featuredImage;
-    const acc = accommodations[0] || { rate: {} };
+    const acc = accommodation || { rate: {} };
 
+    console.log("Accommodation:", accommodation);
     return html`
       <main class="page">
         <header>
+          <a class="breadcrumb" href="/app/tour/${this.tourid}">
+            &larr; Back to tour
+          </a>
           <h2>${name}</h2>
           <p>
             from ${formatDate(startDate)} to
@@ -107,6 +111,11 @@ export class DestinationViewElement extends View<Model, Msg> {
       }
       header {
         grid-column: 1 / span 3;
+      }
+      a.breadcrumb {
+        font-family: var(--font-family-display);
+        color: var(--color-accent);
+        text-decoration: none;
       }
       main.page {
         --page-grids: 8;

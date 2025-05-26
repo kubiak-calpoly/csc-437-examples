@@ -50,19 +50,17 @@ const tourSchema = new import_mongoose.Schema(
         endDate: Date,
         location: { lat: Number, lon: Number },
         featuredImage: String,
-        accommodations: [
-          {
-            name: String,
-            checkIn: Date,
-            checkOut: Date,
-            roomType: String,
-            persons: Number,
-            rate: {
-              amount: Number,
-              currency: String
-            }
+        accommodation: {
+          name: String,
+          checkIn: Date,
+          checkOut: Date,
+          roomType: String,
+          persons: Number,
+          rate: {
+            amount: Number,
+            currency: String
           }
-        ],
+        },
         excursions: [{ name: String, type: { type: String } }]
       }
     ],
@@ -110,7 +108,6 @@ function trimIndex(t) {
   const { name, startDate, endDate, entourage } = t;
   const { _id } = t;
   return {
-    _id,
     name,
     startDate,
     endDate,
