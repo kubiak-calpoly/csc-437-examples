@@ -2,22 +2,24 @@ import { Auth, define, Observer } from "@calpoly/mustang";
 import { css, html, LitElement, TemplateResult } from "lit";
 import { property, state } from "lit/decorators.js";
 import {
+  DateRange,
   Destination,
   Segment,
   Tour,
   Transportation
 } from "server/models";
+import { CalendarWidget } from "../components/calendar-widget.ts";
 import { DateRangeElement} from "../components/date-range.ts";
 import { EntourageTable } from "../components/entourage-table";
 import { DestinationElement } from "../components/destination.ts";
 import { TransportationElement } from "../components/transportation.ts";
 import {
   convertStartEndDates,
-  formatDate
 } from "../utils/dates";
 
 export class TourViewElement extends LitElement {
   static uses = define({
+    "calendar-widget": CalendarWidget,
     "date-range": DateRangeElement,
     "entourage-table": EntourageTable,
     "itinerary-destination": DestinationElement,
@@ -30,6 +32,9 @@ export class TourViewElement extends LitElement {
   get src() {
     return `/api/tours/${this.tourId}`;
   }
+
+  @state()
+  dateSelection?: Date;
 
   @state()
   tour?: Tour;
@@ -69,6 +74,9 @@ export class TourViewElement extends LitElement {
             let tour: Tour = convertStartEndDates<Tour>(json);
             tour.destinations = tour.destinations.map(
               convertStartEndDates<Destination>
+            );
+            tour.transportation = tour.transportation.map(
+              convertStartEndDates<Transportation>
             );
             this.tour = tour;
           }
@@ -140,34 +148,43 @@ export class TourViewElement extends LitElement {
       `;
     };
 
-    const renderDates = () => {
-      return html`
-        <p>
-          from ${formatDate(startDate)} to
-          ${formatDate(endDate)}
-          ${endDate && endDate.getFullYear()}
-        </p>
-      `;
-    };
+
 
     const renderDestAndTrans = (d: Destination, i: number) => {
       const t0 = transportation[i];
       const tn = transportation[i + 1];
 
+      const isSelected = (range: DateRange): boolean => {
+        console.log("isSelected",
+          range.startDate.toISOString(),
+          range.endDate?.toISOString(),
+          this.dateSelection?.toISOString())
+        if( !this.dateSelection ) return true;
+        else
+          return range.startDate <= this.dateSelection &&
+            (range.endDate
+                ? range.endDate >= this.dateSelection
+                : range.startDate >= this.dateSelection
+            );
+      }
+
       return html`
-        ${i ? "" : html`
-          <date-range
-            from=${t0.startDate}
-            to="${t0.endDate}">
-          </date-range>
-          ${renderTransportation(t0)}`
-        }
         <date-range
+          class=${i || isSelected(t0) ? "hidden" : ""}
+          from=${t0.startDate}
+          to="${t0.endDate}">
+        </date-range>
+        ${renderTransportation(t0)}
+
+        <date-range
+          class=${!isSelected(d) ? "hidden" : ""}
           from=${d.startDate}
           to="${d.endDate}">
         </date-range>
         ${renderDestination(d, i)}
+
         <date-range
+          class=${!isSelected(tn) ? "hidden" : ""}
           from=${tn.startDate}
           to="${tn.endDate}">
         </date-range>
@@ -181,8 +198,11 @@ export class TourViewElement extends LitElement {
       <main>
         <header>
           <h2>${name}</h2>
-          ${renderDates()}
-        </header>
+          <calendar-widget
+            @calendar-widget:select=${this._handleSelection}
+            start-date=${startDate}
+            end-date=${endDate}>
+          </calendar-widget>        </header>
 
         <section class="itinerary">
           ${destinations.map(renderDestAndTrans)}
@@ -192,6 +212,10 @@ export class TourViewElement extends LitElement {
         </entourage-table>
       </main>
     `;
+  }
+
+  _handleSelection(e: CustomEvent<{date: Date}>) {
+    this.dateSelection = e.detail.date;
   }
 
   static styles = [
@@ -229,6 +253,10 @@ export class TourViewElement extends LitElement {
         grid-template-columns: subgrid [start] [header] [] [] [end];
         gap: 0 var(--size-spacing-medium);
         align-items: baseline;
+        
+        > .hidden {
+          display: none;
+        }
       }
 
       entourage-table {
