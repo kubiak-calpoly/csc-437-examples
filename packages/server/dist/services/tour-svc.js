@@ -108,6 +108,7 @@ function trimIndex(t) {
   const { name, startDate, endDate, entourage } = t;
   const { _id } = t;
   return {
+    id: _id,
     name,
     startDate,
     endDate,

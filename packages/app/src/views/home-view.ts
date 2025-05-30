@@ -69,8 +69,7 @@ export class HomeViewElement extends LitElement {
   }
 
   renderItem(t: Tour) {
-    const { name, startDate, endDate, entourage } = t;
-    const { _id } = t as unknown as { _id: string };
+    const { id, name, startDate, endDate, entourage } = t;
     const entourage_id = (
       t.entourage as unknown as { _id: string }
     )._id as string;
@@ -87,7 +86,7 @@ export class HomeViewElement extends LitElement {
         ${startDate.getUTCFullYear()}
       </dt>
       <dd>
-        <a href="/app/tour/${_id}">${name}</a>
+        <a href="/app/tour/${id}">${name}</a>
         with
         <a href="/app/entourage/${entourage_id}"
           >${entourage.name}</a

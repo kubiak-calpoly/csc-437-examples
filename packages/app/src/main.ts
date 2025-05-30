@@ -23,7 +23,7 @@ const routes: Switch.Route[] = [
     path: "/app/destination/:tourId/:index/edit",
     view: (params: Switch.Params) => html`
       <destination-edit
-        tour-id=${params.tourid}
+        tour-id=${params.tourId}
         index=${params.index}>
       </destination-edit>
     `
@@ -33,7 +33,7 @@ const routes: Switch.Route[] = [
     path: "/app/destination/:tourId/:index",
     view: (params: Switch.Params) => html`
       <destination-view
-        tour-id=${params.tourid}
+        tour-id=${params.tourId}
         index=${params.index}>
       </destination-view>
     `
