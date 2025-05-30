@@ -92,6 +92,7 @@ function trimIndex(t: Tour): Tour  {
   const { _id } = t as unknown as { _id: string };
 
   return {
+    id: _id,
     name,
     startDate,
     endDate,

@@ -20,20 +20,20 @@ import {ProfileViewElement} from "./views/profile-view.ts";
 const routes: Switch.Route[] = [
   {
     auth: "protected",
-    path: "/app/destination/:tourid/:index/edit",
+    path: "/app/destination/:tourId/:index/edit",
     view: (params: Switch.Params) => html`
       <destination-edit
-        tour-id=${params.tourid}
+        tour-id=${params.tourId}
         index=${params.index}>
       </destination-edit>
     `
   },
   {
     auth: "protected",
-    path: "/app/destination/:tourid/:index",
+    path: "/app/destination/:tourId/:index",
     view: (params: Switch.Params) => html`
       <destination-view
-        tour-id=${params.tourid}
+        tour-id=${params.tourId}
         index=${params.index}>
       </destination-view>
     `
