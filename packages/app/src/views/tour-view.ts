@@ -58,6 +58,20 @@ export class TourViewElement extends View<Model, Msg> {
       startDate
     } = this.tour || {};
 
+    const isSelected = (range: DateRange): boolean => {
+      console.log("isSelected",
+        range.startDate.toISOString(),
+        range.endDate?.toISOString(),
+        this.dateSelection?.toISOString())
+      if( !this.dateSelection ) return true;
+      else
+        return range.startDate <= this.dateSelection &&
+          (range.endDate
+              ? range.endDate >= this.dateSelection
+              : range.startDate >= this.dateSelection
+          );
+    }
+
     const renderDestination = (
       dest: Destination,
       i: number
@@ -65,6 +79,7 @@ export class TourViewElement extends View<Model, Msg> {
       const { startDate, endDate, name, featuredImage } = dest;
       return html`
         <itinerary-destination
+          class=${isSelected(dest) ? "" : "hidden"}
           start-date=${startDate}
           end-date=${endDate}
           img-src=${featuredImage}
@@ -102,6 +117,7 @@ export class TourViewElement extends View<Model, Msg> {
       const { startDate, type, segments } = tran || {};
       return html`
         <itinerary-transportation
+          class=${isSelected(tran) ? "" : "hidden"}
           start-date=${startDate}
           mode=${type}>
           ${renderRoute(segments)}
@@ -113,42 +129,29 @@ export class TourViewElement extends View<Model, Msg> {
       const t0 = transportation[i];
       const tn = transportation[i + 1];
 
-      const isSelected = (range: DateRange): boolean => {
-        console.log("isSelected",
-          range.startDate.toISOString(),
-          range.endDate?.toISOString(),
-          this.dateSelection?.toISOString())
-        if( !this.dateSelection ) return true;
-        else
-          return range.startDate <= this.dateSelection &&
-            (range.endDate
-              ? range.endDate >= this.dateSelection
-                : range.startDate >= this.dateSelection
-            );
-      }
+      const firstTransportation = i > 0 ? "" : html`
+        <date-range
+          class=${isSelected(t0) ? "" : "hidden"}
+          from=${t0.startDate}
+          to="${t0.endDate}">
+        </date-range>
+        ${renderTransportation(t0)}
+      `;
 
       return html`
-        ${i || !isSelected(t0) ? "" : html`
+          ${firstTransportation}
           <date-range
-            from=${t0.startDate}
-            to="${t0.endDate}">
-          </date-range>
-          ${renderTransportation(t0)}`
-        }
-        ${!isSelected(d) ? "" : html`
-          <date-range
+            class=${isSelected(d) ? "" : "hidden"}
             from=${d.startDate}
             to="${d.endDate}">
           </date-range>
           ${renderDestination(d, i)}
-        `}
-        ${!isSelected(tn) ? "" : html`
           <date-range
+            class=${isSelected(tn) ? "" : "hidden"}
             from=${tn.startDate}
             to="${tn.endDate}">
           </date-range>
           ${renderTransportation(tn)}
-        `}
       `;
     };
 
@@ -220,7 +223,13 @@ export class TourViewElement extends View<Model, Msg> {
         grid-template-columns: subgrid [start] [header] [] [] [end];
         gap: 0 var(--size-spacing-medium);
         align-items: baseline;
+        
+        .hidden {
+          display: none;
+        }
       }
+      
+      
 
       entourage-table {
         grid-area: en;
