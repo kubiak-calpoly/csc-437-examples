@@ -160,6 +160,7 @@ export class TourViewElement extends View<Model, Msg> {
           <h2>${name}</h2>
           <calendar-widget
             @calendar-widget:select=${this._handleSelection}
+            @calendar-widget:clear=${this._handleClear}
             start-date=${startDate}
             end-date=${endDate}>
           </calendar-widget>
@@ -179,6 +180,9 @@ export class TourViewElement extends View<Model, Msg> {
 
   _handleSelection(e: CustomEvent<{date: Date}>) {
     this.dateSelection = e.detail.date;
+  }
+  _handleClear() {
+    this.dateSelection = undefined;
   }
 
   static styles = [
