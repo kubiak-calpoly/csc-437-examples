@@ -1,6 +1,7 @@
 import { Auth, Update } from "@calpoly/mustang";
 import {
   Destination,
+  Point, Route,
   Tour,
   Transportation,
   Traveler
@@ -33,6 +34,12 @@ export default function update(
       selectProfile(message[1], user).then((profile) =>
         apply((model) => ({ ...model, profile }))
       );
+      break;
+    case "route/request":
+      requestRoute(message[1], user).then(
+        (route: Route | undefined) =>
+          apply((model) => ({ ...model, route }))
+      )
       break;
     case "tour/index":
       indexTours(user).then((tourIndex: Tour[] | undefined) =>
@@ -225,5 +232,28 @@ function selectProfile(
         console.log("Profile:", json);
         return json as Traveler;
       }
+    });
+}
+
+function requestRoute(
+  msg: {points: Point[] },
+  user: Auth.User )
+{
+  const coordinates = msg.points
+  .map((pt) => `${pt.lon},${pt.lat}`)
+  .join(";");
+
+  console.log("Requesting route for points:", coordinates);
+
+  return fetch(`/api/directions?pts=${coordinates}`, {
+    headers: Auth.headers(user)
+  })
+    .then((response: Response) => {
+      if (response.status === 200) return response.json();
+      else return undefined;
+    })
+    .then((json: unknown) => {
+      if (json) return json as Route;
+      else return { } as Route;
     });
 }

@@ -24,8 +24,8 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 var import_express = __toESM(require("express"));
 var import_promises = __toESM(require("node:fs/promises"));
 var import_path = __toESM(require("path"));
-var import_pages = require("./pages/index");
 var import_auth = __toESM(require("./routes/auth"));
+var import_directions = __toESM(require("./routes/directions"));
 var import_tours = __toESM(require("./routes/tours"));
 var import_travelers = __toESM(require("./routes/travelers"));
 var import_filesystem = require("./services/filesystem");
@@ -39,8 +39,9 @@ app.use(import_express.default.static(staticDir));
 app.use(import_express.default.raw({ type: "image/*", limit: "32Mb" }));
 app.use(import_express.default.json());
 app.use("/auth", import_auth.default);
-app.use("/api/travelers", import_auth.authenticateUser, import_travelers.default);
+app.use("/api/directions", import_auth.authenticateUser, import_directions.default);
 app.use("/api/tours", import_auth.authenticateUser, import_tours.default);
+app.use("/api/travelers", import_auth.authenticateUser, import_travelers.default);
 app.post("/images", import_filesystem.saveFile);
 app.get("/images/:id", import_filesystem.getFile);
 app.get("/ping", (_, res) => {
@@ -52,13 +53,13 @@ app.get("/ping", (_, res) => {
   );
 });
 app.get("/login", (req, res) => {
-  res.set("Content-Type", "text/html").send((0, import_pages.renderPage)(import_pages.LoginPage.render()));
+  res.set("Content-Type", "text/html").send(renderPage(LoginPage.render()));
 });
 app.get("/register", (req, res) => {
-  res.set("Content-Type", "text/html").send((0, import_pages.renderPage)(import_pages.RegistrationPage.render()));
+  res.set("Content-Type", "text/html").send(renderPage(RegistrationPage.render()));
 });
 app.get("/login", (req, res) => {
-  res.set("Content-Type", "text/html").send((0, import_pages.renderPage)(import_pages.LoginPage.render()));
+  res.set("Content-Type", "text/html").send(renderPage(LoginPage.render()));
 });
 app.use("/app", (_, res) => {
   const indexHtml = import_path.default.resolve(staticDir, "index.html");

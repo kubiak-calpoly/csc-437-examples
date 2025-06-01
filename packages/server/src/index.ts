@@ -1,13 +1,8 @@
 import express, { Request, Response } from "express";
 import fs from "node:fs/promises";
 import path from "path";
-import {
-  DestinationPage,
-  LoginPage,
-  RegistrationPage,
-  renderPage
-} from "./pages/index";
 import auth, { authenticateUser } from "./routes/auth";
+import directions from "./routes/directions";
 import tours from "./routes/tours";
 import travelers from "./routes/travelers";
 import { getFile, saveFile } from "./services/filesystem";
@@ -32,8 +27,9 @@ app.use(express.json());
 app.use("/auth", auth);
 
 // API Routes:
-app.use("/api/travelers", authenticateUser, travelers);
+app.use("/api/directions", authenticateUser, directions);
 app.use("/api/tours", authenticateUser, tours);
+app.use("/api/travelers", authenticateUser, travelers);
 
 // Image routes
 app.post("/images", saveFile);

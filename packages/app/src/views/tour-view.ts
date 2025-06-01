@@ -15,11 +15,13 @@ import { DateRangeElement} from "../components/date-range.ts";
 import { EntourageTable } from "../components/entourage-table";
 import { DestinationElement } from "../components/destination.ts";
 import { TransportationElement } from "../components/transportation.ts";
+import { MapViewerElement } from "../components/map-viewer.ts";
 
 
 export class TourViewElement extends View<Model, Msg> {
   static uses = define({
     "calendar-widget": CalendarWidget,
+    "map-viewer": MapViewerElement,
     "date-range": DateRangeElement,
     "entourage-table": EntourageTable,
     "itinerary-destination": DestinationElement,
@@ -34,6 +36,11 @@ export class TourViewElement extends View<Model, Msg> {
     return this.model.tour;
   };
 
+  @property()
+  get route() {
+    return this.model.route;
+  }
+
   @state()
   dateSelection?: Date;
 
@@ -46,6 +53,16 @@ export class TourViewElement extends View<Model, Msg> {
 
   constructor() {
     super("blazing:model");
+  }
+
+  updated(changes: Map<string, any>) {
+    console.log("Tour page updated:", changes);
+
+    if (this.tour && !this.route) {
+      this.dispatchMessage(["route/request", {
+        points: this.tour.destinations.map((d) => d.location)
+      }]);
+    }
   }
 
   render(): TemplateResult {
@@ -155,6 +172,12 @@ export class TourViewElement extends View<Model, Msg> {
       `;
     };
 
+    const places =
+      this.tour?.destinations.map((d: Destination) => ({
+        name: d.name,
+        feature: d.location
+      })) || [];
+
     console.log("Rendering Tour page", this.tour);
 
     return html`
@@ -172,6 +195,11 @@ export class TourViewElement extends View<Model, Msg> {
         <section class="itinerary">
           ${destinations.map(renderDestAndTrans)}
         </section>
+
+        <map-viewer
+          .places=${places}
+          .route=${this.route}>
+        </map-viewer>
 
         <entourage-table
           href="/app/entourage/${this.tourId}"
@@ -206,6 +234,7 @@ export class TourViewElement extends View<Model, Msg> {
         grid-template-rows: auto auto 1fr;
         grid-template-areas:
           "hd hd hd it it it it it"
+          "mv mv mv it it it it it"
           "en en en it it it it it"
           "xx xx xx it it it it it";
         gap: var(--size-spacing-medium)
@@ -229,7 +258,9 @@ export class TourViewElement extends View<Model, Msg> {
         }
       }
       
-      
+      map-viewer {
+        grid-area: mv;
+      }
 
       entourage-table {
         grid-area: en;
