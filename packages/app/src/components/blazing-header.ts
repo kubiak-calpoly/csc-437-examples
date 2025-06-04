@@ -89,7 +89,7 @@ export class HeaderElement extends View<Model, Msg> {
               <a id="signout" @click=${signOut}>Sign Out</a>
             </li>
             <li class="when-signed-out">
-              <a href="/login.html">Sign In</a>
+              <a @click=${() => location.assign("/login.html")}>Sign In</a>
             </li>
           </menu>
         </mu-dropdown>
