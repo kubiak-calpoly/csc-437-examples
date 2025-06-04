@@ -1,6 +1,5 @@
 import { LitElement, css, html } from "lit";
 import {
-  customElement,
   property,
   state
 } from "lit/decorators.js";
@@ -18,7 +17,6 @@ import {
   featureLngLat
 } from "server/models";
 
-@customElement("map-viewer")
 export class MapViewerElement extends LitElement {
   @state()
   accessToken: string;
