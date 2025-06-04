@@ -71,7 +71,7 @@ const routes: Switch.Route[] = [
     `
   },
   {
-    auth: "protected",
+    // auth: "protected",
     path: "/app",
     view: () => html`<home-view></home-view>`
   },
