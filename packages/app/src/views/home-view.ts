@@ -69,27 +69,30 @@ export class HomeViewElement extends LitElement {
   }
 
   renderItem(t: Tour) {
-    const { name, startDate, endDate } = t;
-    const { _id } = t as unknown as { _id: string };
+    const { id, name, startDate, endDate, entourage } = t;
+    const entourage_id = (
+      t.entourage as unknown as { _id: string }
+    )._id as string;
 
     return html`
-        <dt>
-          ${startDate.getUTCFullYear()}
-        </dt>
-        <dt>from
-          <time datetime=${startDate}>
-            ${formatDate(startDate)}
-          </time>
-        </dt>
-        <dt> to
-          <time datetime=${endDate}>
-            ${formatDate(endDate)}
-          </time>
-        </dt>
-        <dd>
-          <a href="/app/tour/${_id}">${name}</a>
-        </dt>
-      `;
+      <dt>
+        <time datetime=${startDate}>
+          ${formatDate(startDate)}
+        </time>
+        to
+        <time datetime=${endDate}>
+          ${formatDate(endDate)}
+        </time>
+        ${startDate.getUTCFullYear()}
+      </dt>
+      <dd>
+        <a href="/app/tour/${id}">${name}</a>
+        with
+        <a href="/app/entourage/${entourage_id}"
+          >${entourage.name}</a
+        >
+      </dd>
+    `;
   }
 
   static styles = [
@@ -106,7 +109,8 @@ export class HomeViewElement extends LitElement {
         grid-template-columns: subgrid;
         grid-template-rows: auto auto auto 1fr;
         grid-template-areas:
-          "hd hd dd dd dd yr dt1 dt2";
+          "hd hd yr dt1 dt2 dd dd dd"
+          "xx xx yr dt1 dt2 dd dd dd";
         gap: var(--size-spacing-medium)
           var(--size-spacing-large);
         align-items: end;

@@ -2,6 +2,7 @@ import { define, View } from "@calpoly/mustang";
 import { css, html, TemplateResult } from "lit";
 import { property, state } from "lit/decorators.js";
 import {
+  DateRange,
   Destination,
   Segment,
   Tour,
@@ -9,17 +10,18 @@ import {
 } from "server/models";
 import { Msg } from "../messages.ts";
 import { Model } from "../model.ts";
+import { CalendarWidget } from "../components/calendar-widget.ts";
 import { DateRangeElement} from "../components/date-range.ts";
 import { EntourageTable } from "../components/entourage-table";
 import { DestinationElement } from "../components/destination.ts";
 import { TransportationElement } from "../components/transportation.ts";
-import {
-  convertStartEndDates,
-  formatDate
-} from "../utils/dates";
+import { MapViewerElement } from "../components/map-viewer.ts";
+
 
 export class TourViewElement extends View<Model, Msg> {
   static uses = define({
+    "calendar-widget": CalendarWidget,
+    "map-viewer": MapViewerElement,
     "date-range": DateRangeElement,
     "entourage-table": EntourageTable,
     "itinerary-destination": DestinationElement,
@@ -27,12 +29,20 @@ export class TourViewElement extends View<Model, Msg> {
   });
 
   @property({ attribute: "tour-id" })
-  tourid = "";
+  tourId = "";
 
   @state()
-  get tour() {
+  get tour(): Tour | undefined {
     return this.model.tour;
   };
+
+  @property()
+  get route() {
+    return this.model.route;
+  }
+
+  @state()
+  dateSelection?: Date;
 
   attributeChangedCallback(name: string, old: string | null, value: string | null) {
     super.attributeChangedCallback(name, old, value);
@@ -45,6 +55,16 @@ export class TourViewElement extends View<Model, Msg> {
     super("blazing:model");
   }
 
+  updated(changes: Map<string, any>) {
+    console.log("Tour page updated:", changes);
+
+    if (this.tour && !this.route) {
+      this.dispatchMessage(["route/request", {
+        points: this.tour.destinations.map((d) => d.location)
+      }]);
+    }
+  }
+
   render(): TemplateResult {
     const {
       endDate,
@@ -55,6 +75,20 @@ export class TourViewElement extends View<Model, Msg> {
       startDate
     } = this.tour || {};
 
+    const isSelected = (range: DateRange): boolean => {
+      console.log("isSelected",
+        range.startDate.toISOString(),
+        range.endDate?.toISOString(),
+        this.dateSelection?.toISOString())
+      if( !this.dateSelection ) return true;
+      else
+        return range.startDate <= this.dateSelection &&
+          (range.endDate
+              ? range.endDate >= this.dateSelection
+              : range.startDate >= this.dateSelection
+          );
+    }
+
     const renderDestination = (
       dest: Destination,
       i: number
@@ -62,10 +96,11 @@ export class TourViewElement extends View<Model, Msg> {
       const { startDate, endDate, name, featuredImage } = dest;
       return html`
         <itinerary-destination
+          class=${isSelected(dest) ? "" : "hidden"}
           start-date=${startDate}
           end-date=${endDate}
           img-src=${featuredImage}
-          href="/app/tour/${this.tourid}/destination/${i}">
+          href="/app/destination/${this.tourId}/${i}">
           ${name}
         </itinerary-destination>
       `;
@@ -99,6 +134,7 @@ export class TourViewElement extends View<Model, Msg> {
       const { startDate, type, segments } = tran || {};
       return html`
         <itinerary-transportation
+          class=${isSelected(tran) ? "" : "hidden"}
           start-date=${startDate}
           mode=${type}>
           ${renderRoute(segments)}
@@ -106,40 +142,41 @@ export class TourViewElement extends View<Model, Msg> {
       `;
     };
 
-    const renderDates = () => {
-      return html`
-        <p>
-          from ${formatDate(startDate)} to
-          ${formatDate(endDate)}
-          ${endDate && endDate.getFullYear()}
-        </p>
-      `;
-    };
-
     const renderDestAndTrans = (d: Destination, i: number) => {
       const t0 = transportation[i];
       const tn = transportation[i + 1];
 
+      const firstTransportation = i > 0 ? "" : html`
+        <date-range
+          class=${isSelected(t0) ? "" : "hidden"}
+          from=${t0.startDate}
+          to="${t0.endDate}">
+        </date-range>
+        ${renderTransportation(t0)}
+      `;
+
       return html`
-        ${i ? "" : html`
+          ${firstTransportation}
           <date-range
-            from=${t0.startDate}
-            to="${t0.endDate}">
+            class=${isSelected(d) ? "" : "hidden"}
+            from=${d.startDate}
+            to="${d.endDate}">
           </date-range>
-          ${renderTransportation(t0)}`
-        }
-        <date-range
-          from=${d.startDate}
-          to="${d.endDate}">
-        </date-range>
-        ${renderDestination(d, i)}
-        <date-range
-          from=${tn.startDate}
-          to="${tn.endDate}">
-        </date-range>
-        ${renderTransportation(tn)}
+          ${renderDestination(d, i)}
+          <date-range
+            class=${isSelected(tn) ? "" : "hidden"}
+            from=${tn.startDate}
+            to="${tn.endDate}">
+          </date-range>
+          ${renderTransportation(tn)}
       `;
     };
+
+    const places =
+      this.tour?.destinations.map((d: Destination) => ({
+        name: d.name,
+        feature: d.location
+      })) || [];
 
     console.log("Rendering Tour page", this.tour);
 
@@ -147,18 +184,36 @@ export class TourViewElement extends View<Model, Msg> {
       <main>
         <header>
           <h2>${name}</h2>
-          ${renderDates()}
+          <calendar-widget
+            @calendar-widget:select=${this._handleSelection}
+            @calendar-widget:clear=${this._handleClear}
+            start-date=${startDate}
+            end-date=${endDate}>
+          </calendar-widget>
         </header>
 
         <section class="itinerary">
           ${destinations.map(renderDestAndTrans)}
         </section>
 
+        <map-viewer
+          .places=${places}
+          .route=${this.route}>
+        </map-viewer>
+
         <entourage-table
-          href="/app/entourage/${this.tourid}"
-          .using=${entourage}></entourage-table>
+          href="/app/entourage/${this.tourId}"
+          .using=${entourage}>
+        </entourage-table>
       </main>
     `;
+  }
+
+  _handleSelection(e: CustomEvent<{date: Date}>) {
+    this.dateSelection = e.detail.date;
+  }
+  _handleClear() {
+    this.dateSelection = undefined;
   }
 
   static styles = [
@@ -179,6 +234,7 @@ export class TourViewElement extends View<Model, Msg> {
         grid-template-rows: auto auto 1fr;
         grid-template-areas:
           "hd hd hd it it it it it"
+          "mv mv mv it it it it it"
           "en en en it it it it it"
           "xx xx xx it it it it it";
         gap: var(--size-spacing-medium)
@@ -196,6 +252,14 @@ export class TourViewElement extends View<Model, Msg> {
         grid-template-columns: subgrid [start] [header] [] [] [end];
         gap: 0 var(--size-spacing-medium);
         align-items: baseline;
+        
+        .hidden {
+          display: none;
+        }
+      }
+      
+      map-viewer {
+        grid-area: mv;
       }
 
       entourage-table {

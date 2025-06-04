@@ -1,5 +1,5 @@
-import { Document, Model, Schema, model } from "mongoose";
-import { Destination, Tour, Transportation } from "../models";
+import { Schema, model } from "mongoose";
+import { Destination, Tour } from "../models";
 import "./entourage-svc"; // to load schema
 
 const tourSchema = new Schema<Tour>(
@@ -29,8 +29,7 @@ const tourSchema = new Schema<Tour>(
         endDate: Date,
         location: { lat: Number, lon: Number },
         featuredImage: String,
-        accommodations: [
-          {
+        accommodation: {
             name: String,
             checkIn: Date,
             checkOut: Date,
@@ -40,8 +39,7 @@ const tourSchema = new Schema<Tour>(
               amount: Number,
               currency: String
             }
-          }
-        ],
+          },
         excursions: [{ name: String, type: { type: String } }]
       }
     ],
@@ -77,10 +75,34 @@ const tourSchema = new Schema<Tour>(
 const tourModel = model<Tour>("Tour", tourSchema);
 
 function index(): Promise<Tour[]> {
-  return tourModel.find();
+  return tourModel
+    .find()
+    .then((tours) =>
+      // populate the entourage name for each tour:
+      tourModel.populate(tours, {
+        path: "entourage",
+        select: "name"
+      })
+    )
+    .then((tours) => tours.map(trimIndex));
 }
 
-function get(id: String): Promise<Tour> {
+function trimIndex(t: Tour): Tour  {
+  const { name, startDate, endDate, entourage } = t;
+  const { _id } = t as unknown as { _id: string };
+
+  return {
+    id: _id,
+    name,
+    startDate,
+    endDate,
+    entourage,
+    destinations: [],
+    transportation: []
+  };
+}
+
+function get(id: string): Promise<Tour> {
   return (
     tourModel
       .findById(id)
@@ -107,7 +129,7 @@ function create(profile: Tour): Promise<Tour> {
   return p.save();
 }
 
-function update(id: String, tour: Tour): Promise<Tour> {
+function update(id: string, tour: Tour): Promise<Tour> {
   return new Promise((resolve, reject) => {
     tourModel
       .findByIdAndUpdate(id, tour, {

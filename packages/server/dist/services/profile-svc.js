@@ -45,8 +45,7 @@ function get(userid) {
 }
 function update(userid, profile) {
   return ProfileModel.findOne({ userid }).then((found) => {
-    if (!found)
-      throw `${userid} Not Found`;
+    if (!found) throw `${userid} Not Found`;
     else
       return ProfileModel.findByIdAndUpdate(
         found._id,
@@ -56,10 +55,8 @@ function update(userid, profile) {
         }
       );
   }).then((updated) => {
-    if (!updated)
-      throw `${userid} not updated`;
-    else
-      return updated;
+    if (!updated) throw `${userid} not updated`;
+    else return updated;
   });
 }
 function create(profile) {
@@ -69,8 +66,7 @@ function create(profile) {
 function remove(userid) {
   return ProfileModel.findOneAndDelete({ userid }).then(
     (deleted) => {
-      if (!deleted)
-        throw `${userid} not deleted`;
+      if (!deleted) throw `${userid} not deleted`;
     }
   );
 }

@@ -7,7 +7,7 @@ export interface Destination {
   endDate: Date;
   location: Point;
   featuredImage?: string;
-  accommodations: Array<Accommodation>;
+  accommodation: Accommodation;
   excursions: Array<Excursion>;
 }
 

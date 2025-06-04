@@ -50,19 +50,17 @@ const tourSchema = new import_mongoose.Schema(
         endDate: Date,
         location: { lat: Number, lon: Number },
         featuredImage: String,
-        accommodations: [
-          {
-            name: String,
-            checkIn: Date,
-            checkOut: Date,
-            roomType: String,
-            persons: Number,
-            rate: {
-              amount: Number,
-              currency: String
-            }
+        accommodation: {
+          name: String,
+          checkIn: Date,
+          checkOut: Date,
+          roomType: String,
+          persons: Number,
+          rate: {
+            amount: Number,
+            currency: String
           }
-        ],
+        },
         excursions: [{ name: String, type: { type: String } }]
       }
     ],
@@ -96,7 +94,28 @@ const tourSchema = new import_mongoose.Schema(
 );
 const tourModel = (0, import_mongoose.model)("Tour", tourSchema);
 function index() {
-  return tourModel.find();
+  return tourModel.find().then(
+    (tours) => (
+      // populate the entourage name for each tour:
+      tourModel.populate(tours, {
+        path: "entourage",
+        select: "name"
+      })
+    )
+  ).then((tours) => tours.map(trimIndex));
+}
+function trimIndex(t) {
+  const { name, startDate, endDate, entourage } = t;
+  const { _id } = t;
+  return {
+    id: _id,
+    name,
+    startDate,
+    endDate,
+    entourage,
+    destinations: [],
+    transportation: []
+  };
 }
 function get(id) {
   return tourModel.findById(id).populate({

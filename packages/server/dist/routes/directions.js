@@ -38,10 +38,8 @@ router.get("/", (req, res) => {
   const { pts } = req.query;
   const points = pts.split(";").map((pair) => pair.split(",").map((n) => parseFloat(n)));
   (0, import_mapbox.getDirections)(points).then((route) => {
-    if (!route)
-      throw "Not found";
-    else
-      res.json(route);
+    if (!route) throw "Not found";
+    else res.json(route);
   }).catch((error) => res.status(500).send(error));
 });
 var directions_default = router;

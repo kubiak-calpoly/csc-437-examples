@@ -58,11 +58,11 @@ export class DestinationEditElement extends View<Model, Msg> {
   render() {
     const {
       featuredImage,
-      accommodations = [],
+      accommodation,
       excursions = []
     } = this.destination || ({} as Destination);
     const imageUrl = this.image || featuredImage;
-    const acc = accommodations[0] || { rate: {} };
+    const acc = accommodation || { rate: {} };
 
     const init = this.destination
       ? {
@@ -225,8 +225,7 @@ export class DestinationEditElement extends View<Model, Msg> {
       if (this.image) {
         json.featuredImage = this.image;
       }
-      json.accommodations = [
-        {
+      json.accommodation =  {
           name: ex("acc-name"),
           checkIn: ex("acc-checkIn"),
           checkOut: ex("acc-checkOut"),
@@ -235,8 +234,7 @@ export class DestinationEditElement extends View<Model, Msg> {
             amount: ex("acc-rate-amount"),
             currency: ex("acc-rate-currency")
           }
-        }
-      ];
+        };
 
       json.excursions = (json.excursions as Array<string>).map(
         (name) => ({

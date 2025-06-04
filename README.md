@@ -41,4 +41,6 @@ progress:
 - [Module 8](https://github.com/kubiak-calpoly/csc-437-examples/tree/mod-8):
   Single-page Apps
 - [Module 9](https://github.com/kubiak-calpoly/csc-437-examples/tree/mod-9):
-  MVU Architecture
+  Reactivity and MVU
+- [Module 10](https://github.com/kubiak-calpoly/csc-437-examples/tree/mod-9):
+  UI State
