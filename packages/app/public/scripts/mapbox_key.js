@@ -1,0 +1,2 @@
+window.MAPBOX_API_KEY =
+  "pk.eyJ1Ijoia3ViaWFrLWNhbHBvbHkiLCJhIjoiY21iZWFkNWJnMWNxbzJpbjZlbHM1dmNjayJ9.uOniiztJKBU62qdvE-bSTg"
