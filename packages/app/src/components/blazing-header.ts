@@ -38,7 +38,7 @@ export class HeaderElement extends View<Model, Msg> {
 
   @state()
   get profile(): Traveler | undefined {
-    return this.model.profile;
+    return this.model.user;
   }
 
   @state()
@@ -158,7 +158,7 @@ export class HeaderElement extends View<Model, Msg> {
         this.loggedIn = true;
         this.userid = user.username;
 
-        this.dispatchMessage(["profile/select", {userid: this.userid}]);
+        this.dispatchMessage(["user/select", {userid: this.userid}]);
       } else {
         this.loggedIn = false;
         this.userid = undefined;
