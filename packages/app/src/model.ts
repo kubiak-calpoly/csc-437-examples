@@ -1,6 +1,7 @@
 import { Tour, Traveler, Route } from "server/models";
 
 export interface Model {
+  user?: Traveler;
   profile?: Traveler;
   tour?: Tour;
   tourStatus: {

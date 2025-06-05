@@ -35,6 +35,11 @@ export default function update(
         apply((model) => ({ ...model, profile }))
       );
       break;
+    case "user/select":
+      selectProfile(message[1], user).then((u) =>
+        apply((model) => ({ ...model, user: u }))
+      );
+      break;
     case "route/request":
       requestRoute(message[1], user).then(
         (route: Route | undefined) =>

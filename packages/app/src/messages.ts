@@ -1,6 +1,7 @@
 import { Destination, Traveler, Point } from "server/models";
 
 export type Msg =
+  | [ "user/select", { userid: string }]
   | [ "profile/select", { userid: string }]
   | [ "profile/save",
       {
