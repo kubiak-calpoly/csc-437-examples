@@ -40,10 +40,27 @@ export default function update(
       );
       break;
     case "tour/select":
-      selectTour(message[1], user).then(
-        (tour: Tour | undefined) =>
-          apply((model) => ({ ...model, tour }))
-      );
+      const { tourid } = message[1];
+      let skip = false;
+      apply((model) => {
+        if ( model.tourStatus?.id === tourid ) {
+          skip = true;
+          return model;
+        }
+        return {
+          ...model,
+          tourStatus: { status: "pending", id: tourid }
+        }
+      })
+      if (!skip) {
+        selectTour(message[1], user).then(
+          (tour: Tour | undefined) => apply((model) => ({
+            ...model,
+            tour,
+            tourStatus: { status: "loaded", id: tourid }
+          }))
+        );
+      }
       break;
     case "tour/save-destination":
       saveDestination(message[1], user)
