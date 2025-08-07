@@ -1,25 +1,29 @@
-import { Destination, Traveler, Point } from "server/models";
+import { Destination, Point, Tour, Traveler } from "server/models";
 
-export type Msg =
-  | [ "user/select", { userid: string }]
-  | [ "profile/select", { userid: string }]
+export interface Reactions = {
+    onSuccess?: () => void;
+    onFailure?: (err: Error) => void;          
+}
+
+export type Message =
+  | [ "user/request", { userid: string }]
+  | [ "profile/request", { userid: string }]
   | [ "profile/save",
       {
         userid: string;
         profile: Traveler;
-        onSuccess?: () => void;
-        onFailure?: (err: Error) => void;
-      }
+      },
+      Reactions
     ]
   | [ "route/request", { points: Point[] }]
   | [ "tour/index", { userid: string }]
-  | [ "tour/select", { tourid: string }]
+  | [ "tour/request", { tourid: string }]
   | [ "tour/save-destination",
       {
         tourid: string;
         index: number;
         destination: Destination;
-        onSuccess?: () => void;
-        onFailure?: (err: Error) => void;
-      }
+      },
+      Reactions
     ];
+

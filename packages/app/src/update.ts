@@ -10,101 +10,111 @@ import { Msg } from "./messages";
 import { Model } from "./model";
 import { convertStartEndDates } from "./utils/dates";
 
+type Async<M, Cmd> [now: Model, ...later: Array<Promise<Cmd>>]
+
+export type Command =
+  | [ "profile/load", { userid: string, profile: Traveler}]
+  | [ "route/load", { route: Route }]
+  | [ "tour/load", { tourid: string, tour: Tour }]
+  | [ "tour/load-destination", { 
+      tourid: string: 
+      index: number, 
+      destination: Destination
+    }]
+  | [ "user/load", { userid: string, user: Traveler}]
+
 export default function update(
-  message: Msg,
-  apply: Update.ApplyMap<Model>,
-  user: Auth.User
-) {
-  switch (message[0]) {
+  model: Model,
+  message: Msg | Command,
+  auth: Auth.Model
+): Model | Async<Model, Command> {
+  const [ command, payload, reactions ] = message;
+  // const { onSuccess, onFailure } = reactions || {};
+  switch (command) {
+    case "profile/request":
+      const { userid } = payload;
+      if (model.profile?.userid === userid ) break;
+      return [
+        { ...model, profile: {userid} satisfies Traveler},
+        requestProfile(payload, auth)
+          .then((profile) => ["profile/load", { profile }])
+      ];
+    case "profile/load":
+      const { profile } = payload;
+      return { ...model, profile };
     case "profile/save":
-      saveProfile(message[1], user)
-        .then((profile) =>
-          apply((model) => ({ ...model, profile }))
-        )
-        .then(() => {
-          const { onSuccess } = message[1];
-          if (onSuccess) onSuccess();
-        })
-        .catch((error: Error) => {
-          const { onFailure } = message[1];
-          if (onFailure) onFailure(error);
-        });
-      break;
-    case "profile/select":
-      selectProfile(message[1], user).then((profile) =>
-        apply((model) => ({ ...model, profile }))
-      );
-      break;
-    case "user/select":
-      selectProfile(message[1], user).then((u) =>
-        apply((model) => ({ ...model, user: u }))
-      );
-      break;
+      return [ model,
+        saveProfile(payload, user)
+          .then((profile) => ["profile/load", {profile}])
+      ];
+    case "user/request":
+      const { userid } = payload;
+      if (model.user?.userid === userid ) break;
+      return [
+        { ...model, user: { userid } satisfies Traveler},
+        requestProfile(payload, user)
+          .then((u) => ["user/load", { user: u}])
+      ];
     case "route/request":
-      requestRoute(message[1], user).then(
-        (route: Route | undefined) =>
-          apply((model) => ({ ...model, route }))
-      )
-      break;
+      return [
+        { ...model, route: undefined },
+        requestRoute(payload, user)
+          .then((route: Route | undefined) => ["route/load", { route }])
+      ];
+    case "route/load":
+      const { route } = payload;
+      return { ...model, route};
     case "tour/index":
-      indexTours(user).then((tourIndex: Tour[] | undefined) =>
-        apply((model) => ({ ...model, tourIndex }))
-      );
-      break;
-    case "tour/select":
-      const { tourid } = message[1];
-      let skip = false;
-      apply((model) => {
-        if ( model.tourStatus?.id === tourid ) {
-          skip = true;
-          return model;
-        }
-        return {
-          ...model,
+      const { userid } = payload;
+      if ( model.tourIndex?.userid === userid ) break;
+      return [
+        { ...model, tourIndex: { userid, tours: []} },
+          indexTours(userid, auth)
+            .then((tours: Tour[]) => ["tour/loadIndex", {userid, tours}])
+        ];
+    case "tour/loadIndex":
+      const {userid, tours} = payload;
+      if ( model.tourIndex && model.tourIndex.userid !== userid ) break;
+      return { ...model, tourIndex: {userid, tours}};
+    case "tour/request":
+      const { tourid } = payload;
+      if (current.tourStatus?.tourid === tourid) break;
+      return [
+        { ...model, 
+          tour: undefined, 
           tourStatus: { status: "pending", id: tourid }
-        }
-      })
-      if (!skip) {
-        selectTour(message[1], user).then(
-          (tour: Tour | undefined) => apply((model) => ({
-            ...model,
-            tour,
-            tourStatus: { status: "loaded", id: tourid }
-          }))
-        );
-      }
-      break;
+        },
+        selectTour(message[1], user)
+          .then((tour: Tour) => ["tour/load", { tour }])
+      ];
+    case "tour/load": 
+      const { tour } = payload;
+      if (model.tourStatus && model.tourStatus.tourid !== tour.id) break;
+      return { ...model, 
+          tour, 
+          tourStatus: { status: "loaded", id: tourid }
+      };
     case "tour/save-destination":
-      saveDestination(message[1], user)
-        .then((dest: Destination | undefined) => {
-          const { index } = message[1];
-          apply((model) => {
-            const tour = model.tour;
-            if (tour && dest) {
-              let destinations = tour.destinations.slice();
-              destinations.splice(index, 1, dest);
-              return {
-                ...model,
-                tour: { ...tour, destinations }
-              };
-            } else {
-              return model;
-            }
-          });
-        })
-        .then(() => {
-          const { onSuccess } = message[1];
-          if (onSuccess) onSuccess();
-        })
-        .catch((error: Error) => {
-          const { onFailure } = message[1];
-          if (onFailure) onFailure(error);
-        });
-      break;
+      const { tourid, index } = payload;
+      return [ model,
+        saveDestination(payload, auth)
+          .then((destination: Destination) => 
+            ["tour/load-destination", {tourid, index, destination}]
+          )
+      ];
+    case "tour/load-destination":
+      const { tourid, index, destination } = payload;
+      const tour = model.tour;
+      if ( !tour || model.tourStatus?.tourid !== tourid ) break;
+      let destinations = tour.destinations.slice();
+      destinations.splice(index, 1, dest);
+      return { ...model, tour: { ...tour, destinations }};
     default:
       const unhandled: never = message[0];
       throw new Error(`Unhandled message "${unhandled}"`);
   }
+  
+  return model;
 }
 
 function indexTours(user: Auth.User) {
@@ -130,7 +140,7 @@ function indexTours(user: Auth.User) {
     });
 }
 
-function selectTour(msg: { tourid: string }, user: Auth.User) {
+function requestTour(msg: { tourid: string }, user: Auth.User) {
   return fetch(`/api/tours/${msg.tourid}`, {
     headers: Auth.headers(user)
   })
@@ -219,7 +229,7 @@ function saveProfile(
     });
 }
 
-function selectProfile(
+function requestProfile(
   msg: { userid: string },
   user: Auth.User
 ) {
