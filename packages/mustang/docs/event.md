@@ -55,7 +55,7 @@ import { Events } from "@calpoly/mustang";
 
 // in class MyElement extends HTMLElement...
 this.addEventListener("change", (event) =>
-  relay(event, "dark-mode:toggle",
+  Events.relay(event, "dark-mode:toggle",
     {checked: event.target?.checked}
   )
 );
