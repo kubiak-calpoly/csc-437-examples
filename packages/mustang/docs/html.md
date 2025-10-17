@@ -14,11 +14,11 @@ Using `html`-tagged template literals has several benefits:
 ```ts
 function html(
   template: TemplateStringsArray,
-  ...values: unknown[]
+  ...values: string[]
 ) : DocumentFragment
 ```
 
-The HTML function is defined such that it can be
+The `html`` function is defined such that it can be
 used as a template literal tag. In general, a template literal can contain substitution parameters, by using the `${...}` syntax.
 
 The `template` parameter is an array of all the strings in the template &mdash; before, between, and after the substitution parameters. It will always contain at least one string.
