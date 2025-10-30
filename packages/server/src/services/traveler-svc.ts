@@ -23,23 +23,19 @@ function index(): Promise<Traveler[]> {
   return TravelerModel.find();
 }
 
-function get(userid: String): Promise<Traveler> {
+function get(userid: String): Promise<Traveler | undefined> {
   return TravelerModel.find({ userid })
     .then((list) => list[0])
-    .catch(() => {
-      throw `${userid} Not Found`;
-    });
 }
 
 function update(
   userid: String,
   traveler: Traveler
-): Promise<Traveler> {
+): Promise<Traveler | undefined> {
   return TravelerModel.findOneAndUpdate({ userid }, traveler, {
     new: true
   }).then((updated) => {
-    if (!updated) throw `${userid} not updated`;
-    else return updated as Traveler;
+    return updated ? updated as Traveler : undefined;
   });
 }
 
@@ -48,11 +44,9 @@ function create(traveler: Traveler): Promise<Traveler> {
   return p.save();
 }
 
-function remove(userid: String): Promise<void> {
+function remove(userid: String): Promise<Boolean> {
   return TravelerModel.findOneAndDelete({ userid }).then(
-    (deleted) => {
-      if (!deleted) throw `${userid} not deleted`;
-    }
+    (deleted) => !!deleted
   );
 }
 

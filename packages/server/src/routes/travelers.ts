@@ -42,7 +42,10 @@ router.delete("/:userid", (req: Request, res: Response) => {
   const { userid } = req.params;
 
   Travelers.remove(userid)
-    .then(() => res.status(204).end())
+    .then((deleted) => {
+      if (deleted) res.status(204).end()
+      else res.status(404).end()
+    } )
     .catch((err) => res.status(404).send(err));
 });
 

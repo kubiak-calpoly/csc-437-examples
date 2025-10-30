@@ -42,16 +42,13 @@ function index() {
   return TravelerModel.find();
 }
 function get(userid) {
-  return TravelerModel.find({ userid }).then((list) => list[0]).catch(() => {
-    throw `${userid} Not Found`;
-  });
+  return TravelerModel.find({ userid }).then((list) => list[0]);
 }
 function update(userid, traveler) {
   return TravelerModel.findOneAndUpdate({ userid }, traveler, {
     new: true
   }).then((updated) => {
-    if (!updated) throw `${userid} not updated`;
-    else return updated;
+    return updated ? updated : void 0;
   });
 }
 function create(traveler) {
@@ -60,9 +57,7 @@ function create(traveler) {
 }
 function remove(userid) {
   return TravelerModel.findOneAndDelete({ userid }).then(
-    (deleted) => {
-      if (!deleted) throw `${userid} not deleted`;
-    }
+    (deleted) => !!deleted
   );
 }
 var traveler_svc_default = { index, get, create, update, remove };

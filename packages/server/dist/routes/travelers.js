@@ -54,6 +54,9 @@ router.post("/", (req, res) => {
 });
 router.delete("/:userid", (req, res) => {
   const { userid } = req.params;
-  import_traveler_svc.default.remove(userid).then(() => res.status(204).end()).catch((err) => res.status(404).send(err));
+  import_traveler_svc.default.remove(userid).then((deleted) => {
+    if (deleted) res.status(204).end();
+    else res.status(404).end();
+  }).catch((err) => res.status(404).send(err));
 });
 var travelers_default = router;
