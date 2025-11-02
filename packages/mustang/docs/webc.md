@@ -38,7 +38,7 @@ import { define, Auth } from "@calpoly/mustang";
 import { HeaderElement } from "../components/header.js";
 
 define({
-  "mu-auth": Auth.Element,
+  "mu-auth": Auth.Provider,
   "blz-header": HeaderElement
 })
 ```

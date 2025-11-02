@@ -8,7 +8,7 @@ most frameworks, including:
 - [Event Handling](./events.md)
 - [Web Components and Shadow DOM](./webc.md)
   - Integrates with [Lit](https://lit.dev)
-- Authentication
+- [Authentication and Authorization](./auth.md)
 - Client-side routing
 - The Elm Architecture (MVU)
   - Store provider
