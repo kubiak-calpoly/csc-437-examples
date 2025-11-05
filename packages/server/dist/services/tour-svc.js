@@ -63,7 +63,8 @@ const tourSchema = new import_mongoose.Schema(
             }
           }
         ],
-        excursions: [{ name: String, type: { type: String } }]
+        excursions: [{ name: String, type: { type: String } }],
+        link: String
       }
     ],
     transportation: [

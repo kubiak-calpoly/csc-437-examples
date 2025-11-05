@@ -9,6 +9,7 @@ export interface Destination {
   featuredImage?: string;
   accommodations: Array<Accommodation>;
   excursions: Array<Excursion>;
+  link?: string;
 }
 
 export interface Accommodation {
