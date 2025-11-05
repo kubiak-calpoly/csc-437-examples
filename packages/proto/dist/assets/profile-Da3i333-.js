@@ -1,4 +1,4 @@
-import{i as m,O as p,d as g,f as v,x as c,r as f,h as y,a as b,n as u,b as $}from"./state-By6HLBIX.js";var w=Object.defineProperty,l=(h,r,t,a)=>{for(var e=void 0,i=h.length-1,s;i>=0;i--)(s=h[i])&&(e=s(r,t,e)||e);return e&&w(r,t,e),e};const o=class o extends m{constructor(){super(...arguments),this.mode="view",this._authObserver=new p(this,"blazing:auth")}render(){return this.mode==="edit"?this.renderEditor():this.renderView()}renderView(){const{userid:r,name:t,nickname:a,home:e,airports:i=[],avatar:s,color:d}=this.traveler||{};return c`
+import{i as m,O as p,d as g,f as v,x as c,r as f,h as y,a as b,n as u,c as $}from"./state-BVmPQKQF.js";var w=Object.defineProperty,l=(h,r,t,a)=>{for(var e=void 0,i=h.length-1,s;i>=0;i--)(s=h[i])&&(e=s(r,t,e)||e);return e&&w(r,t,e),e};const o=class o extends m{constructor(){super(...arguments),this.mode="view",this._authObserver=new p(this,"blazing:auth")}render(){return this.mode==="edit"?this.renderEditor():this.renderView()}renderView(){const{userid:r,name:t,nickname:a,home:e,airports:i=[],avatar:s,color:d}=this.traveler||{};return c`
         <button @click=${()=>{this.mode="edit"}}>
           Edit
         </button>
@@ -31,7 +31,7 @@ import{i as m,O as p,d as g,f as v,x as c,r as f,h as y,a as b,n as u,b as $}fro
         <img src=${t} alt=${r} />
         <h1><input name="name"></h1>
         <dl>
-          <dt>Avatar}</dt>
+          <dt>Avatar</dt>
           <dd>
             <input
               type="file"

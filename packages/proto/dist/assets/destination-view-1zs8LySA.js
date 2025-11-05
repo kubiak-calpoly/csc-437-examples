@@ -1,4 +1,4 @@
-import{i as y,x as h,r as v,h as _,a as b,O as C,d as S,f as O,n as w,b as $,c as k}from"./state-By6HLBIX.js";import{H as z}from"./header-BPxdGmxf.js";import{i as T}from"./icon.css-JrZfBXGW.js";const U=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],p=r=>{const t=(typeof r=="string"?new Date(r):r)||new Date,e=U[t.getUTCMonth()];return`${t.getUTCDate()} ${e}`};function f(r){const t=r;let e=r;return e.startDate=new Date(t.startDate),e.endDate=new Date(t.endDate),e}const u=class u extends y{render(){return h`<section>
+import{i as y,x as h,r as v,h as D,a as b,O as _,d as z,f as C,b as O,n as S,c as w}from"./state-BVmPQKQF.js";import{i as k}from"./icon.css-RgkUvfMu.js";const T=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],p=r=>{const t=(typeof r=="string"?new Date(r):r)||new Date,e=T[t.getUTCMonth()];return`${t.getUTCDate()} ${e}`};function f(r){const t=r;let e=r;return e.startDate=new Date(t.startDate),e.endDate=new Date(t.endDate),e}const u=class u extends y{render(){return h`<section>
         <h3>
           <svg class="icon">
             <use xlink:href="/icons/destination.svg#icon-hotel" />
@@ -32,7 +32,7 @@ import{i as y,x as h,r as v,h as _,a as b,O as C,d as S,f as O,n as w,b as $,c a
           </dd>
         </dl>
       </section>
-    </template>`}};u.styles=[v.styles,_.styles,T.styles,b`
+    </template>`}};u.styles=[v.styles,D.styles,k.styles,b`
     :host {
       display: contents;
     }
@@ -62,7 +62,7 @@ import{i as y,x as h,r as v,h as _,a as b,O as C,d as S,f as O,n as w,b as $,c a
       grid-column: dd / -1;
       justify-self: end;
     }
-  `];let m=u;var I=Object.defineProperty,c=(r,t,e,n)=>{for(var s=void 0,a=r.length-1,i;a>=0;a--)(i=r[a])&&(s=i(t,e,s)||s);return s&&I(t,e,s),s};const l=class l extends y{constructor(){super(...arguments),this.mode="view",this._authObserver=new C(this,"blazing:auth")}render(){return this.mode==="edit"?this.renderEditor():this.renderView()}renderView(){const{name:t,startDate:e,endDate:n,featuredImage:s}=this.destination||{};return h`
+  `];let m=u;var U=Object.defineProperty,c=(r,t,e,n)=>{for(var s=void 0,a=r.length-1,i;a>=0;a--)(i=r[a])&&(s=i(t,e,s)||s);return s&&U(t,e,s),s};const l=class l extends y{constructor(){super(...arguments),this.mode="view",this._authObserver=new _(this,"blazing:auth")}render(){return this.mode==="edit"?this.renderEditor():this.renderView()}renderView(){const{name:t,startDate:e,endDate:n,featuredImage:s}=this.destination||{};return h`
         <header>
 
           <h2>${t}</h2>
@@ -100,7 +100,7 @@ import{i as y,x as h,r as v,h as _,a as b,O as C,d as S,f as O,n as w,b as $,c a
         </header>
         <img class="hero" src=${e} />
       </mu-form>
-    `}connectedCallback(){super.connectedCallback(),this._authObserver.observe(t=>{this._user=t.user,this.src&&this.hydrate(this.src)})}get authorization(){return this._user&&this._user.authenticated?{Authorization:`Bearer ${this._user.token}`}:{}}hydrate(t){fetch(t,{headers:this.authorization}).then(e=>{if(e.status!==200)throw`Status: ${e.status}`;return e.json()}).then(e=>this.destination=f(e)).catch(e=>console.log(`Failed to render data ${t}:`,e))}handleSubmit(t,e){console.log("Submitting form",e);const n={...this.destination,...e};this._image&&(n.featuredImage=this._image),fetch(t,{headers:{"Content-Type":"application/json",...this.authorization},method:"PUT",body:JSON.stringify(n)}).then(s=>{if(s.status!==200)throw`Status: ${s.status}`;return s.json()}).then(s=>{this.destination=f(s),this.mode="view"})}handleImageSelected(t){t&&t.length&&new Promise((n,s)=>{const a=new FileReader;a.onload=()=>n(a.result),a.onerror=i=>s(i),a.readAsArrayBuffer(t[0])}).then(n=>{const{name:s,size:a,type:i}=t[0],D=new URLSearchParams({filename:s}),g=new URL("/images",document.location.origin);g.search=D.toString(),fetch(g,{method:"POST",headers:{"Content-Type":i,"Content-Length":a.toString(),...this.authorization},body:n}).then(o=>{if(o.status===201)return o.json();throw o.status}).then(o=>{if(o)console.log("Image has been uploaded to",o.url),this._image=o.url;else throw"No JSON response"}).catch(o=>{console.log("Upload failed",o)})})}};l.uses=S({"accommodation-info":m,"mu-form":O.Element}),l.styles=[v.styles,b`
+    `}connectedCallback(){super.connectedCallback(),this._authObserver.observe(t=>{this._user=t.user,this.src&&this.hydrate(this.src)})}get authorization(){return this._user?O.headers(this._user):{}}hydrate(t){fetch(t,{headers:this.authorization}).then(e=>{if(e.status!==200)throw`Status: ${e.status}`;return e.json()}).then(e=>this.destination=f(e)).catch(e=>console.log(`Failed to render data ${t}:`,e))}handleSubmit(t,e){console.log("Submitting form",e);const n={...this.destination,...e};this._image&&(n.featuredImage=this._image),fetch(t,{headers:{"Content-Type":"application/json",...this.authorization},method:"PUT",body:JSON.stringify(n)}).then(s=>{if(s.status!==200)throw`Status: ${s.status}`;return s.json()}).then(s=>{this.destination=f(s),this.mode="view"})}handleImageSelected(t){t&&t.length&&new Promise((n,s)=>{const a=new FileReader;a.onload=()=>n(a.result),a.onerror=i=>s(i),a.readAsArrayBuffer(t[0])}).then(n=>{const{name:s,size:a,type:i}=t[0],$=new URLSearchParams({filename:s}),g=new URL("/images",document.location.origin);g.search=$.toString(),fetch(g,{method:"POST",headers:{"Content-Type":i,"Content-Length":a.toString(),...this.authorization},body:n}).then(d=>{if(d.status===201)return d.json();throw d.status}).then(d=>{if(d)console.log("Image has been uploaded to",d.url),this._image=d.url;else throw"No JSON response"}).catch(d=>{console.log("Upload failed",d)})})}};l.uses=z({"accommodation-info":m,"mu-form":C.Element}),l.styles=[v.styles,b`
       :host {
         display: contents;
       }
@@ -144,4 +144,4 @@ import{i as y,x as h,r as v,h as _,a as b,O as C,d as S,f as O,n as w,b as $,c a
     dd {
       grid-column: span 3 / -1;
     }
-    `];let d=l;c([w()],d.prototype,"src");c([$()],d.prototype,"destination");c([w()],d.prototype,"mode");c([$()],d.prototype,"_image");S({"blz-header":z,"mu-auth":k.Provider,"destination-view":d});z.initializeOnce();
+    `];let o=l;c([S()],o.prototype,"src");c([w()],o.prototype,"destination");c([S()],o.prototype,"mode");c([w()],o.prototype,"_image");export{o as D};

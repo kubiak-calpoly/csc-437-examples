@@ -1,4 +1,4 @@
-import{i as g,O as m,d as p,e as v,g as u,x as i,r as b,h as f,a as k,b as c}from"./state-By6HLBIX.js";var y=Object.defineProperty,h=(o,t,e,d)=>{for(var r=void 0,a=o.length-1,l;a>=0;a--)(l=o[a])&&(r=l(t,e,r)||r);return r&&y(t,e,r),r};const s=class s extends g{constructor(){super(...arguments),this.loggedIn=!1,this._authObserver=new m(this,"blazing:auth")}render(){return i`
+import{i as g,O as m,d as p,e as v,g as c,x as i,r as b,h as f,a as k,c as u}from"./state-BVmPQKQF.js";var y=Object.defineProperty,h=(o,t,e,d)=>{for(var r=void 0,a=o.length-1,l;a>=0;a--)(l=o[a])&&(r=l(t,e,r)||r);return r&&y(t,e,r),r};const s=class s extends g{constructor(){super(...arguments),this.loggedIn=!1,this._authObserver=new m(this,"blazing:auth")}render(){return i`
       <header>
         <h1>Blazing Travels</h1>
         <nav>
@@ -12,7 +12,7 @@ import{i as g,O as m,d as p,e as v,g as u,x as i,r as b,h as f,a as k,b as c}fro
             <menu>
               <li>
                 <label class="dark-mode-switch" 
-                  @change=${t=>{var e;return u.relay(t,"dark-mode",{checked:(e=t.target)==null?void 0:e.checked})}}
+                  @change=${t=>{var e;return c.relay(t,"dark-mode",{checked:(e=t.target)==null?void 0:e.checked})}}
                 >
                 <input type="checkbox" />
                 Dark Mode
@@ -27,7 +27,7 @@ import{i as g,O as m,d as p,e as v,g as u,x as i,r as b,h as f,a as k,b as c}fro
       </header>
       </template>`}renderSignOutButton(){return i`
       <button
-        @click=${t=>{u.relay(t,"auth:message",["auth/signout"])}}
+        @click=${t=>{c.relay(t,"auth:message",["auth/signout"])}}
       >
         Sign Out
       </button>
@@ -59,4 +59,4 @@ import{i as g,O as m,d as p,e as v,g as u,x as i,r as b,h as f,a as k,b as c}fro
       flex-basis: max-content;
       align-items: end;
     }
-  `];let n=s;h([c()],n.prototype,"loggedIn");h([c()],n.prototype,"userid");export{n as H};
+  `];let n=s;h([u()],n.prototype,"loggedIn");h([u()],n.prototype,"userid");export{n as H};

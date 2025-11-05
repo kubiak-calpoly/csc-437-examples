@@ -15,17 +15,25 @@
     <link rel="stylesheet" href="/styles/reset.css" />
     <link rel="stylesheet" href="/styles/tokens.css" />
     <link rel="stylesheet" href="/styles/page.css" />
-    <script type="module" crossorigin src="/assets/mondy-DQ9m35xl.js"></script>
+
+    <script type="module" crossorigin src="/assets/florence-8mOQcB1k.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/state-BVmPQKQF.js">
     <link rel="modulepreload" crossorigin href="/assets/header-go4onkW3.js">
-    <link rel="modulepreload" crossorigin href="/assets/profile-Da3i333-.js">
+    <link rel="modulepreload" crossorigin href="/assets/icon.css-RgkUvfMu.js">
+    <link rel="modulepreload" crossorigin href="/assets/destination-view-1zs8LySA.js">
   </head>
   <body>
-  <mu-auth provides="blazing:auth">
-    <blz-header></blz-header>
-    <main class="page">
-      <profile-view src="/api/travelers/mondy"></profile-view>
-    </main>
-  </mu-auth>
+    <mu-auth provides="blazing:auth">
+
+      <blz-header>
+        <a href="/">&larr; Tour: 12 Days in Italy</a>
+      </blz-header>
+
+      <main class="page">
+        <destination-view
+          src="/api/tours/65c7e92ea837ff7c15b669e5/destinations/1">
+        </destination-view>
+      </main>
+    </mu-auth>
   </body>
 </html>

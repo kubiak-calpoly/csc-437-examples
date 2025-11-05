@@ -1,6 +1,6 @@
 import { html, css, LitElement, TemplateResult } from "lit";
 import { property, state } from "lit/decorators.js";
-import { define } from "@calpoly/mustang";
+import {Auth, define, Observer} from "@calpoly/mustang";
 import {
   Destination,
   Segment,
@@ -36,11 +36,6 @@ export class ItineraryElement extends LitElement {
 
   @state()
   transportations: Array<Transportation> = [];
-
-  override connectedCallback() {
-    super.connectedCallback();
-    if (this.src) this.hydrate(this.src);
-  }
 
   override render() {
     console.log("Destinations", this.destinations);
@@ -192,19 +187,36 @@ export class ItineraryElement extends LitElement {
     }
   `];
 
+  _authObserver = new Observer<Auth.Model>(this, "blazing:auth");
+  _user?: Auth.User;
+
+  get authorization() {
+    return this._user ? Auth.headers(this._user) : {};
+  }
+
+  override connectedCallback() {
+    super.connectedCallback();
+    this._authObserver.observe((auth: Auth.Model) => {
+      this._user = auth.user;
+      if (this.src) this.hydrate(this.src);
+    });
+  }
+
   hydrate(src: string) {
-    fetch(src)
+    fetch(src,
+      { headers: this.authorization }
+    )
     .then(res => res.json())
     .then((json: object) => {
       if(json) {
         const itinerary = json as {
           destinations: Array<object>,
-          transportations: Array<object>
+          transportation: Array<object>
         }
         this.destinations =
           itinerary.destinations.map(convertDates<Destination>);
         this.transportations =
-          itinerary.transportations.map(convertDates<Transportation>);
+          itinerary.transportation.map(convertDates<Transportation>);
       }
     })
   }

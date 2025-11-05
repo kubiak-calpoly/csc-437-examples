@@ -157,19 +157,15 @@ export class DestinationViewElement extends LitElement {
     });
   }
 
-  get authorization(): { Authorization?: string } {
-    if (this._user && this._user.authenticated)
-      return {
-        Authorization:
-          `Bearer ${(this._user as Auth.AuthenticatedUser).token}`
-      };
-    else return {};
+  get authorization() {
+    return this._user ? Auth.headers(this._user) : {};
   }
 
   hydrate(url: string) {
     fetch(
       url,
       { headers: this.authorization }
+
     )
       .then((res: Response) => {
         if (res.status !== 200) throw `Status: ${res.status}`;

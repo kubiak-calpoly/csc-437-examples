@@ -236,4 +236,4 @@ Expecting `+mt.join(", ")+", got '"+(this.terminals_[b]||b)+"'":Ut="Parse error 
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */function br(r){return or({...r,state:!0,attribute:!1})}export{vt as O,us as a,br as b,ar as c,mr as d,fr as e,hr as f,lr as g,vr as h,gt as i,or as n,$r as r,gr as x};
+ */function br(r){return or({...r,state:!0,attribute:!1})}export{vt as O,us as a,ar as b,br as c,mr as d,fr as e,hr as f,lr as g,vr as h,gt as i,or as n,$r as r,gr as x};

@@ -1,15 +1,15 @@
-import{i as g,x as n,r as f,h as z,a as v,n as c,d as O,b as S,c as j}from"./state-By6HLBIX.js";import{H as _}from"./header-BPxdGmxf.js";import{i as J}from"./icon.css-JrZfBXGW.js";var U=Object.defineProperty,b=(o,s,e,l)=>{for(var a=void 0,r=o.length-1,t;r>=0;r--)(t=o[r])&&(a=t(s,e,a)||a);return a&&U(s,e,a),a};const x=class x extends g{constructor(){super(...arguments),this.mode="unknown"}render(){const e={air:"icon-airplane",rail:"icon-train",unknown:"icon-unknown"}[this.mode];return n`
+import{i as g,x as n,r as f,h as z,a as v,n as c,O as J,d as T,b as H,c as S}from"./state-BVmPQKQF.js";import{H as I}from"./header-go4onkW3.js";import{i as U}from"./icon.css-RgkUvfMu.js";var N=Object.defineProperty,b=(r,e,s,d)=>{for(var a=void 0,o=r.length-1,t;o>=0;o--)(t=r[o])&&(a=t(e,s,a)||a);return a&&N(e,s,a),a};const O=class O extends g{constructor(){super(...arguments),this.mode="unknown"}render(){const s={air:"icon-airplane",rail:"icon-train",unknown:"icon-unknown"}[this.mode];return n`
       <h3>
         <slot name="from">FCO</slot>
         <svg class="icon">
           <use
-            href="/icons/transportation.svg#${e}" />
+            href="/icons/transportation.svg#${s}" />
         </svg>
         <slot name="to">SFO</slot>
         <slot name="via"></slot>
       </h3>
       <slot></slot>
-    `}};x.styles=[f.styles,J.styles,z.styles,v`
+    `}};O.styles=[f.styles,U.styles,z.styles,v`
     :host {
       display: contents;
     }
@@ -35,7 +35,7 @@ import{i as g,x as n,r as f,h as z,a as v,n as c,d as O,b as S,c as j}from"./sta
       }
     }
   }
-    `];let $=x;b([c()],$.prototype,"mode");const k=class k extends g{render(){return n`
+    `];let $=O;b([c()],$.prototype,"mode");const _=class _ extends g{render(){return n`
       <details>
         <summary>
           <slot name="carrier"></slot>
@@ -52,7 +52,7 @@ import{i as g,x as n,r as f,h as z,a as v,n as c,d as O,b as S,c as j}from"./sta
           </dd>
         </dl>
       </details>
-    `}};k.styles=[f.styles,v`
+    `}};_.styles=[f.styles,v`
       :host {
         display: contents;
       }
@@ -75,8 +75,8 @@ import{i as g,x as n,r as f,h as z,a as v,n as c,d as O,b as S,c as j}from"./sta
       dd {
         display: contents;
       }
-    `];let D=k;const M=class M extends g{constructor(){super(...arguments),this.localtime="1970-01-01",this.tz="+0000"}render(){const s=new Date(this.localtime),e=s.getHours(),l=s.getMinutes(),a=e<12?"AM":"PM",r=(e>12?e-12:e||12).toString().padStart(2,"0"),t=l.toString().padStart(2,"0"),i=n`
-      <span>${r}:${t} ${a}</span>
+    `];let D=_;const x=class x extends g{constructor(){super(...arguments),this.localtime="1970-01-01",this.tz="+0000"}render(){const e=new Date(this.localtime),s=e.getHours(),d=e.getMinutes(),a=s<12?"AM":"PM",o=(s>12?s-12:s||12).toString().padStart(2,"0"),t=d.toString().padStart(2,"0"),i=n`
+      <span>${o}:${t} ${a}</span>
       <small>${this.tz}</small>
     `,u=this.code?n`<span>(${this.code})</span>`:"";return n`
       <span class="place">
@@ -85,7 +85,7 @@ import{i as g,x as n,r as f,h as z,a as v,n as c,d as O,b as S,c as j}from"./sta
       <time datetime="${this.localtime}${this.tz}">
         ${i}
       </time>
-    `}};M.styles=[f.styles,v`
+    `}};x.styles=[f.styles,v`
     :host {
       display: contents;
     }
@@ -98,7 +98,7 @@ import{i as g,x as n,r as f,h as z,a as v,n as c,d as O,b as S,c as j}from"./sta
       font-variant-numeric: tabular-nums;
       white-space: nowrap;
     }
-    `];let m=M;b([c()],m.prototype,"localtime");b([c()],m.prototype,"tz");b([c()],m.prototype,"code");var N=Object.defineProperty,w=(o,s,e,l)=>{for(var a=void 0,r=o.length-1,t;r>=0;r--)(t=o[r])&&(a=t(s,e,a)||a);return a&&N(s,e,a),a};const P=class P extends g{render(){return n`
+    `];let m=x;b([c()],m.prototype,"localtime");b([c()],m.prototype,"tz");b([c()],m.prototype,"code");var R=Object.defineProperty,w=(r,e,s,d)=>{for(var a=void 0,o=r.length-1,t;o>=0;o--)(t=r[o])&&(a=t(e,s,a)||a);return a&&R(e,s,a),a};const k=class k extends g{render(){return n`
       <header
         style="background-image: url(${this.imgSrc});)"
       >
@@ -107,7 +107,7 @@ import{i as g,x as n,r as f,h as z,a as v,n as c,d as O,b as S,c as j}from"./sta
         </a>
         <p>${this.nights} nights</p>
       </header>
-    `}};P.styles=[f.styles,z.styles,v`
+    `}};k.styles=[f.styles,z.styles,v`
       :host {
         display: contents;
       }
@@ -128,66 +128,66 @@ import{i as g,x as n,r as f,h as z,a as v,n as c,d as O,b as S,c as j}from"./sta
           color: currentColor;
         }
       }
-    `];let p=P;w([c({attribute:"img-src"})],p.prototype,"imgSrc");w([c()],p.prototype,"href");w([c()],p.prototype,"nights");var R=Object.defineProperty,C=(o,s,e,l)=>{for(var a=void 0,r=o.length-1,t;r>=0;r--)(t=o[r])&&(a=t(s,e,a)||a);return a&&R(s,e,a),a};const y=class y extends g{constructor(){super(...arguments),this.destinations=[],this.transportations=[]}connectedCallback(){super.connectedCallback(),this.src&&this.hydrate(this.src)}render(){console.log("Destinations",this.destinations);const s=this.destinations.length,e=this.destinations.map(t=>({startDate:t.startDate,endDate:t.endDate,html:n`
+    `];let p=k;w([c({attribute:"img-src"})],p.prototype,"imgSrc");w([c()],p.prototype,"href");w([c()],p.prototype,"nights");var q=Object.defineProperty,C=(r,e,s,d)=>{for(var a=void 0,o=r.length-1,t;o>=0;o--)(t=r[o])&&(a=t(e,s,a)||a);return a&&q(e,s,a),a};const y=class y extends g{constructor(){super(...arguments),this.destinations=[],this.transportations=[],this._authObserver=new J(this,"blazing:auth")}render(){console.log("Destinations",this.destinations);const e=this.destinations.length,s=this.destinations.map(t=>({startDate:t.startDate,endDate:t.endDate,html:n`
             <blz-destination
               img-src=${t.featuredImage}
               href=${t.link}
-              nights=${q(t.startDate,t.endDate)}
+              nights=${B(t.startDate,t.endDate)}
             >
               ${t.name}
             </blz-destination>`})),a=this.transportations.map(t=>{const i=t.segments.length,u=n`
             <span slot="from">
               ${t.routing?t.routing[0]:t.segments[0].departure.name}
             </span>
-          `,I=n`
+          `,A=n`
             <span slot="to">
               ${t.routing?t.routing[i]:t.segments[i-1].arrival.name}
             </span>
-          `,A=i>1&&t.routing?n`
+          `,F=i>1&&t.routing?n`
               <span slot="via">${t.routing[1]}</span>
-            `:"",F=t.segments.map(d=>n`
+            `:"",j=t.segments.map(l=>n`
                 <transportation-segment>
-                  <span slot="carrier">${d.carrier}</span>
-                  <span slot="number">${d.number}</span>
+                  <span slot="carrier">${l.carrier}</span>
+                  <span slot="number">${l.number}</span>
                   <end-point 
                     slot="departure"
-                    localtime=${d.departure.localtime}
-                    tz=${d.departure.tz}
-                    code=${d.departure.code}
+                    localtime=${l.departure.localtime}
+                    tz=${l.departure.tz}
+                    code=${l.departure.code}
                   >
-                    ${d.departure.name}
+                    ${l.departure.name}
                   </end-point>
                   <end-point 
                     slot="arrival" 
-                    localtime=${d.arrival.localtime} 
-                    tz=${d.arrival.tz}
-                    code=${d.arrival.code}
+                    localtime=${l.arrival.localtime} 
+                    tz=${l.arrival.tz}
+                    code=${l.arrival.code}
                   >
-                    ${d.arrival.name}
+                    ${l.arrival.name}
                   </end-point>
                 </transportation-segment>
                 `);return{startDate:t.startDate,endDate:t.endDate,html:n`
             <blz-transportation mode=${t.mode}>
-              ${u} ${I} ${A}
-              ${F}
+              ${u} ${A} ${F}
+              ${j}
             </blz-transportation>
-          `}}).flatMap((t,i)=>i<s?[t,e[i]]:[t]),r=t=>{const i=n`                
+          `}}).flatMap((t,i)=>i<e?[t,s[i]]:[t]),o=t=>{const i=n`                
         <time datetime=${t.startDate}>
-          ${H(t.startDate)}
+          ${P(t.startDate)}
         </time>`;if(!t.endDate)return i;const u=n`
         <time datetime=${t.endDate}>
-          ${H(t.endDate)}
+          ${P(t.endDate)}
         </time>`;return n`${i}${u}`};return n`
       <section>
         <h2>Itinerary</h2>
         <dl>
           ${a.map(t=>n`
-              <dt>${r(t)}</dt>
+              <dt>${o(t)}</dt>
               <dd>${t.html}</dd>
             `)}
         </dl>
       </section>
-    `}hydrate(s){fetch(s).then(e=>e.json()).then(e=>{if(e){const l=e;this.destinations=l.destinations.map(T),this.transportations=l.transportations.map(T)}})}};y.uses=O({"blz-destination":p,"blz-transportation":$,"transportation-segment":D,"end-point":m}),y.styles=[f.styles,z.styles,v`
+    `}get authorization(){return this._user?H.headers(this._user):{}}connectedCallback(){super.connectedCallback(),this._authObserver.observe(e=>{this._user=e.user,this.src&&this.hydrate(this.src)})}hydrate(e){fetch(e,{headers:this.authorization}).then(s=>s.json()).then(s=>{if(s){const d=s;this.destinations=d.destinations.map(M),this.transportations=d.transportation.map(M)}})}};y.uses=T({"blz-destination":p,"blz-transportation":$,"transportation-segment":D,"end-point":m}),y.styles=[f.styles,z.styles,v`
     :host {
       display: contents;
     }
@@ -218,4 +218,4 @@ import{i as g,x as n,r as f,h as z,a as v,n as c,d as O,b as S,c as j}from"./sta
         content: "–";
       }
     }
-  `];let h=y;C([c()],h.prototype,"src");C([S()],h.prototype,"destinations");C([S()],h.prototype,"transportations");function q(o,s){const e=s.getTime()-o.getTime();return Math.ceil(e/1e3/3600/24)}function T(o){const s=o,e=s.startDate?new Date(s.startDate):void 0,l=s.endDate?new Date(s.endDate):void 0;return{...o,startDate:e,endDate:l}}const B=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];function H(o){const s=B[o.getUTCMonth()];return`${o.getUTCDate()} ${s}`}O({"blz-header":_,"blz-itinerary":h,"mu-auth":j.Provider});_.initializeOnce();
+  `];let h=y;C([c()],h.prototype,"src");C([S()],h.prototype,"destinations");C([S()],h.prototype,"transportations");function B(r,e){const s=e.getTime()-r.getTime();return Math.ceil(s/1e3/3600/24)}function M(r){const e=r,s=e.startDate?new Date(e.startDate):void 0,d=e.endDate?new Date(e.endDate):void 0;return{...r,startDate:s,endDate:d}}const G=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];function P(r){const e=G[r.getUTCMonth()];return`${r.getUTCDate()} ${e}`}T({"blz-header":I,"blz-itinerary":h,"mu-auth":H.Provider});I.initializeOnce();
