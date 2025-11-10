@@ -4,7 +4,7 @@ import { Traveler } from "server/models";
 import reset from "../styles/reset.css.js";
 import headings from "../styles/headings.css.js";
 import {
-  define, Auth, Observer, Form
+  define, Auth, Observer, Form, History
 } from "@calpoly/mustang";
 
 export class ProfileViewElement extends LitElement {
@@ -40,7 +40,11 @@ export class ProfileViewElement extends LitElement {
 
     return html`
         <button @click=${() => {
-      this.mode = "edit";
+      History.dispatch(
+        this,
+        "history/navigate",
+        { href: `/app/profile/${userid}?mode=edit`}
+      );
     }}>
           Edit
         </button>
@@ -239,8 +243,12 @@ export class ProfileViewElement extends LitElement {
         else return res.json()
       })
       .then((json: unknown) => {
-        this.traveler = json as Traveler;
-        this.mode = "view";
+        const {userid} = this.traveler = json as Traveler;
+        History.dispatch(
+          this,
+          "history/navigate",
+          {href : `/app/profile/${userid}?mode=view`}
+        )
       })
   }
 

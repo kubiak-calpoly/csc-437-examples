@@ -35,7 +35,12 @@ const routes: Switch.Route[] = [
       params: Switch.Params,
       query?: URLSearchParams
     ) => html`
-      <profile-view>
+      <profile-view
+        src="/api/travelers/${params.id}"
+        mode="${
+          query?.get("mode") || "view"
+        }"
+      >
       </profile-view>`
   },
   {
