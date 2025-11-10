@@ -9,7 +9,7 @@ most frameworks, including:
 - [Web Components and Shadow DOM](./webc.md)
   - Integrates with [Lit](https://lit.dev)
 - [Authentication and Authorization](./auth.md)
-- Client-side routing
+- [Client-side routing](./routing.md)
 - The Elm Architecture (MVU)
   - Store provider
   - Views
