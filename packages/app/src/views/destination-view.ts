@@ -16,8 +16,15 @@ export class DestinationViewElement extends LitElement {
   @property()
   mode = "view";
 
+  @property({attribute: "tour-id"})
+  tourId?: string;
+
   @property()
-  src?: string;
+  index? : number;
+
+  get src() {
+    return `/api/tours/${this.tourId}/destinations/${this.index}`;
+  }
 
   override render() {
     return this.mode === "edit" ?

@@ -24,8 +24,12 @@ export class TourViewElement extends LitElement {
     "itinerary-transportation": TransportationElement
   });
 
-  @property()
-  src?: string;
+  @property({attribute: "tour-id"})
+  tourId?: string;
+
+  get src() {
+    return `/api/tours/${this.tourId}`;
+  }
 
   @state()
   tour?: Tour;
@@ -95,7 +99,7 @@ export class TourViewElement extends LitElement {
           start-date=${startDate}
           end-date=${endDate}
           img-src=${featuredImage}
-          href="/app/tour/TOUR_ID/destination/${i}">
+          href="/app/tour/${this.tourId}/destination/${i}">
           ${name}
         </itinerary-destination>
       `;
