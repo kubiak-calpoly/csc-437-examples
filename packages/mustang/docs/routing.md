@@ -87,6 +87,10 @@ Parameters match any string in the URL, except `/`. If a match is made,
 the matching string for each parameter is made available to the `view`
 function through the `params` object.
 
+Query parameters (the portion of the URL after the `?`) are not considered
+when matching.  However, they are made available to the `view` function as a
+`URLSearchParams` object.
+
 `Switch.Element` is configured by providing an array of these route objects.
 On loading a new page, and again whenever the page's location changes,
 `Switch.Element` attempts to match the URL against each route in order.
@@ -94,6 +98,10 @@ For the first route which matches, the `view` is rendered.
 For this reason, routes should be ordered from most specific to most general,
 to avoid matching on a more general "catch-all" route when a more specific
 route would also match.
+
+> Note that `Switch.Element` expects the view function to return
+> a [Lit](https://lit.dev) template, so the `html` function
+> should be imported from `lit`.
 
 Routes may contain a `redirect` URL instead of a `view`, in which case
 `<mu-switch>`, in conjunction with `<mu-history>` changes the URL to the
@@ -104,9 +112,15 @@ if no previous routes are found.
 ```ts
 const routes = [
   {
-    path: "/app/traveler/:id",
-    view: (params: Switch.Params) =>
-      html`<traveler-view userid=${params.id}></traveler-view>`
+    path: "/app/profile/:id",
+    view: (
+      params: Switch.Params,
+      query: URLSearchParams
+    ) =>
+      html`<traveler-view 
+        userid=${params.id}
+        mode="${query?.get("mode") || "view"}">
+      </traveler-view>`
   }, {
     path: "/app",
     view: () =>
@@ -119,9 +133,7 @@ const routes = [
 ];
 ```
 
-> Note that `Switch.Element` expects the view function to return
-> a [Lit](https://lit.dev) template, so the `html` function
-> should be imported from `lit`.
+
 
 ## Protected routes
 
