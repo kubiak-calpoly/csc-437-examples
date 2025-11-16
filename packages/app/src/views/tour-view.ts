@@ -33,11 +33,6 @@ export class TourViewElement extends View<Model, Msg> {
     return this.model.tour;
   };
 
-  @property()
-  get route() {
-    return this.model.route;
-  }
-
   @state()
   dateSelection?: Date;
 
@@ -54,12 +49,6 @@ export class TourViewElement extends View<Model, Msg> {
 
   updated(changes: Map<string, any>) {
     console.log("Tour page updated:", changes);
-
-    if (this.tour && !this.route) {
-      this.dispatchMessage(["route/request", {
-        points: this.tour.destinations.map((d) => d.location)
-      }]);
-    }
   }
 
   render(): TemplateResult {

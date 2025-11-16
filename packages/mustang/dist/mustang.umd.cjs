@@ -212,14 +212,14 @@
     }
     process(message2) {
       console.log(
-        `Processing ${this._eventType} message`,
+        `Processing ${message2[0]} message`,
         message2
       );
       const next = this._update(
         message2,
         this._context.value
       );
-      console.log(`Next[${this._eventType}] => `, next);
+      console.log(`Next[${message2[0]}] => `, next);
       if (!Array.isArray(next)) {
         this._context.value = next;
       } else {
@@ -565,7 +565,10 @@
             checkbox.checked = Boolean(val);
             break;
           case "date":
-            input.value = val.toISOString().substr(0, 10);
+            if (val instanceof Date)
+              input.value = val.toISOString().substr(0, 10);
+            else
+              input.value = val;
             break;
           default:
             input.value = val;
