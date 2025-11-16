@@ -25,7 +25,7 @@ export type Msg =
   | Cmd
   ;
 
-export type Cmd =
+type Cmd =
   | ["profile/load", { userid: string, profile: Traveler }]
   | ["route/load", { route: Route }]
   | ["tour/load", { tourid: string, tour: Tour }]
