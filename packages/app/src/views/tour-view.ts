@@ -158,12 +158,6 @@ export class TourViewElement extends View<Model, Msg> {
       `;
     };
 
-    const places =
-      this.tour?.destinations.map((d: Destination) => ({
-        name: d.name,
-        feature: d.location
-      })) || [];
-
     console.log("Rendering Tour page", this.tour);
 
     return html`
