@@ -215,7 +215,6 @@ export class TourViewElement extends View<Model, Msg> {
         grid-template-rows: auto auto 1fr;
         grid-template-areas:
           "hd hd hd it it it it it"
-          "mv mv mv it it it it it"
           "en en en it it it it it"
           "xx xx xx it it it it it";
         gap: var(--size-spacing-medium)
