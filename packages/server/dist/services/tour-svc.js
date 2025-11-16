@@ -124,7 +124,8 @@ function get(id) {
       path: "people"
     }
   }).then((doc) => {
-    return doc;
+    const { _id, _doc } = doc;
+    return { ..._doc, id: _id.toString() };
   }).catch((err) => {
     console.log("Not found!", err);
     throw `${id} Not Found`;

@@ -158,7 +158,7 @@ export class HeaderElement extends View<Model, Msg> {
         this.loggedIn = true;
         this.userid = user.username;
 
-        this.dispatchMessage(["user/select", {userid: this.userid}]);
+        this.dispatchMessage(["user/request", {userid: this.userid}]);
       } else {
         this.loggedIn = false;
         this.userid = undefined;

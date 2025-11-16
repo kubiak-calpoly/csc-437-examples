@@ -1,4 +1,4 @@
-import { Auth, Update } from "@calpoly/mustang";
+import { Auth, ThenUpdate } from "@calpoly/mustang";
 import {
   Destination,
   Point, Route,
@@ -10,116 +10,120 @@ import { Msg } from "./messages";
 import { Model } from "./model";
 import { convertStartEndDates } from "./utils/dates";
 
-type Async<M, Cmd> [now: Model, ...later: Array<Promise<Cmd>>]
 
-export type Command =
-  | [ "profile/load", { userid: string, profile: Traveler}]
-  | [ "route/load", { route: Route }]
-  | [ "tour/load", { tourid: string, tour: Tour }]
-  | [ "tour/load-destination", { 
-      tourid: string: 
-      index: number, 
-      destination: Destination
-    }]
-  | [ "user/load", { userid: string, user: Traveler}]
 
 export default function update(
+  message: Msg,
   model: Model,
-  message: Msg | Command,
-  auth: Auth.Model
-): Model | Async<Model, Command> {
-  const [ command, payload, reactions ] = message;
-  // const { onSuccess, onFailure } = reactions || {};
+  user: Auth.User
+): Model | ThenUpdate<Model, Msg> {
+  const [ command, payload ] = message;
   switch (command) {
-    case "profile/request":
+    case "profile/request": {
       const { userid } = payload;
       if (model.profile?.userid === userid ) break;
       return [
-        { ...model, profile: {userid} satisfies Traveler},
-        requestProfile(payload, auth)
-          .then((profile) => ["profile/load", { profile }])
+        { ...model, profile: {userid} as Traveler},
+        requestProfile(payload, user)
+          .then((profile) => ["profile/load", { userid, profile }])
       ];
-    case "profile/load":
+    }
+    case "profile/load": {
       const { profile } = payload;
       return { ...model, profile };
-    case "profile/save":
+    }
+    case "profile/save": {
+      const { userid } = payload;
       return [ model,
         saveProfile(payload, user)
-          .then((profile) => ["profile/load", {profile}])
+          .then((profile) => ["profile/load", {userid, profile}])
       ];
-    case "user/request":
+    }
+    case "user/request": {
       const { userid } = payload;
       if (model.user?.userid === userid ) break;
       return [
-        { ...model, user: { userid } satisfies Traveler},
+        { ...model, user: { userid } as Traveler},
         requestProfile(payload, user)
-          .then((u) => ["user/load", { user: u}])
+          .then((u) => ["user/load", { userid, user: u}])
       ];
-    case "route/request":
+    }
+    case "user/load": {
+      const { user } = payload;
+      return { ...model, user};
+    }
+    case "route/request": {
       return [
         { ...model, route: undefined },
         requestRoute(payload, user)
-          .then((route: Route | undefined) => ["route/load", { route }])
+          .then((route) => ["route/load", { route }])
       ];
-    case "route/load":
+    }
+    case "route/load": {
       const { route } = payload;
       return { ...model, route};
-    case "tour/index":
+    }
+    case "tour/index": {
       const { userid } = payload;
       if ( model.tourIndex?.userid === userid ) break;
       return [
         { ...model, tourIndex: { userid, tours: []} },
-          indexTours(userid, auth)
+          indexTours(userid, user)
             .then((tours: Tour[]) => ["tour/loadIndex", {userid, tours}])
         ];
-    case "tour/loadIndex":
+    }
+    case "tour/loadIndex": {
       const {userid, tours} = payload;
       if ( model.tourIndex && model.tourIndex.userid !== userid ) break;
       return { ...model, tourIndex: {userid, tours}};
-    case "tour/request":
+    }
+    case "tour/request": {
       const { tourid } = payload;
-      if (current.tourStatus?.tourid === tourid) break;
+      if (model.tourStatus?.tourid === tourid) break;
       return [
-        { ...model, 
-          tour: undefined, 
-          tourStatus: { status: "pending", id: tourid }
+        { ...model,
+          tour: undefined,
+          tourStatus: { status: "pending", tourid }
         },
-        selectTour(message[1], user)
-          .then((tour: Tour) => ["tour/load", { tour }])
+        requestTour(message[1], user)
+          .then((tour: Tour) => ["tour/load", { tour, tourid }])
       ];
-    case "tour/load": 
+    }
+    case "tour/load": {
       const { tour } = payload;
+      console.log("TourStatus:", model.tourStatus, tour);
       if (model.tourStatus && model.tourStatus.tourid !== tour.id) break;
-      return { ...model, 
-          tour, 
-          tourStatus: { status: "loaded", id: tourid }
+      return { ...model,
+          tour,
+          tourStatus: { status: "loaded", tourid: tour.id }
       };
-    case "tour/save-destination":
+    }
+    case "tour/save-destination": {
       const { tourid, index } = payload;
       return [ model,
-        saveDestination(payload, auth)
-          .then((destination: Destination) => 
+        saveDestination(payload, user)
+          .then((destination: Destination) =>
             ["tour/load-destination", {tourid, index, destination}]
           )
       ];
-    case "tour/load-destination":
+    }
+    case "tour/load-destination": {
       const { tourid, index, destination } = payload;
       const tour = model.tour;
       if ( !tour || model.tourStatus?.tourid !== tourid ) break;
       let destinations = tour.destinations.slice();
-      destinations.splice(index, 1, dest);
+      destinations.splice(index, 1, destination);
       return { ...model, tour: { ...tour, destinations }};
+    }
     default:
       const unhandled: never = message[0];
       throw new Error(`Unhandled message "${unhandled}"`);
   }
-  
+
   return model;
 }
 
-function indexTours(user: Auth.User) {
-  const userid = user.username;
-
+function indexTours(userid: string, user?: Auth.User) {
   return fetch(`/api/tours?userid=${userid}`, {
     headers: Auth.headers(user)
   })
@@ -136,11 +140,12 @@ function indexTours(user: Auth.User) {
         return data.map((t: Tour) =>
           convertStartEndDates<Tour>(t)
         );
-      }
+      } else
+        return [];
     });
 }
 
-function requestTour(msg: { tourid: string }, user: Auth.User) {
+function requestTour(msg: { tourid: string }, user?: Auth.User) {
   return fetch(`/api/tours/${msg.tourid}`, {
     headers: Auth.headers(user)
   })
@@ -161,6 +166,8 @@ function requestTour(msg: { tourid: string }, user: Auth.User) {
           convertStartEndDates<Transportation>
         );
         return tour;
+      } else {
+        throw "No JSON in /api/tours response";
       }
     });
 }
@@ -171,7 +178,7 @@ function saveDestination(
     index: number;
     destination: Destination;
   },
-  user: Auth.User
+  user?: Auth.User
 ) {
   return fetch(
     `/api/tours/${msg.tourid}/destinations/${msg.index}`,
@@ -196,8 +203,9 @@ function saveDestination(
         return convertStartEndDates<Destination>(
           json as Destination
         );
+      } else {
+        throw "No JSON in API response";
       }
-      return undefined;
     });
 }
 
@@ -206,7 +214,7 @@ function saveProfile(
     userid: string;
     profile: Traveler;
   },
-  user: Auth.User
+  user?: Auth.User
 ) {
   return fetch(`/api/travelers/${msg.userid}`, {
     method: "PUT",
@@ -225,14 +233,14 @@ function saveProfile(
     })
     .then((json: unknown) => {
       if (json) return json as Traveler;
-      return undefined;
+      else throw "No JSON in API response";
     });
 }
 
 function requestProfile(
   msg: { userid: string },
-  user: Auth.User
-) {
+  user?: Auth.User
+): Promise<Traveler>{
   return fetch(`/api/travelers/${msg.userid}`, {
     headers: Auth.headers(user)
   })
@@ -246,13 +254,14 @@ function requestProfile(
       if (json) {
         console.log("Profile:", json);
         return json as Traveler;
-      }
+      } else
+        throw "No JSON in response body";
     });
 }
 
 function requestRoute(
   msg: {points: Point[] },
-  user: Auth.User )
+  user?: Auth.User )
 {
   const coordinates = msg.points
   .map((pt) => `${pt.lon},${pt.lat}`)

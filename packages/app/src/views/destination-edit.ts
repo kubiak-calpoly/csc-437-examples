@@ -49,7 +49,7 @@ export class DestinationEditElement extends View<Model, Msg> {
     ) {
       console.log("Tour Page:", newValue);
       this.dispatchMessage([
-        "tour/select",
+        "tour/request",
         { tourid: newValue }
       ]);
     }
@@ -248,12 +248,13 @@ export class DestinationEditElement extends View<Model, Msg> {
         {
           tourid: this.tourid,
           index: this.index,
-          destination: json as unknown as Destination,
+          destination: json as unknown as Destination
+        }, {
           onSuccess: () =>
             History.dispatch(this, "history/navigate", {
               href: `/app/destination/${this.tourid}/${this.index}`
             }),
-          onFailure: (err) => {
+          onFailure: (err: Error) => {
             console.log("Error saving destination", err);
           }
         }

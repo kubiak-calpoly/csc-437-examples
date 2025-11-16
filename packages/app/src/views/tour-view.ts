@@ -47,7 +47,7 @@ export class TourViewElement extends View<Model, Msg> {
   attributeChangedCallback(name: string, old: string | null, value: string | null) {
     super.attributeChangedCallback(name, old, value);
     if(name === "tour-id" && old !== value && value ) {
-      this.dispatchMessage(["tour/select", {tourid: value}]);
+      this.dispatchMessage(["tour/request", {tourid: value}]);
     }
   }
 
@@ -115,7 +115,7 @@ export class TourViewElement extends View<Model, Msg> {
           ? html`
               <span slot="via">
                 ${segments.slice(1).map(
-                  (seg) => seg.departure.station || 
+                  (seg) => seg.departure.station ||
                     seg.departure.name
                 )
                 .join(", ")}
@@ -252,12 +252,12 @@ export class TourViewElement extends View<Model, Msg> {
         grid-template-columns: subgrid [start] [header] [] [] [end];
         gap: 0 var(--size-spacing-medium);
         align-items: baseline;
-        
+
         .hidden {
           display: none;
         }
       }
-      
+
       map-viewer {
         grid-area: mv;
       }
@@ -267,7 +267,7 @@ export class TourViewElement extends View<Model, Msg> {
         display: grid;
         grid-template-columns: subgrid;
       }
-      
+
       date-range {
         text-align: right;
         font-family: var(--font-family-display);
@@ -276,5 +276,3 @@ export class TourViewElement extends View<Model, Msg> {
     `
   ];
 }
-
-

@@ -1,11 +1,7 @@
-import { Destination, Point, Tour, Traveler } from "server/models";
+import { Destination, Point, Traveler, Route, Tour } from "server/models";
+import { Message } from "@calpoly/mustang";
 
-export interface Reactions = {
-    onSuccess?: () => void;
-    onFailure?: (err: Error) => void;          
-}
-
-export type Message =
+export type Msg =
   | [ "user/request", { userid: string }]
   | [ "profile/request", { userid: string }]
   | [ "profile/save",
@@ -13,7 +9,7 @@ export type Message =
         userid: string;
         profile: Traveler;
       },
-      Reactions
+      Message.Reactions
     ]
   | [ "route/request", { points: Point[] }]
   | [ "tour/index", { userid: string }]
@@ -24,6 +20,20 @@ export type Message =
         index: number;
         destination: Destination;
       },
-      Reactions
-    ];
+      Message.Reactions
+    ]
+  | Cmd
+  ;
 
+export type Cmd =
+  | ["profile/load", { userid: string, profile: Traveler }]
+  | ["route/load", { route: Route }]
+  | ["tour/load", { tourid: string, tour: Tour }]
+  | ["tour/loadIndex", { userid: string, tours: Tour[] }]
+  | ["tour/load-destination", {
+    tourid: string,
+    index: number,
+    destination: Destination
+  }]
+  | ["user/load", { userid: string, user: Traveler }]
+  ;

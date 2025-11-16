@@ -9,7 +9,7 @@ export interface Model {
   user?: Traveler;
   profile?: Traveler;
   tour?: Tour;
-  tourStatus: {
+  tourStatus?: {
     status?: "pending" | "loaded";
     tourid?: string };
   tourIndex?: TourIndex;

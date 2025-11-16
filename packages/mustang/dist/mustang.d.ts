@@ -9,8 +9,6 @@ declare class APIUser {
     static deauthenticate(user: APIUser): APIUser;
 }
 
-declare type ApplyMap<M> = (fn: MapFn<M>) => void;
-
 declare namespace Auth {
     export {
         AuthenticatedUser,
@@ -34,7 +32,7 @@ declare class AuthenticatedUser extends APIUser {
     static authenticateFromLocalStorage(): APIUser;
 }
 
-declare function authHeaders(user: APIUser | AuthenticatedUser): {
+declare function authHeaders(user?: APIUser | AuthenticatedUser): {
     Authorization?: string;
 };
 
@@ -45,7 +43,7 @@ declare interface AuthModel {
 
 declare type AuthMsg = ["auth/signin", AuthSuccessful] | ["auth/signout"] | ["auth/redirect"];
 
-declare type AuthorizedUpdate<Msg extends Message.Base, M extends object> = (message: Msg, apply: ApplyMap<M>, user: Auth.User) => Command<M> | void;
+declare type AuthorizedUpdate<Msg extends Message.Base, M extends object> = (message: Msg, model: M, user: Auth.User) => M | ThenUpdate<M, Msg>;
 
 declare class AuthProvider extends Provider<AuthModel> {
     get redirect(): string | undefined;
@@ -57,7 +55,7 @@ declare class AuthService extends Service<AuthMsg, AuthModel> {
     static EVENT_TYPE: string;
     _redirectForLogin: string | undefined;
     constructor(context: Context<AuthModel>, redirectForLogin: string | undefined);
-    update(message: AuthMsg, apply: ApplyMap<AuthModel>): (() => void) | undefined;
+    update(message: AuthMsg, model: AuthModel): AuthModel | ThenUpdate<AuthModel, AuthMsg>;
 }
 
 declare interface AuthSuccessful {
@@ -72,8 +70,6 @@ declare type Case = CaseRoute & (ViewCase | RedirectCase);
 declare interface CaseRoute {
     route: default_2;
 }
-
-declare type Command<M> = (model: M) => void;
 
 declare class Context<T extends object> {
     _proxy: T;
@@ -110,6 +106,7 @@ export { Dropdown }
 
 declare class DropdownElement extends HTMLElement {
     static template: DocumentFragment;
+    static styles: CSSStyleSheet;
     constructor();
     toggle(): void;
 }
@@ -153,6 +150,7 @@ export { Form }
 declare class FormElement extends HTMLElement {
     set init(x: FormValues);
     static template: DocumentFragment;
+    static styles: CSSStyleSheet;
     get form(): HTMLFormElement | null | undefined;
     _state: FormValues;
     constructor();
@@ -226,12 +224,13 @@ declare class HistoryProvider extends Provider<HistoryModel> {
 declare class HistoryService extends Service<HistoryMsg, HistoryModel> {
     static EVENT_TYPE: string;
     constructor(context: Context<HistoryModel>);
-    update(message: HistoryMsg, apply: ApplyMap<HistoryModel>): void;
+    update(message: HistoryMsg, _: HistoryModel): {
+        location: Location;
+        state: any;
+    };
 }
 
 export declare function html(template: TemplateStringsArray, ...values: unknown[]): DocumentFragment;
-
-declare function identity<M>(model: M): M;
 
 declare namespace InputArray {
     export {
@@ -242,6 +241,7 @@ export { InputArray }
 
 declare class InputArrayElement extends HTMLElement {
     static template: DocumentFragment;
+    static styles: CSSStyleSheet;
     _array: Array<string>;
     get name(): string | null;
     get value(): string[];
@@ -249,8 +249,6 @@ declare class InputArrayElement extends HTMLElement {
     constructor();
     removeClosestItem(element: HTMLElement): void;
 }
-
-declare type MapFn<M> = (model: M) => M;
 
 declare type Match = MatchPath & (ViewCase | RedirectCase);
 
@@ -264,12 +262,16 @@ declare namespace Message {
     export {
         dispatcher,
         Type,
+        None,
         Base,
         Dispatch,
+        Reactions,
         dispatch
     }
 }
 export { Message }
+
+declare type None = [];
 
 export declare class Observer<T extends object> {
     _target: HTMLElement;
@@ -281,7 +283,7 @@ export declare class Observer<T extends object> {
     _handleChange(ev: CustomEvent): void;
 }
 
-declare function originalTarget(event: Event, selector?: string): EventTarget | undefined;
+declare function originalTarget(event: Event, selector?: string): HTMLElement | undefined;
 
 declare class Provider<T extends object> extends HTMLElement {
     readonly context: Context<T>;
@@ -290,13 +292,16 @@ declare class Provider<T extends object> extends HTMLElement {
     detach(observer: EventListener): void;
 }
 
+declare interface Reactions {
+    onSuccess?: () => void;
+    onFailure?: (err: Error) => void;
+}
+
 declare interface RedirectCase {
     redirect: RouteRedirect;
 }
 
 declare function relay(event: Event, customType: string, detail?: any): void;
-
-declare function replace<M>(replacements: Partial<M>): MapFn<M>;
 
 declare namespace Rest {
     export {
@@ -316,14 +321,13 @@ declare type RouteView = (params: RouteParams, query?: URLSearchParams) => Templ
 
 declare class Service<Msg extends Base, T extends object> {
     _context: Context<T>;
-    _update: Update_2<Msg, T>;
+    _update: Update<Msg, T>;
     _eventType: string;
     _running: boolean;
     _pending: Array<Msg>;
     attach(host: Provider<T>): void;
     start(): void;
-    constructor(update: Update_2<Msg, T>, context: Context<T>, eventType?: string, autostart?: boolean);
-    apply(fn: MapFn<T>): void;
+    constructor(update: Update<Msg, T>, context: Context<T>, eventType?: string, autostart?: boolean);
     consume(message: Msg): void;
     process(message: Msg): void;
 }
@@ -351,7 +355,7 @@ declare class StoreProvider<M extends object, Msg extends Message.Base> extends 
 
 declare class StoreService<Msg extends Message.Base, M extends object> extends Service<Msg, M> {
     static EVENT_TYPE: string;
-    constructor(context: Context<M>, updateFn: Update_2<Msg, M>);
+    constructor(context: Context<M>, updateFn: Update<Msg, M>);
 }
 
 declare type SubmitEvent_2<T> = CustomEvent & {
@@ -390,23 +394,16 @@ declare interface SwitchPath {
 
 declare type SwitchRoute = SwitchPath & (ViewCase | RedirectCase);
 
+export declare type ThenUpdate<M, Msg extends Message.Base> = [
+now: M,
+...later: Array<Promise<Msg | Message.None>>
+];
+
 declare function tokenPayload(user: APIUser | AuthenticatedUser): object;
 
-declare type Type<msg extends string, T extends object | undefined> = [msg, T] | [msg];
+declare type Type<msg extends string, T extends object | undefined> = [msg, T, Reactions] | [msg, T] | [msg] | None;
 
-declare namespace Update {
-    export {
-        identity,
-        replace,
-        ApplyMap,
-        Command,
-        MapFn,
-        Update_2 as Update
-    }
-}
-export { Update }
-
-declare type Update_2<Msg extends Message.Base, M extends object> = (message: Msg, apply: ApplyMap<M>) => Command<M> | void;
+export declare type Update<Msg extends Message.Base, M extends object> = (message: Msg, model: M) => M | ThenUpdate<M, Msg>;
 
 export declare class View<M extends object, Msg extends Message.Base> extends LitElement {
     _observer?: Observer<M>;

@@ -1,7 +1,9 @@
 export type Type<
   msg extends string,
   T extends object | undefined
-> = [msg, T] | [msg];
+  > = [msg, T, Reactions] | [msg, T] | [msg] | None;
+
+export type None = [];
 
 export type Base = Type<string, object | undefined>;
 
@@ -15,6 +17,11 @@ export class Dispatch<
       detail: msg
     });
   }
+}
+
+export interface Reactions {
+    onSuccess?: () => void;
+    onFailure?: (err: Error) => void;
 }
 
 export function dispatcher<Msg extends Base>(

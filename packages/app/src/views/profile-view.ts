@@ -191,7 +191,7 @@ export class ProfileViewElement extends View<Model, Msg> {
       newValue
     ) {
       this.dispatchMessage([
-        "profile/select",
+        "profile/request",
         { userid: newValue }
       ]);
     }
@@ -212,7 +212,8 @@ export class ProfileViewElement extends View<Model, Msg> {
     if ( this.userid ) {
       this.dispatchMessage(["profile/save", {
         userid: this.userid,
-        profile: json as Traveler,
+        profile: json as Traveler
+      }, {
         onSuccess: () =>
           this.mode = "view",
         onFailure: (err) => {

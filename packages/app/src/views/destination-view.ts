@@ -46,7 +46,7 @@ export class DestinationViewElement extends View<Model, Msg> {
     ) {
       console.log("Tour Page:", newValue);
       this.dispatchMessage([
-        "tour/select",
+        "tour/request",
         { tourid: newValue }
       ]);
     }
