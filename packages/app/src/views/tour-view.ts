@@ -15,13 +15,10 @@ import { DateRangeElement} from "../components/date-range.ts";
 import { EntourageTable } from "../components/entourage-table";
 import { DestinationElement } from "../components/destination.ts";
 import { TransportationElement } from "../components/transportation.ts";
-import { MapViewerElement } from "../components/map-viewer.ts";
-
 
 export class TourViewElement extends View<Model, Msg> {
   static uses = define({
     "calendar-widget": CalendarWidget,
-    "map-viewer": MapViewerElement,
     "date-range": DateRangeElement,
     "entourage-table": EntourageTable,
     "itinerary-destination": DestinationElement,
@@ -195,11 +192,6 @@ export class TourViewElement extends View<Model, Msg> {
         <section class="itinerary">
           ${destinations.map(renderDestAndTrans)}
         </section>
-
-        <map-viewer
-          .places=${places}
-          .route=${this.route}>
-        </map-viewer>
 
         <entourage-table
           href="/app/entourage/${this.tourId}"
