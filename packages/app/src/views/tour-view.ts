@@ -10,11 +10,17 @@ import {
 } from "server/models";
 import { Msg } from "../messages.ts";
 import { Model } from "../model.ts";
-import { CalendarWidget } from "../components/calendar-widget.ts";
-import { DateRangeElement} from "../components/date-range.ts";
+import {
+  CalendarWidget
+} from "../components/calendar-widget.ts";
+import { DateRangeElement } from "../components/date-range.ts";
 import { EntourageTable } from "../components/entourage-table";
-import { DestinationElement } from "../components/destination.ts";
-import { TransportationElement } from "../components/transportation.ts";
+import {
+  DestinationElement
+} from "../components/destination.ts";
+import {
+  TransportationElement
+} from "../components/transportation.ts";
 
 export class TourViewElement extends View<Model, Msg> {
   static uses = define({
@@ -24,173 +30,6 @@ export class TourViewElement extends View<Model, Msg> {
     "itinerary-destination": DestinationElement,
     "itinerary-transportation": TransportationElement
   });
-
-  @property({ attribute: "tour-id" })
-  tourId = "";
-
-  @state()
-  get tour(): Tour | undefined {
-    return this.model.tour;
-  };
-
-  @state()
-  dateSelection?: Date;
-
-  attributeChangedCallback(name: string, old: string | null, value: string | null) {
-    super.attributeChangedCallback(name, old, value);
-    if(name === "tour-id" && old !== value && value ) {
-      this.dispatchMessage(["tour/request", {tourid: value}]);
-    }
-  }
-
-  constructor() {
-    super("blazing:model");
-  }
-
-  updated(changes: Map<string, any>) {
-    console.log("Tour page updated:", changes);
-  }
-
-  render(): TemplateResult {
-    const {
-      endDate,
-      destinations = [],
-      transportation = [],
-      entourage,
-      name,
-      startDate
-    } = this.tour || {};
-
-    const isSelected = (range: DateRange): boolean => {
-      console.log("isSelected",
-        range.startDate.toISOString(),
-        range.endDate?.toISOString(),
-        this.dateSelection?.toISOString())
-      if( !this.dateSelection ) return true;
-      else
-        return range.startDate <= this.dateSelection &&
-          (range.endDate
-              ? range.endDate >= this.dateSelection
-              : range.startDate >= this.dateSelection
-          );
-    }
-
-    const renderDestination = (
-      dest: Destination,
-      i: number
-    ) => {
-      const { startDate, endDate, name, featuredImage } = dest;
-      return html`
-        <itinerary-destination
-          class=${isSelected(dest) ? "" : "hidden"}
-          start-date=${startDate}
-          end-date=${endDate}
-          img-src=${featuredImage}
-          href="/app/destination/${this.tourId}/${i}">
-          ${name}
-        </itinerary-destination>
-      `;
-    };
-
-    const renderRoute = (segments: Segment[]) => {
-      const count = segments.length + 1;
-      const origin = segments[0].departure;
-      const terminus = segments[segments.length - 1].arrival;
-      const via =
-        count > 2
-          ? html`
-              <span slot="via">
-                ${segments.slice(1).map(
-                  (seg) => seg.departure.station ||
-                    seg.departure.name
-                )
-                .join(", ")}
-              </span>
-            `
-          : null;
-
-      return html`
-        <span slot="from">${origin.station || origin.name}</span>
-        <span slot="to">${terminus.station || terminus.name}</span>
-        ${via}
-      `;
-    };
-
-    const renderTransportation = (tran: Transportation) => {
-      const { startDate, type, segments } = tran || {};
-      return html`
-        <itinerary-transportation
-          class=${isSelected(tran) ? "" : "hidden"}
-          start-date=${startDate}
-          mode=${type}>
-          ${renderRoute(segments)}
-        </itinerary-transportation>
-      `;
-    };
-
-    const renderDestAndTrans = (d: Destination, i: number) => {
-      const t0 = transportation[i];
-      const tn = transportation[i + 1];
-
-      const firstTransportation = i > 0 ? "" : html`
-        <date-range
-          class=${isSelected(t0) ? "" : "hidden"}
-          from=${t0.startDate}
-          to="${t0.endDate}">
-        </date-range>
-        ${renderTransportation(t0)}
-      `;
-
-      return html`
-          ${firstTransportation}
-          <date-range
-            class=${isSelected(d) ? "" : "hidden"}
-            from=${d.startDate}
-            to="${d.endDate}">
-          </date-range>
-          ${renderDestination(d, i)}
-          <date-range
-            class=${isSelected(tn) ? "" : "hidden"}
-            from=${tn.startDate}
-            to="${tn.endDate}">
-          </date-range>
-          ${renderTransportation(tn)}
-      `;
-    };
-
-    console.log("Rendering Tour page", this.tour);
-
-    return html`
-      <main>
-        <header>
-          <h2>${name}</h2>
-          <calendar-widget
-            @calendar-widget:select=${this._handleSelection}
-            @calendar-widget:clear=${this._handleClear}
-            start-date=${startDate}
-            end-date=${endDate}>
-          </calendar-widget>
-        </header>
-
-        <section class="itinerary">
-          ${destinations.map(renderDestAndTrans)}
-        </section>
-
-        <entourage-table
-          href="/app/entourage/${this.tourId}"
-          .using=${entourage}>
-        </entourage-table>
-      </main>
-    `;
-  }
-
-  _handleSelection(e: CustomEvent<{date: Date}>) {
-    this.dateSelection = e.detail.date;
-  }
-  _handleClear() {
-    this.dateSelection = undefined;
-  }
-
   static styles = [
     css`
       :host {
@@ -249,4 +88,175 @@ export class TourViewElement extends View<Model, Msg> {
       }
     `
   ];
+  @property({ attribute: "tour-id" })
+  tourId = "";
+  @state()
+  dateSelection?: Date;
+
+  constructor() {
+    super("blazing:model");
+  }
+
+  @state()
+  get tour(): Tour | undefined {
+    return this.model.tour;
+  };
+
+  attributeChangedCallback(name: string, old: string | null, value: string | null) {
+    super.attributeChangedCallback(name, old, value);
+    if (name === "tour-id" && old !== value && value) {
+      this.dispatchMessage(["tour/request", { tourid: value }]);
+    }
+  }
+
+  updated(changes: Map<string, any>) {
+    console.log("Tour page updated:", changes);
+  }
+
+  render(): TemplateResult {
+    const {
+      endDate,
+      destinations = [],
+      transportation = [],
+      entourage,
+      name,
+      startDate
+    } = this.tour || {};
+
+    const isSelected = (range: DateRange): boolean => {
+      console.log("isSelected",
+        range.startDate.toISOString(),
+        range.endDate?.toISOString(),
+        this.dateSelection?.toISOString());
+      if (!this.dateSelection) return true;
+      else
+        return range.startDate <= this.dateSelection &&
+          (range.endDate
+              ? range.endDate >= this.dateSelection
+              : range.startDate >= this.dateSelection
+          );
+    };
+
+    const renderDestination = (
+      dest: Destination,
+      i: number
+    ) => {
+      const { startDate, endDate, name, featuredImage } = dest;
+      const nights = Math.ceil(
+        (endDate.getTime() - startDate.getTime()) /
+          (1000 * 60 * 60 * 24));
+      return html`
+        <itinerary-destination
+          class=${isSelected(dest) ? "" : "hidden"}
+          start-date=${startDate}
+          end-date=${endDate}
+          img-src=${featuredImage}
+          nights=${nights}
+          href="/app/destination/${this.tourId}/${i}">
+          ${name}
+        </itinerary-destination>
+      `;
+    };
+
+    const renderRoute = (segments: Segment[]) => {
+      const count = segments.length + 1;
+      const origin = segments[0].departure;
+      const terminus = segments[segments.length - 1].arrival;
+      const via =
+        count > 2
+          ? html`
+            <span slot="via">
+                ${segments.slice(1).map(
+                  (seg) => seg.departure.station ||
+                    seg.departure.name
+                )
+                  .join(", ")}
+              </span>
+          `
+          : null;
+
+      return html`
+        <span
+          slot="from">${origin.station || origin.name}</span>
+        <span
+          slot="to">${terminus.station || terminus.name}</span>
+        ${via}
+      `;
+    };
+
+    const renderTransportation = (tran: Transportation) => {
+      const { startDate, type, segments } = tran || {};
+      return html`
+        <itinerary-transportation
+          class=${isSelected(tran) ? "" : "hidden"}
+          start-date=${startDate}
+          mode=${type}>
+          ${renderRoute(segments)}
+        </itinerary-transportation>
+      `;
+    };
+
+    const renderDestAndTrans = (d: Destination, i: number) => {
+      const t0 = transportation[i];
+      const tn = transportation[i + 1];
+
+      const firstTransportation = i > 0 ? "" : html`
+        <date-range
+          class=${isSelected(t0) ? "" : "hidden"}
+          from=${t0.startDate}
+          to="${t0.endDate}">
+        </date-range>
+        ${renderTransportation(t0)}
+      `;
+
+      return html`
+        ${firstTransportation}
+        <date-range
+          class=${isSelected(d) ? "" : "hidden"}
+          from=${d.startDate}
+          to="${d.endDate}">
+        </date-range>
+        ${renderDestination(d, i)}
+        <date-range
+          class=${isSelected(tn) ? "" : "hidden"}
+          from=${tn.startDate}
+          to="${tn.endDate}">
+        </date-range>
+        ${renderTransportation(tn)}
+      `;
+    };
+
+    console.log("Rendering Tour page", this.tour);
+
+    return html`
+      <main>
+        <header>
+          <h2>${name}</h2>
+          <calendar-widget
+            @calendar-widget:select=${this._handleSelection}
+            @calendar-widget:clear=${this._handleClear}
+            start-date=${startDate}
+            end-date=${endDate}>
+          </calendar-widget>
+        </header>
+
+        <section class="itinerary">
+          ${destinations.map(renderDestAndTrans)}
+        </section>
+
+        <entourage-table
+          href="/app/entourage/${this.tourId}"
+          .using=${entourage}>
+        </entourage-table>
+      </main>
+    `;
+  }
+
+  _handleSelection(e: CustomEvent<{ date: Date }>) {
+    this.dateSelection = e.detail.date;
+  }
+
+  _handleClear() {
+    this.dateSelection = undefined;
+  }
 }
