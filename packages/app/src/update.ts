@@ -1,7 +1,6 @@
 import { Auth, ThenUpdate } from "@calpoly/mustang";
 import {
   Destination,
-  Point, Route,
   Tour,
   Transportation,
   Traveler
@@ -9,8 +8,6 @@ import {
 import { Msg } from "./messages";
 import { Model } from "./model";
 import { convertStartEndDates } from "./utils/dates";
-
-
 
 export default function update(
   message: Msg,
@@ -52,17 +49,7 @@ export default function update(
       const { user } = payload;
       return { ...model, user};
     }
-    case "route/request": {
-      return [
-        { ...model, route: undefined },
-        requestRoute(payload, user)
-          .then((route) => ["route/load", { route }])
-      ];
-    }
-    case "route/load": {
-      const { route } = payload;
-      return { ...model, route};
-    }
+
     case "tour/index": {
       const { userid } = payload;
       if ( model.tourIndex?.userid === userid ) break;
@@ -256,28 +243,5 @@ function requestProfile(
         return json as Traveler;
       } else
         throw "No JSON in response body";
-    });
-}
-
-function requestRoute(
-  msg: {points: Point[] },
-  user?: Auth.User )
-{
-  const coordinates = msg.points
-  .map((pt) => `${pt.lon},${pt.lat}`)
-  .join(";");
-
-  console.log("Requesting route for points:", coordinates);
-
-  return fetch(`/api/directions?pts=${coordinates}`, {
-    headers: Auth.headers(user)
-  })
-    .then((response: Response) => {
-      if (response.status === 200) return response.json();
-      else return undefined;
-    })
-    .then((json: unknown) => {
-      if (json) return json as Route;
-      else return { } as Route;
     });
 }
