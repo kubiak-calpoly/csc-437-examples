@@ -1,6 +1,6 @@
 import { Context, Provider } from "./context";
-import { Base, Dispatch } from "./message";
-import { MapFn, Update } from "./update";
+import { Base, Dispatch, None} from "./message";
+import { Update } from "./update";
 
 export class Service<Msg extends Base, T extends object> {
   _context: Context<T>;
@@ -37,10 +37,6 @@ export class Service<Msg extends Base, T extends object> {
     this._running = autostart;
   }
 
-  apply(fn: MapFn<T>) {
-    this._context.apply(fn);
-  }
-
   consume(message: Msg) {
     if (this._running) {
       this.process(message);
@@ -55,13 +51,24 @@ export class Service<Msg extends Base, T extends object> {
 
   process(message: Msg) {
     console.log(
-      `Processing ${this._eventType} message`,
+      `Processing ${message[0]} message`,
       message
     );
-    const command = this._update(
+    const next= this._update(
       message,
-      this.apply.bind(this)
+      this._context.value
     );
-    if (command) command(this._context.value);
+    console.log(`Next[${message[0]}] => `, next);
+    if (!Array.isArray(next)) {
+      this._context.value = next;
+    } else {
+      const [now, ...later] = next;
+      this._context.value = now;
+      later.forEach((promise) =>
+        promise.then((message: Msg | None) => {
+          if (message.length) this.consume(message);
+        })
+      );
+    }
   }
 }

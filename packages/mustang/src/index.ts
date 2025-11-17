@@ -6,7 +6,7 @@ import * as Message from "./message";
 import * as Rest from "./rest";
 import * as Store from "./store";
 import * as Switch from "./switch";
-import * as Update from "./update";
+export * from "./update";
 
 export * from "./components";
 export { css } from "./css";
@@ -24,5 +24,4 @@ export {
   Rest,
   Store,
   Switch,
-  Update
 };

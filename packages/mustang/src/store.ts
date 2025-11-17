@@ -3,7 +3,7 @@ import { Context, Provider } from "./context";
 import * as Message from "./message";
 import { Observer } from "./observer";
 import { Service } from "./service";
-import { ApplyMap, Command, Update } from "./update";
+import { Update, ThenUpdate } from "./update";
 
 class StoreService<
   Msg extends Message.Base,
@@ -26,9 +26,9 @@ type AuthorizedUpdate<
   M extends object
 > = (
   message: Msg,
-  apply: ApplyMap<M>,
+  model: M,
   user: Auth.User
-) => Command<M> | void;
+) => M | ThenUpdate<M, Msg>
 
 class StoreProvider<
   M extends object,
@@ -54,8 +54,8 @@ class StoreProvider<
   connectedCallback() {
     const service = new StoreService<Msg, M>(
       this.context,
-      (msg: Msg, apply: ApplyMap<M>) =>
-        this._updateFn(msg, apply, this._user)
+      (msg: Msg, model: M) =>
+        this._updateFn(msg, model, this._user)
     );
     service.attach(this);
     this._authObserver.observe(({ user }) => {

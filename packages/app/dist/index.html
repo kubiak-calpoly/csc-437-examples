@@ -15,13 +15,19 @@
     <link rel="stylesheet" href="/styles/reset.css" />
     <link rel="stylesheet" href="/styles/tokens.css" />
     <link rel="stylesheet" href="/styles/page.css" />
-    <script type="module" crossorigin src="/assets/index-BQhKnKZg.js"></script>
+    <script type="module" crossorigin src="/assets/main-CICvhTpQ.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/reset.css-BIvMA5sZ.js">
   </head>
   <body>
-    <mu-auth provides="blazing:auth">
-      <article>
-        <blazing-app></blazing-app>
-      </article>
-    </mu-auth>
+    <mu-history provides="blazing:history">
+      <mu-auth provides="blazing:auth" redirect="/login.html">
+         <mu-store provides="blazing:model">
+          <article class="page">
+            <blazing-header></blazing-header>
+            <mu-switch></mu-switch>
+          </article>
+         </mu-store>
+      </mu-auth>
+    </mu-history>
   </body>
 </html>

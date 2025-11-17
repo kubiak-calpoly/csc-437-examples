@@ -47,7 +47,7 @@ export class View<
         if (this._context) {
           console.log("requesting update");
           this.requestUpdate();
-          // this._lastModel = model;
+          this._lastModel = this._context.value;
         } else {
           throw "View context not ready for effect";
         }

@@ -38,7 +38,7 @@ export class HeaderElement extends View<Model, Msg> {
 
   @state()
   get profile(): Traveler | undefined {
-    return this.model.profile;
+    return this.model.user;
   }
 
   @state()
@@ -61,7 +61,7 @@ export class HeaderElement extends View<Model, Msg> {
 
     return html` <header>
       <h1>Blazing Travels</h1>
-      <nav>
+      <nav class=${this.loggedIn ? 'logged-in' : 'logged-out'}>
         <p><slot>${tourName || ""}</slot></p>
         <mu-dropdown>
           <a slot="actuator">
@@ -89,7 +89,7 @@ export class HeaderElement extends View<Model, Msg> {
               <a id="signout" @click=${signOut}>Sign Out</a>
             </li>
             <li class="when-signed-out">
-              <a href="/login">Sign In</a>
+              <a @click=${() => location.assign("/login.html")}>Sign In</a>
             </li>
           </menu>
         </mu-dropdown>
@@ -138,8 +138,8 @@ export class HeaderElement extends View<Model, Msg> {
         cursor: pointer;
         text-decoration: underline;
       }
-      a:has(#userid:empty) ~ menu > .when-signed-in,
-      a:has(#userid:not(:empty)) ~ menu > .when-signed-out {
+      nav.logged-out .when-signed-in,
+      nav.logged-in .when-signed-out {
         display: none;
       }
     `
@@ -158,7 +158,7 @@ export class HeaderElement extends View<Model, Msg> {
         this.loggedIn = true;
         this.userid = user.username;
 
-        this.dispatchMessage(["profile/select", {userid: this.userid}]);
+        this.dispatchMessage(["user/request", {userid: this.userid}]);
       } else {
         this.loggedIn = false;
         this.userid = undefined;

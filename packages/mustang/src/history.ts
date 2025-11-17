@@ -1,7 +1,6 @@
 import { Context, Provider } from "./context";
 import { dispatcher } from "./message";
 import { Service } from "./service";
-import { ApplyMap } from "./update";
 
 interface HistoryModel {
   location: Location;
@@ -29,23 +28,22 @@ class HistoryService extends Service<HistoryMsg, HistoryModel> {
 
   constructor(context: Context<HistoryModel>) {
     super(
-      (msg, apply) => this.update(msg, apply),
+      (msg, model) => this.update(msg, model),
       context,
       HistoryService.EVENT_TYPE
     );
   }
 
-  update(message: HistoryMsg, apply: ApplyMap<HistoryModel>) {
+  update(message: HistoryMsg, _: HistoryModel) {
     switch (message[0]) {
       case "history/navigate": {
         const { href, state } = message[1];
-        apply(navigate(href, state));
+        return navigate(href, state);
         break;
       }
       case "history/redirect": {
         const { href, state } = message[1];
-        apply(redirect(href, state));
-        break;
+        return redirect(href, state);
       }
     }
   }
@@ -119,18 +117,18 @@ function originalLinkTarget(
 
 function navigate(href: string, state: object = {}) {
   history.pushState(state, "", href);
-  return () => ({
+  return {
     location: document.location,
     state: history.state
-  });
+  };
 }
 
 function redirect(href: string, state: object = {}) {
   history.replaceState(state, "", href);
-  return () => ({
+  return {
     location: document.location,
     state: history.state
-  });
+  };
 }
 
 const dispatch = dispatcher<HistoryMsg>(

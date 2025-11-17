@@ -4,6 +4,11 @@
   "description": "Code examples for CSC 437 — Dynamic Web Development",
   "main": "index.js",
   "scripts": {
+    "build": "npm run -w app build",
+    "start": "npm run start:app",
+    "start:api": "npm start -w server",
+    "start:app": "npm run -w server start:app",
+    "start:proto": "npm run -w server start:proto",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -21,8 +26,5 @@
   "homepage": "https://github.com/kubiak-calpoly/csc-437-examples#readme",
   "workspaces": [
     "packages/*"
-  ],
-  "dependencies": {
-    "mongoose": "^8.14.1"
-  }
+  ]
 }

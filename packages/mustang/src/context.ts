@@ -51,7 +51,7 @@ export function createContext<T extends object>(
         return undefined;
       }
       const value = Reflect.get(target, prop, receiver);
-      console.log(`Context['${prop}'] => `, value);
+      // console.log(`Context['${prop}'] => `, value);
       return value;
     },
     set: (target, prop: string, newValue, receiver) => {

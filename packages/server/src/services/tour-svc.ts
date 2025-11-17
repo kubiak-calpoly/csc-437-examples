@@ -115,7 +115,9 @@ function get(id: string): Promise<Tour> {
         }
       })
       .then((doc: unknown) => {
-        return doc as Tour;
+        const { _id, _doc } = doc as { _id: object, _doc: Tour };
+        // console.log("Tour doc is: ", _id, _doc);
+        return { ..._doc, id: _id.toString()};
       })
       .catch((err) => {
         console.log("Not found!", err);

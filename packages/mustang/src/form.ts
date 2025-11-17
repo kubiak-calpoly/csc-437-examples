@@ -95,9 +95,10 @@ function populateForm(json: object, formBody: HTMLElement) {
           checkbox.checked = Boolean(val);
           break;
         case "date":
-          input.value = (val as Date)
-            .toISOString()
-            .substr(0, 10);
+          if (val instanceof Date)
+            input.value = val.toISOString().substr(0, 10);
+          else
+            input.value = val;
           break;
         default:
           input.value = val;
