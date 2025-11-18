@@ -11,7 +11,7 @@ most frameworks, including:
 - [Authentication and Authorization](./auth.md)
 - [Client-side routing](./routing.md)
 - The Elm Architecture (MVU)
-  - Store provider
+  - [Store provider](./store.md)
   - Views
 
 ## Using with JavaScript or TypeScript
