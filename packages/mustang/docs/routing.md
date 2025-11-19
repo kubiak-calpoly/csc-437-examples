@@ -18,7 +18,7 @@ A typical boilerplate for a SPA app looks like this:
 
 ```html
 <body>
-  <mu-history provides="blazing:history">
+  <mu-history provides="blazing:history" root="/app">
     <mu-auth provides="blazing:auth" redirect="/login.html">
       <article class="page">
         <blazing-header></blazing-header>
@@ -135,7 +135,7 @@ const routes = [
 
 
 
-## Protected routes
+### Protected routes
 
 To restrict views to authenticated users only, you may
 specify `auth: "protected"` on any route. If a protected
@@ -144,3 +144,34 @@ in conjunction with `<mu-auth>`, will redirect to the login page,
 while passing the current requested URL in the `?next=` query
 parameter. When properly configured, this allows the user
 to return to the requested page directly after logging in.
+
+## `History.Provider`
+
+Another custom element
+provides the page history, which is a stack of previously visited URLs. 
+Mustang provides the class `History.Provider`
+for this purpose, and it is usually bound to the
+tag name `mu-history`.
+
+The `provides=` attribute on `mu-history` allows
+you to assign a name to the context, so that
+observing elements can discover it.
+
+In addition to making the history available 
+throughout the app (including `mu-switch`),
+`mu-history` also catches any link navigation
+that should be handled within the single-page
+app and prevents page reload in those cases.
+
+External links (links to different _origins_, or servers) are not prevented, since they cannot 
+be routed client-side.  There may be additional
+links which, though hosted on the same server, are
+not handled by `mu-switch`. A common example is
+the login page.
+
+The `mu-history` element takes an additional
+attribute, `root=`, which, if set, is the
+path under which all of the routes in `mu-switch`
+lie. If `root` is set, then any links to URLs that 
+are on the same server, but do not begin with the `root`
+path are allowed to proceed and cause a reload of the page.

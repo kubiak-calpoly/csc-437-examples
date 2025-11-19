@@ -615,7 +615,7 @@
         const linkTarget = originalLinkTarget(event2);
         if (linkTarget) {
           const url = new URL(linkTarget.href);
-          if (url.origin === this.context.value.location.origin) {
+          if (url.origin === this.context.value.location.origin && (!this._root || url.pathname.startsWith(this._root))) {
             console.log("Preventing Click Event on <A>", event2);
             event2.preventDefault();
             dispatch(linkTarget, "history/navigate", {
@@ -635,6 +635,7 @@
     connectedCallback() {
       const service = new HistoryService(this.context);
       service.attach(this);
+      this._root = this.getAttribute("root") || void 0;
     }
   }
   function originalLinkTarget(event2) {

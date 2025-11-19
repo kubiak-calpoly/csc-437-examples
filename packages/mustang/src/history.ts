@@ -39,7 +39,6 @@ class HistoryService extends Service<HistoryMsg, HistoryModel> {
       case "history/navigate": {
         const { href, state } = message[1];
         return navigate(href, state);
-        break;
       }
       case "history/redirect": {
         const { href, state } = message[1];
@@ -61,7 +60,9 @@ export class HistoryProvider extends Provider<HistoryModel> {
       if (linkTarget) {
         // It's a left click on an <a href=...>.
         const url = new URL(linkTarget.href);
-        if (url.origin === this.context.value.location.origin) {
+        if (url.origin === this.context.value.location.origin &&
+          (!this._root || url.pathname.startsWith(this._root))
+        ) {
           console.log("Preventing Click Event on <A>", event);
           event.preventDefault();
           dispatch(linkTarget, "history/navigate", {
@@ -80,9 +81,12 @@ export class HistoryProvider extends Provider<HistoryModel> {
     });
   }
 
+  _root?: string;
+
   connectedCallback() {
     const service = new HistoryService(this.context);
     service.attach(this);
+    this._root = this.getAttribute("root") || undefined;
   }
 }
 

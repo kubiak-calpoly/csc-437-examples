@@ -218,6 +218,7 @@ declare type HistoryMsg = [
 
 declare class HistoryProvider extends Provider<HistoryModel> {
     constructor();
+    _root?: string;
     connectedCallback(): void;
 }
 

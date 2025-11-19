@@ -1,7 +1,6 @@
 import { Auth, ThenUpdate } from "@calpoly/mustang";
 import {
   Destination,
-  Point, Route,
   Tour,
   Transportation,
   Traveler
@@ -51,17 +50,6 @@ export default function update(
     case "user/load": {
       const { user } = payload;
       return { ...model, user};
-    }
-    case "route/request": {
-      return [
-        { ...model, route: undefined },
-        requestRoute(payload, user)
-          .then((route) => ["route/load", { route }])
-      ];
-    }
-    case "route/load": {
-      const { route } = payload;
-      return { ...model, route};
     }
     case "tour/index": {
       const { userid } = payload;
@@ -259,25 +247,3 @@ function requestProfile(
     });
 }
 
-function requestRoute(
-  msg: {points: Point[] },
-  user?: Auth.User )
-{
-  const coordinates = msg.points
-  .map((pt) => `${pt.lon},${pt.lat}`)
-  .join(";");
-
-  console.log("Requesting route for points:", coordinates);
-
-  return fetch(`/api/directions?pts=${coordinates}`, {
-    headers: Auth.headers(user)
-  })
-    .then((response: Response) => {
-      if (response.status === 200) return response.json();
-      else return undefined;
-    })
-    .then((json: unknown) => {
-      if (json) return json as Route;
-      else return { } as Route;
-    });
-}
