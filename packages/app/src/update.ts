@@ -27,14 +27,8 @@ export default function update(
     }
     case "profile/load": {
       const { profile } = payload;
+      // TODO: make sure this is the right profile
       return { ...model, profile };
-    }
-    case "profile/save": {
-      const { userid } = payload;
-      return [ model,
-        saveProfile(payload, user)
-          .then((profile) => ["profile/load", {userid, profile}])
-      ];
     }
     case "user/request": {
       const { userid } = payload;
@@ -49,61 +43,45 @@ export default function update(
       const { user } = payload;
       return { ...model, user};
     }
-
     case "tour/index": {
       const { userid } = payload;
-      if ( model.tourIndex?.userid === userid ) break;
+      // TODO: check for duplicate
       return [
-        { ...model, tourIndex: { userid, tours: []} },
-          indexTours(userid, user)
-            .then((tours: Tour[]) => ["tour/loadIndex", {userid, tours}])
+        { ...model,
+          tourIndex: { userid, tours: []}
+        },
+        indexTours(userid, user)
+          .then((tours: Tour[]) => ["tour/loadIndex", {userid, tours}])
         ];
     }
     case "tour/loadIndex": {
       const {userid, tours} = payload;
-      if ( model.tourIndex && model.tourIndex.userid !== userid ) break;
+      // TODO: is this the right user's index?
       return { ...model, tourIndex: {userid, tours}};
     }
     case "tour/request": {
       const { tourid } = payload;
-      if (model.tourStatus?.tourid === tourid) break;
+      // TODO: check for duplicate
       return [
         { ...model,
-          tour: undefined,
-          tourStatus: { status: "pending", tourid }
+          // TODO: current tour data not valid
+          // TODO: set tourStatus
         },
-        requestTour(message[1], user)
-          .then((tour: Tour) => ["tour/load", { tour, tourid }])
+        requestTour(payload, user)
+          .then((tour: Tour) =>
+              ["tour/load", { tour, tourid }])
       ];
     }
     case "tour/load": {
       const { tour } = payload;
-      console.log("TourStatus:", model.tourStatus, tour);
-      if (model.tourStatus && model.tourStatus.tourid !== tour.id) break;
-      return { ...model,
+      // are we loading the right tour?
+      return [{ ...model,
           tour,
-          tourStatus: { status: "loaded", tourid: tour.id }
-      };
-    }
-    case "tour/save-destination": {
-      const { tourid, index } = payload;
-      return [ model,
-        saveDestination(payload, user)
-          .then((destination: Destination) =>
-            ["tour/load-destination", {tourid, index, destination}]
-          )
-      ];
-    }
-    case "tour/load-destination": {
-      const { tourid, index, destination } = payload;
-      const tour = model.tour;
-      if ( !tour || model.tourStatus?.tourid !== tourid ) break;
-      let destinations = tour.destinations.slice();
-      destinations.splice(index, 1, destination);
-      return { ...model, tour: { ...tour, destinations }};
+          // TODO: update tourStatus
+      }];
     }
     default:
-      const unhandled: never = message[0];
+      const unhandled: never = command;
       throw new Error(`Unhandled message "${unhandled}"`);
   }
 
@@ -159,70 +137,6 @@ function requestTour(msg: { tourid: string }, user?: Auth.User) {
     });
 }
 
-function saveDestination(
-  msg: {
-    tourid: string;
-    index: number;
-    destination: Destination;
-  },
-  user?: Auth.User
-) {
-  return fetch(
-    `/api/tours/${msg.tourid}/destinations/${msg.index}`,
-    {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        ...Auth.headers(user)
-      },
-      body: JSON.stringify(msg.destination)
-    }
-  )
-    .then((response: Response) => {
-      if (response.status === 200) return response.json();
-      else
-        throw new Error(
-          `Failed to save destination ${msg.index}`
-        );
-    })
-    .then((json: unknown) => {
-      if (json) {
-        return convertStartEndDates<Destination>(
-          json as Destination
-        );
-      } else {
-        throw "No JSON in API response";
-      }
-    });
-}
-
-function saveProfile(
-  msg: {
-    userid: string;
-    profile: Traveler;
-  },
-  user?: Auth.User
-) {
-  return fetch(`/api/travelers/${msg.userid}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      ...Auth.headers(user)
-    },
-    body: JSON.stringify(msg.profile)
-  })
-    .then((response: Response) => {
-      if (response.status === 200) return response.json();
-      else
-        throw new Error(
-          `Failed to save profile for ${msg.userid}`
-        );
-    })
-    .then((json: unknown) => {
-      if (json) return json as Traveler;
-      else throw "No JSON in API response";
-    });
-}
 
 function requestProfile(
   msg: { userid: string },
