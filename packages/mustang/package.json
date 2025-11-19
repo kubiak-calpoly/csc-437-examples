@@ -1,6 +1,6 @@
 {
   "name": "@calpoly/mustang",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "",
   "main": "dist/mustang.js",
   "type": "module",
