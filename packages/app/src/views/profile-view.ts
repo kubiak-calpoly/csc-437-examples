@@ -1,4 +1,4 @@
-import { define, Form, View } from "@calpoly/mustang";
+import { define, Form, History, View } from "@calpoly/mustang";
 import { html, css } from "lit";
 import { property, state } from "lit/decorators.js";
 import { Traveler } from "server/models";
@@ -23,6 +23,9 @@ export class ProfileViewElement extends View<Model, Msg> {
   @property()
   mode = "view";
 
+  @state()
+  _error?: Error;
+
   constructor() {
     super("blazing:model");
   }
@@ -46,8 +49,11 @@ export class ProfileViewElement extends View<Model, Msg> {
 
     return html`
         <button @click=${() => {
-      this.mode = "edit";
-    }}>
+          History.dispatch( this,
+            "history/navigate",
+            { href: `/app/profile/${userid}/edit` }
+          );
+        }}>
           Edit
         </button>
       <img src=${avatar} alt=${name} />
@@ -92,6 +98,9 @@ export class ProfileViewElement extends View<Model, Msg> {
         .init=${init}
         @mu-form:submit=${this.handleSubmit}
     }>
+      ${ this._error ?
+        html`<p class="error">${this._error}</p>` :
+        ""}
         <img src=${avatar} alt=${name} />
         <h1><input name="name"></h1>
         <dl>
@@ -131,6 +140,16 @@ export class ProfileViewElement extends View<Model, Msg> {
       grid-column: 2/-2;
       display: grid;
       grid-template-columns: subgrid;
+    }
+    p.error {
+      grid-column: 3/-1;
+      border: 2px dashed currentColor;
+      color: var(--color-error);
+      font-family: var(--font-family-display);
+      font-weight: var(--font-weight-bold);
+      font-style: oblique;
+      padding: var(--size-spacing-medium);
+
     }
     section {
       display: grid;
@@ -214,9 +233,15 @@ export class ProfileViewElement extends View<Model, Msg> {
         userid: this.userid,
         profile: json as Traveler
       }, {
-        onSuccess: () =>
-          this.mode = "view",
+        onSuccess: () => {
+          this._error = undefined;
+          History.dispatch(this,
+            "history/navigate",
+            { href: `/app/profile/${this.userid}` }
+          )
+        },
         onFailure: (err) => {
+          this._error = err;
           console.log("Error saving profile", err);
         }
       }]);
