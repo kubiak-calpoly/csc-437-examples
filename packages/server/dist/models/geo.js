@@ -28,8 +28,8 @@ function bboxOfPoints(points, padding = 0) {
   const minLat = points.map((pt) => pt.lat).reduce((a, b) => Math.min(a, b), 180);
   const maxLng = points.map((pt) => pt.lon).reduce((a, b) => Math.max(a, b), -180);
   const maxLat = points.map((pt) => pt.lat).reduce((a, b) => Math.max(a, b), -180);
-  const padLng = padding * (maxLng - minLng);
-  const padLat = padding * (maxLat - minLat);
+  const padLng = Math.max(padding * (maxLng - minLng), 0.1);
+  const padLat = Math.max(padding * (maxLat - minLat), 0.1);
   return [
     { lon: minLng - padLng, lat: minLat - padLat },
     { lon: maxLng + padLng, lat: maxLat + padLat }

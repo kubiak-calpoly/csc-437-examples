@@ -31,7 +31,7 @@ export class MapViewerElement extends LitElement {
     super();
 
     this.accessToken = // TODO: get this over an API
-      "pk.eyJ1Ijoia3ViaWFrLWNhbHBvbHkiLCJhIjoiY2x0MjBvZGd2MTQxYjJrbXJ2ZzFhZWgxMSJ9.zdBsMVeJtBL4WtDLBWrUmg";
+      "pk.eyJ1Ijoia3ViaWFrLWNhbHBvbHkiLCJhIjoiY2x0MjB0cTA1MWZucTJqcGh6bnlqeDlyNCJ9.h_hlfcOiEAG56MtE6WZcGw"
   }
 
   updated(changes: Map<string, any>) {

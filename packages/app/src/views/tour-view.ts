@@ -21,6 +21,7 @@ import {
 import {
   TransportationElement
 } from "../components/transportation.ts";
+import { MapViewerElement } from "../components/map-viewer.ts";
 
 export class TourViewElement extends View<Model, Msg> {
   static uses = define({
@@ -28,7 +29,8 @@ export class TourViewElement extends View<Model, Msg> {
     "date-range": DateRangeElement,
     "entourage-table": EntourageTable,
     "itinerary-destination": DestinationElement,
-    "itinerary-transportation": TransportationElement
+    "itinerary-transportation": TransportationElement,
+    "map-viewer": MapViewerElement,
   });
   static styles = [
     css`
@@ -48,6 +50,7 @@ export class TourViewElement extends View<Model, Msg> {
         grid-template-rows: auto auto 1fr;
         grid-template-areas:
           "hd hd hd it it it it it"
+          "mv mv mv it it it it it"
           "en en en it it it it it"
           "xx xx xx it it it it it";
         gap: var(--size-spacing-medium)
@@ -102,6 +105,11 @@ export class TourViewElement extends View<Model, Msg> {
     return this.model.tour;
   };
 
+  @state()
+  get route() {
+    return this.model.route;
+  }
+
   attributeChangedCallback(name: string, old: string | null, value: string | null) {
     super.attributeChangedCallback(name, old, value);
     if (name === "tour-id" && old !== value && value) {
@@ -111,6 +119,11 @@ export class TourViewElement extends View<Model, Msg> {
 
   updated(changes: Map<string, any>) {
     console.log("Tour page updated:", changes);
+    // if (this.tour && !this.route) {
+    //   this.dispatchMessage(["route/request", {
+    //     points: this.tour.destinations.map((d) => d.location)
+    //   }]);
+    // }
   }
 
   render(): TemplateResult {
@@ -228,6 +241,15 @@ export class TourViewElement extends View<Model, Msg> {
 
     console.log("Rendering Tour page", this.tour);
 
+    const places =
+      this.tour?.destinations
+        .filter((d: Destination): boolean => isSelected(d))
+        .map((d: Destination) => ({
+        name: d.name,
+        feature: d.location
+      })) || [];
+
+
     return html`
       <main>
         <header>
@@ -243,6 +265,11 @@ export class TourViewElement extends View<Model, Msg> {
         <section class="itinerary">
           ${destinations.map(renderDestAndTrans)}
         </section>
+
+        <map-viewer
+          .places=${places}
+          .route=${this.route}>
+        </map-viewer>
 
         <entourage-table
           href="/app/entourage/${this.tourId}"
