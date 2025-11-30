@@ -139,9 +139,8 @@ export class DestinationEditElement extends View<Model, Msg> {
           </fieldset>
           <fieldset>
             <h3>Excursions</h3>
-            <label>
-              <span></span>
-            <input-array name="excursions"> </input-array>
+            <input-array name="excursions">
+            </input-array>
           </fieldset>
         </mu-form>
       </main>

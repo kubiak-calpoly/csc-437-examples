@@ -1,4 +1,4 @@
-import { Tour, Traveler } from "server/models";
+import { Tour, Traveler, Route } from "server/models";
 
 export interface TourIndex {
   userid?: string;
@@ -14,6 +14,7 @@ export interface Model {
     tourid?: string };
   tourIndex?: TourIndex;
   headerTitle?: string;
+  route?: Route;
 }
 
 export const init: Model = {};

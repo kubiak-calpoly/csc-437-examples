@@ -1,5 +1,5 @@
 import { Document, Model, Schema, model } from "mongoose";
-import { Entourage } from "../models/entourage";
+import { Entourage } from "server/models";
 import "../services/traveler-svc";
 
 const entourageSchema = new Schema<Entourage>(

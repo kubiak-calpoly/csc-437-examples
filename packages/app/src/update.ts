@@ -1,6 +1,8 @@
 import { Auth, ThenUpdate } from "@calpoly/mustang";
 import {
   Destination,
+  Point,
+  Route,
   Tour,
   Transportation,
   Traveler
@@ -9,14 +11,12 @@ import { Msg } from "./messages";
 import { Model } from "./model";
 import { convertStartEndDates } from "./utils/dates";
 
-
-
 export default function update(
   message: Msg,
   model: Model,
   user: Auth.User
 ): Model | ThenUpdate<Model, Msg> {
-  const [ command, payload ] = message;
+  const [ command, payload, reactions ] = message;
   switch (command) {
     case "profile/request": {
       const { userid } = payload;
@@ -34,8 +34,8 @@ export default function update(
     case "profile/save": {
       const { userid } = payload;
       return [ model,
-        saveProfile(payload, user)
-          .then((profile) => ["profile/load", {userid, profile}])
+        saveProfile(payload, user, reactions)
+          .then((profile) => ["profile/load", { userid, profile }])
       ];
     }
     case "user/request": {
@@ -50,6 +50,17 @@ export default function update(
     case "user/load": {
       const { user } = payload;
       return { ...model, user};
+    }
+    case "route/request": {
+      return [
+        { ...model, route: undefined },
+        requestRoute(payload, user)
+          .then((route) => ["route/load", { route }])
+      ];
+    }
+    case "route/load": {
+      const { route } = payload;
+      return { ...model, route};
     }
     case "tour/index": {
       const { userid } = payload;
@@ -89,7 +100,7 @@ export default function update(
     case "tour/save-destination": {
       const { tourid, index } = payload;
       return [ model,
-        saveDestination(payload, user)
+        saveDestination(payload, user, reactions)
           .then((destination: Destination) =>
             ["tour/load-destination", {tourid, index, destination}]
           )
@@ -166,7 +177,8 @@ function saveDestination(
     index: number;
     destination: Destination;
   },
-  user?: Auth.User
+  user?: Auth.User,
+  reactions?: Message.Reactions
 ) {
   return fetch(
     `/api/tours/${msg.tourid}/destinations/${msg.index}`,
@@ -188,13 +200,18 @@ function saveDestination(
     })
     .then((json: unknown) => {
       if (json) {
+        if (reactions?.onSuccess) reactions.onSuccess();
         return convertStartEndDates<Destination>(
           json as Destination
         );
       } else {
         throw "No JSON in API response";
       }
-    });
+    })
+    .catch((err) => {
+      if (reactions?.onFailure) reactions.onFailure(err);
+      throw err;
+    })
 }
 
 function saveProfile(
@@ -202,8 +219,9 @@ function saveProfile(
     userid: string;
     profile: Traveler;
   },
-  user?: Auth.User
-) {
+  user?: Auth.User,
+  reactions?: Message.Reactions
+): Promise<Traveler> {
   return fetch(`/api/travelers/${msg.userid}`, {
     method: "PUT",
     headers: {
@@ -220,9 +238,16 @@ function saveProfile(
         );
     })
     .then((json: unknown) => {
-      if (json) return json as Traveler;
+      if (json) {
+        if (reactions?.onSuccess) reactions.onSuccess();
+        return json as Traveler;
+      }
       else throw "No JSON in API response";
-    });
+    })
+    .catch((err) => {
+      if (reactions?.onFailure) reactions.onFailure(err);
+      throw err;
+    })
 }
 
 function requestProfile(
@@ -247,3 +272,25 @@ function requestProfile(
     });
 }
 
+function requestRoute(
+  msg: {points: Point[] },
+  user?: Auth.User )
+{
+  const coordinates = msg.points
+  .map((pt) => `${pt.lon},${pt.lat}`)
+  .join(";");
+
+  console.log("Requesting route for points:", coordinates);
+
+  return fetch(`/api/directions?pts=${coordinates}`, {
+    headers: Auth.headers(user)
+  })
+    .then((response: Response) => {
+      if (response.status === 200) return response.json();
+      else return undefined;
+    })
+    .then((json: unknown) => {
+      if (json) return json as Route;
+      else return { } as Route;
+    });
+}
