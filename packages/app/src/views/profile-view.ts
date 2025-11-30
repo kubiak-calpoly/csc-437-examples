@@ -119,6 +119,7 @@ export class ProfileViewElement extends View<Model, Msg> {
             <input type="color" name="color">
           </dd>
         </dl>
+        <button type="submit" slot="submit">Save Changes</button>
       </mu-form>`;
   }
 

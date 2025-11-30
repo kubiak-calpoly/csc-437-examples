@@ -54,6 +54,12 @@ class FormElement extends HTMLElement {
     return this.shadowRoot?.querySelector("form");
   }
 
+  get submitSlot() : HTMLSlotElement | null {
+    const element = this.shadowRoot
+      ?.querySelector('slot[name="submit"]');
+    return element ? element as HTMLSlotElement : null;
+  }
+
   _state: FormValues = {};
 
   constructor() {
@@ -77,6 +83,14 @@ class FormElement extends HTMLElement {
         event.preventDefault();
         relay(event, "mu-form:submit", this._state);
       });
+    }
+
+    if (this.submitSlot) {
+      this.submitSlot.addEventListener("slotchange", () => {
+        for (const field of this.submitSlot?.assignedNodes() || []) {
+          this.form?.insertBefore(field, this.submitSlot)
+        }
+      })
     }
   }
 }

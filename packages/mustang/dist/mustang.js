@@ -506,6 +506,14 @@ let FormElement$1 = (_a = class extends HTMLElement {
         relay(event2, "mu-form:submit", this._state);
       });
     }
+    if (this.submitSlot) {
+      this.submitSlot.addEventListener("slotchange", () => {
+        var _a2, _b2;
+        for (const field of ((_a2 = this.submitSlot) == null ? void 0 : _a2.assignedNodes()) || []) {
+          (_b2 = this.form) == null ? void 0 : _b2.insertBefore(field, this.submitSlot);
+        }
+      });
+    }
   }
   set init(x2) {
     this._state = x2 || {};
@@ -514,6 +522,11 @@ let FormElement$1 = (_a = class extends HTMLElement {
   get form() {
     var _a2;
     return (_a2 = this.shadowRoot) == null ? void 0 : _a2.querySelector("form");
+  }
+  get submitSlot() {
+    var _a2;
+    const element = (_a2 = this.shadowRoot) == null ? void 0 : _a2.querySelector('slot[name="submit"]');
+    return element ? element : null;
   }
 }, _a.template = html`
     <template>

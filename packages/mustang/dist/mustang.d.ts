@@ -152,6 +152,7 @@ declare class FormElement extends HTMLElement {
     static template: DocumentFragment;
     static styles: CSSStyleSheet;
     get form(): HTMLFormElement | null | undefined;
+    get submitSlot(): HTMLSlotElement | null;
     _state: FormValues;
     constructor();
 }
