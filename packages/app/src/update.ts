@@ -52,15 +52,22 @@ export default function update(
       return { ...model, user};
     }
     case "route/request": {
+      const { tourid } = payload;
+      console.log("Requesting route for", tourid, model.routeStatus);
+      if (model.routeStatus?.tourid === tourid) break;
       return [
-        { ...model, route: undefined },
+        { ...model,
+          route: undefined,
+          routeStatus: { tourid, status: "pending" }
+        },
         requestRoute(payload, user)
-          .then((route) => ["route/load", { route }])
+          .then((route) => ["route/load", { tourid, route }])
       ];
     }
     case "route/load": {
-      const { route } = payload;
-      return { ...model, route};
+      const { tourid, route } = payload;
+      if (model.routeStatus?.tourid !== tourid) break;
+      return { ...model, route, routeStatus: { tourid, status: "loaded" } };
     }
     case "tour/index": {
       const { userid } = payload;

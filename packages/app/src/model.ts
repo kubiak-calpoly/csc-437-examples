@@ -15,6 +15,10 @@ export interface Model {
   tourIndex?: TourIndex;
   headerTitle?: string;
   route?: Route;
+  routeStatus?: {
+    status?: "pending" | "loaded";
+    tourid?: string
+  }
 }
 
 export const init: Model = {};

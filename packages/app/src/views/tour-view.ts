@@ -110,6 +110,11 @@ export class TourViewElement extends View<Model, Msg> {
     return this.model.route;
   }
 
+  @state()
+  get routeStatus() {
+    return this.model.routeStatus;
+  }
+
   attributeChangedCallback(name: string, old: string | null, value: string | null) {
     super.attributeChangedCallback(name, old, value);
     if (name === "tour-id" && old !== value && value) {
@@ -119,11 +124,12 @@ export class TourViewElement extends View<Model, Msg> {
 
   updated(changes: Map<string, any>) {
     console.log("Tour page updated:", changes);
-    // if (this.tour && !this.route) {
-    //   this.dispatchMessage(["route/request", {
-    //     points: this.tour.destinations.map((d) => d.location)
-    //   }]);
-    // }
+    if (this.tour && !this.route && this.routeStatus?.tourid !== this.tourId) {
+      this.dispatchMessage(["route/request", {
+        tourid: this.tourId,
+        points: this.tour.destinations.map((d) => d.location)
+      }]);
+    }
   }
 
   render(): TemplateResult {
@@ -137,10 +143,6 @@ export class TourViewElement extends View<Model, Msg> {
     } = this.tour || {};
 
     const isSelected = (range: DateRange): boolean => {
-      console.log("isSelected",
-        range.startDate.toISOString(),
-        range.endDate?.toISOString(),
-        this.dateSelection?.toISOString());
       if (!this.dateSelection) return true;
       else
         return range.startDate <= this.dateSelection &&

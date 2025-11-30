@@ -1,4 +1,4 @@
-import { Destination, Traveler, Tour } from "server/models";
+import { Destination, Point, Route, Traveler, Tour } from "server/models";
 import { Message } from "@calpoly/mustang";
 
 export type Msg =
@@ -11,6 +11,7 @@ export type Msg =
       },
       Message.Reactions
     ]
+  | [ "route/request", { tourid: string, points: Point[] }]
   | [ "tour/index", { userid: string }]
   | [ "tour/request", { tourid: string }]
   | [ "tour/save-destination",
@@ -26,6 +27,7 @@ export type Msg =
 
 type Cmd =
   | ["profile/load", { userid: string, profile: Traveler }]
+  | ["route/load", { tourid: string, route: Route }]
   | ["tour/load", { tourid: string, tour: Tour }]
   | ["tour/loadIndex", { userid: string, tours: Tour[] }]
   | ["tour/load-destination", {
