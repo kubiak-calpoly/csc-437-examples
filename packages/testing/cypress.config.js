@@ -1,7 +1,7 @@
 module.exports = {
   e2e: {
-    // baseUrl: "http://localhost:3000",
-    baseUrl: "https://kubiak.unbundled.dev",
+    baseUrl: "http://localhost:5173",
+    // baseUrl: "https://kubiak.csse.dev",
     setupNodeEvents(on, config) {
       // implement node event listeners here
     }

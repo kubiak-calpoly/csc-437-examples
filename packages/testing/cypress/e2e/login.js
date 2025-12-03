@@ -1,27 +1,29 @@
 const opts = { includeShadowDom: true };
 
 export function loginSequence(cy, username, pwd) {
-  cy.visit("/app");
+  cy.visit("/login.html");
 
   cy.get("login-form").should("be.visible");
 
   cy.get("login-form")
     .contains("label > span", "Username")
     .next()
-    .type(username);
+    .type(username)
+    .blur();
 
   cy.get("login-form")
     .contains("label > span", "Password")
     .next()
-    .type(pwd);
+    .type(pwd)
+    .blur();
 
   cy.get("login-form")
-    .contains("button", "Submit", opts)
+    .contains("button", "Login", opts)
     .click();
 
   cy.waitUntil(function () {
     return cy
       .get("blazing-header", opts)
-      .contains("a > slot", `Hello, ${username}`, opts);
+      .contains('a[slot="actuator"]', `Hello, ${username}`, opts);
   });
 }

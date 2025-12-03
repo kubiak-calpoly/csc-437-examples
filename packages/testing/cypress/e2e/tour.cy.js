@@ -4,6 +4,7 @@ const opts = { includeShadowDom: true };
 const tourid = "65c7e92ea837ff7c15b669e5";
 const creds = { username: "blaze", pwd: "123" };
 const dest = "Rome";
+const trip = "Trip to Italy";
 
 describe("tour page", () => {
   beforeEach(() => {
@@ -13,7 +14,9 @@ describe("tour page", () => {
   it("is accessible after login", () => {
     cy.visit(`/app/tour/${tourid}`);
 
-    cy.get("main.page", opts).should("be.visible");
+    cy.get("tour-view", opts)
+      .contains("h2", trip, opts)
+      .should("be.visible");
   });
 
   it("can navigate to destination", () => {
@@ -21,13 +24,13 @@ describe("tour page", () => {
 
     cy.get("itinerary-destination", opts)
       .contains(dest)
-      .find("a.itemLink", opts)
+      .find("a[href]", opts)
       .click();
 
     cy.waitUntil(function () {
       return cy
-        .get("main.page", opts)
-        .contains("h2", dest)
+        .get("destination-view", opts)
+        .contains("h2", dest, opts)
         .should("be.visible");
     });
   });
@@ -42,16 +45,17 @@ describe("tour page", () => {
 
     cy.get("itinerary-destination", opts)
       .contains("Venice")
-      .find("section", opts)
+      .find("header", opts)
       .should("be.visible");
 
     cy.get("itinerary-destination", opts)
       .contains("Florence")
-      .find("section", opts)
+      .find("header", opts)
       .should("be.visible");
 
     cy.get("itinerary-destination", opts)
-      .contains("Rome")
-      .should("not.exist");
+      .contains("Rome", opts)
+      .find("header", opts)
+      .should("not.be.visible");
   });
 });
