@@ -11,7 +11,7 @@ describe("tour page", () => {
   });
 
   it("it displays the destination", () => {
-    cy.visit(`/app/tour/${tourid}/destination/2`);
+    cy.visit(`/app/destination/${tourid}/2`);
 
     cy.get("main.page", opts)
       .contains("h2", dest)
@@ -19,24 +19,26 @@ describe("tour page", () => {
   });
 
   it("it has a link back to the tour", () => {
-    cy.visit(`/app/tour/${tourid}/destination/2`);
+    cy.visit(`/app/destination/${tourid}/2`);
 
     cy.get("main.page", opts)
-      .contains("a", "Trip to Italy")
+      .contains("a.breadcrumb", "Back to tour")
       .click();
 
     cy.waitUntil(function () {
       return cy
-        .get("main.page", opts)
-        .contains("h2", "Trip to Italy")
+        .get("tour-view", opts)
+        .contains("h2", "Trip to Italy", opts)
         .should("be.visible");
     });
   });
 
   it("it can edit the destination name", () => {
-    cy.visit(`/app/tour/${tourid}/destination/2`);
+    cy.visit(`/app/destination/${tourid}/2`);
 
-    cy.get("main.page", opts).contains("a", "Edit").click();
+    cy.get("main.page", opts)
+      .contains("button", "Edit", opts)
+      .click();
 
     cy.get("mu-form", opts)
       .contains("label > span", "Destination Name")
@@ -48,7 +50,7 @@ describe("tour page", () => {
       .contains("button", "Submit", opts)
       .click();
 
-    cy.visit(`/app/tour/${tourid}/destination/2`);
+    cy.visit(`/app/destination/${tourid}/2`);
 
     cy.waitUntil(function () {
       return cy
