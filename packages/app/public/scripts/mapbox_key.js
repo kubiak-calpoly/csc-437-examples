@@ -1,2 +1,0 @@
-window.MAPBOX_API_KEY =
-  "pk.eyJ1Ijoia3ViaWFrLWNhbHBvbHkiLCJhIjoiY2x0MjB0cTA1MWZucTJqcGh6bnlqeDlyNCJ9.h_hlfcOiEAG56MtE6WZcGw";
