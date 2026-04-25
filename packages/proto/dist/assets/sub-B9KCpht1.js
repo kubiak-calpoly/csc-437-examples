@@ -1,11 +1,4 @@
-import { css, html, LitElement } from "lit";
-import reset from "./styles/reset.css.ts";
-import icon from "./styles/icon.css.ts";
-import headings from "./styles/headings.css.ts";
-
-export class AccommodationElement extends LitElement {
-  render() {
-    return html`<section>
+import{i as s,x as i,r as a,h as n,a as o,b as l,d as c,H as e}from"./icon.css-BXaNM7GT.js";const d=class d extends s{render(){return i`<section>
         <h3>
           <svg class="icon">
             <use xlink:href="/icons/destination.svg#icon-hotel" />
@@ -39,14 +32,7 @@ export class AccommodationElement extends LitElement {
           </dd>
         </dl>
       </section>
-    </template>`;
-  }
-
-  static styles = [
-    reset.styles,
-    headings.styles,
-    icon.styles,
-    css`
+    </template>`}};d.styles=[a.styles,n.styles,o.styles,l`
     :host {
       display: contents;
     }
@@ -76,5 +62,4 @@ export class AccommodationElement extends LitElement {
       grid-column: dd / -1;
       justify-self: end;
     }
-  `];
-}
+  `];let t=d;c({"blz-accommodation":t,"blz-header":e});e.initializeOnce();

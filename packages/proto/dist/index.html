@@ -33,11 +33,21 @@
             "ent ent ent ent ent ent";
           }
       }
+<<<<<<<< HEAD:packages/proto/index.html
   </style>
-  <script type="module" crossorigin src="/assets/main-BKmf7Nw5.js"></script>
-  <link rel="modulepreload" crossorigin href="/assets/state-By6HLBIX.js">
-  <link rel="modulepreload" crossorigin href="/assets/header-BPxdGmxf.js">
-  <link rel="modulepreload" crossorigin href="/assets/icon.css-JrZfBXGW.js">
+  <script type="module">
+    import { define, Auth } from "@calpoly/mustang";
+    import { HeaderElement } from "./src/header.ts";
+    import { ItineraryElement } from "./src/itinerary.ts";
+
+    define({
+      "blz-header": HeaderElement,
+      "blz-itinerary": ItineraryElement,
+      "mu-auth": Auth.Provider,
+    });
+
+    HeaderElement.initializeOnce();
+  </script>
 </head>
 <body>
 <mu-auth provides="blazing:auth">
@@ -45,6 +55,17 @@
     12 days in
     <a href="/guide/italy.html">Italy</a>
   </blz-header>
+========
+    </style>
+    <script type="module" crossorigin src="/assets/main-Dq4obwVW.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/icon.css-BXaNM7GT.js">
+  </head>
+  <body>
+    <blz-header>
+      12 days in
+      <a href="/guide/italy.html">Italy</a>
+    </blz-header>
+>>>>>>>> mod-5:packages/proto/dist/index.html
 
   <main class="page">
     <blz-itinerary class="itinerary" src="/data/itinerary.json">
