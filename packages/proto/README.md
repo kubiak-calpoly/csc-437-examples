@@ -1,7 +1,7 @@
 # Prototype
 
 This package is an HTML prototype of the Blazing Travels app.
-For Module 1 of the course, it is built entirely in static HTML.
+For Modules 1-5 of the course, it is built entirely in static HTML.
 
 ## Running
 
