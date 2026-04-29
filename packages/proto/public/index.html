@@ -9,6 +9,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/styles/tokens.css" />
+    <link rel="stylesheet" href="/styles/reset.css" />
     <link rel="stylesheet" href="/styles/page.css" />
     <link rel="stylesheet" href="/styles/itinerary.css" />
     <script type="importmap">
@@ -22,18 +23,22 @@
       import { define } from "@unbndl/html";
       import { BlzDestinationElement } from "/js/blz-destination.js";
       import { BlzItineraryElement } from "/js/blz-itinerary.js";
+      import { BlzHeaderElement } from "/js/blz-header.js";
+
 
       define({
         "blz-destination": BlzDestinationElement,
+        "blz-header": BlzHeaderElement,
         "blz-itinerary": BlzItineraryElement
       });
     </script>
   </head>
   <body>
-    <header>
+    <blz-header>
       <h1>Blazing Travels</h1>
       <p>12 days in <a href="#">Italy</a></p>
-    </header>
-    <blz-itinerary src="/data/italy01.json"> </blz-itinerary>
+    </blz-header>
+    <blz-itinerary src="/data/italy01.json">
+    </blz-itinerary>
   </body>
 </html>

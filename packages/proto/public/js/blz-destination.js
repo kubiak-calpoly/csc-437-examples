@@ -1,4 +1,5 @@
 import { css, html, shadow } from "@unbndl/html";
+import reset from "./reset.css.js";
 
 export class BlzDestinationElement extends HTMLElement {
   static template = html`
@@ -17,23 +18,16 @@ export class BlzDestinationElement extends HTMLElement {
     </template>
   `;
 
-  static styles = css`
-    :host {
-      --img-src: none;
-    }
-    section {
-      aspect-ratio: 16/9;
-      background-image: var(--img-src);
-      background-size: cover;
-    }
-  `;
+
 
   constructor() {
     super();
 
     shadow(this)
       .template(BlzDestinationElement.template)
-      .styles(BlzDestinationElement.styles);
+      .styles(reset.styles,
+        BlzDestinationElement.styles
+      );
   }
 
   static observedAttributes = [
@@ -75,6 +69,31 @@ export class BlzDestinationElement extends HTMLElement {
     )
     span.textContent = nights === undefined ? "" : nights.toString()
   }
+
+  static styles = css`
+    :host {
+      --img-src: none;
+    }
+    section {
+      padding: var(--size-spacing-medium);
+      aspect-ratio: 16/9;
+      background-image: var(--img-src);
+      background-size: cover;
+      color: var(--color-text-inverted);
+      text-shadow: var(--shadow-light);
+    }
+    h1, h2, h3, h4, h5, h6 {
+      font-family: var(--font-family-display);
+      line-height: var(--font-line-height-display);
+    }
+    h2 {
+     font-size: var(--size-type-xlarge);
+      font-weight: var(--font-weight-bold);
+    }
+    a[href] {
+      color: inherit;
+    }
+  `;
 }
 
 function nightsBetween(startDate, endDate) {
