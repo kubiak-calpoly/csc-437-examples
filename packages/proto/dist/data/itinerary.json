@@ -2,7 +2,7 @@
   "destinations": [
     {
       "name": "Venice",
-      "link": "destination/venice",
+      "link": "destination/venice.html",
       "startDate": "2024-10-14",
       "endDate": "2024-10-18",
       "featuredImage": "/images/preview/Canal_Grande_Chiesa_della_Salute_e_Dogana_dal_ponte_dell_Accademia.jpg"

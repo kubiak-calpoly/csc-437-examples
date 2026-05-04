@@ -1,0 +1,13 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+body {
+  font-size: 3rem;
+  padding: 1rem;
+}
+
+ol {
+  padding-left: 5rem;
+}

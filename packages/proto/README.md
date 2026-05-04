@@ -1,7 +1,11 @@
 # Prototype
 
 This package is an HTML prototype of the Blazing Travels app.
-For Module 1 of the course, it is built entirely in static HTML.
+This prototype is developed in modules 1-3 of the course, and
+written entirely in static HTML, CSS, and Javascript.
+
+Later modules will develop this prototype into a full-stack app,
+including an API server and client-rendered frontend.
 
 ## Running
 

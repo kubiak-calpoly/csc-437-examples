@@ -68,19 +68,40 @@ svg.icon {
   display: grid;
   grid-template-columns: [start] repeat(var(--page-grids), 1fr) [end];
   gap: var(--size-spacing-large) var(--size-spacing-medium);
+<<<<<<< HEAD
+
+  @media screen and (max-width: 40rem) {
+    --page-grids: 6;
+  }
+
+  @media screen and (max-width: 60rem) {
+    --page-grids: 8;
+  }
+}
+
+.page > section {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-template-areas: inherit;
+  gap: inherit;
+=======
 }
 
 .page > * {
   display: grid;
   grid-template-columns: subgrid;
-  grid-template-areas: inherit;
-  gap: inherit;
+>>>>>>> mod-5
 
   > h2 {
     grid-column: 1 / -1;
   }
 }
+<<<<<<< HEAD
 
 .page > blz-header {
   grid-column: 1 / -1;
 }
+
+
+=======
+>>>>>>> mod-5

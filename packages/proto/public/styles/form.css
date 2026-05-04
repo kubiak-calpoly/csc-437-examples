@@ -1,0 +1,21 @@
+form {
+  display: grid;
+  gap: var(--size-spacing-medium);
+  grid-template-columns: [start] 1fr [label] 1fr [input] 1fr [input-center] 3fr [input-end] 1fr [end];
+}
+
+label {
+  display: contents;
+}
+
+label > span {
+  grid-column-start: label;
+}
+
+label > input {
+  grid-column: input / span 2;
+}
+
+button[type="submit"] {
+  grid-column-start: input;
+}

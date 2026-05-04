@@ -16,12 +16,13 @@
     <link rel="stylesheet" href="/styles/tokens.css" />
     <link rel="stylesheet" href="/styles/page.css" />
     <script type="module">
-      import { define } from "@calpoly/mustang";
+      import { define, Auth } from "@calpoly/mustang";
       import { HeaderElement } from "/src/header.ts";
       import { ProfileElement } from "/src/profile.ts";
 
       define({
         "blz-header": HeaderElement,
+        "mu-auth": Auth.Provider,
         "profile-view": ProfileElement
       });
 
@@ -29,9 +30,11 @@
     </script>
   </head>
   <body>
-    <blz-header> </blz-header>
+  <mu-auth provides="blazing:auth">
+    <blz-header></blz-header>
     <main class="page">
-      <profile-view src="/api/travelers/blaze"> </profile-view>
+      <profile-view src="/api/travelers/blaze"></profile-view>
     </main>
+  </mu-auth>
   </body>
 </html>

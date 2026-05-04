@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com" />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,200;0,400;0,700;1,700&family=Merriweather:wght@400;700&display=swap"
+      rel="stylesheet" />
+    <link rel="stylesheet" href="/styles/reset.css" />
+    <link rel="stylesheet" href="/styles/tokens.css" />
+    <link rel="stylesheet" href="/styles/page.css" />
+    <link rel="stylesheet" href="/styles/form.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "@calpoly/mustang": "/node_modules/@calpoly/mustang/dist/mustang.mjs"
+        }
+      }
+    </script>
+    <script type="module" src="/js/restful-form.js"></script>
+    <script type="module">
+      import { relayEvent } from "/js/relay-event.js";
+      window.relayEvent = relayEvent;
+    </script>
+    <script type="module">
+      import { define, Auth } from "@calpoly/mustang";
+
+      define({ "mu-auth": Auth.Provider });
+    </script>
+    <style>
+      .page {
+        height: 100vh;
+        grid-template-rows: 1fr fit-content(1fr) 1fr;
+      }
+      main.card {
+        align-self: center;
+        grid-column: 3 / span 4;
+      }
+      h2 {
+        grid-column: start / end;
+        align-self: end;
+      }
+      p {
+        grid-column: 2 / -2;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body class="page">
+    <mu-auth>
+      <h2>Signup as a new User</h2>
+      <main class="card">
+        <restful-form new src="/auth/register">
+          <label>
+            <span>Username:</span>
+            <input name="username" autocomplete="off" />
+          </label>
+          <label>
+            <span>Password:</span>
+            <input type="password" name="password" />
+          </label>
+        </restful-form>
+      </main>
+      <p
+        >Already signed up? Then you can
+        <a href="./login.html">log in</a> instead.
+      </p>
+    </mu-auth>
+  </body>
+</html>
