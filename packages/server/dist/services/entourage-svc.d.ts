@@ -1,6 +1,6 @@
 import { Document, Model, Schema } from "mongoose";
-import { Entourage } from "../models/entourage";
-import "../services/traveler-svc";
+import { Entourage } from "../models";
+import "../services/traveler-svc.ts";
 declare function index(): Promise<Entourage[]>;
 declare function get(id: String): Promise<Entourage>;
 declare function create(ent: Entourage): Promise<Entourage>;

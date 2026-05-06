@@ -1,4 +1,4 @@
-import { Traveler } from "../models/traveler";
+import { Traveler } from "../models";
 declare function index(): Promise<Traveler[]>;
 declare function get(userid: String): Promise<Traveler | undefined>;
 declare function update(userid: String, traveler: Traveler): Promise<Traveler | undefined>;
