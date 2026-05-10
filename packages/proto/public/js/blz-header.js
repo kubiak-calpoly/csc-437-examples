@@ -2,6 +2,18 @@ import { css, Events, html, shadow } from "@unbndl/html";
 import reset from "./reset.css.js";
 
 export class BlzHeaderElement extends HTMLElement {
+  static {
+    window.Events = Events;
+
+    const page = document.body;
+
+    page.addEventListener("dark-mode",
+      (ev) => {
+        page.classList.toggle("dark-mode", ev.detail.checked);
+      }
+    )
+  }
+
   static template = html`
     <template>
       <header>
