@@ -11,7 +11,11 @@ export class BlzItineraryElement extends HTMLElement {
 
   attributeChangedCallback(name, _, newValue) {
     if (name === "src") {
-      // TODO: hydrate and then render
+      this.hydrate(newValue).then((data) => {
+        console.log("Received JSON:", data);
+        const view = BlzItineraryElement.render(data)
+        shadow(this).replace(view);
+      });
     }
   }
 
@@ -26,7 +30,15 @@ export class BlzItineraryElement extends HTMLElement {
 
 
   hydrate(src) {
-    // TODO: fetch json and return promise of data
+    return fetch(src)
+      .then((response) => {
+        if (response.status !== 200)
+          throw `HTTP Status ${response.status}`;
+        else return response.json();
+      })
+      .catch((error) => {
+        console.log("Could not fetch:", error);
+      });
   }
 
   static styles = css``;
