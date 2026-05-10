@@ -1,39 +1,38 @@
 import { css, html, shadow } from "@unbndl/html";
+import { createViewModel } from "@unbndl/view";
+
+import reset from "./reset.css.js";
 
 export class BlzDestinationElement extends HTMLElement {
-  static template = html`
-    <template>
-    <section>
+  viewModel = createViewModel({
+    startDate: "2000-01-01",
+    endDate: "2000-01-01",
+    featuredImage: "none",
+    link: "#"
+  });
+
+  view = html`
+    <section
+      style=${($) => `--img-src: url(${$.featuredImage})`}
+    >
       <header>
         <h2>
-          <a>
+          <a href=${($) => $.link}>
             <slot>Unnamed Destination</slot>
           </a>
         </h2>
-        <p><span id="nights">?</span> nights</p>
+        <p>${($) => nightsBetween($.startDate, $.endDate)} nights</p>
       </header>
       <slot name="highlights"></slot>
     </section>
-    </template>
-  `;
-
-  static styles = css`
-    :host {
-      --img-src: none;
-    }
-    section {
-      aspect-ratio: 16/9;
-      background-image: var(--img-src);
-      background-size: cover;
-    }
   `;
 
   constructor() {
     super();
 
     shadow(this)
-      .template(BlzDestinationElement.template)
-      .styles(BlzDestinationElement.styles);
+      .styles(reset.styles, BlzDestinationElement.styles)
+      .replace(this.viewModel.render(this.view));
   }
 
   static observedAttributes = [
@@ -46,35 +45,47 @@ export class BlzDestinationElement extends HTMLElement {
   attributeChangedCallback(name, _, newValue) {
     switch (name) {
       case "href":
-        this._updateHref(newValue);
+        this.viewModel.set("link", newValue);
         break;
       case "img-src":
-        this._updateImgSrc(newValue);
+        this.viewModel.set("featuredImage", newValue);
         break;
       case "start-date":
+        this.viewModel.set("startDate", newValue);
+        break;
       case "end-date":
-        this._updateNights();
+        this.viewModel.set("endDate", newValue);
         break;
     }
   }
 
-  _updateHref(href) {
-    const a = this.shadowRoot.querySelector("a");
-    a.setAttribute("href", href);
-  }
-
-  _updateImgSrc(imgSrc) {
-    this.style.setProperty("--img-src", `url(${imgSrc})`);
-  }
-
-  _updateNights() {
-    const span = this.shadowRoot.getElementById("nights");
-    const nights = nightsBetween(
-      this.getAttribute("start-date"),
-      this.getAttribute("end-date")
-    )
-    span.textContent = nights === undefined ? "" : nights.toString()
-  }
+  static styles = css`
+    :host {
+      --img-src: none;
+      --color-text: var(--color-text-inverted);
+      --color-link: var(--color-link-inverted);
+    }
+    section {
+      padding: var(--size-spacing-medium);
+      aspect-ratio: 16/9;
+      background-image: var(--img-src);
+      background-size: cover;
+      color: var(--color-text);
+      text-shadow: var(--shadow-light);
+    }
+    header {
+      font-family: var(--font-family-display);
+      line-height: var(--font-line-height-display);
+      font-style: italic;
+      text-align: right;
+    }
+    h2 {
+     font-size: var(--size-type-xlarge);
+    }
+    a[href] {
+      color: var(--color-link);
+    }
+  `;
 }
 
 function nightsBetween(startDate, endDate) {

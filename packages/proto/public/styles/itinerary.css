@@ -1,6 +1,20 @@
 .page > .itinerary {
-  --grid-area: itn;
+  padding: var(--size-spacing-medium);
 
-  display: contents;
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1/-1;
+
+  dt {
+    grid-column: 1/ span 2;
+  }
+
+  dd {
+    grid-column: 3/-1;
+  }
+
 }
+
+
+
 

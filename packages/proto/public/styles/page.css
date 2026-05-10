@@ -60,6 +60,9 @@ svg.icon {
   fill: currentColor;
 }
 
+blz-header a[href] {
+  color: var(--color-link-inverted);
+}
 /* Responsive Page Grid */
 
 .page {
@@ -92,5 +95,8 @@ svg.icon {
 .page > blz-header {
   grid-column: 1 / -1;
 }
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> mod-5

@@ -15,11 +15,6 @@
   "author": "kubiak@calpoly.edu",
   "license": "BSD-3-Clause",
   "devDependencies": {
-    "http-server": "^14.1.1",
-    "vite": "8.0.5"
-  },
-  "dependencies": {
-    "@unbndl/components": "^1.0.1",
-    "@unbndl/html": "^1.0.1"
+    "http-server": "^14.1.1"
   }
 }

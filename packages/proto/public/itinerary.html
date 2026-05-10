@@ -9,6 +9,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/styles/tokens.css" />
+    <link rel="stylesheet" href="/styles/reset.css" />
     <link rel="stylesheet" href="/styles/page.css" />
     <link rel="stylesheet" href="/styles/itinerary.css" />
     <script type="importmap">
@@ -22,18 +23,23 @@
     <script type="module">
       import { define } from "@unbndl/html";
       import { BlzDestinationElement } from "/js/blz-destination.js";
+      import { BlzHeaderElement } from "/js/blz-header.js";
 
       define({
-        "blz-destination": BlzDestinationElement
+        "blz-destination": BlzDestinationElement,
+        "blz-header": BlzHeaderElement
       });
     </script>
   </head>
   <body>
-    <header>
+  <main class="page">
+    <blz-header>
       <h1>Blazing Travels</h1>
       <p>12 days in <a href="#">Italy</a></p>
-    </header>
-    <blz-itinerary>
+    </blz-header>
+    <dl class="itinerary">
+      <dt>13-Oct to 14-Oct</dt>
+      <dd>
       <blz-transportation
         mode="air"
         start-date="2024-10-13"
@@ -82,7 +88,7 @@
           </blz-endpoint>
         </blz-segment>
       </blz-transportation>
-
+      </dd><dt>14-Oct to 18-Oct</dt><dd>
       <blz-destination
         start-date="2024-10-14"
         end-date="2024-10-18"
@@ -96,6 +102,7 @@
           <li>Walking tour of <a href="#">Piazza San Marco</a></li>
         </ul>
       </blz-destination>
+    </dd><dt>18-Oct</dt><dd>
 
       <blz-transportation mode="rail" startDate="2024-10-18">
         <blz-segment>
@@ -117,6 +124,7 @@
           </blz-end-point>
         </blz-segment>
       </blz-transportation>
+    </dd><dt>10-Oct to 21-Oct</dt><dd>
 
       <blz-destination
         start-date="2024-10-18"
@@ -132,6 +140,7 @@
           <li>Trip to Fiesole via city bus</li>
         </ul>
       </blz-destination>
+    </dd><dt>21-Oct</dt><dd>
 
       <blz-transportation mode="rail" startDate="2024-10-21">
         <blz-segment>
@@ -153,6 +162,7 @@
           </blz-end-point>
         </blz-segment>
       </blz-transportation>
+    </dd><dt>21-Oct to 25-Oct</dt><dd>
 
       <blz-destination
         start-date="2024-10-21"
@@ -167,6 +177,7 @@
           <li>Tour of Vatican, St Peter’s via Metro</li>
         </ul>
       </blz-destination>
+    </dd><dt>25-Oct</dt><dd>
 
       <blz-transportation>
         <blz-segment>
@@ -212,6 +223,8 @@
           </blz-endpoint>
         </blz-segment>
       </blz-transportation>
-    </blz-itinerary>
+    </dd>
+    </dl>
+  </main>
   </body>
 </html>
