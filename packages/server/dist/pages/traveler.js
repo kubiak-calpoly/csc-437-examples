@@ -34,47 +34,36 @@ module.exports = __toCommonJS(traveler_exports);
 var import_server = require("@calpoly/mustang/server");
 var import_renderPage = __toESM(require("./renderPage"));
 class TravelerPage {
-  constructor(data, mode) {
+  data;
+  constructor(data) {
     this.data = data;
-    this.mode = mode;
   }
   render() {
     return (0, import_renderPage.default)({
       body: this.renderBody(),
       scripts: [
         `
-        import { define, Auth } from "@calpoly/mustang";
+        import { define } from "@calpoly/mustang";
         import { TravelerProfileElement } from "/scripts/traveler.js";
 
         define({
-          "mu-auth": Auth.Provider,
           "traveler-profile": TravelerProfileElement
         });
-        `
-      ],
-      styles: [
-        import_server.css`
-          .page > traveler-profile {
-            grid-column: 2 / span 4;
-          }
         `
       ]
     });
   }
   renderBody() {
-    const base = "/api/travelers";
-    const api = this.data ? `${base}/${this.data.userid}` : base;
+    const { userid } = this.data;
+    const api = `/api/travelers/${userid}`;
     return import_server.html`<body>
-      <mu-auth provides="blazing:auth">
-        <blz-header>
-          12 days in
-          <a href="/guide/italy.html">Italy</a>
-        </blz-header>
-        <main class="page">
-          <traveler-profile mode="${this.mode}" src="${api}">
-          </traveler-profile>
-        </main>
-      </mu-auth>
+      <blz-header>
+        12 days in
+        <a href="/guide/italy.html">Italy</a>
+      </blz-header>
+      <main class="page">
+        <traveler-profile src="${api}"></traveler-profile>
+      </main>
     </body>`;
   }
 }

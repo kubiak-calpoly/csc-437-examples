@@ -1,6 +1,11 @@
-import { Document, Model, Schema, model } from "mongoose";
-import { Destination, Tour, Transportation } from "../models";
-import "./entourage-svc"; // to load schema
+import {
+  HydratedDocument,
+  Model,
+  Schema,
+  model
+} from "mongoose";
+import { Tour, Destination } from "../models";
+import "./entourage-svc.ts"; // to load schema
 
 const tourSchema = new Schema<Tour>(
   {
@@ -93,8 +98,9 @@ function get(id: String): Promise<Tour> {
           path: "people"
         }
       })
-      .then((doc: unknown) => {
-        return doc as Tour;
+      .then((doc: HydratedDocument<Tour> | null) => {
+        if (!doc) throw `No Tour for id: ${id}`;
+        return doc.toObject() as Tour;
       })
       .catch((err) => {
         console.log("Not found!", err);
@@ -178,3 +184,4 @@ export default {
   getDestination,
   updateDestination
 };
+

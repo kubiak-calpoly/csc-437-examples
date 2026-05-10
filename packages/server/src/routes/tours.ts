@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import { Destination, Tour } from "../models";
-import tours from "../services/tour-svc";
+import tours from "../services/tour-svc.ts";
 
 const router = express.Router();
 
@@ -46,18 +46,6 @@ router.put("/:id", (req: Request, res: Response) => {
     .then((tour: Tour) => res.json(tour))
     .catch(() => res.status(404).end());
 });
-
-router.get(
-  "/:id/destinations/:n",
-  (req: Request, res: Response) => {
-    const { id, n } = req.params;
-
-    tours
-      .getDestination(id, parseInt(n))
-      .then((destination: Destination) =>
-        res.status(200).json(destination))
-      .catch(() => res.status(404).end());
-  });
 
 router.put(
   "/:id/destinations/:n",

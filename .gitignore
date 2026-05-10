@@ -37,3 +37,4 @@ kram_modules/
 .yalc
 yalc.lock
 /.idea
+/.idea/workspace.xml

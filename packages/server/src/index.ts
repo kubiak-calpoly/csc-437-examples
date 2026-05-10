@@ -1,14 +1,12 @@
 import express, { Request, Response } from "express";
-import auth, { authenticateUser } from "./routes/auth";
-import tours from "./routes/tours";
-import travelers from "./routes/travelers";
-import { getFile, saveFile } from "./services/filesystem";
-import { connect } from "./services/mongo";
+import tours from "./routes/tours.ts";
+import travelers from "./routes/travelers.ts";
+import { connect } from "./services/mongo.ts";
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Mongo Connection
+// Mongo Connection67
 connect("blazing");
 
 // Static files
@@ -17,22 +15,14 @@ console.log("Serving static files from ", staticDir);
 app.use(express.static(staticDir));
 
 // Middleware:
-app.use(express.raw({ type: "image/*", limit: "32Mb" }));
 app.use(express.json());
 
-// Auth routes
-app.use("/auth", auth);
-
 // API Routes:
-app.use("/api/travelers", authenticateUser, travelers);
-app.use("/api/tours", authenticateUser, tours);
+app.use("/api/travelers", travelers);
+app.use("/api/tours", tours);
 
-// Image Routes:
-app.post("/images", authenticateUser, saveFile);
-app.get("/images/:id", getFile);
-
-// Page Routes:
-app.get("/ping", (_: Request, res: Response) => {
+// HTML Routes:
+app.get("/hello", (_: Request, res: Response) => {
   res.send(
     `<h1>Hello!</h1>
      <p>Server is up and running.</p>
@@ -43,5 +33,6 @@ app.get("/ping", (_: Request, res: Response) => {
 
 // Start the server
 app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+  console.log(`Server running at 
+  http://localhost:${port}`);
 });
