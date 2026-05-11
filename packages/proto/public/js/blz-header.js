@@ -1,45 +1,45 @@
 import { css, Events, html, shadow } from "@unbndl/html";
+import { createView, createViewModel } from "@unbndl/view";
+import { fromAuth } from "@unbndl/auth";
 import reset from "./reset.css.js";
 
 export class BlzHeaderElement extends HTMLElement {
-  static {
-    window.Events = Events;
 
-    const page = document.body;
+  viewModel = createViewModel({
+    authenticated: false
+  }).with(fromAuth(this), "authenticated", "username");
 
-    page.addEventListener("dark-mode",
-      (ev) => {
-        page.classList.toggle("dark-mode", ev.detail.checked);
-      }
-    )
-  }
-
-  static template = html`
-    <template>
-      <header>
-        <slot>
-          <h1>Blazing Travels</h1>
-        </slot>  
-        <label
-          onchange="Events.relay(event, 'dark-mode', 
-                  {checked: event.target.checked})"
-        >
-          <input type="checkbox" autocomplete="off" />
-          Dark mode
-      </header>
-    </template>
-  `;
-
+  view = createView(html`
+    <header>
+      <h1>Blazing Travels</h1>
+      <nav
+        class=${($) =>
+          $.authenticated ? "logged-in" : "logged-out"}>
+        <p>Hello, ${($) => $.username || "traveler"}</p>
+        <menu>
+          <li class="when-signed-in">
+            <a>Sign Out</a>
+          </li>
+          <li class="when-signed-out">
+            <a href="/login.html">Sign In</a>
+          </li>
+        </menu>
+      </nav>
+    </header>
+  `);
 
   constructor() {
     super();
 
     shadow(this)
-      .template(BlzHeaderElement.template)
       .styles(
         reset.styles,
         BlzHeaderElement.styles
-      );
+      )
+      .replace(this.viewModel.render(this.view))
+      .delegate(".when-signed-in a", {
+        click: () => this.signout()
+      });
   }
 
   static styles = css`
@@ -83,5 +83,16 @@ export class BlzHeaderElement extends HTMLElement {
           padding: var(--size-spacing-medium);
         }
      `;
-}
 
+  static {
+    window.Events = Events;
+
+    const page = document.body;
+
+    page.addEventListener("dark-mode",
+      (ev) => {
+        page.classList.toggle("dark-mode", ev.detail.checked);
+      }
+    )
+  }
+}

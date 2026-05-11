@@ -1,36 +1,48 @@
 import { css, html, shadow } from "@unbndl/html";
+import { createView, createViewModel, fromAttributes } from "@unbndl/view";
+import { fromAuth } from "@unbndl/auth";
 
 export class BlzItineraryElement extends HTMLElement {
+  viewModel = createViewModel({
+    authenticated: false,
+    destinations: []
+  }).with(fromAttributes(this), "src")
+  .with(fromAuth(this), "authenticated", "token");
+
+  view = createView(html`
+    <dl>
+      ${$ => $.destinations.map(renderDestination)}
+    </dl>
+  `)
+
   constructor() {
     super();
     shadow(this)
       .styles(BlzItineraryElement.styles)
+      .replace(this.viewModel.render(this.view))
+
+    this.viewModel.createEffect(($) => {
+      console.log("Effect $.authenticated=", $.authenticated);
+      if ($.authenticated && $.src) {
+        this.hydrate($.src).then((data) => {
+          console.log("Data:", data);
+          this.viewModel.set("destinations", data.destinations);
+        });
+      }
+    })
   }
 
-  static observedAttributes = ["src"];
-
-  attributeChangedCallback(name, _, newValue) {
-    if (name === "src") {
-      this.hydrate(newValue).then((data) => {
-        console.log("Received JSON:", data);
-        const view = BlzItineraryElement.render(data)
-        shadow(this).replace(view);
-      });
-    }
+  get authorization() {
+    const $ = this.viewModel.toObject();
+    if ($.authenticated)
+       return { Authorization: `Bearer ${$.token}` };
+     else return {};
   }
-
-  static render(data) {
-    const destinations = data?.destinations || [];
-    return html`
-      <dl>
-        ${destinations.map(renderDestination)}
-      </dl>
-    `;
-  }
-
 
   hydrate(src) {
-    return fetch(src)
+    return fetch(src, {
+      headers: this.authorization
+    })
       .then((response) => {
         if (response.status !== 200)
           throw `HTTP Status ${response.status}`;
@@ -53,7 +65,6 @@ function renderDestination(dest) {
     <dt>${startDate} to ${endDate}</dt>
     <dd>
         <blz-destination
-            href=${link}
             start-date=${startDate}
             end-date=${endDate}
             img-src=${featuredImage}

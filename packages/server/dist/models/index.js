@@ -1,3 +1,4 @@
+export * from "./credential.js";
 export * from "./currency.js";
 export * from "./destination.js";
 export * from "./entourage.js";

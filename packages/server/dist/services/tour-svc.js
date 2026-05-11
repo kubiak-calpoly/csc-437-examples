@@ -39,7 +39,8 @@ const tourSchema = new Schema({
                     }
                 }
             ],
-            excursions: [{ name: String, type: { type: String } }]
+            excursions: [{ name: String, type: { type: String } }],
+            link: String
         }
     ],
     transportation: [

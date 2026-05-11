@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import express from "express";
 import jwt from "jsonwebtoken";
-import credentials from "../services/credential-svc";
+import credentials from "../services/credential-svc.js";
 const router = express.Router();
 dotenv.config();
 const TOKEN_SECRET = process.env.TOKEN_SECRET || "NOT_A_SECRET";
@@ -12,7 +12,6 @@ function generateAccessToken(username) {
             if (error)
                 reject(error);
             else {
-                console.log("Token is", token);
                 resolve(token);
             }
         });
@@ -20,7 +19,8 @@ function generateAccessToken(username) {
 }
 router.post("/register", (req, res) => {
     const { username, password } = req.body; // from form
-    if (!username || !password) {
+    if (typeof username !== "string" ||
+        typeof password !== "string") {
         res.status(400).send("Bad request: Invalid input data.");
     }
     else {
@@ -29,12 +29,16 @@ router.post("/register", (req, res) => {
             .then((creds) => generateAccessToken(creds.username))
             .then((token) => {
             res.status(201).send({ token: token });
+        })
+            .catch((err) => {
+            res.status(409).send({ error: err.message });
         });
     }
 });
 router.post("/login", (req, res) => {
     const { username, password } = req.body; // from form
-    if (!username || !password) {
+    if (typeof username !== "string" ||
+        typeof password !== "string") {
         res.status(400).send("Bad request: Invalid input data.");
     }
     else {
@@ -42,7 +46,7 @@ router.post("/login", (req, res) => {
             .verify(username, password)
             .then((goodUser) => generateAccessToken(goodUser))
             .then((token) => res.status(200).send({ token: token }))
-            .catch((error) => res.status(401).send("Unauthorized"));
+            .catch(() => res.status(401).send("Unauthorized"));
     }
 });
 export function authenticateUser(req, res, next) {
@@ -53,8 +57,10 @@ export function authenticateUser(req, res, next) {
         res.status(401).end();
     }
     else {
-        jwt.verify(token, TOKEN_SECRET, (error, decoded) => {
+        jwt.verify(token, TOKEN_SECRET, (_, decoded) => {
             if (decoded) {
+                const payload = decoded;
+                req.params.username = payload.username;
                 next();
             }
             else {

@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express";
+import auth, { authenticateUser } from "./routes/auth.ts";
 import tours from "./routes/tours.ts";
 import travelers from "./routes/travelers.ts";
 import { connect } from "./services/mongo.ts";
@@ -17,9 +18,12 @@ app.use(express.static(staticDir));
 // Middleware:
 app.use(express.json());
 
+// Auth Routes:
+app.use("/auth", auth);
+
 // API Routes:
-app.use("/api/travelers", travelers);
-app.use("/api/tours", tours);
+app.use("/api/travelers", authenticateUser, travelers);
+app.use("/api/tours", authenticateUser, tours);
 
 // HTML Routes:
 app.get("/hello", (_: Request, res: Response) => {
@@ -33,6 +37,6 @@ app.get("/hello", (_: Request, res: Response) => {
 
 // Start the server
 app.listen(port, () => {
-  console.log(`Server running at 
+  console.log(`Server running at
   http://localhost:${port}`);
 });

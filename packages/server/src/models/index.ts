@@ -1,3 +1,4 @@
+export * from "./credential.ts";
 export * from "./currency.ts";
 export * from "./destination.ts";
 export * from "./entourage.ts";
