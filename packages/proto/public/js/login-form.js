@@ -6,10 +6,7 @@ export class LoginFormElement extends HTMLElement {
   viewModel = createViewModel({
     username: "",
     password: ""
-  })
-    .with(fromInputs(shadow(this).root),
-      "username", "password"
-  );
+  }).with(fromInputs(this), "username", "password");
 
   view = html`<form>
       <slot></slot>

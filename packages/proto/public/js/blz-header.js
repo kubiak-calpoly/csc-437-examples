@@ -1,15 +1,14 @@
-import { css, Events, html, shadow } from "@unbndl/html";
-import { createView, createViewModel } from "@unbndl/view";
-import { fromAuth } from "@unbndl/auth";
+import { css, html, shadow } from "@unbndl/html";
+import { createViewModel } from "@unbndl/view";
+import { Auth, fromAuth } from "@unbndl/auth";
 import reset from "./reset.css.js";
 
 export class BlzHeaderElement extends HTMLElement {
-
   viewModel = createViewModel({
     authenticated: false
   }).with(fromAuth(this), "authenticated", "username");
 
-  view = createView(html`
+  view = html`
     <header>
       <h1>Blazing Travels</h1>
       <nav
@@ -18,7 +17,7 @@ export class BlzHeaderElement extends HTMLElement {
         <p>Hello, ${($) => $.username || "traveler"}</p>
         <menu>
           <li class="when-signed-in">
-            <a>Sign Out</a>
+            <button>Sign Out</button>
           </li>
           <li class="when-signed-out">
             <a href="/login.html">Sign In</a>
@@ -26,20 +25,27 @@ export class BlzHeaderElement extends HTMLElement {
         </menu>
       </nav>
     </header>
-  `);
+  `;
 
   constructor() {
     super();
 
     shadow(this)
-      .styles(
-        reset.styles,
-        BlzHeaderElement.styles
-      )
+      .styles(reset.styles, BlzHeaderElement.styles)
       .replace(this.viewModel.render(this.view))
-      .delegate(".when-signed-in a", {
+      .delegate(".when-signed-in button", {
         click: () => this.signout()
       });
+  }
+
+  signout() {
+    // const customEvent = new CustomEvent("auth:message", {
+    //   bubbles: true,
+    //   composed: true,
+    //   detail: ["auth/signout"]
+    // });
+    // this.dispatchEvent(customEvent);
+    Auth.dispatch(this, "auth/signout");
   }
 
   static styles = css`
@@ -47,10 +53,6 @@ export class BlzHeaderElement extends HTMLElement {
           display: contents;
         }
 
-        * {
-          margin: 0;
-          box-sizing: border-box;
-        }
 
         header {
           grid-column: start / end;
@@ -78,15 +80,20 @@ export class BlzHeaderElement extends HTMLElement {
           font-weight: var(--font-weight-bold);
         }
 
-        ul {
-          list-style: none;
-          padding: var(--size-spacing-medium);
+        li {
+          display: none;
         }
+
+        .logged-in .when-signed-in,
+        .logged-out .when-signed-out {
+          display: block;
+        }
+
      `;
 
-  static {
-    window.Events = Events;
 
+
+  static {
     const page = document.body;
 
     page.addEventListener("dark-mode",
