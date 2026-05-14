@@ -1,6 +1,7 @@
 import { css, html, shadow } from "@unbndl/html";
-import { createView, createViewModel, fromAttributes } from "@unbndl/view";
+import { View, createView, createViewModel, fromAttributes } from "@unbndl/view";
 import { fromAuth } from "@unbndl/auth";
+import { formatDate } from "./dateUtils.js";
 
 export class BlzItineraryElement extends HTMLElement {
   viewModel = createViewModel({
@@ -11,9 +12,24 @@ export class BlzItineraryElement extends HTMLElement {
 
   view = createView(html`
     <dl>
-      ${$ => $.destinations.map(renderDestination)}
+      ${$ => View.map(this.destinationView, $.destinations)}
     </dl>
   `)
+
+  destinationView = html`
+    <dt>${($) => formatDate($.startDate)} to 
+      ${($) => formatDate($.endDate)}</dt>
+    <dd>
+      <blz-destination
+          start-date=${($) => $.startDate}
+          end-date=${$=>$.endDate}
+          img-src=${$=>$.featuredImage}
+          href=${$=>$.link}
+      >
+        ${$=>$.name}
+      </blz-destination>
+    </dd>
+  `;
 
   constructor() {
     super();
@@ -56,21 +72,3 @@ export class BlzItineraryElement extends HTMLElement {
   static styles = css``;
 }
 
-
-function renderDestination(dest) {
-  const { name, link, startDate, endDate, featuredImage }
-    = dest;
-
-  return html`
-    <dt>${startDate} to ${endDate}</dt>
-    <dd>
-        <blz-destination
-            start-date=${startDate}
-            end-date=${endDate}
-            img-src=${featuredImage}
-        >
-            ${name}
-        </blz-destination>
-    </dd>
-  `;
-}

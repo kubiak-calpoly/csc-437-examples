@@ -74,9 +74,6 @@ blz-header a[href] {
 }
 
 .page > * {
-  display: grid;
-  grid-template-columns: subgrid;
-
   > h2 {
     grid-column: 1 / -1;
   }

@@ -1,36 +1,35 @@
-const destinations = {
-    venice: {
-        name: "Venice",
-        startDate: new Date("2024-10-14"),
-        endDate: new Date("2024-10-17"),
-        location: { lat: 45.4375, lon: 12.335833 },
-        featuredImage: "/images/full/Canal_Grande_Chiesa_della_Salute_e_Dogana_dal_ponte_dell_Accademia.jpg",
-        accommodations: [
-            {
-                name: "Locanda San Barnaba",
-                checkIn: new Date("2024-10-14"),
-                checkOut: new Date("2024-10-17"),
-                persons: 4,
-                roomType: "2Q",
-                rate: {
-                    amount: 190,
-                    currency: "EUR"
-                }
-            }
-        ],
-        excursions: [
-            {
-                name: "Vaporetto trip to Murano",
-                type: "boat"
-            },
-            {
-                name: "Walking tour of Piazza San Marco",
-                type: "walking"
-            }
-        ]
-    },
-};
-function get(id) {
-    return destinations[id];
+import { tourModel } from "./tour-svc.js";
+function get(tourId, destIndex) {
+    return (tourModel
+        .findById(tourId)
+        .then((doc) => {
+        const tour = doc;
+        return tour.destinations[destIndex];
+    })
+        .catch((err) => {
+        console.log("Not found!", err);
+        throw `${tourId} Not Found`;
+    }));
 }
-export default { get };
+function update(tourId, destIndex, newDest) {
+    return new Promise((resolve, reject) => {
+        const path = `destinations.${tourId}`;
+        tourModel
+            .findByIdAndUpdate(tourId, {
+            $set: { [path]: newDest }
+        }, { new: true })
+            .then((doc) => {
+            if (doc) {
+                const tour = doc;
+                resolve(tour.destinations[destIndex]);
+            }
+            else
+                reject(`Tour ${tourId} not found`);
+        })
+            .catch((error) => {
+            console.log("Cannot update Destination:", error);
+            reject(error);
+        });
+    });
+}
+export default { get, update };

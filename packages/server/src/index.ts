@@ -2,6 +2,8 @@ import express, { Request, Response } from "express";
 import auth, { authenticateUser } from "./routes/auth.ts";
 import tours from "./routes/tours.ts";
 import travelers from "./routes/travelers.ts";
+import destinations from "./routes/destinations.ts";
+
 import { connect } from "./services/mongo.ts";
 
 const app = express();
@@ -24,6 +26,7 @@ app.use("/auth", auth);
 // API Routes:
 app.use("/api/travelers", authenticateUser, travelers);
 app.use("/api/tours", authenticateUser, tours);
+app.use("/api/destinations", authenticateUser, destinations);
 
 // HTML Routes:
 app.get("/hello", (_: Request, res: Response) => {

@@ -69,7 +69,7 @@ const tourSchema = new Schema({
         }
     ]
 }, { collection: "tour_collection" });
-const tourModel = model("Tour", tourSchema);
+export const tourModel = model("Tour", tourSchema);
 function index() {
     return tourModel.find();
 }
@@ -112,45 +112,9 @@ function update(id, tour) {
         });
     });
 }
-function getDestination(id, n) {
-    return (tourModel
-        .findById(id)
-        .then((doc) => {
-        const tour = doc;
-        return tour.destinations[n];
-    })
-        .catch((err) => {
-        console.log("Not found!", err);
-        throw `${id} Not Found`;
-    }));
-}
-function updateDestination(id, n, newDest) {
-    return new Promise((resolve, reject) => {
-        const path = `destinations.${n}`;
-        console.log("update path", path);
-        tourModel
-            .findByIdAndUpdate(id, {
-            $set: { [path]: newDest }
-        }, { new: true })
-            .then((doc) => {
-            if (doc) {
-                const tour = doc;
-                resolve(tour.destinations[n]);
-            }
-            else
-                reject(`Tour ${id} not found`);
-        })
-            .catch((error) => {
-            console.log("Cannot update Destination:", error);
-            reject(error);
-        });
-    });
-}
 export default {
     index,
     get,
     create,
-    update,
-    getDestination,
-    updateDestination
+    update
 };

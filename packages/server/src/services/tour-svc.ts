@@ -80,7 +80,7 @@ const tourSchema = new Schema<Tour>(
   { collection: "tour_collection" }
 );
 
-const tourModel = model<Tour>("Tour", tourSchema);
+export const tourModel = model<Tour>("Tour", tourSchema);
 
 function index(): Promise<Tour[]> {
   return tourModel.find();
@@ -127,61 +127,10 @@ function update(id: String, tour: Tour): Promise<Tour> {
   });
 }
 
-function getDestination(
-  id: String,
-  n: number
-): Promise<Destination> {
-  return (
-    tourModel
-      .findById(id)
-      .then((doc: unknown) => {
-        const tour =  doc as Tour;
-        return tour.destinations[n];
-      })
-      .catch((err) => {
-        console.log("Not found!", err);
-        throw `${id} Not Found`;
-      })
-  );
-}
-
-function updateDestination(
-  id: String,
-  n: number,
-  newDest: Destination
-): Promise<Destination> {
-  return new Promise((resolve, reject) => {
-    const path = `destinations.${n}`;
-
-    console.log("update path", path);
-
-    tourModel
-      .findByIdAndUpdate(
-        id,
-        {
-          $set: { [path]: newDest }
-        },
-        { new: true }
-      )
-      .then((doc: unknown) => {
-        if (doc) {
-          const tour = doc as Tour;
-          resolve(tour.destinations[n]);
-        } else reject(`Tour ${id} not found`);
-      })
-      .catch((error) => {
-        console.log("Cannot update Destination:", error);
-        reject(error);
-      });
-  });
-}
-
 export default {
   index,
   get,
   create,
-  update,
-  getDestination,
-  updateDestination
+  update
 };
 

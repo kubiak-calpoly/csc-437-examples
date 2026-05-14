@@ -4,7 +4,7 @@
   "description": "HTML/CSS Prototype of Blazing Travels",
   "main": "index.html",
   "scripts": {
-     "start": "http-server -p 3000",
+    "start": "http-server -p 3000",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -16,5 +16,10 @@
   "license": "BSD-3-Clause",
   "devDependencies": {
     "http-server": "^14.1.1"
+  },
+  "dependencies": {
+    "@unbndl/auth": "^1.0.3",
+    "@unbndl/html": "^1.0.4",
+    "@unbndl/view": "^1.0.4"
   }
 }
