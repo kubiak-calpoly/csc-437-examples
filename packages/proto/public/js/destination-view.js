@@ -15,6 +15,7 @@ export class DestinationViewElement extends HTMLElement {
 
   viewModel = createViewModel({
     authenticated: false,
+    mode: "view",
     destination: {
       name: "Somewhere",
       startDate: new Date(),
@@ -25,12 +26,15 @@ export class DestinationViewElement extends HTMLElement {
       excursions: [],
       // link: undefined
     }
-  }).with(fromAttributes(this), "src")
+  }).with(fromAttributes(this), "src", "mode")
     .with(fromAuth(this), "authenticated", "token");
 
   view = html`
     <section>
-      ${($) => View.apply(this.mainView, $.destination)}
+      ${($) => View.apply(
+        $.mode === "view" ? this.mainView : this.editView, 
+        $.destination
+      )}
     </section>
   `;
 
@@ -40,6 +44,9 @@ export class DestinationViewElement extends HTMLElement {
         <p>${($) => nightsBetween(
           $.startDate, 
           $.endDate)} nights</p>
+        <nav>
+          <button id="edit-mode">Edit</button>
+        </nav>
       </header>
       <img alt="" src=${($) => 
         $.featuredImage || ""} />
@@ -47,6 +54,25 @@ export class DestinationViewElement extends HTMLElement {
       <ul class="excursions">
         ${($) => View.map(this.viewExcursion, $.excursions)}
       </ul>
+  `;
+
+  editView = html`
+    <form>
+      <header>
+        <h2><input name="name"/></h2>
+      </header>
+      <dl>
+        <dt>From date</dt>
+        <dd><input name="startDate" type="date"</dd>
+        <dt>To date</dt>
+        <dd><input name="endDate" type="date"></dd>
+        <dt>Image</dt>
+        <dd>
+          <input type="file" />
+        </dd>
+      </dl>
+      <img alt="" src=${($) => $.featuredImage || ""} />
+    </form>
   `;
 
   viewAccommodation = html`
@@ -83,6 +109,9 @@ export class DestinationViewElement extends HTMLElement {
       .styles(reset.styles,
         DestinationViewElement.styles)
       .replace(this.viewModel.render(this.view))
+      .delegate("#edit-mode", {
+        click: () => this.viewModel.set("mode", "edit")
+      });
 
     this.viewModel.createEffect(($) => {
       if ($.authenticated && $.src) {
