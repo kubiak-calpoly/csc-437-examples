@@ -30,19 +30,23 @@ export class DestinationViewElement extends HTMLElement {
 
   view = html`
     <section>
+      ${($) => View.apply(this.mainView, $.destination)}
+    </section>
+  `;
+
+  mainView = html`
       <header>
-        <h2>${($) => $.destination.name}</h2>
+        <h2>${($) => $.name}</h2>
         <p>${($) => nightsBetween(
-          $.destination.startDate, 
-          $.destination.endDate)} nights</p>
+          $.startDate, 
+          $.endDate)} nights</p>
       </header>
       <img alt="" src=${($) => 
-        $.destination.featuredImage || ""} />
-      ${($) => View.map(this.viewAccommodation, $.destination.accommodations)}
+        $.featuredImage || ""} />
+      ${($) => View.map(this.viewAccommodation, $.accommodations)}
       <ul class="excursions">
-        ${($) => View.map(this.viewExcursion, $.destination.excursions)}
+        ${($) => View.map(this.viewExcursion, $.excursions)}
       </ul>
-    </section>
   `;
 
   viewAccommodation = html`
