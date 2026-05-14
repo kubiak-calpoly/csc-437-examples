@@ -26,7 +26,6 @@ function update(
   newDest: Destination
 ): Promise<Destination> {
     const path = "destinations." + destIndex;
-    console.log("Updating destination", newDest);
   return tourModel
       .findByIdAndUpdate(
         tourId,
@@ -36,8 +35,6 @@ function update(
         { new: true }
       )
       .then((doc: unknown) => {
-          console.log("Updated destination", doc);
-
           if (!doc ) throw `Tour ${tourId} not found`;
           const tour =  doc as Tour;
           return tour.destinations[destIndex];

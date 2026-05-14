@@ -13,13 +13,11 @@ function get(tourId, destIndex) {
 }
 function update(tourId, destIndex, newDest) {
     const path = "destinations." + destIndex;
-    console.log("Updating destination", newDest);
     return tourModel
         .findByIdAndUpdate(tourId, {
         $set: { [path]: newDest }
     }, { new: true })
         .then((doc) => {
-        console.log("Updated destination", doc);
         if (!doc)
             throw `Tour ${tourId} not found`;
         const tour = doc;

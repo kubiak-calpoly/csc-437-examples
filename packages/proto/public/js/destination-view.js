@@ -30,15 +30,17 @@ export class DestinationViewElement extends HTMLElement {
       accommodations: [],
       excursions: [],
       // link: undefined
-    }
+    },
+    upload: {}
   }).with(fromAttributes(this), "src", "mode")
     .with(fromAuth(this), "authenticated", "token");
 
   view = html`
     <section>
-      ${($) => View.apply(
+      ${($) => View.apply2(
         $.mode === "view" ? this.mainView : this.editView, 
-        $.destination
+        $.destination,
+        $.upload
       )}
     </section>
   `;
@@ -53,7 +55,7 @@ export class DestinationViewElement extends HTMLElement {
           <button id="edit-mode">Edit</button>
         </nav>
       </header>
-      <img alt="" src=${($) => 
+      <img class="hero" alt="" src=${($) => 
         $.featuredImage || ""} />
       ${($) => View.map(this.viewAccommodation, $.accommodations)}
       <ul class="excursions">
@@ -85,6 +87,9 @@ export class DestinationViewElement extends HTMLElement {
         <dd>
           <input type="file" />
         </dd>
+        <dd>
+          <img src=${(_,$) => $.url} alt="" />
+        </dd>
         <dt></dt>
         <dd>
           <button id="cancel" type="button">Cancel</button>
@@ -92,7 +97,7 @@ export class DestinationViewElement extends HTMLElement {
         </dd>
       </dl>
 
-      <img alt="" src=${($) => $.featuredImage || ""} />
+      <img class="hero" alt="" src=${($) => $.featuredImage || ""} />
     </form>
   `;
 
@@ -133,6 +138,9 @@ export class DestinationViewElement extends HTMLElement {
       .delegate("#edit-mode", {
         click: () => this.viewModel.set("mode", "edit")
       })
+      .delegate("input[type=file]", {
+        change: (event) => this.handleFileSelected(event)
+      })
       .listen({
         submit: (ev) => this.submitForm(ev)
       });
@@ -168,6 +176,43 @@ export class DestinationViewElement extends HTMLElement {
       });
   }
 
+  handleFileSelected(event) {
+    const target = event.target;
+    const selectedFile = target.files[0];
+
+    const reader = new Promise((resolve, reject) => {
+      const fr = new FileReader();
+      fr.onload = () => resolve(fr.result);
+      fr.onerror = (err) => reject(err);
+      fr.readAsArrayBuffer(selectedFile);
+    });
+
+    reader.then((buffer) => {
+      const { name, size, type } = selectedFile;
+      const query = new URLSearchParams({ filename: name });
+      let url = new URL("/images", document.location.origin);
+      url.search = query.toString();
+
+      fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": type,
+          "Content-Length": size.toString(),
+          ...this.authorization
+        },
+        body: buffer
+      })
+      .then((res) => {
+        if (res.status === 201) return res.json();
+        else throw res.status;
+      })
+      .then((json) => {
+        if (json) this.viewModel.set("upload", { url: json.url});
+        else throw "No JSON response";
+      });
+    });
+  }
+
   submitForm(event) {
     event.preventDefault();
     const json = this.formDataToJSON(event.target);
@@ -182,8 +227,7 @@ export class DestinationViewElement extends HTMLElement {
     }).then((res) => {
       if (res.status !== 200) throw `HTTP status ${res.status}`
       return res.json();
-    })
-      .then((json) => {
+    }).then((json) => {
         this.viewModel.set("destination", convertStartEndDates(json));
       }).catch((err) => {
       console.log("Failed to PUT form data", err)
@@ -191,15 +235,18 @@ export class DestinationViewElement extends HTMLElement {
   }
 
   formDataToJSON(form) {
+    const upload = this.viewModel.get("upload");
     const inputs = Array.from(form.elements)
       .filter(
         (el) => el.tagName !== "BUTTON" && "name" in el
       );
-    const entries =
+    let entries =
       Object.entries(this.viewModel.get("destination")).concat(
         inputs.map((el) => [el.name, el.value])
       ).filter((ent) => ent[0] && ent[0] !== "_id");
-    console.log("formDataToJSON:", entries);
+    if ( upload.url ) {
+      entries.push(["featuredImage", upload.url]);
+    }
     return Object.fromEntries(entries);
   }
 
@@ -217,7 +264,7 @@ export class DestinationViewElement extends HTMLElement {
       }
     }
     form { display: contents; }
-    img { grid-area: img; }
+    img.hero { grid-area: img; }
     blz-accommodation { grid-area: acc; }
     ul.excursions {
       display: grid;

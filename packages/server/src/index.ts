@@ -3,6 +3,7 @@ import auth, { authenticateUser } from "./routes/auth.ts";
 import tours from "./routes/tours.ts";
 import travelers from "./routes/travelers.ts";
 import destinations from "./routes/destinations.ts";
+import { getFile, saveFile } from "./services/filesystem.ts";
 
 import { connect } from "./services/mongo.ts";
 
@@ -19,6 +20,7 @@ app.use(express.static(staticDir));
 
 // Middleware:
 app.use(express.json());
+app.use(express.raw({ type: "image/*", limit: "32Mb" }));
 
 // Auth Routes:
 app.use("/auth", auth);
@@ -27,6 +29,10 @@ app.use("/auth", auth);
 app.use("/api/travelers", authenticateUser, travelers);
 app.use("/api/tours", authenticateUser, tours);
 app.use("/api/destinations", authenticateUser, destinations);
+
+// Image Routes:
+app.post("/images", authenticateUser, saveFile);
+app.get("/images/:id", getFile);
 
 // HTML Routes:
 app.get("/hello", (_: Request, res: Response) => {
