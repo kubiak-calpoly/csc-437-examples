@@ -36,3 +36,14 @@ export function convertStartEndDates(obj) {
   obj.endDate = new Date(obj.endDate);
   return obj;
 }
+
+export function toDateTimeString(date) {
+  const iso = date.toISOString();
+  const [dateString, timeString] = iso.split("T");
+  return `${dateString} ${timeString.substring(0, 8)}`;
+}
+
+export function toDateString(date) {
+  const iso = date.toISOString();
+  return iso.substring(0, 10);
+}

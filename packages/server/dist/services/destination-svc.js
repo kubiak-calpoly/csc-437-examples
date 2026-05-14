@@ -12,24 +12,18 @@ function get(tourId, destIndex) {
     }));
 }
 function update(tourId, destIndex, newDest) {
-    return new Promise((resolve, reject) => {
-        const path = `destinations.${tourId}`;
-        tourModel
-            .findByIdAndUpdate(tourId, {
-            $set: { [path]: newDest }
-        }, { new: true })
-            .then((doc) => {
-            if (doc) {
-                const tour = doc;
-                resolve(tour.destinations[destIndex]);
-            }
-            else
-                reject(`Tour ${tourId} not found`);
-        })
-            .catch((error) => {
-            console.log("Cannot update Destination:", error);
-            reject(error);
-        });
+    const path = "destinations." + destIndex;
+    console.log("Updating destination", newDest);
+    return tourModel
+        .findByIdAndUpdate(tourId, {
+        $set: { [path]: newDest }
+    }, { new: true })
+        .then((doc) => {
+        console.log("Updated destination", doc);
+        if (!doc)
+            throw `Tour ${tourId} not found`;
+        const tour = doc;
+        return tour.destinations[destIndex];
     });
 }
 export default { get, update };

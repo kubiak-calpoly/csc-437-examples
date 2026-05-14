@@ -1,7 +1,12 @@
 import { css, define, html, shadow } from "@unbndl/html";
 import { View, createView, createViewModel, fromAttributes } from "@unbndl/view";
 import { fromAuth } from "@unbndl/auth";
-import { formatDate, nightsBetween} from "./dateUtils.js";
+import {
+  convertStartEndDates,
+  formatDate,
+  toDateString,
+  nightsBetween
+} from "./dateUtils.js";
 import reset from "./reset.css.js";
 import { BlzAccommodationElement} from "./blz-accommodation.js";
 
@@ -59,18 +64,34 @@ export class DestinationViewElement extends HTMLElement {
   editView = html`
     <form>
       <header>
-        <h2><input name="name"/></h2>
+        <h2>
+          <input name="name" value=${$ => $.name}/>
+        </h2>
       </header>
       <dl>
-        <dt>From date</dt>
-        <dd><input name="startDate" type="date"</dd>
-        <dt>To date</dt>
-        <dd><input name="endDate" type="date"></dd>
+        <dt>Arriving on</dt>
+        <dd>
+          <input name="startDate" type="date" 
+                 value=${$ => toDateString($.startDate)}
+          />
+        </dd>
+        <dt>Departing on</dt>
+        <dd>
+          <input name="endDate" type="date"
+                 value=${$ => toDateString($.endDate)}
+          />
+        </dd>
         <dt>Image</dt>
         <dd>
           <input type="file" />
         </dd>
+        <dt></dt>
+        <dd>
+          <button id="cancel" type="button">Cancel</button>
+          <button type="submit">Save</button>
+        </dd>
       </dl>
+
       <img alt="" src=${($) => $.featuredImage || ""} />
     </form>
   `;
@@ -111,12 +132,16 @@ export class DestinationViewElement extends HTMLElement {
       .replace(this.viewModel.render(this.view))
       .delegate("#edit-mode", {
         click: () => this.viewModel.set("mode", "edit")
+      })
+      .listen({
+        submit: (ev) => this.submitForm(ev)
       });
 
     this.viewModel.createEffect(($) => {
       if ($.authenticated && $.src) {
         this.hydrate($.src).then((data) => {
-          this.viewModel.set("destination", data);
+          this.viewModel.set("destination",
+            convertStartEndDates(data));
         });
       }
     })
@@ -143,6 +168,41 @@ export class DestinationViewElement extends HTMLElement {
       });
   }
 
+  submitForm(event) {
+    event.preventDefault();
+    const json = this.formDataToJSON(event.target);
+
+    fetch(this.viewModel.get("src"), {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        ...this.authorization
+      },
+      body: JSON.stringify(json)
+    }).then((res) => {
+      if (res.status !== 200) throw `HTTP status ${res.status}`
+      return res.json();
+    })
+      .then((json) => {
+        this.viewModel.set("destination", convertStartEndDates(json));
+      }).catch((err) => {
+      console.log("Failed to PUT form data", err)
+    });
+  }
+
+  formDataToJSON(form) {
+    const inputs = Array.from(form.elements)
+      .filter(
+        (el) => el.tagName !== "BUTTON" && "name" in el
+      );
+    const entries =
+      Object.entries(this.viewModel.get("destination")).concat(
+        inputs.map((el) => [el.name, el.value])
+      ).filter((ent) => ent[0] && ent[0] !== "_id");
+    console.log("formDataToJSON:", entries);
+    return Object.fromEntries(entries);
+  }
+
   static styles = css`
     :host { display: contents; }
     section { display: contents; }
@@ -156,6 +216,7 @@ export class DestinationViewElement extends HTMLElement {
         color: currentColor;
       }
     }
+    form { display: contents; }
     img { grid-area: img; }
     blz-accommodation { grid-area: acc; }
     ul.excursions {
