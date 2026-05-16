@@ -1,4 +1,4 @@
-import { Traveler } from "./traveler";
+import { Traveler } from "./traveler.ts";
 
 export interface Entourage {
   name?: string;

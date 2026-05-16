@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com" />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,200;0,400;0,700;1,700&family=Merriweather:wght@400;700&display=swap"
+      rel="stylesheet" />
+    <link rel="stylesheet" href="/styles/reset.css" />
+    <link rel="stylesheet" href="/styles/tokens.css" />
+    <link rel="stylesheet" href="/styles/page.css" />
+    <link rel="stylesheet" href="/styles/destination.css" />
+    <style>
+      main.page {
+        --page-grids: 8;
+        grid-template-areas:
+          "hdr hdr img img img img img img"
+          "acc acc img img img img img img"
+          "-- -- img img img img img img"
+          "exc exc exc exc exc exc exc exc"
+          "ftr ftr ftr ftr ftr ftr ftr ftr";
+      }
+      @media screen and (max-width: 48rem) {
+        main.page {
+          --page-grids: 6;
+          grid-template-areas:
+            "hdr hdr acc acc acc acc"
+            "img img img img img img"
+            "exc exc exc exc exc exc";
+            "ftr ftr ftr ftr ftr ftr";
+        }
+      }
+    </style>
+    <script type="importmap">
+      {
+        "imports": {
+          "@unbndl/auth": "https://unpkg.com/@unbndl/auth",
+          "@unbndl/html": "https://unpkg.com/@unbndl/html",
+          "@unbndl/view": "https://unpkg.com/@unbndl/view"
+        }
+      }
+    </script>
+    <script type="module">
+      import { define } from "@unbndl/html";
+      import { Auth } from "@unbndl/auth";
+      import { DestinationViewElement } from "../js/destination-view.js";
+      import { BlzHeaderElement } from "../js/blz-header.js";
+
+      define({
+        "auth-provider": Auth.Provider,
+        "destination-view": DestinationViewElement,
+        "blz-header": BlzHeaderElement
+      });
+    </script>
+  </head>
+  <body>
+  <auth-provider>
+    <blz-header>
+      <a href="/index.html">&larr; Tour: 12 Days in Italy</a>
+    </blz-header>
+    <main class="page">
+      <destination-view src="/api/destinations/65c7e92ea837ff7c15b669e5/0">
+      </destination-view>
+    </main>
+  </auth-provider>
+  </body>
+</html>

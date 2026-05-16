@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import { Entourage } from "../models";
-import entourages from "../services/entourage-svc";
+import entourages from "../services/entourage-svc.ts";
 
 const router = express.Router();
 

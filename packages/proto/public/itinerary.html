@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,200;0,400;0,700;1,700&family=Merriweather:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles/tokens.css" />
+    <link rel="stylesheet" href="/styles/reset.css" />
+    <link rel="stylesheet" href="/styles/page.css" />
+    <link rel="stylesheet" href="/styles/itinerary.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "@unbndl/html": "https://unpkg.com/@unbndl/html",
+          "@unbndl/view": "https://unpkg.com/@unbndl/view"
+        }
+      }
+    </script>
+    <script type="module">
+      import { define } from "@unbndl/html";
+      import { BlzDestinationElement } from "/js/blz-destination.js";
+      import { BlzHeaderElement } from "/js/blz-header.js";
+
+      define({
+        "blz-destination": BlzDestinationElement,
+        "blz-header": BlzHeaderElement
+      });
+    </script>
+  </head>
+  <body>
+  <main class="page">
+    <blz-header>
+      <h1>Blazing Travels</h1>
+      <p>12 days in <a href="#">Italy</a></p>
+    </blz-header>
+    <dl class="itinerary">
+      <dt>13-Oct to 14-Oct</dt>
+      <dd>
+      <blz-transportation
+        mode="air"
+        start-date="2024-10-13"
+        end-date="2024-10-14"
+      >
+        <blz-segment>
+          <span slot="carrier">United</span>
+          <span slot="number">UA926</span>
+          <blz-endpoint
+            slot="departure"
+            localtime="2024-10-13 19:05:00"
+            tz="-0800"
+            code="SFO"
+          >
+            San Francisco
+          </blz-endpoint>
+          <blz-endpoint
+            slot="arrival"
+            localtime="2024-10-14 14:55:00"
+            tz="+0100"
+            ,
+            code="FRA"
+          >
+            Frankfurt
+          </blz-endpoint>
+        </blz-segment>
+        <blz-segment>
+          <span slot="carrier">Lufthansa</span>
+          <span slot="number">LH330</span>
+          <blz-endpoint
+            slot="departure"
+            localtime="2024-10-14 17:15:00"
+            tz="+0100"
+            code="FRA"
+          >
+            Frankfurt
+          </blz-endpoint>
+          <blz-endpoint
+            slot="arrival"
+            localtime="2024-10-14 18:30:00"
+            tz="+0100"
+            ,
+            code="VCE"
+          >
+            Venice
+          </blz-endpoint>
+        </blz-segment>
+      </blz-transportation>
+      </dd><dt>14-Oct to 18-Oct</dt><dd>
+      <blz-destination
+        start-date="2024-10-14"
+        end-date="2024-10-18"
+        href="/destination/venice.html"
+        img-src="/images/full/Canal_Grande_Chiesa_della_Salute_e_Dogana_dal_ponte_dell_Accademia.jpg"
+      >
+        Venice
+        <ul slot="highlights">
+          <li>Stay at <a href="#">Locanda San Barnaba</a></li>
+          <li>Vaporetto trip to <a href="#">Murano</a></li>
+          <li>Walking tour of <a href="#">Piazza San Marco</a></li>
+        </ul>
+      </blz-destination>
+    </dd><dt>18-Oct</dt><dd>
+
+      <blz-transportation mode="rail" startDate="2024-10-18">
+        <blz-segment>
+          <span slot="carrier"> Frecciarossa </span>
+          <span slot="number">9407</span>
+          <blz-end-point
+            slot="departure"
+            localtime="2024-10-18 09:25:00"
+            tz="+0100"
+          >
+            Venezia S. Lucia
+          </blz-end-point>
+          <blz-end-point
+            slot="departure"
+            localtime="2024-10-18 11:30:00"
+            tz="+0100"
+          >
+            Firenze S.M.N.
+          </blz-end-point>
+        </blz-segment>
+      </blz-transportation>
+    </dd><dt>10-Oct to 21-Oct</dt><dd>
+
+      <blz-destination
+        start-date="2024-10-18"
+        end-date="2024-10-21"
+        href="/destination/florence.html"
+        img-src="/images/full/Firenze_-_Vista_dal_Piazzale_Michelangelo.jpg"
+      >
+        Florence
+        <ul slot="highlights">
+          <li>Stay at <a href="#">Hotel Perseo</a></li>
+          <li>Walking tour of Duomo, Campanile</li>
+          <li>Rail excursion to Lucca</li>
+          <li>Trip to Fiesole via city bus</li>
+        </ul>
+      </blz-destination>
+    </dd><dt>21-Oct</dt><dd>
+
+      <blz-transportation mode="rail" startDate="2024-10-21">
+        <blz-segment>
+          <span slot="carrier"> Frecciarossa </span>
+          <span slot="number">9435</span>
+          <blz-end-point
+            slot="departure"
+            localtime="2024-10-21 15:38:00"
+            tz="+0100"
+          >
+            Firenze S.M.N.
+          </blz-end-point>
+          <blz-end-point
+            slot="departure"
+            localtime="2024-10-21 17:10:00"
+            tz="+0100"
+          >
+            Roma Termini
+          </blz-end-point>
+        </blz-segment>
+      </blz-transportation>
+    </dd><dt>21-Oct to 25-Oct</dt><dd>
+
+      <blz-destination
+        start-date="2024-10-21"
+        end-date="2024-10-25"
+        href="/destination/rome.html"
+        img-src="/images/full/Colosseum_in_Rome,_Italy_-_April_2007.jpg"
+      >
+        Rome
+        <ul slot="highlights">
+          <li>Stay at <a href="#">La Piccola Maison</a></li>
+          <li>Tour of Forum, Colosseum, Palatino Hill via Metro</li>
+          <li>Tour of Vatican, St Peter’s via Metro</li>
+        </ul>
+      </blz-destination>
+    </dd><dt>25-Oct</dt><dd>
+
+      <blz-transportation>
+        <blz-segment>
+          <span slot="carrier">Lufthansa</span>
+          <span slot="number">LH233</span>
+          <blz-endpoint
+            slot="departure"
+            localtime="2024-10-25 13:25:00"
+            tz="+0100"
+            code="FCO"
+          >
+            Rome
+          </blz-endpoint>
+          <blz-endpoint
+            slot="arrival"
+            localtime="2024-10-25 15:20:00"
+            tz="+0100"
+            ,
+            code="FRA"
+          >
+            Frankfurt
+          </blz-endpoint>
+        </blz-segment>
+        <blz-segment>
+          <span slot="carrier">United</span>
+          <span slot="number">UA927</span>
+          <blz-endpoint
+            slot="departure"
+            localtime="2024-10-25 17:25:00"
+            tz="+0100"
+            code="FRA"
+          >
+            Frankfurt
+          </blz-endpoint>
+          <blz-endpoint
+            slot="arrival"
+            localtime="2024-10-25 19:45:00"
+            tz="-0800"
+            ,
+            code="SFO"
+          >
+            San Francisco
+          </blz-endpoint>
+        </blz-segment>
+      </blz-transportation>
+    </dd>
+    </dl>
+  </main>
+  </body>
+</html>

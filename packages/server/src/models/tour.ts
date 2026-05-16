@@ -1,6 +1,6 @@
-import { Destination } from "./destination";
-import { Entourage } from "./entourage";
-import { Transportation } from "./transportation";
+import { Destination } from "./destination.ts";
+import { Entourage } from "./entourage.ts";
+import { Transportation } from "./transportation.ts";
 
 export interface Tour {
   name: string;

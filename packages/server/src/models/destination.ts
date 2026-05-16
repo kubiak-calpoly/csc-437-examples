@@ -1,5 +1,5 @@
-import { Currency } from "./currency";
-import { Point } from "./geo";
+import { Currency } from "./currency.ts";
+import { Point } from "./geo.ts";
 
 export interface Destination {
   name: string;
@@ -9,6 +9,7 @@ export interface Destination {
   featuredImage?: string;
   accommodations: Array<Accommodation>;
   excursions: Array<Excursion>;
+  link?: string;
 }
 
 export interface Accommodation {

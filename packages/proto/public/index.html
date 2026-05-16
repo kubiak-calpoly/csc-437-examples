@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,200;0,400;0,700;1,700&family=Merriweather:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles/tokens.css" />
+    <link rel="stylesheet" href="/styles/reset.css" />
+    <link rel="stylesheet" href="/styles/page.css" />
+    <link rel="stylesheet" href="/styles/itinerary.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "@unbndl/auth": "https://unpkg.com/@unbndl/auth",
+          "@unbndl/html": "https://unpkg.com/@unbndl/html",
+          "@unbndl/view": "https://unpkg.com/@unbndl/view"
+        }
+      }
+    </script>
+    <script type="module">
+      import { define } from "@unbndl/html";
+      import { Auth } from "@unbndl/auth";
+      import { BlzDestinationElement } from "/js/blz-destination.js";
+      import { BlzItineraryElement } from "/js/blz-itinerary.js";
+      import { BlzHeaderElement } from "/js/blz-header.js";
+      define({
+        "auth-provider": Auth.Provider,
+        "blz-destination": BlzDestinationElement,
+        "blz-header": BlzHeaderElement,
+        "blz-itinerary": BlzItineraryElement
+      });
+    </script>
+  </head>
+  <body>
+    <auth-provider>
+      <blz-header>
+        <h1>Blazing Travels</h1>
+        <p>12 days in <a href="#">Italy</a></p>
+      </blz-header>
+      <blz-itinerary src="/api/tours/65c7e92ea837ff7c15b669e5">
+      </blz-itinerary>
+    </auth-provider>
+  </body>
+</html>
