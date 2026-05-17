@@ -1,58 +1,45 @@
-import {
-  Auth,
-  define,
-  History,
-  Store,
-  Switch
-} from "@calpoly/mustang";
-import { html } from "lit";
-import { Msg } from "./messages";
-import { Model, init } from "./model";
-import update from "./update";
-import { DestinationViewElement } from "./views/destination-view";
-import { HeaderElement } from "./components/blazing-header";
-import { HomeViewElement } from "./views/home-view";
-import { TourViewElement } from "./views/tour-view";
+import { define, html } from "@unbndl/html";
+import { Auth } from "@unbndl/auth";
+import { BrowserHistory, Switch } from "@unbndl/switch";
+import { DestinationViewElement } from "./views/destination-view.ts";
+import { HeaderElement } from "./components/blz-header.ts";
+import { HomeViewElement } from "./views/home-view.ts";
+import { TourViewElement } from "./views/tour-view.ts";
 import { ProfileViewElement } from "./views/profile-view.ts";
 
 const routes: Switch.Route[] = [
   {
-    auth: "protected",
     path: "/app/tour/:id/destination/:index",
-    view: (params: Switch.Params) => html`
+    view: html`
       <destination-view
-        tour-id=${params.id}
-        index="${params.index}">
+        tour-id=${$ => $.params.id}
+        index=${$ => $.params.index}>
       </destination-view>
     `
   },
   {
-    auth: "protected",
     path: "/app/tour/:id",
-    view: (params: Switch.Params) => html`
-      <tour-view tour-id=${params.id}></tour-view>
+    view: html`
+      <tour-view tour-id=${$ => $.params.id}></tour-view>
     `
   },
   {
-    auth: "protected",
     path: "/app/profile/:id",
-    view: (
-      params: Switch.Params,
-      query?: URLSearchParams
-    ) => html`
+    view: html`
       <profile-view
-        user-id=${params.id}
-        mode=${query?.has("edit")
+        user-id=${$ => $.params.id}
+        mode=${$ => $.query?.has("edit")
         ? "edit"
-        : query?.has("new")
+        : $.query?.has("new")
           ? "new"
-          : "view"}></profile-view>
+        : "view"}
+      >
+      </profile-view>
     `
   },
   {
-    auth: "protected",
     path: "/app",
-    view: () => html`<home-view></home-view>`
+    view: html`<home-view></home-view>`
   },
   {
     path: "/",
@@ -61,18 +48,11 @@ const routes: Switch.Route[] = [
 ];
 
 define({
-  "mu-auth": Auth.Provider,
-  "mu-history": History.Provider,
-  "mu-store": class AppStore
-    extends Store.Provider<Model, Msg>
-  {
+  "auth-provider": Auth.Provider,
+  "history-provider": BrowserHistory.Provider,
+  "router-switch": class AppSwitch extends Switch.Element {
     constructor() {
-      super(update, init, "blazing:auth");
-    }
-  },
-  "mu-switch": class AppSwitch extends Switch.Element {
-    constructor() {
-      super(routes, "blazing:history", "blazing:auth");
+      super(routes);
     }
   },
   "blazing-header": HeaderElement,
@@ -81,5 +61,3 @@ define({
   "tour-view": TourViewElement,
   "profile-view": ProfileViewElement
 });
-
-HeaderElement.initializeOnce();

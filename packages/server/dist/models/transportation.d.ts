@@ -5,7 +5,7 @@ export interface Transportation {
     endDate?: Date;
     segments: Array<Segment>;
 }
-type TransportationType = "air" | "rail" | "ship" | "bus";
+export type TransportationType = "air" | "rail" | "ship" | "bus";
 export interface Segment {
     name: string;
     provider: string | undefined;
@@ -18,4 +18,3 @@ export interface Endpoint {
     time: Date;
     tzoffset: Number;
 }
-export {};

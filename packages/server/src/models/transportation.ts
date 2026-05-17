@@ -6,7 +6,7 @@ export interface Transportation {
   segments: Array<Segment>;
 }
 
-type TransportationType = "air" | "rail" | "ship" | "bus";
+export type TransportationType = "air" | "rail" | "ship" | "bus";
 
 export interface Segment {
   name: string;

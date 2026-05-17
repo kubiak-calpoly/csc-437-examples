@@ -1,144 +1,203 @@
-import { define, Auth, Form, Observer, View } from "@calpoly/mustang";
-import { html, css } from "lit";
-import { property, state } from "lit/decorators.js";
+import {
+  css,
+  define,
+  html,
+  shadow
+} from "@unbndl/html";
+import {
+  View,
+  createView,
+  createViewModel,
+  fromAttributes,
+} from "@unbndl/view";
+import {
+  fromAuth
+} from "@unbndl/auth";
+import reset from "../styles/reset.css.ts";
+import headings from "../styles/headings.css.ts";
 import { Traveler } from "server/models";
-import { Msg } from "../messages";
-import { Model } from "../model";
-import reset from "../styles/reset.css.js";
-import headings from "../styles/headings.css.js";
+import { InputArrayElement } from "../components/input-array.ts";
 
-export class ProfileViewElement extends View<Model, Msg> {
+type ProfileMode = "view" | "edit" | "new";
+
+type ProfileViewAttributes = { "user-id"?: string };
+
+interface ProfileViewModel {
+  mode: ProfileMode;
+  userid?: string;
+  profile?: Traveler;
+  username?: string | undefined;
+  token?: string | undefined;
+  _avatar?: string;
+}
+
+export class ProfileViewElement extends HTMLElement {
   static uses = define({
-    "mu-form": Form.Element
+    "input-array": InputArrayElement
   });
 
-  @property({attribute: "user-id"})
-  userid?: string;
-
-  get src(): string | undefined{
-    if( this.userid ) {
-      return `/api/travelers/${this.userid}`;
-    }
-  }
-
-  @state()
-  get traveler(): Traveler | undefined {
-    return this.model.profile;
-  }
-
-  @property()
-  mode = "view";
+  viewModel = createViewModel<ProfileViewModel>({
+    mode: "view" as ProfileMode
+  })
+    .withRenamed(
+      fromAttributes<ProfileViewAttributes>(this), {
+      userid: "user-id"
+    })
+    .with(fromAuth(this), "token", "username");
 
   constructor() {
-    super("blazing:model");
+    super();
+    shadow(this)
+      .styles(
+        reset.styles,
+        headings.styles,
+        ProfileViewElement.styles
+      )
+      .replace(this.viewModel.render(this.view))
+      .delegate("#edit-mode", {
+        click: () => this.viewModel.set("mode", "edit")
+      })
+      .delegate("#cancel", {
+        click: () => this.viewModel.set("mode", "view")
+      })
+      .delegate('input[name="avatar"]', {
+        change: (e: InputEvent) => {
+          const target = e.target as HTMLInputElement;
+          const files = target.files;
+          if (files && files.length)
+            this.readAvatarBase64(files);
+        }
+      })
+      .listen({
+        submit: (ev: Event) => this.submitForm(ev)
+      });
+
+    this.viewModel.createEffect(($) => {
+    });
   }
 
-  override render() {
-    return this.mode === "edit" ?
-      this.renderEditor() :
-      this.renderView();
-  }
+  view = createView<ProfileViewModel>(html`
+    <section>
+      ${($) => $.profile
+        ? View.apply(
+          $.mode === "view" ? this.mainView : this.editView,
+          $.profile)
+        : ""}
+    </section>
+  `);
 
-  renderView() {
-    const {
-      userid,
-      name,
-      nickname,
-      home,
-      airports = [],
-      avatar,
-      color
-    } = this.traveler || {};
+  mainView = createView<Traveler>(html`
+    ${($) =>
+      $.userid === this.viewModel.get("username")
+        ? html`
+            <button id="edit-mode">Edit</button>
+          `
+        : ""}
+    ${($) =>
+      $.avatar
+        ? html`
+            <img src=${$.avatar} alt=${$.name} />
+          `
+        : ""}
+    <h1>${($) => $.name}</h1>
+    <dl>
+      <dt>Username</dt>
+      <dd>${($) => $.userid}</dd>
+      <dt>Nickname</dt>
+      <dd>${($) => $.nickname || ""}</dd>
+      <dt>Home City</dt>
+      <dd>${($) => $.home}</dd>
+      <dt>Airports</dt>
+      <dd>${($) => $.airports.join(", ")}</dd>
+      <dt>Favorite Color</dt>
+      <dd>
+        ${($) =>
+          $.color
+            ? html`
+                <span
+                  class="swatch"
+                  style=${`background: ${$.color}`}></span>
+                <span>${$.color}</span>
+              `
+            : ""}
+      </dd>
+    </dl>
+  `);
 
-    return html`
-        <button @click=${() => {
-      this.mode = "edit";
-    }}>
-          Edit
-        </button>
-      <img src=${avatar} alt=${name} />
-      <h1>${name}</h1>
+  editView = createView<Traveler>(html`
+    <form>
+    ${($) =>
+      $.avatar
+        ? html`
+            <img src=${$.avatar} alt=${$.name} />
+          `
+        : ""}
+      <h1>
+        <span class="aria-only" name="name-label">Display Name</span>
+        <input name="name"
+          value=${($) => $.name}
+          aria-labelled-by="name-label"/>
+      </h1>
       <dl>
-        <dt>Username</dt>
-        <dd>${userid}</dd>
-        <dt>Nickname</dt>
-        <dd>${nickname}</dd>
-        <dt>Home City</dt>
-        <dd>${home}</dd>
-        <dt>Airports</dt>
-        <dd>${airports.join(", ")}</dd>
-        <dt>Favorite Color</dt>
+        <dt id="userid-label">Username</dt>
         <dd>
-          <slot name="color-swatch">
-            <span
-              class="swatch"
-              style="background: ${color}"></span>
-          </slot>
-          <slot name="color-name">${color}</slot>
+            <input disabled name="userid"
+              value=${($) => $.userid}
+              aria-labelled-by="userid-label"/>
+        </dd>
+        <dt id="nickname-label">Nickname</dt>
+        <dd>
+            <input name="nickname"
+              value=${($) => $.nickname || ""}
+              aria-labelled-by="nickname-label"/>
+        </dd>
+        <dt id="home-label">Home City</dt>
+        <dd>
+            <input name="home"
+              value=${($) => $.home || ""}
+              aria-labelled-by="home-label"/>
+        </dd>
+        <dt id="airports-label">Airports</dt>
+        <dd>
+          <input-array
+            name="airports"
+            .value=${($) => $.airports}
+            aria-labelled-by="airports-label"/>
+          </input-array>
+        </dd>
+        <dt id="color-label">Favorite Color</dt>
+        <dd>
+        ${($) =>
+          $.color
+            ? html`
+                <span
+                  class="swatch"
+                  style=${`background: ${$.color}`}></span>
+                <span>
+                  <input
+                    type="color"
+                    name="color"
+                    value=${$.color}
+                    aria-labelled-by="color-label" />
+                </span>
+              `
+            : ""}
+        </dd>
+        <dt id="avatar-label">Upload Profile Image</dt>
+        <dd>
+            <input type="file" name="avatar"
+              aria-labelled-by="avatar-label"/>
         </dd>
       </dl>
-      </section>
-      </template>`;
-  }
+      <button id="cancel" type="button">Cancel</button>
+      <button type="submit">Save</button>
+     </form>
+  `);
 
-  renderEditor() {
-    const {
-      name,
-      avatar,
-      airports = []
-    } = this.traveler || {};
-
-    const init = {
-      ...this.traveler,
-      airports: airports.join(" ")
-    };
-
-    return html`
-      <mu-form
-        .init=${init}
-        @mu-form:submit=${(e: CustomEvent) => {
-      if (this.src)
-        this.handleSubmit(this.src, e.detail )
-    }
-    }>
-        <img src=${avatar} alt=${name} />
-        <h1><input name="name"></h1>
-        <dl>
-          <dt>Avatar</dt>
-          <dd>
-            <input
-              type="file"
-              @change=${(e: InputEvent) => {
-      const target = e.target as HTMLInputElement;
-      const files = target.files;
-      if (files && files.length) {
-        this.handleAvatarSelected(files)
-      }
-    }}
-            />
-          </dd>
-          <dt>Nickname</dt>
-          <dd><input name="nickname"></dd>
-          <dt>Home City</dt>
-          <dd><input name="home"></dd>
-          <dt>Airports</dt>
-          <dd><input name="airports"></dd>
-          <dt>Favorite Color</dt>
-          <dd>
-            <input type="color" name="color">
-          </dd>
-        </dl>
-      </mu-form>`;
-  }
-
-  static styles = [
-    reset.styles,
-    headings.styles,
-    css`
+  static styles = css`
     :host {
-      display: contents;
-      grid-column: 2/-2;
       display: grid;
+      grid-column: 1 / -1;
       grid-template-columns: subgrid;
     }
     section {
@@ -179,84 +238,49 @@ export class ProfileViewElement extends View<Model, Msg> {
     dd {
       grid-column: 3 / -1;
     }
-    mu-form {
+    form {
       display: contents;
     }
     input {
-     margin: var(--size-spacing-medium) 0;
-     font: inherit;
+      margin: var(--size-spacing-medium) 0;
+      font: inherit;
     }
-  `];
+  `;
 
-  attributeChangedCallback(
-      name: string,
-      oldValue: string,
-      newValue: string
-  ) {
-    super.attributeChangedCallback(name, oldValue, newValue);
-    if (
-      name === "user-id" &&
-      oldValue !== newValue &&
-      newValue
-    ) {
-      this.dispatchMessage([
-        "profile/select",
-        { userid: newValue }
-      ]);
-    }
+  submitForm(ev: Event) {
+    ev.preventDefault();
+
+    const form = ev.target as HTMLFormElement;
+    const json: unknown = this.formDataToJSON(form);
+    const userid = this.viewModel.$.userid;
+
+    // if (userid)
+    //   this.dispatch([
+    //     "profile/save",
+    //     { userid, profile: json as Traveler }
+    //   ]);
   }
 
-  _authObserver = new Observer<Auth.Model>(this, "blazing:auth");
-  _user?: Auth.User;
+  formDataToJSON(form: HTMLFormElement): string {
+    const inputs = Array.from(form.elements).filter(
+      (el) => el.tagName !== "BUTTON" && "name" in el
+    ) as Array<HTMLInputElement>;
 
-  override connectedCallback() {
-    super.connectedCallback();
-    this._authObserver.observe((auth: Auth.Model) => {
-      this._user = auth.user;
+    const entries = inputs.map((el) => {
+      const k = el.name;
+      switch (k) {
+        case "avatar":
+          return [k, this.viewModel.get("_avatar")];
+        default:
+          return [k, el.value];
+      }
     });
+
+    // console.log("Entries:", entries);
+    return Object.fromEntries(entries);
   }
 
-  get authorization(): { Authorization?: string } {
-    if (this._user && this._user.authenticated)
-      return {
-        Authorization:
-          `Bearer ${(this._user as Auth.AuthenticatedUser).token}`
-      };
-    else return {};
-  }
-
-  _avatar? : string; // the avatar, base64 encoded
-
-  handleSubmit(src: string, formData: object) {
-    const json: object = {
-      ...this.traveler,
-      ...formData
-    }
-
-    if ("airports" in formData ) {
-      (json as Traveler).airports = (formData.airports as string).split(" ")
-    }
-    if (this._avatar) (json as Traveler).avatar = this._avatar;
-
-    fetch( src, {
-      headers: {
-        "Content-Type": "application/json",
-        ...this.authorization
-      },
-      method: "PUT",
-      body: JSON.stringify(json)
-    })
-      .then(res => {
-        if (res.status !== 200) throw `Status: ${res.status}`;
-        else return res.json()
-      })
-      .then((json: unknown) => {
-        this.traveler = json as Traveler;
-        this.mode = "view";
-      })
-  }
-
-  handleAvatarSelected(files: FileList) {
+  readAvatarBase64(files: FileList) {
     if (files && files.length) {
       const reader = new Promise((resolve, reject) => {
         const fr = new FileReader();
@@ -265,8 +289,9 @@ export class ProfileViewElement extends View<Model, Msg> {
         fr.readAsDataURL(files[0]);
       });
 
-      reader.then((result: unknown) =>
-        (this._avatar = result as string));
+      reader.then((result: unknown) => {
+        this.viewModel.set("_avatar", result as string);
+      });
     }
   }
 }

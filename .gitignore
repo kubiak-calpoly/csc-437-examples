@@ -1,6 +1,9 @@
 # Dependency directories
 node_modules/
-node_modules
+/node_modules
+
+# dist directories (vite and tsc)
+dist/
 
 # TypeScript cache
 *.tsbuildinfo
@@ -36,4 +39,3 @@ kram_modules/
 /.yalc
 .yalc
 yalc.lock
-/.idea

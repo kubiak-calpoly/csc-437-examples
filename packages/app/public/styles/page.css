@@ -16,6 +16,10 @@ body {
   align-items: baseline;
   padding: 0 calc(0.5 * var(--page-grid-gap));
 
+  > router-switch {
+    display: contents;
+  }
+
   @media screen and (max-width: 40rem) {
     --page-grids: 6;
   }
