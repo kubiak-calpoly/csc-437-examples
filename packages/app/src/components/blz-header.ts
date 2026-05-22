@@ -30,7 +30,12 @@ export class HeaderElement extends HTMLElement {
       <nav
         class=${($) =>
           $.authenticated ? "logged-in" : "logged-out"}>
-        <p>Hello, ${($) => $.username || "traveler"}</p>
+        <p>Hello, ${($) => $.username 
+          ? html`
+            <a href=${`/app/profile/${$.username}`}>
+              ${$.username}
+            </a>` 
+          : "traveler"}</p>
         <menu>
           <li class="when-signed-in">
             <a>Sign Out</a>

@@ -13,6 +13,12 @@ import {
 import {
   fromAuth
 } from "@unbndl/auth";
+import {
+  Store,
+  fromStore
+} from "@unbndl/store";
+import { Model } from "../model.ts";
+import { Msg } from "../messages.ts";
 import reset from "../styles/reset.css.ts";
 import headings from "../styles/headings.css.ts";
 import { Traveler } from "server/models";
@@ -32,9 +38,11 @@ interface ProfileViewModel {
 }
 
 export class ProfileViewElement extends HTMLElement {
-  static uses = define({
-    "input-array": InputArrayElement
-  });
+  static {
+    define({
+      "input-array": InputArrayElement
+    });
+  }
 
   viewModel = createViewModel<ProfileViewModel>({
     mode: "view" as ProfileMode
@@ -43,7 +51,9 @@ export class ProfileViewElement extends HTMLElement {
       fromAttributes<ProfileViewAttributes>(this), {
       userid: "user-id"
     })
-    .with(fromAuth(this), "token", "username");
+    .with(fromAuth(this), "token", "username")
+    .with(fromStore<Model>(this), "profile")
+    ;
 
   constructor() {
     super();
@@ -73,7 +83,14 @@ export class ProfileViewElement extends HTMLElement {
       });
 
     this.viewModel.createEffect(($) => {
+      if ($.userid) this.dispatch(
+        ["profile/request", { userid: $.userid }]
+      );
     });
+  }
+
+  dispatch(msg: Msg) {
+    Store.dispatch<Msg>(this, msg);
   }
 
   view = createView<ProfileViewModel>(html`

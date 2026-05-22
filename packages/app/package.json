@@ -16,14 +16,15 @@
   "author": "kubiak@calpoly.edu",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "@unbndl/auth": "^1.0.4",
-    "@unbndl/html": "^1.0.5",
-    "@unbndl/switch": "^1.0.3",
-    "@unbndl/view": "^1.0.5",
+    "@unbndl/auth": "^1.0.7",
+    "@unbndl/html": "^1.0.7",
+    "@unbndl/store": "^1.0.7",
+    "@unbndl/switch": "^1.0.7",
+    "@unbndl/view": "^1.0.7",
     "server": "^1.0.0"
   },
   "devDependencies": {
     "typescript": "^6.0.3",
-    "vite": "^5.4.2"
+    "vite": "8.0.5"
   }
 }
