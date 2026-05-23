@@ -1,6 +1,11 @@
-import { Schema, model } from "mongoose";
-import { Destination, Tour } from "../models";
-import "./entourage-svc"; // to load schema
+import {
+  HydratedDocument,
+  Model,
+  Schema,
+  model
+} from "mongoose";
+import { Tour, Destination } from "../models";
+import "./entourage-svc.ts"; // to load schema
 
 const tourSchema = new Schema<Tour>(
   {
@@ -29,7 +34,8 @@ const tourSchema = new Schema<Tour>(
         endDate: Date,
         location: { lat: Number, lon: Number },
         featuredImage: String,
-        accommodation: {
+        accommodations: [
+          {
             name: String,
             checkIn: Date,
             checkOut: Date,
@@ -39,8 +45,10 @@ const tourSchema = new Schema<Tour>(
               amount: Number,
               currency: String
             }
-          },
-        excursions: [{ name: String, type: { type: String } }]
+          }
+        ],
+        excursions: [{ name: String, type: { type: String } }],
+        link: String
       }
     ],
     transportation: [
@@ -72,37 +80,13 @@ const tourSchema = new Schema<Tour>(
   { collection: "tour_collection" }
 );
 
-const tourModel = model<Tour>("Tour", tourSchema);
+export const tourModel = model<Tour>("Tour", tourSchema);
 
 function index(): Promise<Tour[]> {
-  return tourModel
-    .find()
-    .then((tours) =>
-      // populate the entourage name for each tour:
-      tourModel.populate(tours, {
-        path: "entourage",
-        select: "name"
-      })
-    )
-    .then((tours) => tours.map(trimIndex));
+  return tourModel.find();
 }
 
-function trimIndex(t: Tour): Tour  {
-  const { name, startDate, endDate, entourage } = t;
-  const { _id } = t as unknown as { _id: string };
-
-  return {
-    id: _id,
-    name,
-    startDate,
-    endDate,
-    entourage,
-    destinations: [],
-    transportation: []
-  };
-}
-
-function get(id: string): Promise<Tour> {
+function get(id: String): Promise<Tour> {
   return (
     tourModel
       .findById(id)
@@ -114,10 +98,9 @@ function get(id: string): Promise<Tour> {
           path: "people"
         }
       })
-      .then((doc: unknown) => {
-        const { _id, _doc } = doc as { _id: object, _doc: Tour };
-        // console.log("Tour doc is: ", _id, _doc);
-        return { ..._doc, id: _id.toString()};
+      .then((doc: HydratedDocument<Tour> | null) => {
+        if (!doc) throw `No Tour for id: ${id}`;
+        return doc.toObject() as Tour;
       })
       .catch((err) => {
         console.log("Not found!", err);
@@ -131,7 +114,7 @@ function create(profile: Tour): Promise<Tour> {
   return p.save();
 }
 
-function update(id: string, tour: Tour): Promise<Tour> {
+function update(id: String, tour: Tour): Promise<Tour> {
   return new Promise((resolve, reject) => {
     tourModel
       .findByIdAndUpdate(id, tour, {
@@ -144,60 +127,10 @@ function update(id: string, tour: Tour): Promise<Tour> {
   });
 }
 
-function getDestination(
-  id: String,
-  n: number
-): Promise<Destination> {
-  return (
-    tourModel
-      .findById(id)
-      .then((doc: unknown) => {
-        const tour =  doc as Tour;
-        return tour.destinations[n];
-      })
-      .catch((err) => {
-        console.log("Not found!", err);
-        throw `${id} Not Found`;
-      })
-  );
-}
-
-function updateDestination(
-  id: String,
-  n: number,
-  newDest: Destination
-): Promise<Destination> {
-  return new Promise((resolve, reject) => {
-    const path = `destinations.${n}`;
-
-    console.log("update path", path);
-
-    tourModel
-      .findByIdAndUpdate(
-        id,
-        {
-          $set: { [path]: newDest }
-        },
-        { new: true }
-      )
-      .then((doc: unknown) => {
-        if (doc) {
-          const tour = doc as Tour;
-          resolve(tour.destinations[n]);
-        } else reject(`Tour ${id} not found`);
-      })
-      .catch((error) => {
-        console.log("Cannot update Destination:", error);
-        reject(error);
-      });
-  });
-}
-
 export default {
   index,
   get,
   create,
-  update,
-  getDestination,
-  updateDestination
+  update
 };
+

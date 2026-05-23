@@ -16,11 +16,12 @@
   <link rel="stylesheet" href="/styles/tokens.css" />
   <link rel="stylesheet" href="/styles/page.css" />
   <script type="module">
-    import { define, Auth } from "@calpoly/mustang";
+    import { define } from "@unbndl/html";
+    import { Auth } from "@unbndl/auth";
     import { LoginFormElement } from "/src/auth/login-form";
 
     define({
-      "mu-auth": Auth.Provider,
+      "auth-provider": Auth.Provider,
       "login-form": LoginFormElement
     });
   </script>
@@ -47,7 +48,7 @@
   </style>
 </head>
 <body class="page">
-<mu-auth>
+<auth-provider>
   <h2>User Login</h2>
   <main class="card">
     <login-form api="/auth/login">
@@ -65,6 +66,6 @@
   >Or did you want to
     <a href="new-user.html">Sign up as a new user</a>?
   </p>
-</mu-auth>
+</auth-provider>
 </body>
 </html>

@@ -2,7 +2,8 @@
   "name": "app",
   "version": "1.0.0",
   "description": "",
-  "main": "index.html",
+  "main": "src/main.ts",
+  "type": "module",
   "scripts": {
     "dev": "npx vite",
     "build": "npx tsc && npx vite build",
@@ -10,15 +11,20 @@
   },
   "keywords": [
     "typescript",
-    "lit",
     "vite"
   ],
   "author": "kubiak@calpoly.edu",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "@calpoly/mustang": "file:../mustang",
-    "lit": "^3.2.1",
-    "mapbox-gl": "^3.12.0",
+    "@unbndl/auth": "^1.0.7",
+    "@unbndl/html": "^1.0.7",
+    "@unbndl/store": "^1.0.8",
+    "@unbndl/switch": "^1.0.7",
+    "@unbndl/view": "^1.0.7",
     "server": "^1.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.3",
+    "vite": "8.0.5"
   }
 }

@@ -1,115 +1,80 @@
-import { html, css, LitElement } from "lit";
-import { property, state } from "lit/decorators.js";
+import { css, html, shadow } from "@unbndl/html";
+import { createViewModel, fromInputs } from "@unbndl/view";
 import reset from "../styles/reset.css.js";
 import headings from "../styles/headings.css.js";
 
-interface LoginFormData {
-  username?: string;
-  password?: string;
+interface LoginFormState {
+  username: string;
+  password: string;
 }
 
-export class LoginFormElement extends LitElement {
+export class LoginFormElement extends HTMLElement {
+  static template = html`<template>
+    <form>
+      <slot></slot>
+      <button type="submit">
+        <slot name="submit-label">Login</slot>
+      </button>
+    </form>
+  </template>`;
 
-  @state()
-  formData: LoginFormData = {};
-
-  @property()
-  api?: string;
-
-  @property()
-  redirect: string = "/";
-
-  @state()
-  error?: string;
-
-  get canSubmit(): boolean {
-    return Boolean(this.api && this.formData.username &&
-      this.formData.password);
-  }
-
-  override render() {
-    return html`
-      <form
-        @change=${(e: InputEvent) => this.handleChange(e)}
-        @submit=${(e: SubmitEvent) => this.handleSubmit(e)}
-      >
-        <slot></slot>
-        <slot name="button">
-          <button
-            ?disabled=${!this.canSubmit}
-            type="submit">
-            <slot name="button-label">Login</slot>
-          </button>
-        </slot>
-        <p class="error">${this.error}</p>
-      </form>
-    `;
-  }
-
-  static styles = [
-    reset.styles,
-    headings.styles,
-    css`
-      .error:not(:empty) {
-        color: var(--color-error);
-        border: 1px solid var(--color-error);
-        padding: var(--size-spacing-medium);
-      }
-  `];
-
-
-  handleChange(event: InputEvent) {
-    const target = event.target as HTMLInputElement;
-    const name = target?.name;
-    const value = target?.value;
-    const prevData = this.formData;
-
-    switch (name) {
-      case "username":
-        this.formData = { ...prevData, username: value };
-        break;
-      case "password":
-        this.formData = { ...prevData, password: value };
-        break;
+  static styles = css`
+    :host {
+      display: contents;
     }
+    form {
+      display: contents;
+    }
+  `;
+
+  viewModel = createViewModel<LoginFormState>({
+    username: "", password: ""
+  })
+    .with<LoginFormState>(
+      fromInputs(shadow(this).root),
+      "username", "password"
+    );
+
+  constructor() {
+    super();
+    shadow(this)
+      .template(LoginFormElement.template)
+      .styles(reset.styles, headings.styles, LoginFormElement.styles);
+
+    this.shadowRoot?.addEventListener("submit", (ev: Event) =>
+      this.submitLogin(ev as SubmitEvent, this.getAttribute("api") || "#")
+    );
+
+    this.viewModel.createEffect(($) =>
+      console.log("Credentials:", $.username, $.password)
+    );
   }
 
-  handleSubmit(submitEvent: SubmitEvent) {
-    submitEvent.preventDefault();
-
-    if (this.canSubmit) {
-      fetch(this?.api || "",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(this.formData)
-        }
-      )
-        .then((res) => {
-          if (res.status !== 200 && res.status !== 201)
-            throw "Login failed";
-          else return res.json();
-        })
-        .then((json: object) => {
-          const { token } = json as { token: string };
-          const customEvent = new CustomEvent(
-            'auth:message', {
-            bubbles: true,
-            composed: true,
-            detail: [
-              'auth/signin',
-              { token, redirect: this.redirect }
-            ]
-          });
-          console.log("dispatching message", customEvent);
-          this.dispatchEvent(customEvent);
-        })
-        .catch((error: Error) => {
-          console.log(error);
-          this.error = error.toString();
+  submitLogin(event: SubmitEvent, endpoint: string) {
+    event.preventDefault(); // [1]
+    const data = this.viewModel.toObject(); // [3]
+    const method = "POST"; // [4]
+    const headers = {
+      "Content-Type": "application/json" // [5]
+    };
+    const body = JSON.stringify(data); // [6]
+    console.log("Posting login form:", endpoint, body, event);
+    fetch(endpoint, { method, headers, body }) // [7]
+      .then((res) => {
+        if (res.status !== 200)
+          throw `Form submission failed: Status ${res.status}`;
+        return res.json(); // [8]
+      })
+      .then((json: unknown) => {
+        const { token } = json as { token: string }; // [1]
+        const customEvent = new CustomEvent("auth:message", {
+          // [2]
+          bubbles: true,
+          composed: true,
+          detail: ["auth/signin", { token, redirect: "/" }] // [3]
         });
-    }
+
+        this.dispatchEvent(customEvent); // [4]
+      });
   }
 }

@@ -1,21 +1,32 @@
-import { css, html, LitElement } from "lit";
-import { property } from "lit/decorators.js";
-import { formatDate } from "server/models";
+import { css, html, shadow } from "@unbndl/html";
+import { createView, createViewModel, fromAttributes } from "@unbndl/view";
+import { formatDate } from "../utils/dates.ts";
 
-export class DateRangeElement extends LitElement {
-  @property()
+interface DateRangeModel {
   from?: string;
-
-  @property()
   to?: string;
+}
 
-  render() {
-    return html`
-      <span>${formatDate(this.from)}</span>
-      ${this.to ? 
-      html`<span>&nbsp;&ndash;&nbsp;${formatDate(this.to)}</span>` :
-      ""}
-    `;
+type DateRangeAttributes = DateRangeModel;
+
+export class DateRangeElement extends HTMLElement {
+  viewModel = createViewModel<DateRangeModel>()
+    .with(fromAttributes<DateRangeAttributes>(this), "from", "to");
+
+  view = createView<DateRangeModel>(
+    html`
+      <span>${$ => formatDate($.from)}</span>
+      ${$ => $.to ?
+        html`<span>&nbsp;&ndash;&nbsp;${formatDate($.to)}</span>` :
+        ""}
+    `
+  );
+
+  constructor() {
+    super();
+    shadow(this)
+      .styles(DateRangeElement.styles)
+      .replace(this.viewModel.render(this.view));
   }
 
   static styles = css`

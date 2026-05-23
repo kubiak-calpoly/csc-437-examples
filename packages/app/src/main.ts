@@ -1,79 +1,49 @@
-import {
-  Auth,
-  define,
-  History,
-  Store,
-  Switch
-} from "@calpoly/mustang";
-import { html, LitElement } from "lit";
-import { HeaderElement } from "./components/blazing-header";
-import { Msg } from "./messages";
-import { init, Model } from "./model";
-import update from "./update";
-import { DestinationEditElement } from "./views/destination-edit";
-import { DestinationViewElement } from "./views/destination-view";
-import { EntourageViewElement } from "./views/entourage-view";
-import { HomeViewElement } from "./views/home-view";
-import { TourViewElement } from "./views/tour-view";
-import {ProfileViewElement} from "./views/profile-view.ts";
+import { define, html } from "@unbndl/html";
+import { Auth } from "@unbndl/auth";
+import { Store } from "@unbndl/store";
+import { BrowserHistory, Switch } from "@unbndl/switch";
+import { Model, init } from "./model.ts";
+import { Msg } from "./messages.ts";
+import { Cmd, update } from "./update.ts";
+import { DestinationViewElement } from "./views/destination-view.ts";
+import { HeaderElement } from "./components/blz-header.ts";
+import { HomeViewElement } from "./views/home-view.ts";
+import { TourViewElement } from "./views/tour-view.ts";
+import { ProfileViewElement } from "./views/profile-view.ts";
 
 const routes: Switch.Route[] = [
   {
-    auth: "protected",
-    path: "/app/destination/:tourId/:index/edit",
-    view: (params: Switch.Params) => html`
-      <destination-edit
-        tour-id=${params.tourId}
-        index=${params.index}>
-      </destination-edit>
-    `
-  },
-  {
-    auth: "protected",
-    path: "/app/destination/:tourId/:index",
-    view: (params: Switch.Params) => html`
+    path: "/app/tour/:id/destination/:index",
+    view: html`
       <destination-view
-        tour-id=${params.tourId}
-        index=${params.index}>
+        tour-id=${$ => $.params.id}
+        index=${$ => $.params.index}>
       </destination-view>
     `
   },
   {
-    auth: "protected",
     path: "/app/tour/:id",
-    view: (params: Switch.Params) => html`
-      <tour-view tour-id=${params.id}>
-      </tour-view>
+    view: html`
+      <tour-view tour-id=${$ => $.params.id}></tour-view>
     `
   },
   {
-    auth: "protected",
-    path: "/app/entourage/:id",
-    view: (params: Switch.Params) => html`
-      <entourage-view tour-id=${params.id}>
-      </entourage-view>
-    `
-  },
-  {
-    auth: "protected",
-    path: "/app/profile/:id/edit",
-    view: (params: Switch.Params) => html`
-      <profile-view user-id=${params.id} mode="edit">
-      </profile-view>
-    `
-  },
-  {
-    auth: "protected",
     path: "/app/profile/:id",
-    view: (params: Switch.Params) => html`
-      <profile-view user-id=${params.id}>
+    view: html`
+      <profile-view
+        user-id=${$ => $.params.id}
+        mode=${$ => $.query?.has("edit")
+        ? "edit"
+        : $.query?.has("new")
+          ? "new"
+        : "view"}
+      >
       </profile-view>
     `
   },
   {
-    // auth: "protected",
     path: "/app",
-    view: () => html`<home-view></home-view>`
+    view: html`<home-view></home-view>`
   },
   {
     path: "/",
@@ -81,41 +51,23 @@ const routes: Switch.Route[] = [
   }
 ];
 
-class AppElement extends LitElement {
-  render() {
-    return html`<mu-switch></mu-switch>`;
-  }
-
-  connectedCallback() {
-    super.connectedCallback();
-    HeaderElement.initializeOnce();
-  }
-}
-
 define({
-  "mu-auth": Auth.Provider,
-  "mu-history": History.Provider,
-  "mu-store": class AppStore extends Store.Provider<
-    Model,
-    Msg
-  > {
+  "auth-provider": Auth.Provider,
+  "history-provider": BrowserHistory.Provider,
+  "router-switch": class AppSwitch extends Switch.Element {
     constructor() {
-      super(update, init, "blazing:auth");
+      super(routes);
     }
   },
-  "mu-switch": class AppSwitch extends Switch.Element {
+  "store-provider": class AppStore extends Store.Provider<
+    Model, Msg, Cmd > {
     constructor() {
-      super(routes, "blazing:history", "blazing:auth");
+      super(update, init);
     }
   },
-  "blazing-app": AppElement,
   "blazing-header": HeaderElement,
   "destination-view": DestinationViewElement,
-  "destination-edit": DestinationEditElement,
-  "entourage-view": EntourageViewElement,
   "home-view": HomeViewElement,
-  "profile-view": ProfileViewElement,
-  "tour-view": TourViewElement
+  "tour-view": TourViewElement,
+  "profile-view": ProfileViewElement
 });
-
-HeaderElement.initializeOnce();

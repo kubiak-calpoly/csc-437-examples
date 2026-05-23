@@ -23,6 +23,25 @@ export const formatDate = (date: Date | string | undefined) => {
   return `${d} ${m}`;
 };
 
+export function nightsBetween(startDate: Date, endDate: Date) {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  return Math.floor(
+    (end.getTime() - start.getTime()) / (24 * 60 * 60 * 1000)
+  );
+}
+
+export function toDateTimeString(date: Date) {
+  const iso = date.toISOString();
+  const [dateString, timeString] = iso.split("T");
+  return `${dateString} ${timeString.substring(0, 8)}`;
+}
+
+export function toDateString(date: Date) {
+  const iso = date.toISOString();
+  return iso.substring(0, 10);
+}
+
 export interface DateStringRange {
   startDate: string;
   endDate: string;

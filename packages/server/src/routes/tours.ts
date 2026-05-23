@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import { Destination, Tour } from "../models";
-import tours from "../services/tour-svc";
+import tours from "../services/tour-svc.ts";
 
 const router = express.Router();
 
@@ -47,36 +47,6 @@ router.put("/:id", (req: Request, res: Response) => {
     .catch(() => res.status(404).end());
 });
 
-router.get(
-  "/:id/destinations/:n",
-  (req: Request, res: Response) => {
-    const { id, n } = req.params;
 
-    tours
-      .getDestination(id, parseInt(n))
-      .then((destination: Destination) =>
-        res.status(200).json(destination))
-      .catch(() => res.status(404).end());
-  });
-
-router.put(
-  "/:id/destinations/:n",
-  (req: Request, res: Response) => {
-    const { id, n } = req.params;
-    const newDest = req.body;
-
-    console.log("User", req.params.username);
-
-    console.log(
-      `Updating Destination ${n} of tour ${id} with`,
-      newDest
-    );
-
-    tours
-      .updateDestination(id, parseInt(n), newDest)
-      .then((dest: Destination) => res.json(dest))
-      .catch(() => res.status(404).end());
-  }
-);
 
 export default router;

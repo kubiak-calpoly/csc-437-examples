@@ -1,105 +1,86 @@
 import { css, define, html, shadow } from "@unbndl/html";
-import { View, createView, createView2, createViewModel, fromAttributes } from "@unbndl/view";
-import { Auth, fromAuth } from "@unbndl/auth";
-import { Accommodation, Destination, Excursion } from "server/models";
-import { AccommodationElement } from "../components/blz-accommodation.ts";
-import { convertStartEndDates, formatDate, nightsBetween, toDateString, toDateTimeString} from "../utils/dates.ts";
-import reset from "../styles/reset.css.ts";
+import { View, createView, createViewModel, fromAttributes } from "@unbndl/view";
+import { fromAuth } from "@unbndl/auth";
+import {
+  convertStartEndDates,
+  formatDate,
+  toDateString,
+  nightsBetween
+} from "./dateUtils.js";
+import reset from "./reset.css.js";
+import { BlzAccommodationElement} from "./blz-accommodation.js";
 
-type DestinationViewAttributes = {
-  "tour-id": string;
-  index: string;
-  mode: string;
-}
-
-interface DestinationViewModel {
-  authenticated: boolean;
-  token?: string;
-  tourId?: string;
-  index: number;
-  mode: string;
-  destination?: Destination;
-  upload: { url?: string };
-};
-
-interface Upload {
-  url?: string;
-}
 
 export class DestinationViewElement extends HTMLElement {
   static {
     define({
-      "blz-accommodation": AccommodationElement,
-    });
+      "blz-accommodation": BlzAccommodationElement
+    })
   }
 
-  viewModel = createViewModel<DestinationViewModel>({
+  viewModel = createViewModel({
     authenticated: false,
     mode: "view",
-    index: 0,
     destination: {
       name: "Somewhere",
       startDate: new Date(),
       endDate: new Date(),
       // featuredImage: undefined,
-      location: { lat: 0, lon: 0 },
+      location: { lat: 0, lng: 0 },
       accommodations: [],
       excursions: [],
       // link: undefined
     },
     upload: {}
-  }).with(fromAuth(this),
-    "authenticated", "token"
-  ).withRenamed(fromAttributes<DestinationViewAttributes>(this), {
-    tourId: "tour-id"
-  });
+  }).with(fromAttributes(this), "src", "mode")
+    .with(fromAuth(this), "authenticated", "token");
 
-  view = createView<DestinationViewModel>( html`
+  view = html`
     <section>
       ${($) => View.apply2(
-        $.mode === "view" ? this.mainView : this.editView,
+        $.mode === "view" ? this.mainView : this.editView, 
         $.destination,
         $.upload
       )}
     </section>
-  `);
+  `;
 
-  mainView = createView<Destination>( html`
-    <header>
-      <h2>${($) => $.name}</h2>
-      <p>${($) => nightsBetween(
-        $.startDate,
-        $.endDate)} nights</p>
-      <nav>
-        <button id="edit-mode">Edit</button>
-      </nav>
-    </header>
-    <img class="hero" alt="" src=${($) =>
-      $.featuredImage || ""} />
-    ${($) => View.map(this.viewAccommodation, $.accommodations)}
-    <ul class="excursions">
-      ${($) => View.map(this.viewExcursion, $.excursions)}
-    </ul>
-  `);
+  mainView = html`
+      <header>
+        <h2>${($) => $.name}</h2>
+        <p>${($) => nightsBetween(
+          $.startDate, 
+          $.endDate)} nights</p>
+        <nav>
+          <button id="edit-mode">Edit</button>
+        </nav>
+      </header>
+      <img class="hero" alt="" src=${($) => 
+        $.featuredImage || ""} />
+      ${($) => View.map(this.viewAccommodation, $.accommodations)}
+      <ul class="excursions">
+        ${($) => View.map(this.viewExcursion, $.excursions)}
+      </ul>
+  `;
 
-  editView = createView2<Destination, Upload>( html`
+  editView = html`
     <form>
       <header>
         <h2>
-          <input name="name" value=${($,_) => $.name}/>
+          <input name="name" value=${$ => $.name}/>
         </h2>
       </header>
       <dl>
         <dt>Arriving on</dt>
         <dd>
-          <input name="startDate" type="date"
-                 value=${($, _) => toDateString($.startDate)}
+          <input name="startDate" type="date" 
+                 value=${$ => toDateString($.startDate)}
           />
         </dd>
         <dt>Departing on</dt>
         <dd>
           <input name="endDate" type="date"
-                 value=${($, _) => toDateString($.endDate)}
+                 value=${$ => toDateString($.endDate)}
           />
         </dd>
         <dt>Image</dt>
@@ -107,7 +88,7 @@ export class DestinationViewElement extends HTMLElement {
           <input type="file" />
         </dd>
         <dd>
-          <img src=${(_,$) => $?.url || "#"} alt="" />
+          <img src=${(_,$) => $.url} alt="" />
         </dd>
         <dt></dt>
         <dd>
@@ -116,19 +97,19 @@ export class DestinationViewElement extends HTMLElement {
         </dd>
       </dl>
 
-      <img class="hero" alt="" src=${($, _) => $.featuredImage || ""} />
+      <img class="hero" alt="" src=${($) => $.featuredImage || ""} />
     </form>
-  `);
+  `;
 
-  viewAccommodation = createView<Accommodation>( html`
+  viewAccommodation = html`
     <blz-accommodation>
       <span slot="name">${($) => $.name}</span>
-      <time slot="check-in"
-        datetime=${($) => toDateTimeString($.checkIn)}>
+      <time slot="check-in" 
+        datetime=${($) => $.checkIn}>
         ${($) => formatDate($.checkIn)}
       </time>
-      <time slot="check-out"
-        datetime=${($) => toDateTimeString($.checkOut)}>
+      <time slot="check-out" 
+        datetime=${($) => $.checkOut}>
         ${($) => formatDate($.checkOut)}
       </time>
       <span slot="room-type">${($) => $.roomType}</span>
@@ -136,9 +117,9 @@ export class DestinationViewElement extends HTMLElement {
       <span slot="room-rate">${($) => $.rate.amount}</span>
       <span slot="currency">${($) => $.rate.currency}</span>
     </blz-accommodation>
-  `);
+  `;
 
-  viewExcursion = createView<Excursion>( html`
+  viewExcursion = html`
     <li>
       <svg class="icon">
         <use xlink:href=${($) =>
@@ -146,7 +127,7 @@ export class DestinationViewElement extends HTMLElement {
       </svg>
       <span>${($) => $.name}</span>
     </li>
-  `);
+  `;
 
   constructor() {
     super();
@@ -158,31 +139,30 @@ export class DestinationViewElement extends HTMLElement {
         click: () => this.viewModel.set("mode", "edit")
       })
       .delegate("input[type=file]", {
-        change: (event: Event) => this.handleFileSelected(event)
+        change: (event) => this.handleFileSelected(event)
       })
       .listen({
-        submit: (ev: Event) => this.submitForm(ev)
+        submit: (ev) => this.submitForm(ev)
       });
 
     this.viewModel.createEffect(($) => {
-      console.log("Executing Effect: ", $.authenticated, $.tourId, $.index);
-      if ($.authenticated && $.tourId) {
-        const src = `/api/destinations/${$.tourId}/${$.index}`;
-        this.hydrate(src).then((dest: Destination) => {
-          this.viewModel.set("destination", dest);
+      if ($.authenticated && $.src) {
+        this.hydrate($.src).then((data) => {
+          this.viewModel.set("destination",
+            convertStartEndDates(data));
         });
       }
     })
   }
 
-  get authorization(): HeadersInit {
+  get authorization() {
     const $ = this.viewModel.toObject();
     if ($.authenticated)
       return { Authorization: `Bearer ${$.token}` };
     else return {};
   }
 
-  hydrate(src : string) {
+  hydrate(src) {
     return fetch(src, {
       headers: this.authorization
     })
@@ -190,31 +170,19 @@ export class DestinationViewElement extends HTMLElement {
         if (response.status !== 200)
           throw `HTTP Status ${response.status}`;
         else return response.json();
-      }).then((json: unknown) => {
-        const dest: Destination = convertStartEndDates<Destination>(json);
-        dest.accommodations = dest.accommodations.map(
-          (data: unknown) => {
-            const result = data as Accommodation;
-            const acc = data as { checkIn: string, checkOut: string };
-            result.checkIn = new Date(acc.checkIn);
-            result.checkOut = new Date(acc.checkOut);
-            return result;
-          });
-        return dest;
-      }).catch((error) => {
+      })
+      .catch((error) => {
         console.log("Could not fetch:", error);
-        throw error;
       });
   }
 
-  handleFileSelected(event: Event) {
-    const target = event.target as HTMLInputElement;
-    if (!target.files) return;
+  handleFileSelected(event) {
+    const target = event.target;
     const selectedFile = target.files[0];
 
-    const reader = new Promise<ArrayBuffer>((resolve, reject) => {
+    const reader = new Promise((resolve, reject) => {
       const fr = new FileReader();
-      fr.onload = () => resolve(fr.result as ArrayBuffer);
+      fr.onload = () => resolve(fr.result);
       fr.onerror = (err) => reject(err);
       fr.readAsArrayBuffer(selectedFile);
     });
@@ -225,7 +193,7 @@ export class DestinationViewElement extends HTMLElement {
       let url = new URL("/images", document.location.origin);
       url.search = query.toString();
 
-      return fetch(url, {
+      fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": type,
@@ -245,14 +213,11 @@ export class DestinationViewElement extends HTMLElement {
     });
   }
 
-  submitForm(event: Event) {
+  submitForm(event) {
     event.preventDefault();
-    const json = this.formDataToJSON(event.target as HTMLFormElement);
-    const src = this.viewModel.$.src;
+    const json = this.formDataToJSON(event.target);
 
-    if (!src) return;
-
-    fetch(src, {
+    fetch(this.viewModel.get("src"), {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -269,14 +234,14 @@ export class DestinationViewElement extends HTMLElement {
     });
   }
 
-  formDataToJSON(form: HTMLFormElement) {
-    const upload = this.viewModel.$.upload;
+  formDataToJSON(form) {
+    const upload = this.viewModel.get("upload");
     const inputs = Array.from(form.elements)
       .filter(
         (el) => el.tagName !== "BUTTON" && "name" in el
-      ) as Array<HTMLInputElement>;
+      );
     let entries =
-      Object.entries(this.viewModel.$.destination || {}).concat(
+      Object.entries(this.viewModel.get("destination")).concat(
         inputs.map((el) => [el.name, el.value])
       ).filter((ent) => ent[0] && ent[0] !== "_id");
     if ( upload.url ) {
@@ -287,31 +252,23 @@ export class DestinationViewElement extends HTMLElement {
 
   static styles = css`
     :host { display: contents; }
-    section {
-      display: grid;
-      grid-template-columns: subgrid;
-      grid-column: 1 / -1;
-      row-gap: var(--page-grid-gap);
-    }
+    section { display: contents; }
     header {
-      grid-column: 1 / span 2;
+      grid-area: hdr;
       background: none;
       color: var(--color-text);
       height: min-content;
-
+  
       a[href] {
         color: currentColor;
       }
     }
     form { display: contents; }
-    img.hero {
-      grid-column: span 5 / -1;
-      grid-row: 1 / 3;
-    }
-    blz-accommodation { grid-column: 1 / span 3; }
+    img.hero { grid-area: img; }
+    blz-accommodation { grid-area: acc; }
     ul.excursions {
       display: grid;
-      grid-column: 1/-1;
+      grid-area: exc;
       grid-template-columns: subgrid;
       list-style: none;
       padding: 0;
@@ -319,12 +276,12 @@ export class DestinationViewElement extends HTMLElement {
       font-family: var(--font-family-display);
       font-size: var(--size-type-mlarge);
       line-height: var(--font-line-height-display);
-
+    
       svg.icon {
         --size-icon: var(--size-icon-large);
         color: var(--color-accent);
       }
-
+    
       > li {
         display: flex;
         align-items: center;
@@ -335,3 +292,4 @@ export class DestinationViewElement extends HTMLElement {
       }
     }`;
 }
+

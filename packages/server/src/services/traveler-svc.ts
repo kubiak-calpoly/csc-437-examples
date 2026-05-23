@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { Traveler } from "../models/traveler";
+import { Traveler } from "../models";
 
 const TravelerSchema = new Schema<Traveler>(
   {
@@ -8,10 +8,7 @@ const TravelerSchema = new Schema<Traveler>(
     nickname: { type: String, trim: true },
     home: { type: String, trim: true },
     airports: [String],
-    avatar: {
-      data: Buffer,
-      contentType: String
-    },
+    avatar: String,
     color: String
   },
   { collection: "traveler_profiles" }
@@ -26,23 +23,19 @@ function index(): Promise<Traveler[]> {
   return TravelerModel.find();
 }
 
-function get(userid: String): Promise<Traveler> {
+function get(userid: String): Promise<Traveler | undefined> {
   return TravelerModel.find({ userid })
     .then((list) => list[0])
-    .catch(() => {
-      throw `${userid} Not Found`;
-    });
 }
 
 function update(
   userid: String,
   traveler: Traveler
-): Promise<Traveler> {
+): Promise<Traveler | undefined> {
   return TravelerModel.findOneAndUpdate({ userid }, traveler, {
     new: true
   }).then((updated) => {
-    if (!updated) throw `${userid} Not Found`;
-    else return updated as Traveler;
+    return updated ? updated as Traveler : undefined;
   });
 }
 
@@ -51,12 +44,10 @@ function create(traveler: Traveler): Promise<Traveler> {
   return p.save();
 }
 
-function remove(userid: String): Promise<void> {
-  return TravelerModel
-    .findOneAndDelete({ userid })
-    .then((deleted) => {
-      if (!deleted) throw `${userid} not deleted`;
-    });
+function remove(userid: String): Promise<Boolean> {
+  return TravelerModel.findOneAndDelete({ userid }).then(
+    (deleted) => !!deleted
+  );
 }
 
 export default { index, get, create, update, remove };

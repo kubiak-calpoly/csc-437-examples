@@ -1,169 +1,117 @@
-import { css, html, LitElement } from "lit";
-import { property } from "lit/decorators.js";
-import { parseUTCDate } from "../utils/dates";
+import { css, html, shadow } from "@unbndl/html";
+import {
+  View,
+  createView,
+  createViewModel,
+  fromAttributes
+} from "@unbndl/view";
 
-export class CalendarWidget extends LitElement {
-  @property({ attribute: "start-date", type: Date })
-  startDate: string = Date.now().toString();
+type CalendarWidgetAttributes = {
+  "start-date": string;
+  "end-date"?: string;
+};
 
-  @property({ attribute: "end-date", type: Date })
-  endDate: string = Date.now().toString();
+interface CalendarWidgetModel {
+  startDate?: Date;
+  endDate: Date | undefined;
+  selectedDate?: Date;
+}
 
-  _handleChange(value: string | null) {
-    const selectionEvent = new CustomEvent(
-      "calendar-widget:select",
+interface DateYMD {
+  d: number;
+  m: number;
+  y: number;
+  day: number;
+}
+
+export class CalendarWidget extends HTMLElement {
+  static styles = css`
+    /* CSS here */
+  `;
+
+  viewModel =
+    createViewModel<CalendarWidgetModel>(
+      { endDate: undefined }
+    ).withCalculated(
+      fromAttributes<CalendarWidgetAttributes>(this),
       {
-        bubbles: true,
-        composed: true,
-        detail: { date: value ? parseUTCDate(value) : value }
+        startDate: ($) => new Date($["start-date"]),
+        endDate: ($) => {
+          const dateString = $["end-date"]
+          if (dateString === undefined) return undefined;
+          else return new Date(dateString);
+        }
       }
     );
 
-    this.dispatchEvent(selectionEvent);
+  dateView = createView<DateYMD>(html`
+    <label style="grid-column: ${($) => $.day + 1}">
+      <span>${($) => $.d}</span>
+      <input
+        type="radio"
+        name="cal"
+        value="${($) => formatYMD($)}" />
+    </label>
+  `);
+  view = createView<CalendarWidgetModel>(html`
+    <section>
+      <fieldset>
+        <h6>Su</h6>
+        <h6>Mo</h6>
+        <h6>Tu</h6>
+        <h6>We</h6>
+        <h6>Th</h6>
+        <h6>Fr</h6>
+        <h6>Sa</h6>
+        ${($) =>
+          $.startDate
+            ? View.map(
+                this.dateView,
+                datesInRange($.startDate, $.endDate).map(toYMD)
+              )
+            : ""}
+      </fieldset>
+      <button id="clear">Clear Selection</button>
+    </section>
+  `);
+  changeEventType = `${this.tagName}/change`;
+
+  constructor() {
+    super();
+    shadow(this)
+      .styles(CalendarWidget.styles)
+      .replace(this.viewModel.render(this.view))
+      .delegate('input[name="cal"]', {
+        change: (ev: InputEvent) => {
+          const input = ev.target as HTMLInputElement;
+          const custom = new CustomEvent(this.changeEventType, {
+            bubbles: true,
+            composed: true,
+            detail: {
+              dateString: input.value
+            }
+          });
+          this.dispatchEvent(custom);
+        }
+      });
   }
-
-  _handleClear() {
-    const current = this.shadowRoot?.querySelector(
-      "input:checked"
-    ) as HTMLInputElement;
-    if (current) {
-      current.checked = false;
-    }
-
-    const clearEvent = new CustomEvent(
-      "calendar-widget:clear",
-      { bubbles: true, composed: true }
-    );
-
-    this.dispatchEvent(clearEvent);
-  }
-
-  render() {
-    const start = new Date(this.startDate);
-    const end = new Date(this.endDate);
-    const dates = datesInRange(start, end);
-
-    const renderDate = (d: Date) => {
-      const ymd = {
-        d: d.getUTCDate(),
-        m: d.getUTCMonth() + 1,
-        y: d.getUTCFullYear(),
-        day: d.getUTCDay()
-      };
-
-      const format = ({
-        y,
-        m,
-        d
-      }: {
-        y: number;
-        m: number;
-        d: number;
-      }) => [y, m, d].join("-");
-
-      return html`
-        <label style="grid-column: ${ymd.day + 1}">
-          <span>${ymd.d}</span>
-          <input
-            type="radio"
-            name="cal"
-            value="${format(ymd)}" />
-        </label>
-      `;
-    };
-
-    return html`
-      <section>
-        <fieldset
-          @change="${(event: InputEvent) => {
-        const target = event.target as HTMLInputElement;
-        this._handleChange(target.value);
-      }}">
-          <h6>Su</h6>
-          <h6>Mo</h6>
-          <h6>Tu</h6>
-          <h6>We</h6>
-          <h6>Th</h6>
-          <h6>Fr</h6>
-          <h6>Sa</h6>
-          ${dates.map(renderDate)}
-        </fieldset>
-        <button
-          id="clear"
-          @click="${() => this._handleClear()}">
-          Clear Selection
-        </button>
-      </section>
-    `;
-  }
-
-  static styles = css`
-    * {
-      margin: 0;
-      box-sizing: border-box;
-    }
-
-    fieldset {
-      display: grid;
-      grid-template-columns: repeat(7, 2rem);
-      gap: var(--size-spacing-small);
-      justify-content: center;
-      justify-items: streth;
-      border: 0;
-      padding: 0;
-    }
-
-    fieldset + button {
-      margin-top: var(--size-spacing-large);
-    }
-
-    h6 {
-      text-align: center;
-    }
-
-    label {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      aspect-ratio: 1;
-      padding: var(--size-spacing-small);
-      white-space: nowrap;
-      text-align: center;
-      background-color: var(--color-background-control);
-      border: var(--line-weight-fine) solid var(--color-accent);
-      color: var(--color-text-control);
-      font-size: var(--size-type-small);
-      z-index: 0;
-    }
-
-    input {
-      appearance: none;
-      background: white;
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 0;
-      bottom: 0;
-      z-index: -1;
-    }
-
-    input:checked {
-      background: var(--color-accent);
-    }
-
-    label:has(input:checked) {
-      background-color: var(--color-accent);
-      color: var(--color-text-control-inverted);
-    }
-
-    button {
-      display: block;
-      margin: 0 auto;
-    }
-  `;
 }
 
-function datesInRange(start: Date, end?: Date) {
+function toYMD(d: Date): DateYMD {
+  return {
+    d: d.getUTCDate(),
+    m: d.getUTCMonth() + 1,
+    y: d.getUTCFullYear(),
+    day: d.getUTCDay()
+  };
+}
+
+function formatYMD(ymd: DateYMD): string {
+  const { y, m, d } = ymd;
+  return [y, m, d].join("-");
+}
+
+function datesInRange(start: Date, end?: Date): Array<Date> {
   const endTime = end ? end.getTime() : start.getTime();
   let result = [];
   let i = new Date(start);

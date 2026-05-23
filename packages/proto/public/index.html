@@ -8,9 +8,10 @@
       href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,200;0,400;0,700;1,700&family=Merriweather:wght@400;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/styles/reset.css" />
     <link rel="stylesheet" href="/styles/tokens.css" />
+    <link rel="stylesheet" href="/styles/reset.css" />
     <link rel="stylesheet" href="/styles/page.css" />
+    <link rel="stylesheet" href="/styles/itinerary.css" />
     <script type="importmap">
       {
         "imports": {
@@ -23,55 +24,25 @@
     <script type="module">
       import { define } from "@unbndl/html";
       import { Auth } from "@unbndl/auth";
-      import { LoginFormElement } from "/js/login-form.js";
-
+      import { BlzDestinationElement } from "/js/blz-destination.js";
+      import { BlzItineraryElement } from "/js/blz-itinerary.js";
+      import { BlzHeaderElement } from "/js/blz-header.js";
       define({
         "auth-provider": Auth.Provider,
-        "login-form": LoginFormElement
+        "blz-destination": BlzDestinationElement,
+        "blz-header": BlzHeaderElement,
+        "blz-itinerary": BlzItineraryElement
       });
     </script>
-    <style>
-      .page {
-        height: 100vh;
-      }
-
-      auth-provider {
-        grid-column: 1 / -1;
-      }
-
-      main.card {
-        align-self: center;
-        grid-column: calc(var(--page-grids)/2 - 2) / span 4;
-      }
-
-      h2 {
-        align-self: end;
-      }
-
-      p {
-        grid-column: 2 / -2;
-        text-align: center;
-      }
-    </style>
   </head>
-  <body class="page">
+  <body>
     <auth-provider>
-      <h2>User Login</h2>
-      <main class="card">
-        <login-form api="/auth/login">
-          <label>
-            <span>Username:</span>
-            <input name="username" autocomplete="off" />
-          </label>
-          <label>
-            <span>Password:</span>
-            <input type="password" name="password" />
-          </label>
-        </login-form>
-      </main>
-      <p>
-        Or did you want to <a href="register.html">Register as a new user</a>?
-      </p>
+      <blz-header>
+        <h1>Blazing Travels</h1>
+        <p>12 days in <a href="#">Italy</a></p>
+      </blz-header>
+      <blz-itinerary src="/api/tours/65c7e92ea837ff7c15b669e5">
+      </blz-itinerary>
     </auth-provider>
   </body>
 </html>

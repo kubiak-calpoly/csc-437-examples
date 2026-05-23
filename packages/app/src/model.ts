@@ -1,19 +1,14 @@
-import { Tour, Traveler } from "server/models";
+import { Tour, TourBrief, Traveler } from "server/models";
 
 export interface TourIndex {
-  userid?: string;
-  tours: Tour[];
+  userid: string;
+  tours: Array<TourBrief>;
 }
 
 export interface Model {
-  user?: Traveler;
   profile?: Traveler;
   tour?: Tour;
-  tourStatus?: {
-    status?: "pending" | "loaded";
-    tourid?: string };
   tourIndex?: TourIndex;
-  headerTitle?: string;
 }
 
 export const init: Model = {};
