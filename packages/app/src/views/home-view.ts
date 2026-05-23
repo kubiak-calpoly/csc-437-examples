@@ -8,13 +8,16 @@ import {
   createViewModel,
   fromAttributes,
 } from "@unbndl/view";
+import { Store, fromStore } from "@unbndl/store";
 import { TourBrief } from "server/models";
+import { Msg } from "../messages.ts";
+import { Model, TourIndex } from "../model.ts";
 
 type HomeViewAttributes = { "user-id"?: string };
 
 interface HomeViewModel {
   userid: string | undefined;
-  tourIndex?: Array<TourBrief>;
+  tourIndex?: TourIndex;
 }
 
 export class HomeViewElement extends HTMLElement {
@@ -24,11 +27,13 @@ export class HomeViewElement extends HTMLElement {
     .withRenamed(fromAttributes<HomeViewAttributes>(this), {
       userid: "user-id"
     })
+    .with(fromStore<Model>(this), "tourIndex");
+
 
   view = createView<HomeViewModel>(html`
     <dl>
       ${($) =>
-        View.map(this.viewTour, $.tourIndex || [])}
+        View.map(this.viewTour, $.tourIndex?.tours || [])}
     </dl>
   `);
 
@@ -43,7 +48,7 @@ export class HomeViewElement extends HTMLElement {
           ${($) =>
             View.map<{ userid: string }>(
               this.travelerView,
-              $.entourage
+              $.entourage.people
             )}
         </ul>
       </dd>
@@ -58,7 +63,9 @@ export class HomeViewElement extends HTMLElement {
     </li>
   `);
 
-
+  dispatch(msg: Msg) {
+    Store.dispatch(this, msg);
+  }
   constructor() {
     super();
     shadow(this)
@@ -66,10 +73,8 @@ export class HomeViewElement extends HTMLElement {
 
     this.viewModel.createEffect(($) => {
       if ($.userid) {
-        // this.dispatch([
-        //   "tourIndex/request",
-        //   { userid: $.userid }
-        // ]);
+        this.dispatch(
+          ["tourIndex/request", { userid: $.userid }]);
       }
     });
   }

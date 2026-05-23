@@ -36,9 +36,11 @@
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
     "@types/express": "^4.17.21",
+    "@types/geojson": "^7946.0.16",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^24.12.2",
     "@types/uuid": "^9.0.8",
+    "@types/ws": "^8.18.1",
     "cross-env": "^7.0.3",
     "nodemon": "^3.0.2",
     "typescript": "^6.0.3"

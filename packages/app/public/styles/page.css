@@ -103,5 +103,5 @@ time {
   white-space: nowrap;
 }
 .card {
-  color-background: var(--color-background-card);
+  background-color: var(--color-background-card);
 }

@@ -15,4 +15,9 @@ export interface Tour {
 export type TourBrief = Pick<
   Tour,
   "id" | "name" | "startDate" | "endDate"
-> & { entourage: Array<{ userid: string }> };
+> & {
+  entourage: {
+    name: string;
+    people: Array<{ userid: string }>
+  }
+};

@@ -82,8 +82,39 @@ const tourSchema = new Schema<Tour>(
 
 export const tourModel = model<Tour>("Tour", tourSchema);
 
-function index(): Promise<Tour[]> {
-  return tourModel.find();
+function index(userid: string): Promise<Tour[]> {
+  return tourModel.find()
+    .then((tours) =>
+      // populate the entourage travelers' usernames
+      tourModel.populate(tours, {
+        path: "entourage",
+        populate: {
+          path: "people",
+          select: "userid"
+        }
+      })
+    )
+    .then((tours) => tours.map(trimIndex))
+    .catch((err) => {
+      console.log("Error in tours#index", err);
+      throw err;
+    });
+    ;
+}
+
+function trimIndex(t: Tour): Tour {
+  const { name, startDate, endDate, entourage } = t;
+  const { _id } = t as unknown as { _id: string };
+
+  return {
+    id: _id,
+    name,
+    startDate,
+    endDate,
+    entourage,
+    destinations: [],
+    transportation: []
+  };
 }
 
 function get(id: String): Promise<Tour> {
@@ -133,4 +164,3 @@ export default {
   create,
   update
 };
-

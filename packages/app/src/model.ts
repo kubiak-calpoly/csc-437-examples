@@ -8,7 +8,8 @@ export interface TourIndex {
 export interface Model {
   profile?: Traveler;
   tour?: Tour;
-  tourIndex?: TourIndex;
+  tourIndex: TourIndex;
 }
 
-export const init: Model = {};
+export const init: Model = {
+};

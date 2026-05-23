@@ -43,7 +43,13 @@ const routes: Switch.Route[] = [
   },
   {
     path: "/app",
-    view: html`<home-view></home-view>`
+    view: html`
+      <home-view
+        user-id=${($) =>
+          ($.user?.authenticated && $.user?.username) ||
+          "anonymous"
+      }>
+      </home-view>`
   },
   {
     path: "/",

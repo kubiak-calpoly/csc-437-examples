@@ -5,8 +5,13 @@ import tours from "../services/tour-svc.ts";
 const router = express.Router();
 
 router.get("/", (req: Request, res: Response) => {
+  const { userid } = req.query as { userid: string };
+  if (!userid) {
+    res.status(400).send("requires ?userid=");
+    return;
+  }
   tours
-    .index()
+    .index(userid)
     .then((list: Tour[]) =>
       res.status(200).send({
         count: list.length,
