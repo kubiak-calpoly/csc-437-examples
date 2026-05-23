@@ -1,4 +1,4 @@
-import { Message } from "@unbndl/service";
+import { ThenUpdate } from "@unbndl/store";
 import { Auth } from "@unbndl/auth";
 import { Model, TourIndex } from "./model";
 import { Msg } from "./messages";
@@ -12,7 +12,7 @@ export function update(
   model: Readonly<Model>,
   message: Msg | Cmd,
   auth: Auth.Model
-): Model | Message.Async<Model, Cmd> {
+): Model | ThenUpdate<Model, Cmd> {
   const [type, payload] = message;
   switch (type) {
     case "profile/request":
@@ -27,8 +27,7 @@ export function update(
         requestProfile(payload, auth)
       ];
     case "profile/load":
-      const { profile } = payload;
-      return { ...model, profile };
+      return { ...model, profile: payload.profile };
     default:
       console.log("Invalid message type:", type);
   }
