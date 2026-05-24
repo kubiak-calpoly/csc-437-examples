@@ -5,6 +5,7 @@ import {
   createViewModel,
   fromAttributes
 } from "@unbndl/view";
+import reset from "../styles/reset.css.ts";
 
 type CalendarWidgetAttributes = {
   "start-date": string;
@@ -12,8 +13,8 @@ type CalendarWidgetAttributes = {
 };
 
 interface CalendarWidgetModel {
-  startDate?: Date;
-  endDate: Date | undefined;
+  startDate?: string;
+  endDate?: string;
   selectedDate?: Date;
 }
 
@@ -25,34 +26,28 @@ interface DateYMD {
 }
 
 export class CalendarWidget extends HTMLElement {
-  static styles = css`
-    /* CSS here */
-  `;
 
   viewModel =
     createViewModel<CalendarWidgetModel>(
       { endDate: undefined }
-    ).withCalculated(
+    ).withRenamed(
       fromAttributes<CalendarWidgetAttributes>(this),
       {
-        startDate: ($) => new Date($["start-date"]),
-        endDate: ($) => {
-          const dateString = $["end-date"]
-          if (dateString === undefined) return undefined;
-          else return new Date(dateString);
-        }
+        startDate: "start-date",
+        endDate: "end-date"
       }
     );
 
   dateView = createView<DateYMD>(html`
-    <label style="grid-column: ${($) => $.day + 1}">
+    <label style=${$ => `grid-column: ${$.day + 1}`}>
       <span>${($) => $.d}</span>
       <input
         type="radio"
         name="cal"
-        value="${($) => formatYMD($)}" />
+        value=${($) => formatYMD($)} />
     </label>
   `);
+
   view = createView<CalendarWidgetModel>(html`
     <section>
       <fieldset>
@@ -74,12 +69,14 @@ export class CalendarWidget extends HTMLElement {
       <button id="clear">Clear Selection</button>
     </section>
   `);
-  changeEventType = `${this.tagName}/change`;
+
+  changeEventType = `${this.tagName.toLowerCase()}/change`;
+  clearEventType = `${this.tagName.toLowerCase()}/clear`;
 
   constructor() {
     super();
     shadow(this)
-      .styles(CalendarWidget.styles)
+      .styles(reset.styles, CalendarWidget.styles)
       .replace(this.viewModel.render(this.view))
       .delegate('input[name="cal"]', {
         change: (ev: InputEvent) => {
@@ -93,8 +90,77 @@ export class CalendarWidget extends HTMLElement {
           });
           this.dispatchEvent(custom);
         }
+      })
+      .delegate('button#clear', {
+        click: (ev: MouseEvent) => {
+          const current = this.shadowRoot?.querySelector(
+            "input:checked"
+          ) as HTMLInputElement;
+
+          if(current) current.checked = false;
+
+          const clearEvent = new CustomEvent(
+            this.clearEventType,
+            { bubbles: true, composed: true }
+          );
+
+          this.dispatchEvent(clearEvent)
+        }
       });
   }
+
+  static styles = css`
+    fieldset {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      border: none;
+    }
+
+    h6 {
+          text-align: center;
+        }
+
+        label {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          aspect-ratio: 1;
+          padding: var(--size-spacing-small);
+          white-space: nowrap;
+          text-align: center;
+          background-color: var(--color-background-control);
+          border: var(--line-weight-fine) solid var(--color-accent);
+          color: var(--color-text-control);
+          font-size: var(--size-type-small);
+          z-index: 0;
+        }
+
+        input {
+          appearance: none;
+          background: white;
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 0;
+          bottom: 0;
+          z-index: -1;
+        }
+
+        input:checked {
+          background: var(--color-accent);
+        }
+
+        label:has(input:checked) {
+          background-color: var(--color-accent);
+          color: var(--color-text-control-inverted);
+        }
+
+    #clear {
+      display: block;
+      margin: 0 auto;
+    }
+  `;
+
 }
 
 function toYMD(d: Date): DateYMD {
@@ -111,7 +177,9 @@ function formatYMD(ymd: DateYMD): string {
   return [y, m, d].join("-");
 }
 
-function datesInRange(start: Date, end?: Date): Array<Date> {
+function datesInRange(startDate: string, endDate?: string): Array<Date> {
+  const start = new Date(startDate);
+  const end = endDate && new Date(endDate);
   const endTime = end ? end.getTime() : start.getTime();
   let result = [];
   let i = new Date(start);

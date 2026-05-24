@@ -10,7 +10,7 @@ interface BlzDestinationModel {
   link?: string;
 }
 
-type BlzDestinationAttrs {
+type BlzDestinationAttrs = {
   "start-date"?: string;
   "end-date"?: string;
   "img-src"?: string;
@@ -37,15 +37,17 @@ export class BlzDestinationElement extends HTMLElement {
             <slot>Unnamed Destination</slot>
           </a>
         </h2>
-        <p>${($) => $.startDate && $.endDate
-            ? nightsBetween(new Date($.startDate), new Date($.endDate)
-            : 1
+        <p>${($) => ($.startDate && $.endDate) ?
+          nightsBetween(
+            new Date($.startDate),
+            new Date($.endDate)
+            ) : 1
           } nights
         </p>
       </header>
       <slot name="highlights"></slot>
     </section>
-  `;
+  `);
 
   constructor() {
     super();
