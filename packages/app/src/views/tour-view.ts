@@ -52,7 +52,12 @@ export class TourViewElement extends HTMLElement {
         ${($) =>
           View.map(
             this.destinationView,
-            $.tour?.destinations || []
+            $.tour?.destinations.map(
+              (d, i) => ({
+                ...d,
+                link: `/app/tour/${$.tourId}/destination/${i}`
+              })
+            ) || []
           )}
       </dl>
     </section>
@@ -91,7 +96,8 @@ export class TourViewElement extends HTMLElement {
     <dd>
       <blz-destination
         start-date=${($) => $.startDate?.toString()}
-        end-date=${($) => $.endDate?.toString()}>
+        end-date=${($) => $.endDate?.toString()}
+        href=${$ => $.link || "#"}>
         ${($) => $.name}
       </blz-destination>
     </dd>
