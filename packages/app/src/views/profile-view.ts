@@ -17,6 +17,7 @@ import {
   Store,
   fromStore
 } from "@unbndl/store";
+import { BrowserHistory } from "@unbndl/switch";
 import { Model } from "../model.ts";
 import { Msg } from "../messages.ts";
 import reset from "../styles/reset.css.ts";
@@ -26,7 +27,10 @@ import { InputArrayElement } from "../components/input-array.ts";
 
 type ProfileMode = "view" | "edit" | "new";
 
-type ProfileViewAttributes = { "user-id"?: string };
+type ProfileViewAttributes = {
+  mode?: string;
+  "user-id"?: string
+};
 
 interface ProfileViewModel {
   mode: ProfileMode;
@@ -49,11 +53,22 @@ export class ProfileViewElement extends HTMLElement {
   })
     .withRenamed(
       fromAttributes<ProfileViewAttributes>(this), {
-      userid: "user-id"
+      userid: "user-id", mode: "mode"
     })
     .with(fromAuth(this), "token", "username")
     .with(fromStore<Model>(this), "profile")
     ;
+
+  dispatch(msg: Msg) {
+    Store.dispatch<Msg>(this, msg);
+  }
+
+  navigateToMode(mode: ProfileMode) {
+    const userid = this.viewModel.$.userid
+    BrowserHistory.dispatch(this, "history/navigate", {
+      href: `/app/profile/${userid}?mode=${mode}`
+    });
+  }
 
   constructor() {
     super();
@@ -65,10 +80,10 @@ export class ProfileViewElement extends HTMLElement {
       )
       .replace(this.viewModel.render(this.view))
       .delegate("#edit-mode", {
-        click: () => this.viewModel.set("mode", "edit")
+        click: () => this.navigateToMode("edit")
       })
       .delegate("#cancel", {
-        click: () => this.viewModel.set("mode", "view")
+        click: () => this.navigateToMode("view")
       })
       .delegate('input[name="avatar"]', {
         change: (e: InputEvent) => {
@@ -87,10 +102,6 @@ export class ProfileViewElement extends HTMLElement {
         ["profile/request", { userid: $.userid }]
       );
     });
-  }
-
-  dispatch(msg: Msg) {
-    Store.dispatch<Msg>(this, msg);
   }
 
   view = createView<ProfileViewModel>(html`
@@ -268,19 +279,24 @@ export class ProfileViewElement extends HTMLElement {
     ev.preventDefault();
 
     const form = ev.target as HTMLFormElement;
-    const json: unknown = this.formDataToJSON(form);
+    const json: object = this.formDataToJSON(form);
     const userid = this.viewModel.$.userid;
 
-    // if (userid)
-    //   this.dispatch([
-    //     "profile/save",
-    //     { userid, profile: json as Traveler }
-    //   ]);
+    if (userid)
+      this.dispatch([
+        "profile/save",
+        { userid, profile: json as Traveler },
+        {
+          onSuccess: () => this.navigateToMode("view"),
+          onFailure: (error: Error) =>
+            console.log("ERROR:", error)
+        }
+      ]);
   }
 
-  formDataToJSON(form: HTMLFormElement): string {
+  formDataToJSON(form: HTMLFormElement): object {
     const inputs = Array.from(form.elements).filter(
-      (el) => el.tagName !== "BUTTON" && "name" in el
+      (el) => "name" in el
     ) as Array<HTMLInputElement>;
 
     const entries = inputs.map((el) => {

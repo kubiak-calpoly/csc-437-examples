@@ -32,11 +32,7 @@ const routes: Switch.Route[] = [
     view: html`
       <profile-view
         user-id=${$ => $.params.id}
-        mode=${$ => $.query?.has("edit")
-        ? "edit"
-        : $.query?.has("new")
-          ? "new"
-        : "view"}
+        mode=${($) => $.query.get("mode") || "view" }
       >
       </profile-view>
     `
