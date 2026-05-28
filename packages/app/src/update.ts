@@ -25,15 +25,29 @@ export function update(
         { ...model,
           profile: {
             userid: payload.userid,
-            name: "?", home: "?",  airports: []
+            name: "", home: "",  airports: []
           }
         },
         requestProfile(payload, auth)
       ];
     case "profile/load":
+      if (model.profile?.userid !== payload.profile.userid) break;
       return { ...model, profile: payload.profile };
     case "profile/save":
-      return [model, saveProfile(payload, auth)];
+      if (model.profile?.userid !== payload.userid) break;
+      return [
+        model,
+        saveProfile(
+          {
+            userid: payload.userid,
+            profile: {
+              ...model.profile,
+              ...payload.profile
+            }
+          },
+          auth
+        )
+      ];
     case "tourIndex/request":
         if (model.tourIndex?.userid === payload.userid) break;
         return [
@@ -96,13 +110,13 @@ function requestProfile(
 
 function saveProfile(
   payload: { userid: string; profile: Traveler },
-  user: Auth.Model
+  auth: Auth.Model
 ): Promise<Cmd> {
   return fetch(`/api/travelers/${payload.userid}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      ...Auth.headers(user)
+      ...Auth.headers(auth)
     },
     body: JSON.stringify(payload.profile)
   })
@@ -116,7 +130,10 @@ function saveProfile(
     .then((json: unknown) => [
       "profile/load",
       { profile: json as Traveler }
-    ]);
+    ])
+    .catch((err: Error) => {
+      throw err;
+    });
 }
 
 function requestTourIndex(

@@ -39,6 +39,7 @@ interface ProfileViewModel {
   username?: string | undefined;
   token?: string | undefined;
   _avatar?: string;
+  _error?: Error;
 }
 
 export class ProfileViewElement extends HTMLElement {
@@ -55,7 +56,7 @@ export class ProfileViewElement extends HTMLElement {
       fromAttributes<ProfileViewAttributes>(this), {
       userid: "user-id", mode: "mode"
     })
-    .with(fromAuth(this), "token", "username")
+    .with(fromAuth(this), "username")
     .with(fromStore<Model>(this), "profile")
     ;
 
@@ -106,6 +107,9 @@ export class ProfileViewElement extends HTMLElement {
 
   view = createView<ProfileViewModel>(html`
     <section>
+      ${($) => $._error
+        ? html`<p class="error">${$._error.message}</p>`
+        : ""}
       ${($) => $.profile
         ? View.apply(
           $.mode === "view" ? this.mainView : this.editView,
@@ -157,12 +161,12 @@ export class ProfileViewElement extends HTMLElement {
     ${($) =>
       $.avatar
         ? html`
-            <img src=${$.avatar} alt=${$.name} />
+            <img src=${$.avatar}/>
           `
         : ""}
       <h1>
         <span class="aria-only" name="name-label">Display Name</span>
-        <input name="name"
+        <input name="fullname"
           value=${($) => $.name}
           aria-labelled-by="name-label"/>
       </h1>
@@ -187,11 +191,9 @@ export class ProfileViewElement extends HTMLElement {
         </dd>
         <dt id="airports-label">Airports</dt>
         <dd>
-          <input-array
-            name="airports"
-            .value=${($) => $.airports}
-            aria-labelled-by="airports-label"/>
-          </input-array>
+          <input name="airports"
+            value=${($) => $.airports.join(", ")}
+            aria-labelled-by="airports-label" />
         </dd>
         <dt id="color-label">Favorite Color</dt>
         <dd>
@@ -236,14 +238,29 @@ export class ProfileViewElement extends HTMLElement {
       align-items: end;
       grid-column: 1 / -1;
     }
+    .error {
+      grid-column: 1/-1;
+      grid-row: 1;
+      border: 3px dashed;
+      color: var(--color-error);
+      text-align: center;
+      font-style: italic;
+      padding: var(--size-spacing-medium);
+    }
+    button {
+      grid-row: 2;
+    }
+    #edit-mode {
+      grid-column: 3;
+    }
     h1 {
-      grid-row: 4;
-      grid-column: auto / span 2;
+      grid-row: 5;
+      grid-column: auto / span 6;
     }
     img {
       display: block;
       grid-column: auto / span 2;
-      grid-row: 1 / span 4;
+      grid-row: 2 / span 4;
     }
     .swatch {
       display: inline-block;
@@ -254,7 +271,7 @@ export class ProfileViewElement extends HTMLElement {
     dl {
       display: grid;
       grid-column: 1 / -1;
-      grid-row: 5 / auto;
+      grid-row: 6 / auto;
       grid-template-columns: subgrid;
       align-items: baseline;
     }
@@ -273,28 +290,36 @@ export class ProfileViewElement extends HTMLElement {
       margin: var(--size-spacing-medium) 0;
       font: inherit;
     }
+    .aria-only {
+      position: absolute;
+        height: 0;
+        width: 0;
+        overflow: hidden;
+        left: -9999px;
+    }
   `;
 
   submitForm(ev: Event) {
     ev.preventDefault();
 
     const form = ev.target as HTMLFormElement;
-    const json: object = this.formDataToJSON(form);
+    const json: Partial<Traveler> = this.formDataToJSON(form);
     const userid = this.viewModel.$.userid;
 
     if (userid)
       this.dispatch([
         "profile/save",
-        { userid, profile: json as Traveler },
+        { userid, profile: json },
         {
           onSuccess: () => this.navigateToMode("view"),
-          onFailure: (error: Error) =>
-            console.log("ERROR:", error)
+          onFailure: (error: Error) => {
+            this.viewModel.set("_error", error)
+          }
         }
       ]);
   }
 
-  formDataToJSON(form: HTMLFormElement): object {
+  formDataToJSON(form: HTMLFormElement): Partial<Traveler> {
     const inputs = Array.from(form.elements).filter(
       (el) => "name" in el
     ) as Array<HTMLInputElement>;
