@@ -37,7 +37,6 @@ interface ProfileViewModel {
   userid?: string;
   profile?: Traveler;
   username?: string | undefined;
-  token?: string | undefined;
   _avatar?: string;
   _error?: Error;
 }
@@ -191,9 +190,11 @@ export class ProfileViewElement extends HTMLElement {
         </dd>
         <dt id="airports-label">Airports</dt>
         <dd>
-          <input name="airports"
-            value=${($) => $.airports.join(", ")}
-            aria-labelled-by="airports-label" />
+          <input-array
+            name="airports"
+            .value=${($) => $.airports}
+            aria-labelled-by="airports-label"/>
+          </input-array>
         </dd>
         <dt id="color-label">Favorite Color</dt>
         <dd>
